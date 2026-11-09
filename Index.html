@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IELTS.STUDIO — Personal Masterclass</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Link to your separate CSS file -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="aurora-bg">
+
+  <!-- Toast Notifications -->
+  <div id="toast-container" class="fixed bottom-10 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Login Gate -->
+  <div id="auth-view" class="min-h-screen flex items-center justify-center p-4">
+    <div class="surface-card p-8 max-w-md w-full shadow-2xl space-y-6 relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(79,70,229,0.2) 0%, transparent 70%);"></div>
+      
+      <div class="text-center space-y-2 relative z-10">
+        <div class="w-12 h-12 mx-auto rounded-xl flex items-center justify-center font-mono font-bold text-white text-xl" style="background: linear-gradient(135deg, #4f46e5, #10b981);">9.0</div>
+        <h1 class="text-2xl font-bold tracking-tight">IELTS.STUDIO</h1>
+        <p class="text-xs" style="color: var(--text-secondary);">Personal Masterclass & AI Sandbox</p>
+      </div>
+
+      <div class="space-y-4 relative z-10">
+        <div>
+          <label class="text-xs font-mono uppercase block mb-1">Email</label>
+          <input type="email" id="auth-email" class="w-full p-3 rounded-lg border bg-transparent text-sm" style="border-color: var(--border-subtle);" placeholder="your@email.com">
+        </div>
+        <div>
+          <label class="text-xs font-mono uppercase block mb-1">Password</label>
+          <input type="password" id="auth-pass" class="w-full p-3 rounded-lg border bg-transparent text-sm" style="border-color: var(--border-subtle);" placeholder="••••••••">
+        </div>
+        
+        <div class="pt-2 space-y-2">
+          <button onclick="handleLogin()" class="w-full py-3 rounded-xl font-semibold text-sm text-white transition hover:opacity-90 cursor-pointer" style="background: var(--accent-primary);">
+            Login to Studio
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App (Hidden until logged in) -->
+  <div id="app-view" class="hidden flex flex-col min-h-screen">
+    
+    <!-- Top Command Bar -->
+    <header class="glass-panel sticky top-0 z-40 rounded-none border-x-0 border-t-0 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center font-mono font-bold text-white shadow-sm" style="background: linear-gradient(135deg, #4f46e5, #10b981);">9.0</div>
+          <span class="font-bold tracking-tight text-base hidden sm:block">IELTS.STUDIO</span>
+        </div>
+
+        <nav class="flex items-center gap-1 p-1 rounded-full border" style="background: var(--bg-tertiary); border-color: var(--border-subtle);">
+          <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-tab active">Hub</button>
+          <button onclick="switchTab('academy')" id="tab-academy" class="nav-tab">🎓 Academy</button>
+          <button onclick="switchTab('builder')" id="tab-builder" class="nav-tab">⚡ AI Builder</button>
+          <button onclick="switchTab('workspace')" id="tab-workspace" class="nav-tab">📝 Workspace</button>
+        </nav>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span id="user-email-display" class="text-xs font-mono hidden sm:inline" style="color: var(--text-muted);"></span>
+        <button onclick="handleLogout()" class="text-xs font-mono border px-3 py-1.5 rounded-full hover:opacity-80" style="border-color: var(--border-subtle);">Logout</button>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6">
+      <!-- Dashboard -->
+      <section id="sec-dashboard" class="space-y-6">
+        <div class="surface-card p-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <h1 class="text-3xl font-bold mb-2">Welcome to your Masterclass.</h1>
+            <p style="color: var(--text-secondary);">Learn the fundamentals in the Academy, or build custom mock tests with the AI Builder.</p>
+          </div>
+          <div class="flex gap-4 text-center">
+            <div>
+              <div class="text-3xl font-mono font-bold" id="dash-tests-built">0</div>
+              <div class="text-xs uppercase mt-1" style="color: var(--text-muted);">Tests Built</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="font-bold text-lg mb-3">Your Saved Mock Tests (Firestore)</h2>
+          <div id="saved-tests-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="text-sm" style="color: var(--text-muted);">No tests generated yet. Head to the AI Builder!</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Academy -->
+      <section id="sec-academy" class="hidden space-y-6">
+        <div>
+          <h1 class="text-2xl font-bold">The IELTS Academy</h1>
+          <p class="text-sm mt-1" style="color: var(--text-secondary);">Your personal tutor. Master the fundamentals before taking mock tests.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="surface-card p-6 border-l-4" style="border-left-color: var(--skill-reading);">
+            <h3 class="font-bold text-lg text-blue-500 mb-3">📖 Reading: Fundamentals</h3>
+            <div class="space-y-3 text-sm" style="color: var(--text-primary);">
+              <details class="p-3 border rounded-lg cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
+                <summary class="font-semibold">Skimming vs. Scanning</summary>
+                <p class="mt-2 text-xs leading-relaxed" style="color: var(--text-secondary);">
+                  <strong>Skimming</strong> is reading rapidly to get a general overview (the main idea). Do this first for 2-3 minutes. 
+                  <br><br><strong>Scanning</strong> is reading rapidly to find specific facts (dates, names, numbers). Use this when answering specific questions.
+                </p>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Builder -->
+      <section id="sec-builder" class="hidden space-y-6">
+        <div>
+          <h1 class="text-2xl font-bold">⚡ AI Mock Test Builder</h1>
+          <p class="text-sm mt-1" style="color: var(--text-secondary);">Upload text, a document, or paste code. The AI will extract the content and generate a custom IELTS Reading or Writing test.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="surface-card p-6 space-y-4">
+            <h3 class="font-bold border-b pb-2" style="border-color: var(--border-subtle);">1. Provide Source Material</h3>
+            <div>
+              <label class="text-xs font-mono uppercase block mb-1">Paste Text / Code / Article</label>
+              <textarea id="ai-source-text" rows="5" class="w-full p-3 rounded-lg border text-sm" style="background: var(--bg-primary); border-color: var(--border-subtle);" placeholder="Paste an article from BBC..."></textarea>
+            </div>
+            <div class="text-center py-2 text-xs font-mono" style="color: var(--text-muted);">OR</div>
+            <div class="p-4 border border-dashed rounded-lg text-center" style="border-color: var(--border-focus);">
+              <input type="file" id="ai-file-upload" class="hidden" accept=".txt,.json,.md" onchange="handleFileUpload(event)">
+              <label for="ai-file-upload" class="cursor-pointer text-sm font-semibold text-indigo-500">
+                📂 Browse File (.txt, .md)
+              </label>
+            </div>
+          </div>
+
+          <div class="surface-card p-6 space-y-4">
+            <h3 class="font-bold border-b pb-2" style="border-color: var(--border-subtle);">2. Configure API & Generate</h3>
+            <div>
+              <label class="text-xs font-mono uppercase block mb-1">Gemini API Key</label>
+              <input type="password" id="gemini-api-key" class="w-full p-2.5 rounded-lg border text-sm font-mono" style="background: var(--bg-primary); border-color: var(--border-subtle);" placeholder="AIzaSy...">
+            </div>
+            <div>
+              <label class="text-xs font-mono uppercase block mb-1">Test Type</label>
+              <select id="ai-test-type" class="w-full p-2.5 rounded-lg border text-sm" style="background: var(--bg-primary); border-color: var(--border-subtle);">
+                <option value="reading">Reading Comprehension (Multiple Choice)</option>
+                <option value="writing">Writing Task 2 Prompt</option>
+              </select>
+            </div>
+            <button onclick="generateMockTest()" id="btn-generate" class="w-full py-3 rounded-xl font-semibold text-white transition mt-4 cursor-pointer" style="background: var(--accent-primary);">
+              ✨ Generate Test & Save to Cloud
+            </button>
+            <div id="ai-loading" class="hidden text-xs text-center font-mono animate-pulse text-indigo-500">Contacting Gemini AI Model...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Workspace -->
+      <section id="sec-workspace" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-bold" id="ws-title">Active Workspace</h1>
+          <span class="metric-badge" id="ws-type-badge">No Test Loaded</span>
+        </div>
+        <div id="ws-content" class="surface-card p-6 min-h-[400px] flex items-center justify-center text-sm" style="color: var(--text-muted);">
+          Generate a test from the AI Builder, or load one from your Dashboard Hub.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Link to your separate JS file -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
