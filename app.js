@@ -1,7 +1,8 @@
-```javascript
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+console.log("🚀 app.js has loaded successfully!");
 
 // 🛠️ YOUR FIREBASE CONFIGURATION:
 const myFirebaseConfig = {
@@ -23,7 +24,9 @@ let auth, db;
 
 // Toast Utility (UI Feedback)
 window.showToast = function(msg, color = 'var(--accent-primary)') {
+  console.log("TOAST:", msg); // Prints to F12 Console
   const c = document.getElementById('toast-container');
+  if(!c) return;
   const t = document.createElement('div');
   t.className = 'glass-panel px-4 py-2.5 text-xs font-medium shadow-lg transition-all duration-300 text-white';
   t.style.borderLeft = `4px solid ${color}`;
@@ -34,41 +37,84 @@ window.showToast = function(msg, color = 'var(--accent-primary)') {
   setTimeout(() => { t.style.opacity = 0; setTimeout(() => t.remove(), 300); }, 3000);
 }
 
-// Initialize Firebase
-const app = initializeApp(myFirebaseConfig);
-auth = getAuth(app);
-db = getFirestore(app);
+// Initialize Firebase safely
+try {
+  const app = initializeApp(myFirebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  console.log("✅ Firebase Initialized");
+} catch (error) {
+  console.error("❌ Firebase Init Error:", error);
+}
 
 // Auth Listener
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    console.log("👤 User is logged in:", user.email);
     state.user = user;
     document.getElementById('auth-view').classList.add('hidden');
     document.getElementById('app-view').classList.remove('hidden');
     document.getElementById('user-email-display').textContent = user.email;
     initFirestoreListeners();
   } else {
+    console.log("🔒 User is logged out.");
     state.user = null;
     document.getElementById('auth-view').classList.remove('hidden');
     document.getElementById('app-view').classList.add('hidden');
   }
 });
 
-window.handleLogin = async function() {
-  const e = document.getElementById('auth-email').value;
-  const p = document.getElementById('auth-pass').value;
-  if(!e || !p) return showToast('Enter email and password', '#ea580c');
-  
-  try { 
-      await signInWithEmailAndPassword(auth, e, p); 
-      showToast('Logged in successfully!'); 
-  }
-  catch(err) { showToast('Login failed. Ensure user exists in Firebase.', '#dc2626'); }
+// ==========================================
+// BULLETPROOF EVENT LISTENERS
+// This ensures the buttons work even when split into modules.
+// ==========================================
+
+// Global functions attached to window for HTML access
+window.switchTab = function(tabId) {
+  ['dashboard', 'academy', 'builder', 'workspace'].forEach(t => {
+    document.getElementById(`sec-${t}`).classList.toggle('hidden', t !== tabId);
+    document.getElementById(`tab-${t}`).classList.toggle('active', t === tabId);
+  });
 };
 
 window.handleLogout = function() {
+  console.log("Logging out...");
   signOut(auth);
 };
+
+window.handleFileUpload = function(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    document.getElementById('ai-source-text').value = evt.target.result;
+    showToast('File extracted.', '#10b981');
+  };
+  reader.readAsText(file);
+};
+
+// Login Button Logic
+window.handleLogin = async function() {
+  console.log("Login button clicked!");
+  const e = document.getElementById('auth-email').value;
+  const p = document.getElementById('auth-pass').value;
+  
+  if(!e || !p) {
+    showToast('Please enter both email and password.', '#ea580c');
+    return;
+  }
+  
+  try { 
+      showToast('Attempting to log in...');
+      await signInWithEmailAndPassword(auth, e, p); 
+      showToast('Logged in successfully!', '#10b981'); 
+  }
+  catch(err) { 
+      console.error("Login Error:", err);
+      showToast('Login failed. Check your email/password.', '#dc2626'); 
+  }
+};
+
 
 // Database Logic
 function initFirestoreListeners() {
@@ -80,14 +126,6 @@ function initFirestoreListeners() {
     renderDashboard();
   }, (err) => console.error(err));
 }
-
-// UI Navigation
-window.switchTab = function(tabId) {
-  ['dashboard', 'academy', 'builder', 'workspace'].forEach(t => {
-    document.getElementById(`sec-${t}`).classList.toggle('hidden', t !== tabId);
-    document.getElementById(`tab-${t}`).classList.toggle('active', t === tabId);
-  });
-};
 
 function renderDashboard() {
   document.getElementById('dash-tests-built').textContent = state.savedTests.length;
@@ -111,16 +149,6 @@ function renderDashboard() {
   `).join('');
 }
 
-window.handleFileUpload = function(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    document.getElementById('ai-source-text').value = evt.target.result;
-    showToast('File extracted.', '#10b981');
-  };
-  reader.readAsText(file);
-};
 
 // AI Generator Logic
 window.generateMockTest = async function() {
@@ -212,4 +240,3 @@ window.loadTestIntoWorkspace = function(id) {
     `;
   }
 };
-```
