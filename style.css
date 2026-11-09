@@ -1,0 +1,93 @@
+:root {
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Newsreader', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --bg-primary: #f4f6f9;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #eef1f6;
+  --bg-glass: rgba(255, 255, 255, 0.78);
+  
+  --text-primary: #09090b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+
+  --border-subtle: rgba(9, 9, 11, 0.09);
+  --border-focus: rgba(79, 70, 229, 0.45);
+
+  --accent-primary: #4f46e5;
+  --skill-reading: #3b82f6;
+  --skill-writing: #10b981;
+
+  --radius-md: 14px;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #09090b;
+  --bg-secondary: #121216;
+  --bg-tertiary: #1a1a20;
+  --bg-glass: rgba(18, 18, 22, 0.78);
+
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+
+  --border-subtle: rgba(255, 255, 255, 0.09);
+  --border-focus: rgba(129, 140, 248, 0.5);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: background-color 0.25s, color 0.25s;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+}
+
+.surface-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.metric-badge {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.32rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
+}
+
+.nav-tab {
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.nav-tab.active {
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border-color: var(--border-subtle);
+}
+
+.aurora-bg {
+  background: radial-gradient(800px circle at 12% 8%, rgba(99, 102, 241, 0.10), transparent 60%),
+              radial-gradient(700px circle at 88% 14%, rgba(16, 185, 129, 0.08), transparent 60%);
+}
