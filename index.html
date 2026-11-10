@@ -2,17 +2,17 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Studio KH — Global & Cambodia Self-Study Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IELTS Studio KH — AI Self-Study Hub</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Hanuman:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- External CSS -->
-    <link rel="stylesheet" href="./style.css">
+    <!-- External CSS with Cache Buster -->
+    <link rel="stylesheet" href="./style.css?v=20">
 
-    <!-- Tailwind Config -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -21,213 +21,415 @@
         }
     </script>
 </head>
-<body class="h-screen flex flex-col md:flex-row antialiased relative">
+<body class="h-screen flex flex-col md:flex-row antialiased relative bg-slate-900 text-slate-100">
 
     <!-- ================= LOGIN GATE ================= -->
-    <div id="login-screen" class="absolute inset-0 z-[100] flex items-center justify-center bg-slate-900 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-black">
+    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900">
         <div class="glass-panel p-8 rounded-2xl w-full max-w-md shadow-2xl text-center">
-            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-graduation-cap text-2xl"></i></div>
+            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/30">
+                <i class="fa-solid fa-graduation-cap text-2xl text-white"></i>
+            </div>
             <h1 class="text-2xl font-bold mb-1">IELTS Studio KH</h1>
-            <p class="text-sm text-slate-400 mb-6">ទំនើប • ផ្លូវឆ្ពោះទៅកាន់ Band 8.0+</p>
+            <p class="text-xs text-slate-400 mb-3">ទំនើប • ផ្លូវឆ្ពោះទៅកាន់ Band 8.0+</p>
+
+            <!-- Live Script Status Badge -->
+            <div id="system-status" class="inline-block px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs mb-5">
+                Connecting system...
+            </div>
             
-            <!-- CRITICAL FIX: onsubmit prevents the browser from refreshing the page -->
-            <form id="login-form" class="space-y-4" onsubmit="event.preventDefault();">
-                <div class="text-left">
-                    <input type="email" id="login-email" placeholder="Email" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500" required>
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Email Address</label>
+                    <input type="email" id="login-email" placeholder="Enter your email" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
                 </div>
-                <div class="text-left">
-                    <input type="password" id="login-password" placeholder="Password" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500" required>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
                 </div>
-                <button type="submit" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors mt-4">Secure Login</button>
-                <p id="login-error" class="text-red-400 text-xs mt-2 hidden"></p>
-            </form>
+                <button type="button" id="btn-login" class="w-full bg-blue-600 active:bg-blue-800 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/30 cursor-pointer">
+                    Secure Login
+                </button>
+                <div id="login-error" class="hide bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl text-center"></div>
+            </div>
         </div>
     </div>
 
     <!-- ================= MAIN APP ================= -->
-    <div id="main-app" class="hide flex flex-col md:flex-row w-full h-full">
+    <div id="main-app" class="hide flex flex-col md:flex-row w-full h-full overflow-hidden">
         
-        <!-- Mobile Header (Visible only on phones) -->
-        <header class="md:hidden h-16 glass-panel border-b flex items-center justify-between px-6 z-30 flex-shrink-0">
-            <div class="text-blue-500 text-xl font-bold"><i class="fa-solid fa-graduation-cap"></i> Studio</div>
-            <button id="mobile-menu-btn" class="text-slate-200 text-2xl"><i class="fa-solid fa-bars"></i></button>
+        <!-- Mobile Top Bar (Always visible on phones) -->
+        <header class="md:hidden h-16 glass-panel border-b border-slate-700/60 flex items-center justify-between px-4 z-30 flex-shrink-0">
+            <button type="button" id="mobile-menu-btn" class="flex items-center gap-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 px-3 py-2 rounded-xl text-sm font-semibold">
+                <i class="fa-solid fa-bars text-lg"></i> Menu
+            </button>
+            <div class="font-bold text-base"><i class="fa-solid fa-graduation-cap text-blue-500 mr-1"></i>IELTS KH</div>
+            <img id="mobile-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full border border-slate-600 object-cover">
         </header>
 
-        <!-- Sidebar Overlay (Mobile) -->
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+        <!-- Mobile Dark Overlay -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
 
-        <!-- Sidebar (Responsive sliding menu) -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-64 glass-panel border-r flex flex-col justify-between h-full transition duration-300 ease-in-out z-50">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-64 glass-panel border-r border-slate-700/60 flex flex-col justify-between h-full transition-transform duration-300 ease-in-out z-50 flex-shrink-0">
             <div>
-                <div class="p-6 flex items-center justify-between border-b border-slate-700/50">
-                    <div class="flex items-center gap-3">
+                <div class="p-5 flex items-center justify-between border-b border-slate-700/50">
+                    <div class="flex items-center gap-2.5">
                         <i class="fa-solid fa-graduation-cap text-blue-500 text-xl"></i>
                         <span class="font-bold text-lg">IELTS Studio<span class="text-blue-500">.</span></span>
                     </div>
-                    <button id="close-sidebar" class="md:hidden text-slate-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" id="close-sidebar" class="md:hidden text-slate-400 hover:text-white text-xl px-2">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
-                <nav class="p-4 space-y-2 overflow-y-auto max-h-[60vh]">
-                    <button data-target="dashboard" class="nav-btn bg-blue-600/10 text-blue-400 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-house w-5"></i>Dashboard</button>
-                    <button data-target="ai" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-sparkles text-purple-400 w-5"></i>AI Tutor</button>
-                    <button data-target="listening" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-headphones w-5"></i>Listening</button>
-                    <button data-target="reading" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-book-open w-5"></i>Reading</button>
-                    <button data-target="writing" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-pen-nib w-5"></i>Writing</button>
-                    <button data-target="speaking" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-microphone w-5"></i>Speaking</button>
+                <nav class="p-3 space-y-1.5 overflow-y-auto max-h-[70vh]">
+                    <button type="button" data-target="dashboard" class="nav-btn bg-blue-600/20 text-blue-400 w-full flex items-center gap-3 p-3 rounded-xl font-medium text-sm transition"><i class="fa-solid fa-house w-5"></i>Dashboard</button>
+                    <button type="button" data-target="ai" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-3 rounded-xl font-medium text-sm transition"><i class="fa-solid fa-wand-magic-sparkles text-purple-400 w-5"></i>AI Tutor Chat</button>
+                    <button type="button" data-target="listening" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-3 rounded-xl font-medium text-sm transition"><i class="fa-solid fa-headphones text-cyan-400 w-5"></i>AI Listening Lab</button>
+                    <button type="button" data-target="reading" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-3 rounded-xl font-medium text-sm transition"><i class="fa-solid fa-book-open text-emerald-400 w-5"></i>AI Reading Lab</button>
+                    <button type="button" data-target="writing" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-3 rounded-xl font-medium text-sm transition"><i class="fa-solid fa-pen-nib text-amber-400 w-5"></i>AI Writing Studio</button>
+                    <button type="button" data-target="speaking" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-3 rounded-xl font-medium text-sm transition"><i class="fa-solid fa-microphone text-rose-400 w-5"></i>AI Speaking Arena</button>
+                    <button type="button" data-target="resources" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-3 rounded-xl font-medium text-sm transition"><i class="fa-solid fa-layer-group text-indigo-400 w-5"></i>Resource Hub</button>
                 </nav>
             </div>
-            <div class="p-4 border-t border-slate-700/50">
-                <button data-target="settings" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all mb-2"><i class="fa-solid fa-gear w-5"></i>Profile</button>
-                <button id="logout-btn" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-red-400 font-medium transition-all"><i class="fa-solid fa-right-from-bracket w-5"></i>Sign Out</button>
+            <div class="p-3 border-t border-slate-700/50 space-y-1">
+                <button type="button" data-target="settings" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-3 rounded-xl font-medium text-sm transition"><i class="fa-solid fa-gear w-5"></i>Profile & Settings</button>
+                <button type="button" id="logout-btn" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-red-400 font-medium text-sm transition"><i class="fa-solid fa-right-from-bracket w-5"></i>Sign Out</button>
             </div>
         </aside>
 
-        <!-- Main Content -->
-        <main class="flex-1 flex flex-col h-full overflow-hidden bg-opacity-5 relative z-10">
-            <!-- Topbar (Desktop) -->
-            <header class="hidden md:flex h-16 glass-panel border-b items-center justify-between px-6 flex-shrink-0">
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center bg-slate-800/50 rounded-full px-4 py-1.5 border border-slate-700">
-                        <span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span><span class="text-xs text-slate-300">System Online</span>
-                    </div>
+        <!-- Main Workspace -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative z-10">
+            <!-- Desktop Topbar -->
+            <header class="hidden md:flex h-16 glass-panel border-b border-slate-700/60 items-center justify-between px-6 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-xs text-slate-300 font-medium">IELTS AI Self-Study System Online</span>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <p id="topbar-name" class="text-sm font-semibold">User</p>
-                        <p id="topbar-band" class="text-xs text-blue-400">Target: Band 8.0</p>
+                        <p id="topbar-name" class="text-sm font-semibold">Student</p>
+                        <p id="topbar-band" class="text-xs text-blue-400">Target: Band 7.5</p>
                     </div>
-                    <img id="topbar-avatar" src="" class="w-10 h-10 rounded-full border-2 border-slate-700 object-cover">
+                    <img id="topbar-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-10 h-10 rounded-full border-2 border-slate-700 object-cover">
                 </div>
             </header>
 
-            <div class="flex-1 overflow-y-auto p-4 md:p-8 relative">
+            <!-- Scrollable View Container -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
                 
-                <!-- Dashboard View -->
+                <!-- ================= 1. DASHBOARD VIEW ================= -->
                 <div id="view-dashboard" class="view-section space-y-6">
-                    <h2 class="text-2xl font-bold">Welcome Back, <span id="dash-name" class="text-blue-400">Student</span> 👋</h2>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <h2 class="text-2xl font-bold">Welcome Back, <span id="dash-name" class="text-blue-400">Student</span> 👋</h2>
+                        <span id="dash-band" class="inline-block px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">Target: Band 7.5</span>
+                    </div>
+
+                    <!-- Streak & Exam Date Countdown Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="glass-panel p-5 rounded-2xl flex items-center justify-between">
                             <div>
-                                <p class="text-slate-400 text-sm">Study Streak (Updates every 24h)</p>
-                                <p id="dash-streak" class="text-3xl font-bold mt-1">0 <span class="text-lg text-slate-500">Days</span></p>
+                                <p class="text-slate-400 text-xs uppercase tracking-wider">Daily Study Streak (+1 / 24h)</p>
+                                <p id="dash-streak" class="text-3xl font-bold mt-1">0 <span class="text-base font-normal text-slate-400">Days</span></p>
+                                <button type="button" id="btn-dash-reset-streak" class="mt-2 text-xs text-orange-400 hover:underline"><i class="fa-solid fa-rotate-left mr-1"></i>Reset streak to 0</button>
                             </div>
                             <div class="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400"><i class="fa-solid fa-fire text-xl"></i></div>
                         </div>
-                        <div class="glass-panel p-5 rounded-2xl flex items-center justify-between">
-                            <div>
-                                <p class="text-slate-400 text-sm">Exam Countdown</p>
-                                <p id="dash-countdown" class="text-3xl font-bold mt-1">-- <span class="text-lg text-slate-500">Days</span></p>
+
+                        <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between gap-3">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-slate-400 text-xs uppercase tracking-wider">Exam Countdown</p>
+                                    <p id="dash-countdown" class="text-3xl font-bold mt-1">-- <span class="text-base font-normal text-slate-400">Days Left</span></p>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400"><i class="fa-regular fa-clock text-xl"></i></div>
                             </div>
-                            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400"><i class="fa-regular fa-clock text-xl"></i></div>
+                            <!-- Direct Exam Date Bar on Dashboard -->
+                            <div class="flex gap-2 items-center pt-2 border-t border-slate-700/50">
+                                <input type="date" id="quick-exam-date" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white">
+                                <button type="button" id="btn-save-quick-date" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition">Set Date</button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="glass-panel rounded-2xl p-6">
-                        <h3 class="text-lg font-semibold mb-4 text-yellow-500"><i class="fa-solid fa-trophy"></i> Friends Leaderboard</h3>
+                    <!-- Friends Leaderboard -->
+                    <div class="glass-panel rounded-2xl p-5">
+                        <h3 class="text-base font-semibold mb-4 text-yellow-400 flex items-center gap-2"><i class="fa-solid fa-trophy"></i> Friends Study Leaderboard</h3>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left min-w-[400px]">
+                            <table class="w-full text-left text-sm">
                                 <thead>
-                                    <tr class="border-b border-slate-700 text-slate-400 text-sm">
-                                        <th class="pb-3">Student</th><th class="pb-3">Streak</th><th class="pb-3">Target</th>
+                                    <tr class="border-b border-slate-700 text-slate-400 text-xs">
+                                        <th class="pb-3">Student</th>
+                                        <th class="pb-3">Streak</th>
+                                        <th class="pb-3">Target</th>
+                                        <th class="pb-3">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody id="leaderboard-body"></tbody>
+                                <tbody id="leaderboard-body">
+                                    <tr><td colspan="4" class="py-4 text-center text-slate-500 text-xs">Loading friends...</td></tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- AI Tutor View -->
-                <div id="view-ai" class="view-section hide h-full flex flex-col min-h-[500px]">
-                    <h2 class="text-2xl font-bold text-purple-400 mb-4"><i class="fa-solid fa-sparkles"></i> Gemini AI Tutor</h2>
-                    <div class="flex-1 glass-panel rounded-2xl flex flex-col overflow-hidden">
-                        <div id="ai-chat-box" class="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-900/50">
+                <!-- ================= 2. AI TUTOR CHAT VIEW ================= -->
+                <div id="view-ai" class="view-section hide space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h2 class="text-xl font-bold text-purple-400"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>AI IELTS Tutor</h2>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full" data-prompt="Give me 5 Band 8.0 vocabulary words for IELTS Writing Task 2 with examples.">✨ Band 8 Vocab</button>
+                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full" data-prompt="Explain how to answer True, False, Not Given questions in IELTS Reading without making mistakes.">📖 T/F/NG Tips</button>
+                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full" data-prompt="Give me a full Band 8.5 IELTS Writing Task 2 essay structure.">✍️ Essay Structure</button>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl flex flex-col h-[68vh] overflow-hidden">
+                        <div id="ai-chat-box" class="flex-1 p-4 overflow-y-auto space-y-4">
                             <div class="flex gap-3">
-                                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center"><i class="fa-solid fa-robot text-white"></i></div>
-                                <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none text-sm text-slate-200">Hello! I am your AI IELTS Tutor. Ask me to grade your essay, suggest vocabulary, or explain grammar!</div>
+                                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
+                                <div class="bg-slate-800 p-3.5 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed">
+                                    Hello! I am your built-in IELTS AI Tutor. Ask me anything about Reading, Listening, Writing, Speaking, grammar, or ask me to generate practice questions!
+                                </div>
                             </div>
                         </div>
-                        <form id="ai-form" class="p-4 border-t border-slate-700 flex gap-2 bg-slate-900" onsubmit="event.preventDefault();">
-                            <input type="text" id="ai-input" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500 text-sm" placeholder="Ask Gemini anything..." required>
-                            <button type="submit" id="ai-submit" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg transition text-white"><i class="fa-solid fa-paper-plane"></i></button>
-                        </form>
+                        <div class="p-3 border-t border-slate-700 flex gap-2 bg-slate-900/90">
+                            <input type="text" id="ai-input" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500" placeholder="Ask your AI Tutor anything...">
+                            <button type="button" id="ai-send-btn" class="bg-purple-600 hover:bg-purple-500 px-5 py-2.5 rounded-xl text-white font-medium transition"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Listening Lab -->
+                <!-- ================= 3. AI LISTENING LAB ================= -->
                 <div id="view-listening" class="view-section hide space-y-6">
-                    <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-headphones"></i> Listening Lab</h2>
-                    <div class="glass-panel p-6 rounded-2xl flex gap-4 items-end max-w-lg">
-                        <div class="flex-1">
-                            <label class="block text-sm mb-2">Raw Score (0-40)</label>
-                            <input type="number" id="listen-raw" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>AI Listening Lab</h2>
+                        <button type="button" id="btn-ai-listening" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-lg shadow-cyan-600/20 transition">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate AI Listening Test
+                        </button>
+                    </div>
+
+                    <!-- Audio Player & Script Controls -->
+                    <div class="glass-panel p-5 rounded-2xl space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h3 id="listening-title" class="font-bold text-base">IELTS Listening Practice Track</h3>
+                                <p id="listening-status" class="text-xs text-slate-400">Click "Play Audio Track" to listen and answer the questions below.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="button" id="btn-play-listening" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-volume-high mr-1"></i> Play Audio Track</button>
+                                <button type="button" id="btn-stop-listening" class="bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-stop"></i></button>
+                            </div>
                         </div>
-                        <button id="btn-calc-listen" class="px-6 py-2 bg-blue-600 rounded-lg hover:bg-blue-500 transition">Calculate</button>
-                        <div id="listen-result" class="text-xl font-bold text-blue-400 px-4"></div>
+
+                        <!-- Questions Container -->
+                        <div id="listening-questions-box" class="space-y-4 pt-3 border-t border-slate-700/60"></div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-3">
+                            <button type="button" id="btn-submit-listening" class="bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 rounded-xl text-sm font-semibold text-white">Check Listening Answers</button>
+                            <div id="listening-score-box" class="text-sm font-bold text-cyan-400"></div>
+                        </div>
+                    </div>
+
+                    <!-- 40-Question Band Converter -->
+                    <div class="glass-panel p-5 rounded-2xl flex flex-wrap gap-4 items-end">
+                        <div class="flex-1 min-w-[180px]">
+                            <label class="block text-xs text-slate-400 mb-1">Full Mock Test Raw Score (0–40)</label>
+                            <input type="number" id="listen-raw" min="0" max="40" placeholder="e.g. 32" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+                        </div>
+                        <button type="button" id="btn-calc-listen" class="px-5 py-2 bg-blue-600 rounded-xl text-sm font-medium">Convert to Band</button>
+                        <div id="listen-result" class="text-lg font-bold text-blue-400"></div>
                     </div>
                 </div>
 
-                <!-- Reading Lab -->
+                <!-- ================= 4. AI READING LAB ================= -->
                 <div id="view-reading" class="view-section hide space-y-6">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-book-open"></i> Reading Lab</h2>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-red-500/10 text-red-400 px-4 py-1.5 rounded-lg font-mono font-bold text-lg" id="reading-timer">60:00</div>
-                            <button id="btn-start-read" class="bg-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-600 transition"><i class="fa-solid fa-play"></i></button>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>AI Reading Lab</h2>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="btn-ai-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate AI Reading Test
+                            </button>
+                            <div id="reading-timer" class="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-1.5 rounded-xl font-mono font-bold text-sm">20:00</div>
+                            <button type="button" id="btn-start-read" class="bg-slate-700 px-3 py-1.5 rounded-xl text-xs"><i class="fa-solid fa-play"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div class="glass-panel p-5 rounded-2xl max-h-[60vh] overflow-y-auto space-y-3">
+                            <h3 id="reading-passage-title" class="font-bold text-base text-emerald-400 border-b border-slate-700 pb-2">Academic Reading Passage</h3>
+                            <div id="reading-passage-body" class="text-sm text-slate-200 leading-relaxed space-y-3"></div>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl max-h-[60vh] overflow-y-auto flex flex-col justify-between space-y-4">
+                            <div id="reading-questions-box" class="space-y-4"></div>
+                            <div class="pt-4 border-t border-slate-700 flex items-center justify-between">
+                                <button type="button" id="btn-submit-reading" class="bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 rounded-xl text-sm font-semibold text-white">Submit & Grade Reading</button>
+                                <div id="reading-score-box" class="text-sm font-bold text-emerald-400"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Writing Studio -->
-                <div id="view-writing" class="view-section hide h-full flex flex-col min-h-[500px]">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-pen-nib"></i> Writing Studio</h2>
-                        <div class="flex items-center gap-3">
-                            <select id="writing-task" class="bg-slate-800 rounded-lg px-3 py-1.5 text-sm border border-slate-700 focus:outline-none focus:border-blue-500">
-                                <option value="task1">Task 1 (150 words)</option><option value="task2">Task 2 (250 words)</option>
+                <!-- ================= 5. AI WRITING STUDIO ================= -->
+                <div id="view-writing" class="view-section hide space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h2 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-pen-nib mr-2"></i>AI Writing Studio</h2>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <select id="writing-task" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs">
+                                <option value="Task 2 (250+ words)">Task 2 Essay (250+ words)</option>
+                                <option value="Task 1 (150+ words)">Task 1 Report (150+ words)</option>
                             </select>
-                            <div class="bg-blue-500/10 text-blue-400 px-4 py-1.5 rounded-lg font-mono font-bold" id="writing-timer">40:00</div>
-                            <button id="btn-start-write" class="bg-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-600 transition"><i class="fa-solid fa-play"></i></button>
+                            <button type="button" id="btn-ai-writing-prompt" class="bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>New Topic</button>
+                            <div id="writing-timer" class="bg-blue-500/10 text-blue-400 px-3 py-1.5 rounded-xl font-mono font-bold text-xs">40:00</div>
+                            <button type="button" id="btn-start-write" class="bg-slate-700 px-3 py-1.5 rounded-xl text-xs"><i class="fa-solid fa-play"></i></button>
                         </div>
                     </div>
-                    <textarea id="writing-area" class="flex-1 w-full bg-slate-800 border-x border-t border-slate-700 p-6 rounded-t-2xl resize-none focus:outline-none focus:border-blue-500 transition" placeholder="Start typing..."></textarea>
-                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-b-2xl flex justify-between items-center">
-                        <span id="word-count" class="font-bold text-blue-400">0 words</span>
-                        <button id="btn-save-essay" class="bg-blue-600 px-5 py-2 rounded-lg text-sm hover:bg-blue-500 transition">Save to Cloud</button>
+
+                    <div id="writing-prompt-box" class="glass-panel p-4 rounded-xl text-sm text-amber-200 border-l-4 border-l-amber-500">
+                        <strong>Prompt:</strong> Some people believe that technology has made learning easier, while others think it distracts students. Discuss both views and give your own opinion.
                     </div>
+
+                    <textarea id="writing-area" rows="10" class="w-full glass-panel p-4 rounded-2xl text-sm text-white focus:outline-none focus:border-amber-500 leading-relaxed" placeholder="Write your essay here... Then click 'AI Grade My Essay' for an instant Band Score & corrections!"></textarea>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <span id="word-count" class="text-sm font-bold text-blue-400">0 words</span>
+                        <div class="flex gap-2">
+                            <button type="button" id="btn-ai-grade-essay" class="bg-purple-600 hover:bg-purple-500 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-lg shadow-purple-600/20">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> AI Grade My Essay
+                            </button>
+                            <button type="button" id="btn-save-essay" class="bg-blue-600 hover:bg-blue-500 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white">
+                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save to Cloud
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="writing-feedback-box" class="hide glass-panel p-5 rounded-2xl text-sm text-slate-200 space-y-2 border border-purple-500/40"></div>
                 </div>
 
-                <!-- Speaking Arena -->
+                <!-- ================= 6. AI SPEAKING ARENA ================= -->
                 <div id="view-speaking" class="view-section hide space-y-6">
-                    <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-microphone"></i> Speaking Arena</h2>
-                    <div class="glass-panel p-6 rounded-2xl text-center max-w-lg">
-                        <button id="btn-record" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg font-bold transition w-full shadow-lg shadow-red-600/20"><i class="fa-solid fa-record-vinyl mr-2"></i> Record Answer</button>
-                        <p id="rec-status" class="text-red-400 mt-4 font-bold animate-pulse hide"><i class="fa-solid fa-microphone mr-2"></i>Recording in progress...</p>
-                        <audio id="audio-playback" controls class="mt-4 w-full hide rounded-lg bg-slate-800"></audio>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <h2 class="text-xl font-bold text-rose-400"><i class="fa-solid fa-microphone mr-2"></i>AI Speaking Arena</h2>
+                        <button type="button" id="btn-ai-speaking-card" class="bg-rose-600 hover:bg-rose-500 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate New Cue Card
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-panel p-5 rounded-2xl space-y-4">
+                            <div id="speaking-cue-card" class="bg-slate-800/90 border border-slate-700 p-4 rounded-xl text-sm space-y-2">
+                                <p class="font-bold text-rose-400">Part 2 Cue Card: Describe a skill you learned recently.</p>
+                                <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
+                                    <li>What the skill is and why you learned it</li>
+                                    <li>How you practiced it</li>
+                                    <li>What difficulties you faced</li>
+                                    <li>And explain how this skill helps you in life.</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button type="button" id="btn-record" class="flex-1 bg-rose-600 hover:bg-rose-500 py-2.5 rounded-xl text-sm font-semibold text-white">
+                                    <i class="fa-solid fa-record-vinyl mr-1"></i> Record Voice
+                                </button>
+                                <button type="button" id="btn-ai-speaking-sample" class="flex-1 bg-purple-600 hover:bg-purple-500 py-2.5 rounded-xl text-sm font-semibold text-white">
+                                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Band 8.5 Sample
+                                </button>
+                            </div>
+                            <p id="rec-status" class="text-rose-400 text-xs font-bold text-center animate-pulse hide">🔴 Recording your voice... Click Stop when finished.</p>
+                            <audio id="audio-playback" controls class="w-full hide rounded-xl"></audio>
+                        </div>
+
+                        <div class="glass-panel p-5 rounded-2xl">
+                            <h3 class="font-bold text-sm text-purple-400 mb-3 border-b border-slate-700 pb-2">AI Band 8.5 Model Answer & Vocabulary</h3>
+                            <div id="speaking-sample-box" class="text-sm text-slate-300 leading-relaxed space-y-2">
+                                Click <strong>"Band 8.5 Sample"</strong> to generate a high-scoring model response and idioms for the current Cue Card.
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Settings View -->
-                <div id="view-settings" class="view-section hide space-y-6 max-w-2xl mx-auto pb-10">
-                    <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-gear"></i> Profile Settings</h2>
-                    <div class="glass-panel p-6 rounded-2xl">
-                        <form id="settings-form" class="space-y-5" onsubmit="event.preventDefault();">
+                <!-- ================= 7. RESOURCE HUB ================= -->
+                <div id="view-resources" class="view-section hide space-y-6">
+                    <h2 class="text-xl font-bold text-indigo-400"><i class="fa-solid fa-layer-group mr-2"></i>Cambodia & Global Resource Hub</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <a href="https://takeielts.britishcouncil.org/take-ielts/prepare" target="_blank" class="glass-panel p-4 rounded-2xl hover:border-blue-500 block">
+                            <h4 class="font-bold text-blue-400">1. British Council IELTS Prep ↗</h4>
+                            <p class="text-xs text-slate-400 mt-1">Official sample tests, expert guides, and free practice tests for Academic and General Training.</p>
+                        </a>
+                        <a href="https://ielts.org/take-a-test/preparation-resources" target="_blank" class="glass-panel p-4 rounded-2xl hover:border-blue-500 block">
+                            <h4 class="font-bold text-blue-400">2. IELTS Official Preparation ↗</h4>
+                            <p class="text-xs text-slate-400 mt-1">Official sample questions, writing breakdown videos, and test booking links.</p>
+                        </a>
+                        <a href="https://ielts.idp.com/prepare" target="_blank" class="glass-panel p-4 rounded-2xl hover:border-blue-500 block">
+                            <h4 class="font-bold text-blue-400">3. IDP IELTS Prepare Hub ↗</h4>
+                            <p class="text-xs text-slate-400 mt-1">Video podcasts, masterclasses, and self-assessment tools from official co-owner IDP.</p>
+                        </a>
+                        <a href="https://acecambodia.org/" target="_blank" class="glass-panel p-4 rounded-2xl hover:border-blue-500 block">
+                            <h4 class="font-bold text-blue-400">4. IDP/ACE Cambodia IELTS Courses ↗</h4>
+                            <p class="text-xs text-slate-400 mt-1">Localized preparation courses, dedicated IELTS labs, and GILC resources in Cambodia.</p>
+                        </a>
+                        <a href="https://ieltsliz.com/" target="_blank" class="glass-panel p-4 rounded-2xl hover:border-emerald-500 block">
+                            <h4 class="font-bold text-emerald-400">5. IELTS Liz ↗</h4>
+                            <p class="text-xs text-slate-400 mt-1">Hundreds of free practice lessons, model answers, and tips targeting Band 7, 8, and 9.</p>
+                        </a>
+                        <a href="https://ieltsonlinetests.com/" target="_blank" class="glass-panel p-4 rounded-2xl hover:border-emerald-500 block">
+                            <h4 class="font-bold text-emerald-400">6. IELTS Online Tests ↗</h4>
+                            <p class="text-xs text-slate-400 mt-1">Free mock tests, placement tests, and video courses with timed exam simulation.</p>
+                        </a>
+                        <a href="https://ielts-up.com/" target="_blank" class="glass-panel p-4 rounded-2xl hover:border-emerald-500 block">
+                            <h4 class="font-bold text-emerald-400">7. IELTS-up ↗</h4>
+                            <p class="text-xs text-slate-400 mt-1">Free online lessons, test samples, and score-maximizing strategies.</p>
+                        </a>
+                        <a href="https://www.oxfordonlineenglish.com/free-ielts-preparation-lessons" target="_blank" class="glass-panel p-4 rounded-2xl hover:border-emerald-500 block">
+                            <h4 class="font-bold text-emerald-400">8. Oxford Online English ↗</h4>
+                            <p class="text-xs text-slate-400 mt-1">Free video lessons covering writing and speaking test preparation.</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ================= 8. PROFILE & SETTINGS VIEW ================= -->
+                <div id="view-settings" class="view-section hide space-y-6 max-w-xl mx-auto pb-12">
+                    <h2 class="text-xl font-bold text-blue-400"><i class="fa-solid fa-gear mr-2"></i>Profile & Settings</h2>
+                    <div class="glass-panel p-6 rounded-2xl space-y-5">
+                        <!-- Avatar Upload -->
+                        <div class="flex items-center gap-4 pb-4 border-b border-slate-700">
+                            <img id="settings-avatar-preview" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-20 h-20 rounded-full border-2 border-blue-500 object-cover">
+                            <div class="space-y-2">
+                                <label class="inline-block bg-slate-800 hover:bg-slate-700 border border-slate-600 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer">
+                                    <i class="fa-solid fa-camera mr-1"></i> Upload Photo
+                                    <input type="file" id="avatar-upload" class="hidden" accept="image/*">
+                                </label>
+                                <p class="text-xs text-slate-400">Auto-compressed for fast cloud sync.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
                             <div>
-                                <label class="text-xs text-slate-400 font-medium uppercase tracking-wider">Display Name</label>
-                                <input type="text" id="set-name" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-blue-500 transition" required>
+                                <label class="text-xs text-slate-400">Display Name</label>
+                                <input type="text" id="set-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 mt-1 text-sm text-white">
                             </div>
                             <div>
-                                <label class="text-xs text-slate-400 font-medium uppercase tracking-wider">Official Exam Date</label>
-                                <input type="date" id="set-date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-blue-500 transition">
+                                <label class="text-xs text-slate-400">Status / School</label>
+                                <input type="text" id="set-status" placeholder="Grade 12 Prep" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 mt-1 text-sm text-white">
                             </div>
                             <div>
-                                <label class="text-xs text-slate-400 font-medium uppercase tracking-wider">Target Band Score</label>
-                                <select id="set-band" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-blue-500 transition">
-                                    <option value="6.0">6.0</option><option value="6.5">6.5</option><option value="7.0">7.0</option><option value="7.5">7.5</option><option value="8.0">8.0</option><option value="8.5">8.5</option><option value="9.0">9.0</option>
+                                <label class="text-xs text-slate-400">Official IELTS Exam Date</label>
+                                <input type="date" id="set-date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 mt-1 text-sm text-white">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-400">Target Band Score</label>
+                                <select id="set-band" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 mt-1 text-sm text-white">
+                                    <option value="6.0">6.0</option>
+                                    <option value="6.5">6.5</option>
+                                    <option value="7.0">7.0</option>
+                                    <option value="7.5">7.5</option>
+                                    <option value="8.0">8.0</option>
+                                    <option value="8.5">8.5</option>
+                                    <option value="9.0">9.0</option>
                                 </select>
                             </div>
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-lg font-medium mt-6 transition shadow-lg shadow-blue-600/20">Save Changes</button>
-                            <p id="settings-success" class="text-green-400 text-xs mt-2 hidden text-center"><i class="fa-solid fa-check mr-1"></i> Profile Updated Successfully!</p>
-                        </form>
+                            <button type="button" id="btn-save-settings" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-semibold text-sm text-white">Save Profile Changes</button>
+                            <p id="settings-success" class="text-emerald-400 text-xs hidden text-center font-semibold">✓ Saved to Firebase!</p>
+                        </div>
                     </div>
                 </div>
 
@@ -235,109 +437,8 @@
         </main>
     </div>
 
-    <!-- Scripts (Separated logic for stability) -->
-    <script type="module" src="./app.js"></script>
-    <script type="module" src="./ai.js"></script>
-</body>
-</html>
-><i class="fa-solid fa-sparkles"></i> Gemini AI Tutor</h2>
-                    <div class="flex-1 glass-panel rounded-2xl flex flex-col overflow-hidden">
-                        <div id="ai-chat-box" class="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-900/50">
-                            <div class="flex gap-3">
-                                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center"><i class="fa-solid fa-robot text-white"></i></div>
-                                <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none text-sm text-slate-200">Hello! I am your AI IELTS Tutor. Ask me to grade your essay, suggest vocabulary, or explain grammar!</div>
-                            </div>
-                        </div>
-                        <form id="ai-form" class="p-4 border-t border-slate-700 flex gap-2 bg-slate-900">
-                            <input type="text" id="ai-input" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500 text-sm" placeholder="Ask Gemini anything..." required>
-                            <button type="submit" id="ai-submit" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg transition text-white"><i class="fa-solid fa-paper-plane"></i></button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Listening Lab -->
-                <div id="view-listening" class="view-section hide space-y-6">
-                    <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-headphones"></i> Listening Lab</h2>
-                    <div class="glass-panel p-6 rounded-2xl flex gap-4 items-end max-w-lg">
-                        <div class="flex-1">
-                            <label class="block text-sm mb-2">Raw Score (0-40)</label>
-                            <input type="number" id="listen-raw" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2">
-                        </div>
-                        <button id="btn-calc-listen" class="px-6 py-2 bg-blue-600 rounded-lg hover:bg-blue-500 transition">Calculate</button>
-                        <div id="listen-result" class="text-xl font-bold text-blue-400 px-4"></div>
-                    </div>
-                </div>
-
-                <!-- Reading Lab -->
-                <div id="view-reading" class="view-section hide space-y-6">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-book-open"></i> Reading Lab</h2>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-red-500/10 text-red-400 px-4 py-1.5 rounded-lg font-mono font-bold text-lg" id="reading-timer">60:00</div>
-                            <button id="btn-start-read" class="bg-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-600 transition"><i class="fa-solid fa-play"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Writing Studio -->
-                <div id="view-writing" class="view-section hide h-full flex flex-col min-h-[500px]">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-pen-nib"></i> Writing Studio</h2>
-                        <div class="flex items-center gap-3">
-                            <select id="writing-task" class="bg-slate-800 rounded-lg px-3 py-1.5 text-sm border border-slate-700 focus:outline-none focus:border-blue-500">
-                                <option value="task1">Task 1 (150 words)</option><option value="task2">Task 2 (250 words)</option>
-                            </select>
-                            <div class="bg-blue-500/10 text-blue-400 px-4 py-1.5 rounded-lg font-mono font-bold" id="writing-timer">40:00</div>
-                            <button id="btn-start-write" class="bg-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-600 transition"><i class="fa-solid fa-play"></i></button>
-                        </div>
-                    </div>
-                    <textarea id="writing-area" class="flex-1 w-full bg-slate-800 border-x border-t border-slate-700 p-6 rounded-t-2xl resize-none focus:outline-none focus:border-blue-500 transition" placeholder="Start typing..."></textarea>
-                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-b-2xl flex justify-between items-center">
-                        <span id="word-count" class="font-bold text-blue-400">0 words</span>
-                        <button id="btn-save-essay" class="bg-blue-600 px-5 py-2 rounded-lg text-sm hover:bg-blue-500 transition">Save to Cloud</button>
-                    </div>
-                </div>
-
-                <!-- Speaking Arena -->
-                <div id="view-speaking" class="view-section hide space-y-6">
-                    <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-microphone"></i> Speaking Arena</h2>
-                    <div class="glass-panel p-6 rounded-2xl text-center max-w-lg">
-                        <button id="btn-record" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg font-bold transition w-full shadow-lg shadow-red-600/20"><i class="fa-solid fa-record-vinyl mr-2"></i> Record Answer</button>
-                        <p id="rec-status" class="text-red-400 mt-4 font-bold animate-pulse hide"><i class="fa-solid fa-microphone mr-2"></i>Recording in progress...</p>
-                        <audio id="audio-playback" controls class="mt-4 w-full hide rounded-lg bg-slate-800"></audio>
-                    </div>
-                </div>
-
-                <!-- Settings View -->
-                <div id="view-settings" class="view-section hide space-y-6 max-w-2xl mx-auto pb-10">
-                    <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-gear"></i> Profile Settings</h2>
-                    <div class="glass-panel p-6 rounded-2xl">
-                        <form id="settings-form" class="space-y-5">
-                            <div>
-                                <label class="text-xs text-slate-400 font-medium uppercase tracking-wider">Display Name</label>
-                                <input type="text" id="set-name" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-blue-500 transition" required>
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-400 font-medium uppercase tracking-wider">Official Exam Date</label>
-                                <input type="date" id="set-date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-blue-500 transition">
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-400 font-medium uppercase tracking-wider">Target Band Score</label>
-                                <select id="set-band" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 mt-1 focus:outline-none focus:border-blue-500 transition">
-                                    <option value="6.0">6.0</option><option value="6.5">6.5</option><option value="7.0">7.0</option><option value="7.5">7.5</option><option value="8.0">8.0</option><option value="8.5">8.5</option><option value="9.0">9.0</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-lg font-medium mt-6 transition shadow-lg shadow-blue-600/20">Save Changes</button>
-                            <p id="settings-success" class="text-green-400 text-xs mt-2 hidden text-center"><i class="fa-solid fa-check mr-1"></i> Profile Updated Successfully!</p>
-                        </form>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- Scripts (Separated logic for stability) -->
-    <script type="module" src="./app.js"></script>
+    <!-- Cache-Busted Separate Scripts -->
+    <script type="module" src="./app.js?v=20"></script>
+    <script type="module" src="./ai.js?v=20"></script>
 </body>
 </html>
