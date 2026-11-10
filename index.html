@@ -267,7 +267,6 @@
                     </div>
 
                     <div id="book-upload-status" class="text-xs text-pink-300 font-semibold"></div>
-
                     <div id="books-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
                 </div>
 
@@ -286,7 +285,7 @@
                     <div id="history-list-container" class="space-y-2.5"></div>
                 </div>
 
-                <!-- ================= 4. AI TUTOR CHAT (Vision Removed, Full Document Upload Active) ================= -->
+                <!-- ================= 4. AI TUTOR CHAT ================= -->
                 <div id="view-ai" class="view-section hide space-y-3">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-purple-400"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>AI IELTS Tutor</h2>
@@ -323,7 +322,7 @@
                     </div>
                 </div>
 
-                <!-- ================= 5. AI LISTENING LAB (Separate Generate & Save Buttons) ================= -->
+                <!-- ================= 5. AI LISTENING LAB ================= -->
                 <div id="view-listening" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>AI Listening Lab</h2>
@@ -337,7 +336,6 @@
                         </div>
                     </div>
 
-                    <!-- Compact Listening Tips -->
                     <details class="glass-panel rounded-xl p-3 border-l-4 border-l-cyan-400 text-xs">
                         <summary class="cursor-pointer font-bold text-cyan-300">💡 Listening Tips (Click to view)</summary>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-700/60 text-slate-300">
@@ -347,7 +345,6 @@
                         </div>
                     </details>
 
-                    <!-- Saved Listening Tests Bar -->
                     <div class="glass-panel p-3 rounded-xl flex items-center gap-2 border border-cyan-500/30">
                         <span class="text-xs font-bold text-cyan-300 whitespace-nowrap">Saved (<span id="listening-saved-count">0</span>):</span>
                         <select id="listening-test-selector" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
@@ -356,7 +353,6 @@
                         <button type="button" id="btn-delete-listening-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
 
-                    <!-- Book Picker / Upload -->
                     <div class="glass-panel p-3.5 rounded-xl space-y-2">
                         <div class="flex flex-wrap gap-2 items-center justify-between">
                             <div class="flex items-center gap-2 flex-wrap flex-1">
@@ -374,7 +370,6 @@
                         <textarea id="listening-custom-source" rows="2" placeholder="Optional: Paste text/topic or pick a saved book above, then click 'Generate Listening Test'..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-cyan-500"></textarea>
                     </div>
 
-                    <!-- Audio & Questions -->
                     <div class="glass-panel p-4 rounded-2xl space-y-3.5">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <div>
@@ -403,7 +398,7 @@
                     </div>
                 </div>
 
-                <!-- ================= 6. AI READING LAB (Separate Generate & Save Buttons) ================= -->
+                <!-- ================= 6. AI READING LAB ================= -->
                 <div id="view-reading" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>AI Reading Lab</h2>
@@ -419,7 +414,6 @@
                         </div>
                     </div>
 
-                    <!-- Compact Reading Tips -->
                     <details class="glass-panel rounded-xl p-3 border-l-4 border-l-emerald-400 text-xs">
                         <summary class="cursor-pointer font-bold text-emerald-300">💡 Reading Tips (Click to view)</summary>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-700/60 text-slate-300">
@@ -429,7 +423,6 @@
                         </div>
                     </details>
 
-                    <!-- Saved Reading Tests Bar -->
                     <div class="glass-panel p-3 rounded-xl flex items-center gap-2 border border-emerald-500/30">
                         <span class="text-xs font-bold text-emerald-300 whitespace-nowrap">Saved (<span id="reading-saved-count">0</span>):</span>
                         <select id="reading-test-selector" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
@@ -438,7 +431,6 @@
                         <button type="button" id="btn-delete-reading-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
 
-                    <!-- Book Picker / Upload -->
                     <div class="glass-panel p-3.5 rounded-xl space-y-2">
                         <div class="flex flex-wrap gap-2 items-center justify-between">
                             <div class="flex items-center gap-2 flex-wrap flex-1">
@@ -630,7 +622,43 @@
             setTimeout(() => el.remove(), 3500);
         }
 
-        // --- 1. INDEXED-DB FOR UNLIMITED FULL PDF STORAGE (No 1,984-Word Limit!) ---
+        // Format inline markdown (*italic* and **bold**) in question titles
+        function formatInlineQuestionText(str) {
+            return String(str || "")
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em class="text-cyan-200">$1</em>');
+        }
+
+        // SMART ANSWER MATCHER (Fixes "Option B" vs "1937" bug so correct answers NEVER get marked wrong!)
+        function evaluateQuestionAnswer(selectedInput, item) {
+            if (!selectedInput || !item) return { isCorrect: false, displayAns: item?.ans || "" };
+            const userVal = selectedInput.value.trim();
+            const userIdx = parseInt(selectedInput.getAttribute('data-opt-idx') || "-1", 10);
+            const rawAns = String(item.ans || "").trim();
+            const options = Array.isArray(item.options) ? item.options.map(o => String(o).trim()) : [];
+
+            // Detect if AI wrote "Option A/B/C/D" or "A/B/C/D"
+            const optMatch = rawAns.match(/^(?:option\s*)?([a-d])(?:[\.\)\:\-\s]|$)/i);
+            let targetIdx = -1;
+            if (optMatch) {
+                targetIdx = optMatch[1].toLowerCase().charCodeAt(0) - 97; // 'a'->0, 'b'->1, 'c'->2, 'd'->3
+            } else {
+                targetIdx = options.findIndex(opt =>
+                    opt.toLowerCase() === rawAns.toLowerCase() ||
+                    rawAns.toLowerCase().includes(opt.toLowerCase())
+                );
+            }
+
+            const resolvedAnsText = (targetIdx >= 0 && options[targetIdx]) ? options[targetIdx] : rawAns;
+            const isCorrect =
+                userVal.toLowerCase() === rawAns.toLowerCase() ||
+                userVal.toLowerCase() === resolvedAnsText.toLowerCase() ||
+                (targetIdx >= 0 && userIdx === targetIdx);
+
+            return { isCorrect, displayAns: resolvedAnsText };
+        }
+
+        // --- 1. INDEXED-DB FOR UNLIMITED FULL PDF STORAGE ---
         function openBookDB() {
             return new Promise((resolve, reject) => {
                 const req = indexedDB.open("IELTS_FULL_BOOKS_DB", 1);
@@ -671,7 +699,7 @@
             } catch (e) {}
         }
 
-        // --- 2. 100% FULL PDF / DOCX / TXT SCANNER (Scans ALL Pages!) ---
+        // --- 2. 100% FULL PDF / DOCX / TXT SCANNER ---
         const readArrayBuffer = (file) => new Promise((res, rej) => {
             const r = new FileReader();
             r.onload = () => res(r.result);
@@ -709,15 +737,21 @@
             return (await readTextFile(file)).trim();
         }
 
-        // Smart Passage Window Picker: Picks a rich 2,500-word section from huge 100,000-word PDFs so AI never chokes!
+        // Smart Passage Window Picker: Automatically skips PDF Copyright/Table of Contents pages!
         let bookChunkCursor = 0;
-        function getSmartPassageFromFullText(fullText, maxChars = 14000) {
-            if (!fullText || fullText.length <= maxChars) return fullText;
-            const totalSlices = Math.ceil(fullText.length / maxChars);
+        function getSmartPassageFromFullText(fullText, maxChars = 8500) {
+            if (!fullText) return "";
+            if (fullText.length <= maxChars) return fullText;
+
+            // Skip front-matter (Copyright page, Publisher address, Table of Contents) on full books
+            const frontMatterOffset = fullText.length > 25000 ? Math.min(8000, Math.floor(fullText.length * 0.06)) : 0;
+            const bodyText = fullText.slice(frontMatterOffset);
+
+            const totalSlices = Math.max(1, Math.floor(bodyText.length / maxChars));
             const sliceIndex = bookChunkCursor % totalSlices;
             bookChunkCursor++;
             const start = sliceIndex * maxChars;
-            return fullText.slice(start, start + maxChars);
+            return bodyText.slice(start, start + maxChars);
         }
 
         // --- 3. STATE & FIREBASE SYNC ---
@@ -729,7 +763,6 @@
         let activeSpeakingTest = null;
         let activeHistoryFilter = "all";
 
-        // Login
         async function executeLogin() {
             const email = document.getElementById('login-email')?.value.trim() || "";
             const pass = document.getElementById('login-password')?.value.trim() || "";
@@ -743,7 +776,6 @@
         document.getElementById('login-password')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') executeLogin(); });
         document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
 
-        // Save Book Forever (Full text in IndexedDB + Cloud Sync in Firestore)
         async function saveBookForever(title, fullText) {
             const user = auth.currentUser;
             if (!user || !fullText) return null;
@@ -753,7 +785,7 @@
                 id: bookId,
                 uid: user.uid,
                 title: title.trim() || "Uploaded Book",
-                content: fullText, // 100% of words stored in IndexedDB!
+                content: fullText,
                 wordCount: totalWords,
                 createdAt: Date.now()
             };
@@ -762,7 +794,6 @@
             userSavedBooks.unshift(fullBookObj);
             renderBooksAndPickers();
 
-            // Sync safe cloud copy (up to 150,000 chars) to Firestore so it appears on other devices too
             try {
                 await setDoc(doc(db, 'users', user.uid, 'savedBooks', bookId), {
                     ...fullBookObj,
@@ -778,7 +809,7 @@
                 const sel = document.getElementById(id);
                 if (!sel) return;
                 sel.innerHTML = `<option value="">📚 Pick Saved Book (${userSavedBooks.length})...</option>` +
-                    userSavedBooks.map((b, i) => `<option value="${b.id}">📕 ${b.title} (${b.wordCount.toLocaleString()} words)</option>`).join('');
+                    userSavedBooks.map((b) => `<option value="${b.id}">📕 ${b.title} (${(b.wordCount || 0).toLocaleString()} words)</option>`).join('');
             });
 
             const grid = document.getElementById('books-grid-container');
@@ -791,7 +822,7 @@
                 <div class="glass-panel p-4 rounded-2xl flex flex-col justify-between gap-3 border border-pink-500/25">
                     <div>
                         <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold text-pink-400">Book #${userSavedBooks.length - i} • ${b.wordCount.toLocaleString()} words</span>
+                            <span class="text-xs font-bold text-pink-400">Book #${userSavedBooks.length - i} • ${(b.wordCount || 0).toLocaleString()} words</span>
                             <button type="button" data-del-book="${b.id}" class="btn-del-book text-slate-400 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
                         </div>
                         <h4 class="font-bold text-sm text-white mt-1">${b.title}</h4>
@@ -822,12 +853,12 @@
                     if (lab === 'listening') {
                         document.getElementById('listening-custom-source').value = book.content;
                         document.getElementById('listening-book-picker').value = book.id;
-                        document.getElementById('listening-file-badge').textContent = `✓ Loaded "${book.title}" (${book.wordCount.toLocaleString()} words)`;
+                        document.getElementById('listening-file-badge').textContent = `✓ Loaded "${book.title}" (${(book.wordCount || 0).toLocaleString()} words)`;
                         document.querySelector('[data-target="listening"]')?.click();
                     } else {
                         document.getElementById('reading-custom-source').value = book.content;
                         document.getElementById('reading-book-picker').value = book.id;
-                        document.getElementById('reading-file-status').textContent = `✓ Loaded "${book.title}" (${book.wordCount.toLocaleString()} words)`;
+                        document.getElementById('reading-file-status').textContent = `✓ Loaded "${book.title}" (${(book.wordCount || 0).toLocaleString()} words)`;
                         document.querySelector('[data-target="reading"]')?.click();
                     }
                     showToast(`Loaded "${book.title}"! Click Generate.`, "success");
@@ -839,18 +870,17 @@
             const b = userSavedBooks.find(x => x.id === e.target.value);
             if (b) {
                 document.getElementById('listening-custom-source').value = b.content;
-                document.getElementById('listening-file-badge').textContent = `✓ ${b.wordCount.toLocaleString()} words ready`;
+                document.getElementById('listening-file-badge').textContent = `✓ ${(b.wordCount || 0).toLocaleString()} words ready`;
             }
         });
         document.getElementById('reading-book-picker')?.addEventListener('change', (e) => {
             const b = userSavedBooks.find(x => x.id === e.target.value);
             if (b) {
                 document.getElementById('reading-custom-source').value = b.content;
-                document.getElementById('reading-file-status').textContent = `✓ ${b.wordCount.toLocaleString()} words ready`;
+                document.getElementById('reading-file-status').textContent = `✓ ${(b.wordCount || 0).toLocaleString()} words ready`;
             }
         });
 
-        // Book Library Upload
         document.getElementById('book-library-upload')?.addEventListener('change', async (e) => {
             const file = e.target.files?.[0];
             if (!file) return;
@@ -921,7 +951,6 @@
                 }
             });
 
-            // Stats
             const todayStr = new Date().toISOString().split('T')[0];
             [
                 { k: 'listening', c: 'stat-listen-count', b: 'stat-listen-band' },
@@ -945,7 +974,6 @@
                     : `<span class="text-amber-400">👍 Keep Practicing! (Avg Band ${avg})</span>`;
             }
 
-            // History List
             const histBox = document.getElementById('history-list-container');
             if (histBox) {
                 const fList = activeHistoryFilter === "all" ? userSavedTests : userSavedTests.filter(t => t.module === activeHistoryFilter);
@@ -1110,7 +1138,9 @@
             r.onload = (ev) => {
                 const img = new Image();
                 img.onload = async () => {
-                    const c = document.createElement('canvas'); c.width = 160; c.height = 160;
+                    const c = document.createElement('canvas');
+                    c.width = 160;
+                    c.height = 160;
                     c.getContext('2d').drawImage(img, 0, 0, 160, 160);
                     await setDoc(doc(db, 'users', auth.currentUser.uid), { photoURL: c.toDataURL('image/jpeg', 0.75) }, { merge: true });
                     showToast("✓ Photo updated!", "success");
@@ -1176,7 +1206,6 @@
             }
         }
 
-        // Fallback Dynamic Builder if API is offline so Generate NEVER fails
         function buildFallbackTestFromText(sourceText, type = "reading") {
             const clean = (sourceText || "").trim();
             if (clean.length > 150) {
@@ -1186,7 +1215,7 @@
                     paras.push(sents.slice(i, i + 4).join(' '));
                 }
                 const qs = sents.slice(0, 5).map((s, idx) => ({
-                    q: `${idx + 1}. According to the text, is the following statement supported: "${s.slice(0, 95)}..."?`,
+                    q: `${idx + 1}. According to the text, is this statement supported: "${s.slice(0, 95)}..."?`,
                     options: type === "reading" ? ["True", "False", "Not Given"] : ["Stated in the audio", "Contradicted", "Not mentioned"],
                     ans: type === "reading" ? "True" : "Stated in the audio",
                     exp: `Directly supported by: "${s.slice(0, 120)}..."`
@@ -1229,7 +1258,8 @@
         });
 
         document.getElementById('btn-remove-chat-attachment')?.addEventListener('click', () => {
-            pendingChatFileText = null; pendingChatFileName = "";
+            pendingChatFileText = null;
+            pendingChatFileName = "";
             document.getElementById('chat-attachment-bar')?.classList.add('hide');
         });
 
@@ -1243,7 +1273,8 @@
 
             const fileContext = pendingChatFileText ? getSmartPassageFromFullText(pendingChatFileText, 12000) : null;
             const fileLabel = pendingChatFileName;
-            pendingChatFileText = null; pendingChatFileName = "";
+            pendingChatFileText = null;
+            pendingChatFileName = "";
             document.getElementById('chat-attachment-bar')?.classList.add('hide');
 
             chatBox.innerHTML += `<div class="flex justify-end"><div class="bg-blue-600 px-3.5 py-2.5 rounded-2xl rounded-tr-none text-xs sm:text-sm text-white max-w-[85%]">${fileLabel ? `<div class="text-[11px] bg-blue-800 px-2 py-0.5 rounded mb-1">📎 ${fileLabel}</div>` : ''}${msg}</div></div>`;
@@ -1311,14 +1342,14 @@
             document.getElementById('listening-file-badge').textContent = "";
         });
 
-        // GENERATE LISTENING TEST ONLY (Does not touch database so it never glitches!)
         document.getElementById('btn-ai-listening')?.addEventListener('click', async () => {
             window.speechSynthesis?.cancel();
             const btn = document.getElementById('btn-ai-listening');
             const rawSource = document.getElementById('listening-custom-source')?.value.trim() || "";
             const chunk = getSmartPassageFromFullText(rawSource, 6000);
             const orig = btn.innerHTML;
-            btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating...`;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating...`;
 
             const prompt = `${chunk ? `Use this text to create an IELTS Listening script and 5 multiple-choice questions:\n"""${chunk}"""` : `Create an IELTS Listening lecture script (180 words) on a science, history, or university topic with 5 multiple-choice questions.`}
 Respond ONLY with a valid JSON object in this exact format:
@@ -1335,11 +1366,11 @@ Respond ONLY with a valid JSON object in this exact format:
             } catch (e) {
                 renderListeningTest(buildFallbackTestFromText(chunk, "listening"));
             } finally {
-                btn.disabled = false; btn.innerHTML = orig;
+                btn.disabled = false;
+                btn.innerHTML = orig;
             }
         });
 
-        // SEPARATE SAVE BUTTON FOR LISTENING
         document.getElementById('btn-save-listening')?.addEventListener('click', async () => {
             if (!activeListeningTest) return showToast("Generate a Listening test first!", "error");
             const saved = await saveTestToAccount({ ...activeListeningTest, module: 'listening' });
@@ -1367,7 +1398,8 @@ Respond ONLY with a valid JSON object in this exact format:
         document.getElementById('btn-submit-listening')?.addEventListener('click', async () => {
             if (!activeListeningTest?.questions) return;
             const qs = activeListeningTest.questions;
-            let score = 0; const ansMap = {};
+            let score = 0;
+            const ansMap = {};
             qs.forEach((item, idx) => {
                 const sel = document.querySelector(`input[name="listen-q-${idx}"]:checked`);
                 if (sel) ansMap[idx] = sel.value;
@@ -1430,13 +1462,13 @@ Respond ONLY with a valid JSON object in this exact format:
             document.getElementById('reading-file-status').textContent = "";
         });
 
-        // GENERATE READING TEST ONLY (Never glitches on save)
         document.getElementById('btn-ai-reading')?.addEventListener('click', async () => {
             const btn = document.getElementById('btn-ai-reading');
             const rawSource = document.getElementById('reading-custom-source')?.value.trim() || "";
             const chunk = getSmartPassageFromFullText(rawSource, 7500);
             const orig = btn.innerHTML;
-            btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating...`;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating...`;
 
             const prompt = `${chunk ? `Use this text to create an IELTS Academic Reading passage (Paragraphs A, B, C, D) and 5 questions:\n"""${chunk}"""` : `Write an IELTS Academic Reading passage (Paragraphs A, B, C, D) on a science, history, or technology topic with 5 True/False/Not Given questions.`}
 Respond ONLY with a valid JSON object in this exact format:
@@ -1453,11 +1485,11 @@ Respond ONLY with a valid JSON object in this exact format:
             } catch (e) {
                 renderReadingTest(buildFallbackTestFromText(chunk, "reading"));
             } finally {
-                btn.disabled = false; btn.innerHTML = orig;
+                btn.disabled = false;
+                btn.innerHTML = orig;
             }
         });
 
-        // SEPARATE SAVE BUTTON FOR READING
         document.getElementById('btn-save-reading')?.addEventListener('click', async () => {
             if (!activeReadingTest) return showToast("Generate a Reading test first!", "error");
             const saved = await saveTestToAccount({ ...activeReadingTest, module: 'reading' });
@@ -1475,7 +1507,8 @@ Respond ONLY with a valid JSON object in this exact format:
         document.getElementById('btn-submit-reading')?.addEventListener('click', async () => {
             if (!activeReadingTest?.questions) return;
             const qs = activeReadingTest.questions;
-            let score = 0; const ansMap = {};
+            let score = 0;
+            const ansMap = {};
             qs.forEach((item, idx) => {
                 const sel = document.querySelector(`input[name="read-q-${idx}"]:checked`);
                 if (sel) ansMap[idx] = sel.value;
@@ -1543,7 +1576,8 @@ Respond ONLY with a valid JSON object in this exact format:
             const essay = writingArea?.value.trim();
             if (!essay) return showToast("Write your essay first!", "error");
             const fb = document.getElementById('writing-feedback-box');
-            fb.classList.remove('hide'); fb.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Grading essay...</span>`;
+            fb.classList.remove('hide');
+            fb.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Grading essay...</span>`;
             const words = essay.split(/\s+/).length;
             const promptContext = activeWritingTest?.promptText || "IELTS Writing Task 2";
             const reply = await askIELTSAI(`Grade this IELTS essay (${words} words) for topic:\n${promptContext}\n\nEssay:\n${essay}\n\nStart line 1 with: **Overall Band Score: X.X** followed by a Criteria Table and Corrections.`);
@@ -1641,7 +1675,9 @@ Respond ONLY with a valid JSON object in this exact format:
                 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
                 if (SR) {
                     speechRec = new SR();
-                    speechRec.continuous = true; speechRec.interimResults = true; speechRec.lang = 'en-US';
+                    speechRec.continuous = true;
+                    speechRec.interimResults = true;
+                    speechRec.lang = 'en-US';
                     let finalStr = transBox?.value ? transBox.value + " " : "";
                     speechRec.onresult = (ev) => {
                         let interim = "";
