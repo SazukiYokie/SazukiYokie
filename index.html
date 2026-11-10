@@ -1,169 +1,204 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" class="antialiased">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IELTS.STUDIO — Private Academy</title>
+  <title>IELTS Workspace | 9.0</title>
+  
+  <!-- Premium Typography: Inter (similar to Apple's SF Pro / Vercel's Geist) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <style>
-    :root { --color-brand: #2563eb; }
-    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-    h1, h2, h3, .font-serif { font-family: 'Merriweather', serif; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-    .nav-item { color: #475569; }
-    .nav-item:hover { background-color: #f1f5f9; color: #0f172a; }
-    .nav-item.active { background-color: #eff6ff; color: var(--color-brand); font-weight: 700; }
-    .prose { line-height: 1.8; color: #334155; font-size: 1.05rem; }
-    .prose p { margin-bottom: 1.2rem; }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
-  </style>
-
-  <!-- FAILSAFE: If the module below crashes, this alert will fire instead of silence -->
   <script>
-    window.handleAuth = function() {
-      alert("SYSTEM ERROR: The Firebase database failed to load. Your browser might be blocking the connection, or you are offline.");
-    };
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            background: '#fafafa', // Vercel-style off-white
+            surface: '#ffffff',
+            primary: '#000000',
+            accent: '#0070f3', // Vercel Blue
+            muted: '#666666',
+            border: '#eaeaea'
+          },
+          boxShadow: {
+            'premium': '0 4px 14px 0 rgba(0, 0, 0, 0.05)',
+            'float': '0 10px 30px -10px rgba(0,0,0,0.1)'
+          }
+        }
+      }
+    }
   </script>
+
+  <style>
+    /* Custom Scrollbar for a polished feel */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background-color: #e5e7eb; border-radius: 20px; }
+    ::-webkit-scrollbar-thumb:hover { background-color: #d1d5db; }
+
+    /* Glassmorphism Utilities */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    body { background-color: theme('colors.background'); color: theme('colors.primary'); }
+    
+    /* Smooth page transitions */
+    .fade-enter { opacity: 0; transform: translateY(10px); }
+    .fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity 400ms, transform 400ms cubic-bezier(0.16, 1, 0.3, 1); }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased">
+<body class="h-screen flex overflow-hidden selection:bg-accent selection:text-white">
 
-  <!-- Toast Notifications -->
-  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 w-full max-w-sm px-4 pointer-events-none"></div>
-
-  <!-- ================= 1. PRIVATE LOGIN PORTAL ================= -->
-  <div id="auth-view" class="min-h-screen flex">
-    <div class="hidden lg:flex flex-col justify-center w-1/2 bg-slate-900 text-white p-16 relative overflow-hidden">
-      <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
-      <div class="relative z-10">
-        <div class="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold text-3xl mb-8 shadow-xl">9.0</div>
-        <h1 class="text-5xl font-bold mb-6 font-serif leading-tight">Private IELTS<br>Masterclass.</h1>
-        <p class="text-lg text-slate-300 max-w-md">This is a closed, invite-only platform. Please log in using the credentials provided by your instructor.</p>
+  <!-- Application Shell: Sidebar -->
+  <aside class="w-64 bg-surface border-r border-border hidden md:flex flex-col justify-between z-20 shadow-premium">
+    <div>
+      <!-- Logo Area -->
+      <div class="h-16 flex items-center px-6 border-b border-border">
+        <div class="w-6 h-6 bg-primary text-white rounded-md flex items-center justify-center font-bold text-xs mr-3">9</div>
+        <span class="font-semibold tracking-tight text-sm uppercase">Workspace</span>
       </div>
-    </div>
-    
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
-      <div class="max-w-md w-full space-y-8">
-        <div class="text-center lg:text-left">
-          <div class="lg:hidden w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold text-3xl mb-6 mx-auto shadow-xl">9.0</div>
-          <h2 class="text-3xl font-bold tracking-tight text-slate-900">Student Portal</h2>
-          <p class="text-sm text-slate-500 mt-2">Enter your assigned credentials to access your private dashboard.</p>
-        </div>
-
-        <div class="space-y-5 mt-8">
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1">Email</label>
-            <input type="email" id="auth-email" class="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition-all" placeholder="student@example.com">
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1">Password</label>
-            <input type="password" id="auth-pass" class="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition-all" placeholder="••••••••">
-          </div>
-          
-          <button id="login-btn" onclick="window.handleAuth()" class="w-full py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-all active:scale-[0.98]">
-            Authenticate & Enter
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= 2. MAIN LMS PLATFORM ================= -->
-  <div id="app-view" class="hidden flex h-screen overflow-hidden bg-slate-50">
-    
-    <!-- Desktop Sidebar -->
-    <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col justify-between">
-      <div>
-        <div class="p-6 flex items-center gap-3 border-b border-slate-100">
-          <div class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center font-bold text-xl">9.0</div>
-          <span class="font-bold text-xl tracking-tight text-slate-900">ACADEMY</span>
-        </div>
-        <nav class="p-4 space-y-1">
-          <button id="tab-dashboard" onclick="window.switchTab('dashboard')" class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
-            📊 My Dashboard
-          </button>
-          <button id="tab-test-center" onclick="window.switchTab('test-center')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
-            🎯 AI Test Engine
-          </button>
-          <button id="tab-academy" onclick="window.switchTab('academy')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
-            📚 Study Guides
-          </button>
-        </nav>
-      </div>
-      <div class="p-4 border-t border-slate-100">
-        <button id="tab-profile" onclick="window.switchTab('profile')" class="w-full flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors text-left">
-          <img id="nav-avatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover bg-slate-300">
-          <div class="overflow-hidden flex-1">
-            <p id="nav-name" class="text-sm font-bold text-slate-900 truncate">Student</p>
-            <p class="text-xs text-slate-500">View Profile</p>
-          </div>
-        </button>
-      </div>
-    </aside>
-
-    <!-- Mobile Bottom Nav -->
-    <nav class="md:hidden fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-50">
-      <button id="mob-dash" onclick="window.switchTab('dashboard')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
-        <span class="text-xl mb-1">📊</span><span class="text-[10px] font-bold">Dash</span>
-      </button>
-      <button id="mob-engine" onclick="window.switchTab('test-center')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
-        <span class="text-xl mb-1">🎯</span><span class="text-[10px] font-bold">Engine</span>
-      </button>
-      <button id="mob-learn" onclick="window.switchTab('academy')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
-        <span class="text-xl mb-1">📚</span><span class="text-[10px] font-bold">Learn</span>
-      </button>
-      <button id="mob-prof" onclick="window.switchTab('profile')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
-        <span class="text-xl mb-1">👤</span><span class="text-[10px] font-bold">Profile</span>
-      </button>
-    </nav>
-
-    <!-- Main Content Area -->
-    <main class="flex-1 h-full overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative">
       
-      <!-- DASHBOARD -->
-      <section id="sec-dashboard" class="space-y-8 animate-fade-in">
-        <header>
-          <h1 class="text-3xl font-bold font-serif text-slate-900">Welcome to the Academy.</h1>
-          <p class="text-slate-500 mt-1">Here is your personal, private study progress.</p>
-        </header>
+      <!-- Navigation -->
+      <nav class="p-4 space-y-1 mt-2">
+        <p class="px-3 text-[10px] font-bold text-muted uppercase tracking-wider mb-2">Overview</p>
+        <button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md bg-gray-100 text-primary transition-colors">
+          <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          Dashboard
+        </button>
+        
+        <p class="px-3 text-[10px] font-bold text-muted uppercase tracking-wider mt-6 mb-2">Training Modules</p>
+        <button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Reading
+        </button>
+        <button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3zm12-3c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3zM9 10l12-3"></path></svg>
+          Listening
+        </button>
+        <button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+          Writing
+        </button>
+        <button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+          Speaking
+        </button>
+      </nav>
+    </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-            <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Tests Taken</span>
-            <span class="text-3xl font-bold text-slate-900 mt-2" id="stat-tests">0</span>
+    <!-- User Profile / Settings -->
+    <div class="p-4 border-t border-border">
+      <div class="flex items-center gap-3 px-3 py-2">
+        <div class="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-xs font-bold shadow-sm">P</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-primary truncate">Punnavadh</p>
+          <p class="text-xs text-muted truncate">Candidate</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex flex-col relative h-full">
+    
+    <!-- Glassmorphic Top Nav -->
+    <header class="h-16 glass w-full flex items-center justify-between px-8 z-10 sticky top-0">
+      <div class="flex items-center gap-4">
+        <h1 class="text-lg font-semibold tracking-tight">Dashboard</h1>
+        <span class="px-2 py-0.5 rounded-full bg-blue-50 text-accent text-[10px] font-bold uppercase tracking-wide border border-blue-100">Study Mode</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <!-- Target Exam Date Countdown Widget -->
+        <div class="hidden md:flex flex-col items-end mr-4">
+          <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Exam Date</span>
+          <span class="text-sm font-semibold text-primary">August 2026</span>
+        </div>
+        <button class="text-sm font-medium text-muted hover:text-primary transition-colors">Settings</button>
+      </div>
+    </header>
+
+    <!-- Dashboard Content Area -->
+    <div class="flex-1 overflow-y-auto p-8 fade-enter-active">
+      <div class="max-w-5xl mx-auto space-y-8">
+        
+        <!-- Welcome Hero -->
+        <div class="relative bg-surface border border-border p-8 rounded-2xl shadow-premium overflow-hidden">
+          <div class="absolute top-0 right-0 p-8 opacity-10">
+            <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 7l-10 5 10 5 10-5-10-5zm0 7l-10 5 10 5 10-5-10-5z"/></svg>
           </div>
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between col-span-2 md:col-span-3">
-            <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Next Step</span>
-            <div class="mt-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <span class="text-sm font-medium text-slate-700">Ready to challenge yourself? Generate a new practice test.</span>
-              <button id="btn-quick-start" onclick="window.switchTab('test-center')" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-lg">Start Practicing →</button>
+          <div class="relative z-10">
+            <h2 class="text-3xl font-bold tracking-tight mb-2">Welcome back, Punnavadh.</h2>
+            <p class="text-muted max-w-xl">Your target is Band 9.0. Stay consistent. Review your recent mistakes, and complete today's scheduled mock test.</p>
+            <div class="mt-6 flex gap-4">
+              <button class="px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors shadow-sm">Start Mock Exam</button>
+              <button class="px-5 py-2.5 bg-white border border-border text-primary text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm">Upload PDF</button>
             </div>
           </div>
         </div>
 
-        <div>
-          <h2 class="text-xl font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">My Private Library</h2>
-          <div id="saved-tests-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-surface border border-border p-5 rounded-xl shadow-sm">
+            <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Overall Est. Band</span>
+            <div class="text-3xl font-bold mt-2 text-accent">8.0</div>
+          </div>
+          <div class="bg-surface border border-border p-5 rounded-xl shadow-sm">
+            <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Reading Score</span>
+            <div class="text-3xl font-bold mt-2">8.5</div>
+          </div>
+          <div class="bg-surface border border-border p-5 rounded-xl shadow-sm">
+            <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Writing Essays</span>
+            <div class="text-3xl font-bold mt-2">12</div>
+          </div>
+          <div class="bg-surface border border-border p-5 rounded-xl shadow-sm">
+            <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Study Streak</span>
+            <div class="text-3xl font-bold mt-2 flex items-baseline gap-1">5 <span class="text-sm font-medium text-muted">days</span></div>
+          </div>
         </div>
-      </section>
 
-      <!-- TEST CENTER -->
-      <section id="sec-test-center" class="hidden space-y-8 animate-fade-in">
-        <header>
-          <h1 class="text-3xl font-bold font-serif text-slate-900">AI Test Engine</h1>
-          <p class="text-slate-500 mt-1">Generate unlimited mock tests based on any topic.</p>
-        </header>
+      </div>
+    </div>
+  </main>
 
-        <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm max-w-4xl">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="space-y-4">
+  <!-- Firebase & Initialization -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+    // Your precise configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
+      authDomain: "ielts-studio-ab42a.firebaseapp.com",
+      projectId: "ielts-studio-ab42a",
+      storageBucket: "ielts-studio-ab42a.firebasestorage.app",
+      messagingSenderId: "235346696121",
+      appId: "1:235346696121:web:9065e6003a9b04b5040868"
+    };
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      console.log("✅ Platform Initialized: Premium Core Active");
+    } catch (error) {
+      console.error("Initialization Error:", error);
+    }
+  </script>
+</body>
+</html>
+```           <div class="space-y-4">
               <h3 class="font-bold text-slate-900 border-b border-slate-100 pb-2">1. Provide Source Material</h3>
               <p class="text-xs text-slate-500">Paste an article, essay, or topic.</p>
               <textarea id="ai-source-text" rows="6" class="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition-all text-sm resize-none" placeholder="Paste an interesting article here..."></textarea>
