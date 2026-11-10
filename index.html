@@ -18,6 +18,10 @@
         }
     </script>
 
+    <!-- Marked.js for Clean Markdown Rendering & PDF.js for PDF File Upload -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
     <!-- Built-in Styles (No external style.css needed) -->
     <style>
         .hide { display: none !important; }
@@ -31,6 +35,83 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.4); border-radius: 9999px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7); }
+
+        /* Professional AI Response Typography & Table Styling */
+        .ai-prose {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #e2e8f0;
+        }
+        .ai-prose h1, .ai-prose h2, .ai-prose h3, .ai-prose h4 {
+            color: #f8fafc;
+            font-weight: 700;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.35;
+        }
+        .ai-prose h3 {
+            font-size: 1.05rem;
+            color: #38bdf8;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            padding-bottom: 0.35rem;
+        }
+        .ai-prose p {
+            margin-bottom: 0.75rem;
+        }
+        .ai-prose ul, .ai-prose ol {
+            margin-left: 1.25rem;
+            margin-bottom: 0.85rem;
+            space-y: 0.35rem;
+        }
+        .ai-prose ul { list-style-type: disc; }
+        .ai-prose ol { list-style-type: decimal; }
+        .ai-prose li { margin-bottom: 0.3rem; }
+        .ai-prose strong { color: #ffffff; font-weight: 600; }
+        .ai-prose em { color: #93c5fd; font-style: italic; }
+        .ai-prose hr {
+            border: 0;
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
+            margin: 1rem 0;
+        }
+        .ai-prose blockquote {
+            border-left: 3px solid #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+            padding: 0.65rem 1rem;
+            border-radius: 0.5rem;
+            margin: 0.75rem 0;
+            color: #ddd6fe;
+        }
+        .ai-prose table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.85rem 0;
+            font-size: 0.82rem;
+            background: rgba(15, 23, 42, 0.65);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        .ai-prose th {
+            background: rgba(51, 65, 85, 0.8);
+            color: #38bdf8;
+            font-weight: 600;
+            text-align: left;
+            padding: 0.65rem 0.85rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+        }
+        .ai-prose td {
+            padding: 0.6rem 0.85rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+            vertical-align: top;
+        }
+        .ai-prose tr:last-child td { border-bottom: none; }
+        .ai-prose code {
+            background: rgba(15, 23, 42, 0.8);
+            color: #f472b6;
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.35rem;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col md:flex-row antialiased relative bg-slate-900 text-slate-100 overflow-hidden">
@@ -188,55 +269,111 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-purple-400"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>AI IELTS Tutor</h2>
                         <div class="flex flex-wrap gap-2">
-                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full" data-prompt="Give me 5 Band 8.0 vocabulary words for IELTS Writing Task 2 with examples.">✨ Band 8 Vocab</button>
-                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full" data-prompt="Explain how to answer True, False, Not Given questions in IELTS Reading without making mistakes.">📖 T/F/NG Tips</button>
-                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full" data-prompt="Give me a full Band 8.5 IELTS Writing Task 2 essay structure.">✍️ Essay Structure</button>
+                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full transition" data-prompt="Give me 5 Band 8.0 vocabulary words for IELTS Writing Task 2 with examples.">✨ Band 8 Vocab</button>
+                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full transition" data-prompt="Explain how to answer True, False, Not Given questions in IELTS Reading without making mistakes.">📖 T/F/NG Tips</button>
+                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full transition" data-prompt="Give me a full Band 8.5 IELTS Writing Task 2 essay structure.">✍️ Essay Structure</button>
+                            <button type="button" id="btn-clear-chat" class="text-xs bg-slate-800 hover:bg-red-500/20 border border-slate-700 text-slate-300 hover:text-red-300 px-3 py-1.5 rounded-full transition"><i class="fa-solid fa-trash-can mr-1"></i>Clear Chat</button>
                         </div>
                     </div>
 
-                    <div class="glass-panel rounded-2xl flex flex-col h-[68vh] overflow-hidden">
-                        <div id="ai-chat-box" class="flex-1 p-4 overflow-y-auto space-y-4">
-                            <div class="flex gap-3">
-                                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
-                                <div class="bg-slate-800 p-3.5 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed">
-                                    Hello! I am your built-in IELTS AI Tutor. Paste your Groq (<code>gsk_...</code>) or Grok (<code>xai-...</code>) API key in the bar above, or ask me anything right away!
+                    <div class="glass-panel rounded-2xl flex flex-col h-[72vh] overflow-hidden">
+                        <div id="ai-chat-box" class="flex-1 p-5 overflow-y-auto space-y-5">
+                            <div class="flex gap-3.5 items-start">
+                                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                                <div class="bg-slate-800/90 border border-slate-700/70 p-4 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed max-w-[90%] shadow-sm">
+                                    <p class="font-semibold text-purple-300 mb-1">Welcome to your Personal IELTS AI Examiner</p>
+                                    <p class="text-slate-300 text-xs sm:text-sm">Your Groq / Grok key powers all 4 labs. Ask me for Band 8.5 essay blueprints, grammar corrections, speaking idioms, or upload any PDF/article in the Reading & Listening Labs to generate full custom mock exams!</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="p-3 border-t border-slate-700 flex gap-2 bg-slate-900/90">
-                            <input type="text" id="ai-input" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500" placeholder="Ask your AI Tutor anything...">
-                            <button type="button" id="ai-send-btn" class="bg-purple-600 hover:bg-purple-500 px-5 py-2.5 rounded-xl text-white font-medium transition"><i class="fa-solid fa-paper-plane"></i></button>
+                        <div class="p-3.5 border-t border-slate-700/80 flex gap-2.5 bg-slate-900/95">
+                            <input type="text" id="ai-input" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500" placeholder="Ask your AI Tutor anything (e.g. 'Give me a Band 8.5 essay about AI in education')...">
+                            <button type="button" id="ai-send-btn" class="bg-purple-600 hover:bg-purple-500 px-5 py-3 rounded-xl text-white font-semibold transition shadow-lg shadow-purple-600/20"><i class="fa-solid fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
 
                 <!-- ================= 3. AI LISTENING LAB ================= -->
-                <div id="view-listening" class="view-section hide space-y-6">
+                <div id="view-listening" class="view-section hide space-y-5">
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>AI Listening Lab</h2>
-                        <button type="button" id="btn-ai-listening" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-lg shadow-cyan-600/20 transition">
-                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate AI Listening Test
-                        </button>
+                        <div>
+                            <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>AI Listening Lab</h2>
+                            <p class="text-xs text-slate-400">Dynamically generate multi-question IELTS Listening tests via Groq/Grok AI or from your own uploaded file.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <select id="listening-section-type" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                                <option value="Section 1 (Everyday Conversation - 6 Questions)">Section 1: Everyday Context (6 Qs)</option>
+                                <option value="Section 2 (Public Information Monologue - 6 Questions)">Section 2: Guided Briefing (6 Qs)</option>
+                                <option value="Section 3 (Academic Discussion - 6 Questions)">Section 3: University Seminar (6 Qs)</option>
+                                <option value="Section 4 (Academic Lecture - 6 Questions)">Section 4: Academic Lecture (6 Qs)</option>
+                            </select>
+                            <button type="button" id="btn-ai-listening" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg shadow-cyan-600/20 transition">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate AI Listening Test
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Examiner Strategy & Tips Banner -->
+                    <details class="glass-panel rounded-2xl p-4 border-l-4 border-l-cyan-400 group">
+                        <summary class="cursor-pointer font-semibold text-sm text-cyan-300 flex items-center justify-between">
+                            <span><i class="fa-solid fa-lightbulb mr-2 text-yellow-400"></i>Band 8.5+ IELTS Listening Examiner Tips & Strategies (Click to expand)</span>
+                            <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 pt-3 border-t border-slate-700/60 text-xs text-slate-300">
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-cyan-400 mb-1">1. Watch Out for Distractors</p>
+                                <p>Speakers often say one piece of information and then self-correct using words like <em>"Actually, wait..."</em>, <em>"No, sorry, it's..."</em>, or <em>"However"</em>. Always wait for the final confirmed detail.</p>
+                            </div>
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-cyan-400 mb-1">2. Predict Word Types First</p>
+                                <p>Before clicking Play, scan the questions to predict whether the answer is a <strong>Number, Time, Place, Noun, or Verb</strong>, and underline key synonyms in the options.</p>
+                            </div>
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-cyan-400 mb-1">3. Signposting & Order</p>
+                                <p>IELTS Listening answers always appear in exact chronological order. Listen for transition phrases like <em>"Moving on to..."</em> or <em>"Another crucial factor is..."</em>.</p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Custom File / Topic Upload Bar for Listening -->
+                    <div class="glass-panel p-4 rounded-2xl flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+                        <div class="flex items-center gap-3 flex-1">
+                            <label class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-cyan-300 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer flex-shrink-0 transition">
+                                <i class="fa-solid fa-file-arrow-up mr-1.5"></i> Upload PDF / TXT
+                                <input type="file" id="listening-file-upload" accept=".pdf,.txt,.md,.csv,.html" class="hide">
+                            </label>
+                            <input type="text" id="listening-custom-source" placeholder="Or type a custom topic / paste an article here to turn into an audio test..." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <span id="listening-file-badge" class="text-[11px] text-slate-400">Ready for AI generation</span>
                     </div>
 
                     <!-- Audio Player & Script Controls -->
                     <div class="glass-panel p-5 rounded-2xl space-y-4">
                         <div class="flex flex-wrap items-center justify-between gap-3">
                             <div>
-                                <h3 id="listening-title" class="font-bold text-base">IELTS Listening Practice Track</h3>
-                                <p id="listening-status" class="text-xs text-slate-400">Click "Play Audio Track" to listen and answer the questions below.</p>
+                                <h3 id="listening-title" class="font-bold text-base text-cyan-300">IELTS Listening Practice Track</h3>
+                                <p id="listening-status" class="text-xs text-slate-400">Click "Play Audio Track" to listen, or click "Generate AI Listening Test" for a fresh AI exam.</p>
                             </div>
-                            <div class="flex gap-2">
-                                <button type="button" id="btn-play-listening" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-volume-high mr-1"></i> Play Audio Track</button>
-                                <button type="button" id="btn-stop-listening" class="bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-stop"></i></button>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <select id="listening-speed" class="bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white">
+                                    <option value="0.85">0.85x Slow</option>
+                                    <option value="0.95" selected>1.0x Normal</option>
+                                    <option value="1.15">1.15x Fast</option>
+                                </select>
+                                <button type="button" id="btn-play-listening" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl text-xs font-semibold text-white transition"><i class="fa-solid fa-volume-high mr-1"></i> Play Audio Track</button>
+                                <button type="button" id="btn-stop-listening" class="bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-xl text-xs font-semibold text-white transition"><i class="fa-solid fa-stop"></i></button>
+                                <button type="button" id="btn-toggle-transcript" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-2 rounded-xl text-xs text-slate-300 transition"><i class="fa-solid fa-file-lines mr-1"></i> Transcript</button>
                             </div>
                         </div>
 
-                        <!-- Questions Container -->
-                        <div id="listening-questions-box" class="space-y-4 pt-3 border-t border-slate-700/60"></div>
+                        <!-- Hidden Audio Transcript Box (for post-test review) -->
+                        <div id="listening-transcript-box" class="hide bg-slate-900/90 border border-slate-700/80 p-4 rounded-xl text-xs text-slate-300 leading-relaxed"></div>
 
-                        <div class="flex flex-wrap items-center justify-between gap-3 pt-3">
-                            <button type="button" id="btn-submit-listening" class="bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 rounded-xl text-sm font-semibold text-white">Check Listening Answers</button>
+                        <!-- Questions Container -->
+                        <div id="listening-questions-box" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-slate-700/60"></div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-700/50">
+                            <button type="button" id="btn-submit-listening" class="bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 rounded-xl text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition">Check Listening Answers</button>
                             <div id="listening-score-box" class="text-sm font-bold text-cyan-400"></div>
                         </div>
                     </div>
@@ -253,28 +390,200 @@
                 </div>
 
                 <!-- ================= 4. AI READING LAB ================= -->
-                <div id="view-reading" class="view-section hide space-y-6">
+                <div id="view-reading" class="view-section hide space-y-5">
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>AI Reading Lab</h2>
-                        <div class="flex items-center gap-2">
-                            <button type="button" id="btn-ai-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
+                        <div>
+                            <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>AI Reading Lab</h2>
+                            <p class="text-xs text-slate-400">Upload any PDF/article or let Groq/Grok AI generate a full Academic Reading Passage & test.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <select id="reading-q-type" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                                <option value="Mixed IELTS Questions (True/False/Not Given & Multiple Choice - 6 Questions)">Mixed (T/F/NG + MCQ - 6 Qs)</option>
+                                <option value="True / False / Not Given (6 Questions)">True / False / Not Given (6 Qs)</option>
+                                <option value="Multiple Choice & Main Idea (6 Questions)">Multiple Choice (6 Qs)</option>
+                            </select>
+                            <button type="button" id="btn-ai-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg shadow-emerald-600/20 transition">
                                 <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate AI Reading Test
                             </button>
                             <div id="reading-timer" class="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-1.5 rounded-xl font-mono font-bold text-sm">20:00</div>
-                            <button type="button" id="btn-start-read" class="bg-slate-700 px-3 py-1.5 rounded-xl text-xs text-white"><i class="fa-solid fa-play"></i></button>
+                            <button type="button" id="btn-start-read" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-xl text-xs text-white"><i class="fa-solid fa-play"></i></button>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div class="glass-panel p-5 rounded-2xl max-h-[60vh] overflow-y-auto space-y-3">
-                            <h3 id="reading-passage-title" class="font-bold text-base text-emerald-400 border-b border-slate-700 pb-2">Academic Reading Passage</h3>
-                            <div id="reading-passage-body" class="text-sm text-slate-200 leading-relaxed space-y-3"></div>
+                    <!-- Examiner Strategy & Tips Banner -->
+                    <details class="glass-panel rounded-2xl p-4 border-l-4 border-l-emerald-400 group">
+                        <summary class="cursor-pointer font-semibold text-sm text-emerald-300 flex items-center justify-between">
+                            <span><i class="fa-solid fa-lightbulb mr-2 text-yellow-400"></i>Band 8.5+ IELTS Reading Examiner Tips & Strategies (Click to expand)</span>
+                            <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 pt-3 border-t border-slate-700/60 text-xs text-slate-300">
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-emerald-400 mb-1">1. True vs False vs Not Given</p>
+                                <p><strong>True:</strong> Synonym match in text. <strong>False:</strong> Text directly contradicts the statement. <strong>Not Given:</strong> The specific claim is neither confirmed nor contradicted—never assume!</p>
+                            </div>
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-emerald-400 mb-1">2. Skim First, Scan Second</p>
+                                <p>Spend 2 minutes skimming the first and last sentence of each paragraph to grasp the structure, then scan for <strong>names, dates, numbers, and paraphrased keywords</strong>.</p>
+                            </div>
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-emerald-400 mb-1">3. Watch Qualifier Words</p>
+                                <p>Be extra careful with extreme qualifiers in questions like <em>all, always, never, exclusively, primarily</em>—these often turn a True statement into False.</p>
+                            </div>
                         </div>
-                        <div class="glass-panel p-5 rounded-2xl max-h-[60vh] overflow-y-auto flex flex-col justify-between space-y-4">
+                    </details>
+
+                    <!-- Universal File Upload (.PDF, .TXT, .MD) or Custom Article Input -->
+                    <div class="glass-panel p-4 rounded-2xl space-y-3">
+                        <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <label class="bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer transition">
+                                    <i class="fa-solid fa-file-pdf mr-1.5"></i> Upload PDF / Article File
+                                    <input type="file" id="reading-file-upload" accept=".pdf,.txt,.md,.csv,.html" class="hide">
+                                </label>
+                                <span id="reading-file-status" class="text-xs text-slate-400">Upload any PDF/text file or type a topic below, then click <strong>Generate AI Reading Test</strong>.</span>
+                            </div>
+                            <button type="button" id="btn-clear-reading-source" class="text-xs text-slate-400 hover:text-red-400 self-start md:self-auto">Clear Source</button>
+                        </div>
+                        <textarea id="reading-custom-source" rows="2" placeholder="Optional: Paste any article, essay, PDF text, or simply type a topic (e.g., 'Quantum Computing in Medicine' or 'Ancient Angkor Hydraulic Engineering')..." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 leading-relaxed"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div class="glass-panel p-5 rounded-2xl max-h-[65vh] overflow-y-auto space-y-3">
+                            <h3 id="reading-passage-title" class="font-bold text-base text-emerald-400 border-b border-slate-700 pb-2">Academic Reading Passage</h3>
+                            <div id="reading-passage-body" class="ai-prose text-sm text-slate-200 leading-relaxed space-y-3"></div>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl max-h-[65vh] overflow-y-auto flex flex-col justify-between space-y-4">
                             <div id="reading-questions-box" class="space-y-4"></div>
-                            <div class="pt-4 border-t border-slate-700 flex items-center justify-between">
-                                <button type="button" id="btn-submit-reading" class="bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 rounded-xl text-sm font-semibold text-white">Submit & Grade Reading</button>
+                            <div class="pt-4 border-t border-slate-700 flex flex-wrap items-center justify-between gap-2">
+                                <button type="button" id="btn-submit-reading" class="bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 rounded-xl text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition">Submit & Grade Reading</button>
                                 <div id="reading-score-box" class="text-sm font-bold text-emerald-400"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= 5. AI WRITING STUDIO ================= -->
+                <div id="view-writing" class="view-section hide space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h2 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-pen-nib mr-2"></i>AI Writing Studio</h2>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <select id="writing-task" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white">
+                                <option value="Task 2 (250+ words)">Task 2 Essay (250+ words)</option>
+                                <option value="Task 1 Academic (150+ words)">Task 1 Report (150+ words)</option>
+                            </select>
+                            <button type="button" id="btn-ai-writing-prompt" class="bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-xl text-xs font-semibold text-white transition"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>New Topic</button>
+                            <div id="writing-timer" class="bg-blue-500/10 text-blue-400 px-3 py-1.5 rounded-xl font-mono font-bold text-xs">40:00</div>
+                            <button type="button" id="btn-start-write" class="bg-slate-700 px-3 py-1.5 rounded-xl text-xs text-white"><i class="fa-solid fa-play"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Examiner Strategy & Tips Banner -->
+                    <details class="glass-panel rounded-2xl p-4 border-l-4 border-l-amber-400 group">
+                        <summary class="cursor-pointer font-semibold text-sm text-amber-300 flex items-center justify-between">
+                            <span><i class="fa-solid fa-lightbulb mr-2 text-yellow-400"></i>Band 8.5+ IELTS Writing Examiner Tips & Structure (Click to expand)</span>
+                            <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mt-3 pt-3 border-t border-slate-700/60 text-xs text-slate-300">
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-amber-400 mb-1">1. Task Response (25%)</p>
+                                <p>Answer all parts of the prompt directly. State a clear position in your introduction and develop every point with specific examples.</p>
+                            </div>
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-amber-400 mb-1">2. Coherence & Cohesion (25%)</p>
+                                <p>Use 4 clear paragraphs (Intro, Body 1, Body 2, Conclusion). Start each body paragraph with a focused topic sentence.</p>
+                            </div>
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-amber-400 mb-1">3. Lexical Resource (25%)</p>
+                                <p>Avoid repeating words from the prompt. Use academic collocations (e.g., <em>exacerbate the issue, play a pivotal role, viable alternative</em>).</p>
+                            </div>
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-amber-400 mb-1">4. Grammatical Range (25%)</p>
+                                <p>Combine simple and complex sentences naturally (conditionals, relative clauses, passive voice, and concession clauses with <em>Although/Whereas</em>).</p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <div id="writing-prompt-box" class="glass-panel p-4 rounded-xl text-sm text-amber-100 border-l-4 border-l-amber-500 leading-relaxed">
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-400 block mb-1">Official Writing Prompt</span>
+                        Some people believe that technology has made learning easier, while others think it distracts students. Discuss both views and give your own opinion.
+                    </div>
+
+                    <textarea id="writing-area" rows="10" class="w-full glass-panel p-4 rounded-2xl text-sm text-white focus:outline-none focus:border-amber-500 leading-relaxed" placeholder="Write your essay here... Then click 'AI Grade My Essay' for a clean, structured Band Score report & corrections!"></textarea>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <span id="word-count" class="text-sm font-bold text-blue-400">0 words</span>
+                        <div class="flex gap-2">
+                            <button type="button" id="btn-ai-grade-essay" class="bg-purple-600 hover:bg-purple-500 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-lg shadow-purple-600/20 transition">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> AI Grade My Essay
+                            </button>
+                            <button type="button" id="btn-save-essay" class="bg-blue-600 hover:bg-blue-500 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition">
+                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save to Cloud
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="writing-feedback-box" class="hide glass-panel p-6 rounded-2xl ai-prose border border-purple-500/40"></div>
+                </div>
+
+                <!-- ================= 6. AI SPEAKING ARENA ================= -->
+                <div id="view-speaking" class="view-section hide space-y-5">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <h2 class="text-xl font-bold text-rose-400"><i class="fa-solid fa-microphone mr-2"></i>AI Speaking Arena</h2>
+                        <button type="button" id="btn-ai-speaking-card" class="bg-rose-600 hover:bg-rose-500 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-lg shadow-rose-600/20 transition">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate New Cue Card
+                        </button>
+                    </div>
+
+                    <!-- Examiner Strategy & Tips Banner -->
+                    <details class="glass-panel rounded-2xl p-4 border-l-4 border-l-rose-400 group">
+                        <summary class="cursor-pointer font-semibold text-sm text-rose-300 flex items-center justify-between">
+                            <span><i class="fa-solid fa-lightbulb mr-2 text-yellow-400"></i>Band 8.5+ IELTS Speaking Examiner Tips & Fluency Formula (Click to expand)</span>
+                            <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 pt-3 border-t border-slate-700/60 text-xs text-slate-300">
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-rose-400 mb-1">1. The PPF Strategy (Part 2)</p>
+                                <p>If you run out of things to say before 2 minutes, use <strong>Past, Present, Future</strong>: give background context (Past), describe the main topic now (Present), and explain future impact (Future).</p>
+                            </div>
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-rose-400 mb-1">2. Natural Discourse Markers</p>
+                                <p>Avoid robotic pauses ("umm"). Use natural fillers like <em>"What really stood out to me was..."</em>, <em>"To be perfectly honest..."</em>, and <em>"Looking back on it..."</em>.</p>
+                            </div>
+                            <div class="bg-slate-800/70 p-3 rounded-xl">
+                                <p class="font-bold text-rose-400 mb-1">3. Idiomatic Precision</p>
+                                <p>Weave in 2–3 natural idioms or phrasal verbs per Part 2 response (e.g., <em>steep learning curve, second nature, pay dividends</em>) without forcing clichés.</p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-panel p-5 rounded-2xl space-y-4">
+                            <div id="speaking-cue-card" class="bg-slate-800/90 border border-slate-700 p-4 rounded-xl ai-prose text-sm space-y-2">
+                                <p class="font-bold text-rose-400">Part 2 Cue Card: Describe a skill you learned recently.</p>
+                                <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
+                                    <li>What the skill is and why you learned it</li>
+                                    <li>How you practiced it</li>
+                                    <li>What difficulties you faced</li>
+                                    <li>And explain how this skill helps you in life.</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button type="button" id="btn-record" class="flex-1 bg-rose-600 hover:bg-rose-500 py-2.5 rounded-xl text-sm font-semibold text-white transition">
+                                    <i class="fa-solid fa-record-vinyl mr-1"></i> Record Voice
+                                </button>
+                                <button type="button" id="btn-ai-speaking-sample" class="flex-1 bg-purple-600 hover:bg-purple-500 py-2.5 rounded-xl text-sm font-semibold text-white transition">
+                                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Band 8.5 Sample
+                                </button>
+                            </div>
+                            <p id="rec-status" class="text-rose-400 text-xs font-bold text-center animate-pulse hide">🔴 Recording your voice... Click Stop when finished.</p>
+                            <audio id="audio-playback" controls class="w-full hide rounded-xl"></audio>
+                        </div>
+
+                        <div class="glass-panel p-5 rounded-2xl max-h-[60vh] overflow-y-auto">
+                            <h3 class="font-bold text-sm text-purple-400 mb-3 border-b border-slate-700 pb-2">AI Band 8.5 Model Answer & Vocabulary</h3>
+                            <div id="speaking-sample-box" class="ai-prose text-sm text-slate-300 leading-relaxed space-y-2">
+                                Click <strong>"Band 8.5 Sample"</strong> to generate a clean, structured model response, idioms, and follow-up Part 3 questions for the current Cue Card.
                             </div>
                         </div>
                     </div>
@@ -975,27 +1284,67 @@
             return generateOfflineIELTSReply(userPrompt);
         }
 
+        // Clean Markdown-to-HTML Renderer using Marked.js
+        function formatAIMarkdown(rawText) {
+            if (!rawText) return "";
+            const cleaned = rawText.replace(/^```(?:markdown|html)?\s*/i, '').replace(/```$/i, '').trim();
+            if (window.marked && typeof window.marked.parse === 'function') {
+                return window.marked.parse(cleaned);
+            }
+            return cleaned
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h3>$1</h3>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Universal File Extractor (Supports .PDF via PDF.js, plus .TXT, .MD, .CSV, .HTML)
+        async function extractTextFromUploadedFile(file) {
+            if (!file) return "";
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (ext === 'pdf') {
+                if (!window.pdfjsLib) throw new Error("PDF library is still loading. Please try again in a second.");
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = "";
+                const maxPages = Math.min(pdf.numPages, 8);
+                for (let i = 1; i <= maxPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const content = await page.getTextContent();
+                    const pageStr = content.items.map(item => item.str).join(' ');
+                    fullText += pageStr + "\n\n";
+                }
+                return fullText.trim();
+            } else {
+                return await file.text();
+            }
+        }
+
         function generateOfflineIELTSReply(prompt) {
             const p = prompt.toLowerCase();
             if (p.includes("vocab")) {
-                return `<strong>Band 8.0+ Academic Vocabulary:</strong><br>
-1. <strong>Mitigate (v.):</strong> Reduce the severity of something. <em>"Governments must mitigate the effects of climate change."</em><br>
-2. <strong>Ubiquitous (adj.):</strong> Existing everywhere. <em>"Smartphones have become ubiquitous among high school students."</em><br>
-3. <strong>Detrimental (adj.):</strong> Causing harm. <em>"Lack of sleep is detrimental to academic performance."</em><br>
-4. <strong>Catalyst (n.):</strong> Something that triggers rapid change. <em>"Online platforms are a catalyst for self-directed learning."</em><br>
-5. <strong>Pragmatic (adj.):</strong> Practical and realistic. <em>"We need a pragmatic solution to urban traffic congestion."</em>`;
+                return `### Band 8.0+ Academic Vocabulary
+| Word | Meaning | Band 8.5 Example |
+|---|---|---|
+| **Mitigate (v.)** | Reduce the severity of something | *Governments must mitigate the effects of climate change.* |
+| **Ubiquitous (adj.)** | Existing everywhere | *Smartphones have become ubiquitous among university students.* |
+| **Detrimental (adj.)** | Causing harm or damage | *Chronic sleep deprivation is detrimental to cognitive performance.* |
+| **Catalyst (n.)** | Something that triggers rapid change | *Digital platforms act as a catalyst for self-directed learning.* |
+| **Pragmatic (adj.)** | Practical and realistic | *Policymakers need a pragmatic approach to urban congestion.* |`;
             }
             if (p.includes("essay") || p.includes("writing") || p.includes("task 2")) {
-                return `<strong>Band 8.5 Writing Task 2 Structure (250+ Words):</strong><br>
-- <strong>1. Introduction (40–50 words):</strong> Paraphrase the prompt + state your clear thesis/opinion.<br>
-- <strong>2. Body Paragraph 1 (90–100 words):</strong> Topic sentence + explanation + concrete real-world example.<br>
-- <strong>3. Body Paragraph 2 (90–100 words):</strong> Second main view/argument + explanation + example.<br>
-- <strong>4. Conclusion (30–40 words):</strong> Summarize main points and restate your final position without adding new ideas.`;
+                return `### Band 8.5 Writing Task 2 Structure (250+ Words)
+* **1. Introduction (40–50 words):** Paraphrase the prompt using synonyms + state your clear thesis/opinion.
+* **2. Body Paragraph 1 (90–100 words):** Clear topic sentence + logical explanation + concrete real-world example.
+* **3. Body Paragraph 2 (90–100 words):** Second main view/argument + explanation + supporting evidence.
+* **4. Conclusion (30–40 words):** Summarize main points and restate your final position without introducing new arguments.`;
             }
-            return `<strong>IELTS Band 8.0+ Study Guide:</strong><br>
-- <strong>Reading:</strong> Skim for main ideas first, then scan for keywords and synonyms. Remember that <em>Not Given</em> means there is no proof in the text.<br>
-- <strong>Writing:</strong> Always plan for 5 minutes before typing. Use linking words naturally (<em>Furthermore, Consequently, On the other hand</em>).<br>
-- <strong>Speaking:</strong> Extend every answer with a reason and a personal example instead of stopping at one sentence.`;
+            return `### IELTS Band 8.0+ Study Strategy
+* **Reading:** Skim for main ideas first, then scan for keywords and synonyms. Remember that *Not Given* means there is no proof in the text.
+* **Writing:** Always plan for 5 minutes before typing. Use linking words naturally (*Furthermore, Consequently, On the other hand*).
+* **Speaking:** Extend every answer with a clear reason and a personal example instead of stopping at one sentence.`;
         }
 
         // --- CHAT INTERFACE ---
@@ -1014,29 +1363,32 @@
             isSendingChat = true;
 
             chatBox.innerHTML += `
-                <div class="flex gap-3 flex-row-reverse">
-                    <div class="bg-blue-600 p-3 rounded-2xl rounded-tr-none text-sm text-white max-w-[85%]">${msg}</div>
+                <div class="flex gap-3 flex-row-reverse items-start">
+                    <div class="bg-blue-600 px-4 py-3 rounded-2xl rounded-tr-none text-sm text-white max-w-[85%] shadow-md">${msg}</div>
                 </div>
             `;
             chatBox.scrollTop = chatBox.scrollHeight;
 
             const loadId = "load-" + Date.now();
             chatBox.innerHTML += `
-                <div id="${loadId}" class="flex gap-3">
-                    <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
-                    <div class="bg-slate-800 p-3 rounded-2xl rounded-tl-none text-sm text-slate-400 animate-pulse">Thinking...</div>
+                <div id="${loadId}" class="flex gap-3.5 items-start">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                    <div class="bg-slate-800/90 border border-slate-700/70 p-4 rounded-2xl rounded-tl-none text-sm text-purple-300 animate-pulse">✨ Crafting structured IELTS guidance...</div>
                 </div>
             `;
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            const reply = await askIELTSAI(msg);
+            const reply = await askIELTSAI(
+                msg,
+                "You are an elite Band 9.0 IELTS Examiner. Format your response cleanly using Markdown headings (###), bullet points, bold key terms, and clean tables only when comparing items. Keep explanations clear, practical, and easy to read."
+            );
             document.getElementById(loadId)?.remove();
 
-            const formatted = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            const formatted = formatAIMarkdown(reply);
             chatBox.innerHTML += `
-                <div class="flex gap-3">
-                    <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
-                    <div class="bg-slate-800 p-3.5 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed max-w-[88%]">${formatted}</div>
+                <div class="flex gap-3.5 items-start">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                    <div class="bg-slate-800/90 border border-slate-700/70 p-4 rounded-2xl rounded-tl-none ai-prose max-w-[90%] overflow-x-auto shadow-sm">${formatted}</div>
                 </div>
             `;
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -1053,161 +1405,394 @@
         document.querySelectorAll('.ai-quick-btn').forEach(btn => {
             btn.addEventListener('click', () => processUserChat(btn.getAttribute('data-prompt')));
         });
-
-        // --- READING, LISTENING, WRITING & SPEAKING GENERATORS ---
-        const readingBank = [
-            {
-                title: "The Rise of Vertical Farming in Urban Centers",
-                passage: `<p>As global urbanization accelerates, traditional agriculture faces unprecedented pressure from land scarcity and climate variability. Vertical farming—the practice of growing crops in vertically stacked layers indoors—has emerged as a promising solution. By utilizing controlled-environment agriculture (CEA) technology, these facilities regulate light, humidity, and nutrients with pinpoint accuracy.</p>
-                <p>Proponents highlight that vertical farms use up to 95% less water than conventional fields because transpired water is captured and recycled. Furthermore, because farms can be located inside abandoned warehouses in city centers, food miles are drastically reduced. However, critics point out that the high energy cost required to power artificial LED lighting remains a major economic barrier, limiting production primarily to fast-growing leafy greens rather than staple crops like wheat or rice.</p>`,
-                questions: [
-                    { q: "1. Vertical farming uses up to 95% less water than traditional outdoor farming.", options: ["True", "False", "Not Given"], ans: "True" },
-                    { q: "2. Vertical farms are currently more profitable for growing wheat than leafy greens.", options: ["True", "False", "Not Given"], ans: "False" },
-                    { q: "3. Every major city in Southeast Asia has built a government-funded vertical farm.", options: ["True", "False", "Not Given"], ans: "Not Given" }
-                ]
-            },
-            {
-                title: "The Neuroscience of Bilingualism and Cognitive Reserve",
-                passage: `<p>For decades, neuroscientists have investigated how speaking more than one language shapes the human brain. Recent neuroimaging studies reveal that bilingual individuals constantly activate both languages in their minds, requiring the prefrontal cortex to select the appropriate language while inhibiting the other. This continuous mental workout strengthens executive control networks.</p>
-                <p>Longitudinal studies suggest that lifelong bilingualism builds 'cognitive reserve,' which can delay the onset of age-related cognitive decline by up to four years compared to monolinguals. Interestingly, these structural benefits are observed even when a second language is acquired during adolescence or adulthood, provided the speaker uses it actively in daily life.</p>`,
-                questions: [
-                    { q: "1. Only people who learn a second language before age five gain cognitive benefits.", options: ["True", "False", "Not Given"], ans: "False" },
-                    { q: "2. Lifelong bilingualism can delay symptoms of cognitive decline by up to four years.", options: ["True", "False", "Not Given"], ans: "True" },
-                    { q: "3. Bilinguals have a larger hippocampus than professional musicians.", options: ["True", "False", "Not Given"], ans: "Not Given" }
-                ]
+        document.getElementById('btn-clear-chat')?.addEventListener('click', () => {
+            const chatBox = document.getElementById('ai-chat-box');
+            if (chatBox) {
+                chatBox.innerHTML = `
+                    <div class="flex gap-3.5 items-start">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                        <div class="bg-slate-800/90 border border-slate-700/70 p-4 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed max-w-[90%]">
+                            Chat cleared! Ask me any IELTS question or request practice exercises.
+                        </div>
+                    </div>
+                `;
             }
-        ];
+        });
 
-        let currentReadingIndex = 0;
+        // Helper to safely parse JSON from AI response
+        function extractJSONFromAI(rawText) {
+            if (!rawText) return null;
+            const cleaned = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+            const firstBrace = cleaned.indexOf('{');
+            const lastBrace = cleaned.lastIndexOf('}');
+            if (firstBrace !== -1 && lastBrace !== -1) {
+                return JSON.parse(cleaned.substring(firstBrace, lastBrace + 1));
+            }
+            return JSON.parse(cleaned);
+        }
+
+        // --- DYNAMIC AI READING LAB (Powered by Groq / Grok + PDF/File Upload) ---
+        let activeReadingTest = {
+            title: "The Rise of Vertical Farming in Urban Centers",
+            passage: `<p><strong>Paragraph A:</strong> As global urbanization accelerates, traditional agriculture faces unprecedented pressure from land scarcity, soil degradation, and climate variability. Vertical farming—the practice of cultivating crops in vertically stacked layers indoors—has emerged as a transformative solution. By utilizing controlled-environment agriculture (CEA) technology, these facilities regulate artificial LED light spectra, humidity, and hydroponic nutrients with pinpoint accuracy.</p>
+            <p><strong>Paragraph B:</strong> Proponents highlight that vertical farms use up to 95% less water than conventional outdoor fields because transpired water is captured, condensed, and recycled continuously. Furthermore, because vertical farms can be established inside repurposed warehouses within metropolitan areas, food miles and refrigerated transport emissions are drastically reduced.</p>
+            <p><strong>Paragraph C:</strong> Nevertheless, agricultural economists point out that the substantial electricity cost required to power full-spectrum LED lighting remains a major barrier to widespread adoption. Consequently, commercial production is currently concentrated on fast-growing, high-margin leafy greens and herbs rather than energy-intensive staple crops such as wheat, maize, or rice.</p>`,
+            questions: [
+                { q: "1. Vertical farming uses up to 95% less water than traditional outdoor farming.", options: ["True", "False", "Not Given"], ans: "True", exp: "Paragraph B explicitly states that vertical farms use up to 95% less water." },
+                { q: "2. Vertical farms are currently more profitable for growing wheat than leafy greens.", options: ["True", "False", "Not Given"], ans: "False", exp: "Paragraph C states production is concentrated on leafy greens rather than staple crops like wheat." },
+                { q: "3. Every major city in Southeast Asia has built a government-funded vertical farm.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "The passage does not mention government-funded vertical farms in Southeast Asia." },
+                { q: "4. Why do urban vertical farms help lower transportation emissions?", options: ["A. They use solar-powered trucks", "B. They are located close to city consumers", "C. They only export by sea"], ans: "B. They are located close to city consumers", exp: "Paragraph B explains that locating farms inside city warehouses drastically reduces food miles." },
+                { q: "5. What is identified as the primary economic obstacle for vertical farming?", options: ["A. High electricity costs for LED lighting", "B. Shortage of warehouse space", "C. Lack of clean water"], ans: "A. High electricity costs for LED lighting", exp: "Paragraph C identifies high energy costs for artificial LED lighting as a major barrier." },
+                { q: "6. Which technology is used to control light, humidity, and nutrients?", options: ["A. Genetic modification", "B. Controlled-environment agriculture (CEA)", "C. Satellite irrigation"], ans: "B. Controlled-environment agriculture (CEA)", exp: "Paragraph A states that CEA technology regulates light, humidity, and nutrients." }
+            ]
+        };
+
         function renderReadingTest(testObj) {
+            activeReadingTest = testObj;
             const titleEl = document.getElementById('reading-passage-title');
             const bodyEl = document.getElementById('reading-passage-body');
             const qBox = document.getElementById('reading-questions-box');
             if (!titleEl || !bodyEl || !qBox) return;
 
-            titleEl.textContent = testObj.title;
-            bodyEl.innerHTML = testObj.passage;
+            titleEl.textContent = testObj.title || "Academic Reading Passage";
+            bodyEl.innerHTML = formatAIMarkdown(testObj.passage || "");
             document.getElementById('reading-score-box').textContent = "";
             qBox.innerHTML = "";
-            testObj.questions.forEach((item, idx) => {
+            (testObj.questions || []).forEach((item, idx) => {
                 qBox.innerHTML += `
-                    <div class="bg-slate-800/70 p-3.5 rounded-xl border border-slate-700">
-                        <p class="text-sm font-medium mb-2">${item.q}</p>
-                        <div class="flex gap-3 text-xs">
-                            ${item.options.map(opt => `
-                                <label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
-                                    <input type="radio" name="read-q-${idx}" value="${opt}"> ${opt}
+                    <div id="read-card-${idx}" class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 transition">
+                        <p class="text-sm font-semibold text-slate-100 mb-2.5">${item.q}</p>
+                        <div class="flex flex-wrap gap-2.5 text-xs">
+                            ${(item.options || []).map(opt => `
+                                <label class="flex items-center gap-2 cursor-pointer bg-slate-900/90 hover:bg-slate-900 px-3 py-2 rounded-lg border border-slate-700 transition">
+                                    <input type="radio" name="read-q-${idx}" value="${opt.replace(/"/g, '&quot;')}">
+                                    <span>${opt}</span>
                                 </label>
                             `).join('')}
                         </div>
+                        <div id="read-exp-${idx}" class="hide mt-3 pt-2.5 border-t border-slate-700/60 text-xs"></div>
                     </div>
                 `;
             });
         }
-        renderReadingTest(readingBank[0]);
+        renderReadingTest(activeReadingTest);
 
-        document.getElementById('btn-ai-reading')?.addEventListener('click', () => {
-            currentReadingIndex = (currentReadingIndex + 1) % readingBank.length;
-            renderReadingTest(readingBank[currentReadingIndex]);
+        // Handle File Upload in Reading Lab (.PDF, .TXT, .MD)
+        document.getElementById('reading-file-upload')?.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const statusEl = document.getElementById('reading-file-status');
+            const sourceBox = document.getElementById('reading-custom-source');
+            try {
+                if (statusEl) statusEl.innerHTML = `<span class="text-emerald-400 animate-pulse">📄 Extracting text from <strong>${file.name}</strong>...</span>`;
+                const text = await extractTextFromUploadedFile(file);
+                if (sourceBox) sourceBox.value = text.slice(0, 10000);
+                if (statusEl) statusEl.innerHTML = `<span class="text-emerald-400 font-semibold">✓ Loaded "${file.name}" (${text.split(/\s+/).length} words). Click "Generate AI Reading Test"!</span>`;
+            } catch (err) {
+                if (statusEl) statusEl.innerHTML = `<span class="text-red-400">Error reading file: ${err.message}</span>`;
+            }
+        });
+
+        document.getElementById('btn-clear-reading-source')?.addEventListener('click', () => {
+            const sourceBox = document.getElementById('reading-custom-source');
+            const statusEl = document.getElementById('reading-file-status');
+            const fileInput = document.getElementById('reading-file-upload');
+            if (sourceBox) sourceBox.value = "";
+            if (fileInput) fileInput.value = "";
+            if (statusEl) statusEl.textContent = "Cleared! Upload a file or click Generate for a random Academic topic.";
+        });
+
+        // Generate Brand-New AI Reading Test via Groq / Grok
+        document.getElementById('btn-ai-reading')?.addEventListener('click', async () => {
+            const btn = document.getElementById('btn-ai-reading');
+            const customSource = document.getElementById('reading-custom-source')?.value.trim() || "";
+            const qType = document.getElementById('reading-q-type')?.value || "Mixed IELTS Questions (6 Questions)";
+            const titleEl = document.getElementById('reading-passage-title');
+            const bodyEl = document.getElementById('reading-passage-body');
+            const qBox = document.getElementById('reading-questions-box');
+
+            const originalBtnHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating via AI...`;
+            if (titleEl) titleEl.innerHTML = `<span class="text-emerald-400 animate-pulse">✨ AI Examiner is writing a new Academic Reading Test...</span>`;
+            if (bodyEl) bodyEl.innerHTML = `<p class="text-slate-400 animate-pulse">Constructing multi-paragraph passage and 6 IELTS questions...</p>`;
+            if (qBox) qBox.innerHTML = "";
+
+            const randomTopics = [
+                "Deep-Sea Hydrothermal Vents and Astrobiology",
+                "The Economic History of the Silk Road Trade Networks",
+                "Biomimicry in Modern Sustainable Architecture",
+                "The Cognitive Impact of Artificial Intelligence in Education",
+                "Ancient Khmer Hydraulic Engineering at Angkor",
+                "Renewable Microgrids and Global Energy Transitions",
+                "Neuroplasticity and Adult Motor Skill Acquisition"
+            ];
+            const chosenTopic = customSource
+                ? `Use this exact uploaded/pasted source text or topic to create the IELTS Reading passage and questions:\n"""${customSource.slice(0, 6000)}"""`
+                : `Create a high-level IELTS Academic Reading passage about: "${randomTopics[Math.floor(Math.random() * randomTopics.length)]}"`;
+
+            const prompt = `${chosenTopic}
+
+Generate a complete, authentic IELTS Academic Reading test with 4 detailed paragraphs (labeled Paragraph A, Paragraph B, Paragraph C, Paragraph D) and exactly 6 questions (${qType}).
+Return ONLY valid JSON matching this exact structure (no extra commentary):
+{
+  "title": "Academic Passage Title",
+  "passage": "<p><strong>Paragraph A:</strong> Full paragraph text...</p><p><strong>Paragraph B:</strong> Full paragraph text...</p><p><strong>Paragraph C:</strong> Full paragraph text...</p><p><strong>Paragraph D:</strong> Full paragraph text...</p>",
+  "questions": [
+    {
+      "q": "1. Question text here?",
+      "options": ["True", "False", "Not Given"],
+      "ans": "True",
+      "exp": "Brief 1-sentence explanation citing the paragraph."
+    }
+  ]
+}`;
+
+            try {
+                const rawReply = await askIELTSAI(
+                    prompt,
+                    "You are an official IELTS Reading test writer. Output strictly valid JSON only. Do not include markdown code fences around the JSON."
+                );
+                const parsed = extractJSONFromAI(rawReply);
+                if (parsed && parsed.passage && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+                    renderReadingTest(parsed);
+                } else {
+                    throw new Error("Could not parse structured JSON from AI response.");
+                }
+            } catch (err) {
+                console.warn("Reading AI generation fallback:", err);
+                alert("Please make sure your Groq (gsk_...) or Grok (xai-...) API key is saved in the AI Tutor tab so AI can generate unlimited tests!");
+                renderReadingTest(activeReadingTest);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalBtnHTML;
+            }
         });
 
         document.getElementById('btn-submit-reading')?.addEventListener('click', () => {
-            const testObj = readingBank[currentReadingIndex];
+            const questions = activeReadingTest.questions || [];
             let score = 0;
-            testObj.questions.forEach((item, idx) => {
+            questions.forEach((item, idx) => {
                 const selected = document.querySelector(`input[name="read-q-${idx}"]:checked`);
-                if (selected && selected.value === item.ans) score++;
+                const card = document.getElementById(`read-card-${idx}`);
+                const expEl = document.getElementById(`read-exp-${idx}`);
+                const isCorrect = selected && selected.value.trim().toLowerCase() === String(item.ans).trim().toLowerCase();
+                if (isCorrect) score++;
+
+                if (card) {
+                    card.className = `p-4 rounded-xl border transition ${isCorrect ? 'bg-emerald-950/30 border-emerald-500/50' : 'bg-red-950/25 border-red-500/50'}`;
+                }
+                if (expEl) {
+                    expEl.classList.remove('hide');
+                    expEl.innerHTML = isCorrect
+                        ? `<span class="text-emerald-400 font-semibold">✓ Correct (${item.ans}):</span> <span class="text-slate-300">${item.exp || ''}</span>`
+                        : `<span class="text-red-400 font-semibold">✗ Correct Answer: ${item.ans}</span> <span class="text-slate-300 block mt-0.5">${item.exp || ''}</span>`;
+                }
             });
-            const bandEst = score === 3 ? "8.5" : score === 2 ? "7.0" : score === 1 ? "5.5" : "4.5";
-            document.getElementById('reading-score-box').textContent = `Score: ${score}/${testObj.questions.length} (Est. Band ${bandEst})`;
+            const ratio = questions.length ? score / questions.length : 0;
+            const bandEst = ratio >= 0.9 ? "8.5" : ratio >= 0.8 ? "8.0" : ratio >= 0.65 ? "7.0" : ratio >= 0.5 ? "6.0" : "5.0";
+            document.getElementById('reading-score-box').textContent = `Score: ${score}/${questions.length} (Est. Band ${bandEst})`;
         });
 
-        const listeningBank = [
-            {
-                title: "Section 1: University Library Orientation",
-                script: "Welcome to the University Central Library orientation. From Monday to Friday, the main reading hall opens at 8 AM and closes at 10 PM. On weekends, we close earlier at 6 PM. Undergraduate students may borrow up to 12 books at a time for three weeks. Group discussions are strictly restricted to the third floor.",
-                questions: [
-                    { q: "1. What time does the library close on weekdays?", options: ["6:00 PM", "8:00 PM", "10:00 PM"], ans: "10:00 PM" },
-                    { q: "2. How many books can an undergraduate borrow at once?", options: ["6 books", "12 books", "15 books"], ans: "12 books" },
-                    { q: "3. Which floor is designated for group discussions?", options: ["First floor", "Second floor", "Third floor"], ans: "Third floor" }
-                ]
-            },
-            {
-                title: "Section 2: Eco-Tourism Resort Briefing",
-                script: "Good morning everyone, and welcome to Koh Rong Eco-Resort. Breakfast is served daily in the Bamboo Pavilion between 6:30 AM and 9:30 AM. Today's guided mangrove kayaking tour departs from the north pier at 2:00 PM sharp. Single-use plastics are prohibited on the island.",
-                questions: [
-                    { q: "1. Where is breakfast served each morning?", options: ["North Pier", "Bamboo Pavilion", "Boat House"], ans: "Bamboo Pavilion" },
-                    { q: "2. What time does the kayaking tour depart?", options: ["9:30 AM", "2:00 PM", "4:00 PM"], ans: "2:00 PM" },
-                    { q: "3. What item is prohibited on the island?", options: ["Single-use plastics", "Kayaks", "Cameras"], ans: "Single-use plastics" }
-                ]
-            }
-        ];
+        // --- DYNAMIC AI LISTENING LAB (Powered by Groq / Grok + File Upload) ---
+        let activeListeningTest = {
+            title: "Section 1: University Central Library & Digital Archives Orientation",
+            script: "Welcome everyone to the University Central Library orientation. From Monday to Friday, the main reading hall opens at 8:00 AM and closes at 10:00 PM. Many students think we close at 8:00 PM on weekdays, but that only applies during the summer break. On weekends, however, we close earlier at 6:00 PM. Undergraduate students may borrow up to 12 books at a time for a period of three weeks, whereas postgraduate researchers can borrow up to 25 volumes. Please note that group discussions and collaborative project meetings are strictly restricted to the third floor Soundproof Commons. Finally, if you wish to access rare historical manuscripts in the Digital Archive Room, you must book a terminal at least 24 hours in advance using your student ID card.",
+            questions: [
+                { q: "1. What time does the library close on regular weekdays?", options: ["6:00 PM", "8:00 PM", "10:00 PM"], ans: "10:00 PM", exp: "The speaker confirms the main reading hall closes at 10:00 PM Monday to Friday (8:00 PM is only during summer)." },
+                { q: "2. What time does the library close on weekends?", options: ["5:00 PM", "6:00 PM", "8:00 PM"], ans: "6:00 PM", exp: "The speaker states that on weekends they close earlier at 6:00 PM." },
+                { q: "3. How many books can an undergraduate student borrow at once?", options: ["6 books", "12 books", "25 books"], ans: "12 books", exp: "Undergraduates may borrow up to 12 books (25 is for postgraduates)." },
+                { q: "4. How long can undergraduate students keep borrowed books?", options: ["One week", "Two weeks", "Three weeks"], ans: "Three weeks", exp: "The speaker mentions a period of three weeks." },
+                { q: "5. Which floor is designated for group discussions?", options: ["First floor", "Second floor", "Third floor"], ans: "Third floor", exp: "Group discussions are restricted to the third floor Soundproof Commons." },
+                { q: "6. How far in advance must students book a Digital Archive terminal?", options: ["12 hours", "24 hours", "48 hours"], ans: "24 hours", exp: "Students must book a terminal at least 24 hours in advance." }
+            ]
+        };
 
-        let currentListeningIndex = 0;
         function renderListeningTest(testObj) {
+            activeListeningTest = testObj;
             const titleEl = document.getElementById('listening-title');
             const qBox = document.getElementById('listening-questions-box');
+            const transBox = document.getElementById('listening-transcript-box');
             if (!titleEl || !qBox) return;
-            titleEl.textContent = testObj.title;
+
+            titleEl.textContent = testObj.title || "IELTS Listening Practice Track";
             document.getElementById('listening-score-box').textContent = "";
+            if (transBox) {
+                transBox.classList.add('hide');
+                transBox.innerHTML = `<strong class="text-cyan-400 block mb-1">Audio Script / Transcript:</strong> ${testObj.script || ""}`;
+            }
+
             qBox.innerHTML = "";
-            testObj.questions.forEach((item, idx) => {
+            (testObj.questions || []).forEach((item, idx) => {
                 qBox.innerHTML += `
-                    <div class="bg-slate-800/70 p-3.5 rounded-xl border border-slate-700">
-                        <p class="text-sm font-medium mb-2">${item.q}</p>
-                        <div class="flex flex-wrap gap-3 text-xs">
-                            ${item.options.map(opt => `
-                                <label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
-                                    <input type="radio" name="listen-q-${idx}" value="${opt}"> ${opt}
+                    <div id="listen-card-${idx}" class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 transition">
+                        <p class="text-sm font-semibold text-slate-100 mb-2.5">${item.q}</p>
+                        <div class="flex flex-wrap gap-2.5 text-xs">
+                            ${(item.options || []).map(opt => `
+                                <label class="flex items-center gap-2 cursor-pointer bg-slate-900/90 hover:bg-slate-900 px-3 py-2 rounded-lg border border-slate-700 transition">
+                                    <input type="radio" name="listen-q-${idx}" value="${opt.replace(/"/g, '&quot;')}">
+                                    <span>${opt}</span>
                                 </label>
                             `).join('')}
                         </div>
+                        <div id="listen-exp-${idx}" class="hide mt-3 pt-2.5 border-t border-slate-700/60 text-xs"></div>
                     </div>
                 `;
             });
         }
-        renderListeningTest(listeningBank[0]);
+        renderListeningTest(activeListeningTest);
 
-        document.getElementById('btn-ai-listening')?.addEventListener('click', () => {
+        // Handle File Upload in Listening Lab (.PDF, .TXT, .MD)
+        document.getElementById('listening-file-upload')?.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const badgeEl = document.getElementById('listening-file-badge');
+            const inputEl = document.getElementById('listening-custom-source');
+            try {
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-cyan-400 animate-pulse">Extracting ${file.name}...</span>`;
+                const text = await extractTextFromUploadedFile(file);
+                if (inputEl) inputEl.value = text.slice(0, 6000);
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-emerald-400 font-semibold">✓ ${file.name} ready! Click Generate.</span>`;
+            } catch (err) {
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-red-400">Upload failed</span>`;
+            }
+        });
+
+        document.getElementById('btn-toggle-transcript')?.addEventListener('click', () => {
+            document.getElementById('listening-transcript-box')?.classList.toggle('hide');
+        });
+
+        // Generate Brand-New AI Listening Test via Groq / Grok
+        document.getElementById('btn-ai-listening')?.addEventListener('click', async () => {
             window.speechSynthesis?.cancel();
-            currentListeningIndex = (currentListeningIndex + 1) % listeningBank.length;
-            renderListeningTest(listeningBank[currentListeningIndex]);
+            const btn = document.getElementById('btn-ai-listening');
+            const sectionType = document.getElementById('listening-section-type')?.value || "Section 2";
+            const customTopic = document.getElementById('listening-custom-source')?.value.trim() || "";
+            const titleEl = document.getElementById('listening-title');
+            const statusEl = document.getElementById('listening-status');
+            const qBox = document.getElementById('listening-questions-box');
+
+            const originalBtnHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating via AI...`;
+            if (titleEl) titleEl.innerHTML = `<span class="text-cyan-400 animate-pulse">✨ AI Examiner is creating a new ${sectionType} Audio Test...</span>`;
+            if (statusEl) statusEl.textContent = "Writing realistic spoken script with IELTS distractors and 6 questions...";
+            if (qBox) qBox.innerHTML = "";
+
+            const randomListeningTopics = [
+                "Eco-Tourism Wildlife Sanctuary Volunteer Briefing",
+                "University Sports Complex Membership & Swimming Pool Schedule",
+                "Museum of Science & Robotics Exhibition Audio Guide",
+                "International Student Housing & Meal Plan Registration",
+                "Marine Biology Field Trip to Coral Reefs Seminar",
+                "Urban Botanical Garden Renovation Project Lecture"
+            ];
+
+            const sourceInstruction = customTopic
+                ? `Base the spoken audio script and questions on this uploaded text or topic:\n"""${customTopic.slice(0, 4500)}"""`
+                : `Create a realistic IELTS Listening ${sectionType} about: "${randomListeningTopics[Math.floor(Math.random() * randomListeningTopics.length)]}"`;
+
+            const prompt = `${sourceInstruction}
+
+Write a natural, realistic spoken IELTS Listening script (160–220 words) that includes subtle IELTS distractors (such as a speaker stating a time/number/place and then correcting themselves) and 6 multiple-choice questions in chronological order.
+Return ONLY valid JSON with this exact schema:
+{
+  "title": "Listening Track Title",
+  "script": "Full spoken script to be read aloud...",
+  "questions": [
+    {
+      "q": "1. Question text?",
+      "options": ["Option A", "Option B", "Option C"],
+      "ans": "Option B",
+      "exp": "Brief explanation of why this is the correct answer from the script."
+    }
+  ]
+}`;
+
+            try {
+                const rawReply = await askIELTSAI(
+                    prompt,
+                    "You are an official IELTS Listening test writer. Output strictly valid JSON only. Do not include markdown fences."
+                );
+                const parsed = extractJSONFromAI(rawReply);
+                if (parsed && parsed.script && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+                    renderListeningTest(parsed);
+                    if (statusEl) statusEl.textContent = "New AI Listening Test ready! Click 'Play Audio Track' to listen.";
+                } else {
+                    throw new Error("Invalid JSON structure.");
+                }
+            } catch (err) {
+                console.warn("Listening AI generation error:", err);
+                alert("Please make sure your Groq (gsk_...) or Grok (xai-...) API key is saved in the AI Tutor tab so AI can generate new listening tests!");
+                renderListeningTest(activeListeningTest);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalBtnHTML;
+            }
         });
 
         document.getElementById('btn-play-listening')?.addEventListener('click', () => {
             if (!('speechSynthesis' in window)) return alert("Audio synthesis not supported on this browser.");
             window.speechSynthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(listeningBank[currentListeningIndex].script);
+            const utter = new SpeechSynthesisUtterance(activeListeningTest.script);
             utter.lang = "en-GB";
-            utter.rate = 0.95;
+            const speedVal = parseFloat(document.getElementById('listening-speed')?.value || "0.95");
+            utter.rate = speedVal;
+            const statusEl = document.getElementById('listening-status');
+            if (statusEl) statusEl.innerHTML = `<span class="text-cyan-400 font-semibold animate-pulse">🔊 Playing Audio Track (${speedVal}x)... Listen carefully!</span>`;
+            utter.onend = () => {
+                if (statusEl) statusEl.textContent = "Audio finished. Select your answers and click 'Check Listening Answers'.";
+            };
             window.speechSynthesis.speak(utter);
         });
 
-        document.getElementById('btn-stop-listening')?.addEventListener('click', () => window.speechSynthesis?.cancel());
-
-        document.getElementById('btn-submit-listening')?.addEventListener('click', () => {
-            const testObj = listeningBank[currentListeningIndex];
-            let score = 0;
-            testObj.questions.forEach((item, idx) => {
-                const selected = document.querySelector(`input[name="listen-q-${idx}"]:checked`);
-                if (selected && selected.value === item.ans) score++;
-            });
-            const bandEst = score === 3 ? "8.5" : score === 2 ? "7.0" : score === 1 ? "5.5" : "4.5";
-            document.getElementById('listening-score-box').textContent = `Score: ${score}/${testObj.questions.length} (Est. Band ${bandEst})`;
+        document.getElementById('btn-stop-listening')?.addEventListener('click', () => {
+            window.speechSynthesis?.cancel();
+            const statusEl = document.getElementById('listening-status');
+            if (statusEl) statusEl.textContent = "Audio stopped.";
         });
 
-        // Writing New Prompt & AI Essay Grading
+        document.getElementById('btn-submit-listening')?.addEventListener('click', () => {
+            const questions = activeListeningTest.questions || [];
+            let score = 0;
+            questions.forEach((item, idx) => {
+                const selected = document.querySelector(`input[name="listen-q-${idx}"]:checked`);
+                const card = document.getElementById(`listen-card-${idx}`);
+                const expEl = document.getElementById(`listen-exp-${idx}`);
+                const isCorrect = selected && selected.value.trim().toLowerCase() === String(item.ans).trim().toLowerCase();
+                if (isCorrect) score++;
+
+                if (card) {
+                    card.className = `p-4 rounded-xl border transition ${isCorrect ? 'bg-emerald-950/30 border-emerald-500/50' : 'bg-red-950/25 border-red-500/50'}`;
+                }
+                if (expEl) {
+                    expEl.classList.remove('hide');
+                    expEl.innerHTML = isCorrect
+                        ? `<span class="text-emerald-400 font-semibold">✓ Correct (${item.ans}):</span> <span class="text-slate-300">${item.exp || ''}</span>`
+                        : `<span class="text-red-400 font-semibold">✗ Correct Answer: ${item.ans}</span> <span class="text-slate-300 block mt-0.5">${item.exp || ''}</span>`;
+                }
+            });
+            const ratio = questions.length ? score / questions.length : 0;
+            const bandEst = ratio >= 0.9 ? "8.5" : ratio >= 0.8 ? "8.0" : ratio >= 0.65 ? "7.0" : ratio >= 0.5 ? "6.0" : "5.0";
+            document.getElementById('listening-score-box').textContent = `Score: ${score}/${questions.length} (Est. Band ${bandEst})`;
+        });
+
+        // Writing New Prompt & AI Essay Grading (Clean Structured Rendering)
         document.getElementById('btn-ai-writing-prompt')?.addEventListener('click', async () => {
             const promptBox = document.getElementById('writing-prompt-box');
             const taskType = document.getElementById('writing-task')?.value || "Task 2";
             if (!promptBox) return;
-            promptBox.innerHTML = `<span class="animate-pulse">✨ Generating new ${taskType} prompt...</span>`;
-            const reply = await askIELTSAI(`Generate one official-style IELTS Academic Writing ${taskType} prompt. Return only the prompt text.`);
-            promptBox.innerHTML = `<strong>Prompt:</strong> ${reply}`;
+            promptBox.innerHTML = `<span class="text-amber-300 animate-pulse">✨ Generating new official-style ${taskType} prompt...</span>`;
+            const reply = await askIELTSAI(
+                `Generate one official-style IELTS Academic Writing ${taskType} prompt. Also include 3 brief bullet points of 'Examiner Planning Tips' below the prompt for how to get Band 8.5 on this specific topic.`,
+                "You are an official IELTS Writing Examiner. Format cleanly using Markdown."
+            );
+            promptBox.innerHTML = `<div class="ai-prose">${formatAIMarkdown(reply)}</div>`;
         });
 
         document.getElementById('btn-ai-grade-essay')?.addEventListener('click', async () => {
             const essay = document.getElementById('writing-area')?.value.trim();
+            const promptContext = document.getElementById('writing-prompt-box')?.innerText || "";
             const fbBox = document.getElementById('writing-feedback-box');
             if (!fbBox) return;
             if (!essay) {
@@ -1216,28 +1801,37 @@
                 return;
             }
             fbBox.classList.remove('hide');
-            fbBox.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Evaluating your essay across the 4 IELTS criteria...</span>`;
+            fbBox.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Evaluating your essay across the 4 official IELTS criteria...</span>`;
             const words = essay.split(/\s+/).length;
-            const reply = await askIELTSAI(`Grade this IELTS essay (${words} words). Give an estimated Band Score (0-9) for Task Response, Coherence, Lexical Resource, and Grammar, plus 3 specific improvements:\n\n${essay}`);
-            fbBox.innerHTML = `<div class="leading-relaxed">${reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</div>`;
+            const reply = await askIELTSAI(
+                `Evaluate this IELTS essay (${words} words) written for the following prompt:\n${promptContext}\n\nStudent Essay:\n${essay}\n\nProvide a clean, well-organized assessment with:\n### 1. Overall & Criteria Band Scores\n(Use a clean Markdown table showing Score & Key Feedback for Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy)\n### 2. Sentence-by-Sentence Corrections & Band 8.5 Upgrades\n### 3. Top 3 Actionable Improvements`,
+                "You are a senior Band 9.0 IELTS Writing Examiner. Format your feedback cleanly using Markdown headings, bullet points, and a neat summary table."
+            );
+            fbBox.innerHTML = formatAIMarkdown(reply);
         });
 
-        // Speaking Cue Card & Model Sample Generators
+        // Speaking Cue Card & Model Sample Generators (Clean Structured Rendering)
         document.getElementById('btn-ai-speaking-card')?.addEventListener('click', async () => {
             const cardBox = document.getElementById('speaking-cue-card');
             if (!cardBox) return;
             cardBox.innerHTML = `<p class="text-rose-400 animate-pulse">✨ Generating new Part 2 Cue Card...</p>`;
-            const reply = await askIELTSAI("Generate one IELTS Speaking Part 2 Cue Card with a main topic and 4 bullet points. Keep it concise.");
-            cardBox.innerHTML = `<div class="leading-relaxed">${reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</div>`;
+            const reply = await askIELTSAI(
+                "Generate one official IELTS Speaking Part 2 Cue Card with a clear bold topic title, 'You should say:' followed by 4 bullet points, and 1 brief '1-Minute Prep Tip' at the bottom.",
+                "You are an official IELTS Speaking Examiner. Format cleanly using Markdown."
+            );
+            cardBox.innerHTML = formatAIMarkdown(reply);
         });
 
         document.getElementById('btn-ai-speaking-sample')?.addEventListener('click', async () => {
             const sampleBox = document.getElementById('speaking-sample-box');
             const currentCard = document.getElementById('speaking-cue-card')?.innerText || "Describe a skill you learned recently.";
             if (!sampleBox) return;
-            sampleBox.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Crafting Band 8.5 Model Answer & idioms...</span>`;
-            const reply = await askIELTSAI(`Provide a Band 8.5 model spoken answer and 4 high-scoring idioms/collocations for this IELTS Speaking Part 2 Cue Card:\n${currentCard}`);
-            sampleBox.innerHTML = `<div class="leading-relaxed">${reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</div>`;
+            sampleBox.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Crafting Band 8.5 Model Answer, idioms & Part 3 questions...</span>`;
+            const reply = await askIELTSAI(
+                `For this IELTS Speaking Part 2 Cue Card:\n${currentCard}\n\nProvide a cleanly organized guide with:\n### 1. Band 8.5 Model Spoken Answer (Natural 2-minute script)\n### 2. High-Scoring Idioms & Collocations Used (Markdown table with Phrase & Meaning)\n### 3. Follow-up Part 3 Discussion Questions & Sample Answers`,
+                "You are a Band 9.0 IELTS Speaking Examiner. Format cleanly with Markdown headings, bullet points, and a vocabulary table."
+            );
+            sampleBox.innerHTML = formatAIMarkdown(reply);
         });
     </script>
 </body>
