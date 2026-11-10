@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IELTS Studio KH</title>
+    <title>IELTS Studio KH — AI Self-Study & English Academy</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hanuman:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -32,47 +32,77 @@
             height: 100dvh;
             margin: 0;
             padding: 0;
-            background-color: #070b19;
+            background-color: #050814;
             color: #f8fafc;
             -webkit-overflow-scrolling: touch;
         }
+
+        /* Vibrant Alive Aurora Background */
         .aurora-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-        .aurora-orb { position: absolute; border-radius: 9999px; filter: blur(90px); opacity: 0.25; animation: floatOrb 14s infinite ease-in-out alternate; }
-        .orb-1 { width: 350px; height: 350px; background: #3b82f6; top: -60px; left: -60px; }
-        .orb-2 { width: 380px; height: 380px; background: #8b5cf6; bottom: -80px; right: -50px; animation-delay: -5s; }
+        .aurora-orb { position: absolute; border-radius: 9999px; filter: blur(85px); opacity: 0.32; animation: floatOrb 12s infinite ease-in-out alternate; }
+        .orb-1 { width: 400px; height: 400px; background: radial-gradient(circle, #3b82f6, #1d4ed8); top: -80px; left: -80px; }
+        .orb-2 { width: 420px; height: 420px; background: radial-gradient(circle, #8b5cf6, #6d28d9); bottom: -90px; right: -60px; animation-delay: -4s; }
+        .orb-3 { width: 320px; height: 320px; background: radial-gradient(circle, #10b981, #0ea5e9); top: 35%; left: 40%; animation-delay: -8s; opacity: 0.2; }
         @keyframes floatOrb {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(35px, -25px) scale(1.1); }
+            50% { transform: translate(45px, -35px) scale(1.15); }
+            100% { transform: translate(-30px, 35px) scale(0.92); }
         }
+
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .view-section:not(.hide) { animation: fadeUp 0.25s ease-out forwards; }
+        .view-section:not(.hide) { animation: fadeUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
         .glass-panel {
-            background: rgba(15, 23, 42, 0.78);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(15, 23, 42, 0.76);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             border: 1px solid rgba(148, 163, 184, 0.16);
+            transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
         }
+        .alive-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(96, 165, 250, 0.45);
+            box-shadow: 0 12px 28px -8px rgba(59, 130, 246, 0.28);
+        }
+
         .streak-glow {
-            box-shadow: 0 0 25px rgba(249, 115, 22, 0.45), inset 0 0 12px rgba(249, 115, 22, 0.2);
-            border-color: rgba(249, 115, 22, 0.55) !important;
+            box-shadow: 0 0 28px rgba(249, 115, 22, 0.45), inset 0 0 12px rgba(249, 115, 22, 0.22);
+            border-color: rgba(249, 115, 22, 0.6) !important;
         }
-        .flame-glow { filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.95)); }
+        .flame-glow {
+            filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.95));
+            animation: flamePulse 1.8s infinite ease-in-out;
+        }
+        @keyframes flamePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.16); }
+        }
+
+        /* Live Audio Equalizer Animation */
+        .eq-bar { width: 3px; background: #22d3ee; border-radius: 999px; animation: eqBounce 0.8s infinite ease-in-out alternate; }
+        .eq-bar:nth-child(2) { animation-delay: 0.2s; }
+        .eq-bar:nth-child(3) { animation-delay: 0.4s; }
+        .eq-bar:nth-child(4) { animation-delay: 0.1s; }
+        @keyframes eqBounce { 0% { height: 4px; } 100% { height: 16px; } }
+
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.4); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.45); border-radius: 9999px; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
-        .ai-prose { font-size: 0.9rem; line-height: 1.65; color: #e2e8f0; word-break: break-word; }
-        .ai-prose h1, .ai-prose h2, .ai-prose h3 { color: #38bdf8; font-weight: 700; margin: 0.75rem 0 0.4rem; font-size: 1rem; }
-        .ai-prose p { margin-bottom: 0.6rem; }
-        .ai-prose ul, .ai-prose ol { margin-left: 1.2rem; margin-bottom: 0.7rem; }
+
+        .ai-prose { font-size: 0.9rem; line-height: 1.72; color: #e2e8f0; word-break: break-word; }
+        .ai-prose h1, .ai-prose h2, .ai-prose h3, .ai-prose h4 { color: #38bdf8; font-weight: 700; margin: 0.85rem 0 0.4rem; font-size: 1.02rem; }
+        .ai-prose p { margin-bottom: 0.75rem; }
+        .ai-prose ul, .ai-prose ol { margin-left: 1.25rem; margin-bottom: 0.75rem; }
         .ai-prose ul { list-style-type: disc; }
         .ai-prose ol { list-style-type: decimal; }
-        .ai-prose strong { color: #fff; font-weight: 600; }
-        .ai-prose table { width: 100%; border-collapse: collapse; margin: 0.7rem 0; font-size: 0.8rem; background: rgba(15, 23, 42, 0.8); border-radius: 0.5rem; overflow-x: auto; display: block; border: 1px solid rgba(148, 163, 184, 0.2); }
-        .ai-prose th { background: rgba(51, 65, 85, 0.85); color: #38bdf8; text-align: left; padding: 0.5rem 0.7rem; }
-        .ai-prose td { padding: 0.5rem 0.7rem; border-top: 1px solid rgba(148, 163, 184, 0.15); }
+        .ai-prose li { margin-bottom: 0.3rem; }
+        .ai-prose strong { color: #fff; font-weight: 700; }
+        .ai-prose table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.8rem; background: rgba(15, 23, 42, 0.85); border-radius: 0.6rem; overflow-x: auto; display: block; border: 1px solid rgba(148, 163, 184, 0.22); }
+        .ai-prose th { background: rgba(51, 65, 85, 0.9); color: #38bdf8; text-align: left; padding: 0.55rem 0.75rem; }
+        .ai-prose td { padding: 0.5rem 0.75rem; border-top: 1px solid rgba(148, 163, 184, 0.15); }
     </style>
 </head>
 <body class="flex flex-col md:flex-row antialiased relative text-slate-100 overflow-hidden">
@@ -80,21 +110,22 @@
     <div class="aurora-bg">
         <div class="aurora-orb orb-1"></div>
         <div class="aurora-orb orb-2"></div>
+        <div class="aurora-orb orb-3"></div>
     </div>
 
     <!-- ================= LOGIN GATE ================= -->
     <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-xl overflow-y-auto">
         <div class="glass-panel p-7 rounded-3xl w-full max-w-md shadow-2xl text-center my-auto border border-blue-500/30">
-            <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-                <i class="fa-solid fa-graduation-cap text-xl text-white"></i>
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/30">
+                <i class="fa-solid fa-graduation-cap text-2xl text-white"></i>
             </div>
-            <h1 class="text-2xl font-extrabold mb-1">IELTS Studio KH</h1>
-            <p class="text-xs text-slate-400 mb-5">Band 8.0+ AI Self-Study Hub</p>
+            <h1 class="text-2xl font-extrabold mb-1 bg-gradient-to-r from-white via-blue-200 to-purple-300 bg-clip-text text-transparent">IELTS Studio KH</h1>
+            <p class="text-xs text-slate-400 mb-5">ទំនើប • Band 8.0+ AI Self-Study & English Academy</p>
             
             <div class="space-y-3.5 text-left">
                 <input type="email" id="login-email" placeholder="Email Address" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
                 <input type="password" id="login-password" placeholder="Password" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
-                <button type="button" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg cursor-pointer">
+                <button type="button" id="btn-login" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 rounded-xl transition shadow-lg cursor-pointer">
                     Secure Login
                 </button>
                 <div id="login-error" class="hide bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl text-center"></div>
@@ -122,14 +153,17 @@
         <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-60 glass-panel border-r border-slate-700/60 flex flex-col justify-between h-full transition-transform duration-300 z-50 flex-shrink-0">
             <div class="overflow-y-auto">
                 <div class="p-4 flex items-center justify-between border-b border-slate-700/50">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-blue-400 text-lg"></i>
-                        <span class="font-extrabold text-base">IELTS Studio.</span>
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow">
+                            <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
+                        </div>
+                        <span class="font-extrabold text-base tracking-tight">IELTS Studio<span class="text-blue-400">.</span></span>
                     </div>
                     <button type="button" id="close-sidebar" class="md:hidden text-slate-400 text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <nav class="p-2.5 space-y-1">
                     <button type="button" data-target="dashboard" class="nav-btn bg-blue-600/20 text-blue-400 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-house w-5"></i>Dashboard</button>
+                    <button type="button" data-target="course" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-bolt text-yellow-400 w-5"></i>English Course</button>
                     <button type="button" data-target="books" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-bookmark text-pink-400 w-5"></i>Book Library</button>
                     <button type="button" data-target="history" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-chart-line text-indigo-400 w-5"></i>My Scores & Tests</button>
                     <button type="button" data-target="ai" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-wand-magic-sparkles text-purple-400 w-5"></i>AI Tutor Chat</button>
@@ -149,8 +183,11 @@
         <main class="flex-1 flex flex-col h-full min-h-0 overflow-hidden relative z-10">
             <header class="hidden md:flex h-14 glass-panel border-b border-slate-700/60 items-center justify-between px-6 flex-shrink-0">
                 <div class="flex items-center gap-2.5 text-xs text-slate-300 font-medium">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>System Online</span>
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span>Live AI Hub • Official IELTS Standard Engine Active</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
@@ -166,14 +203,29 @@
                 <!-- ================= 1. DASHBOARD ================= -->
                 <div id="view-dashboard" class="view-section space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl font-extrabold">Welcome, <span id="dash-name" class="text-blue-400">Student</span> 👋</h2>
-                        <span id="dash-band" class="px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/40 text-blue-300 text-xs font-bold">Target: Band 7.5</span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold">Welcome, <span id="dash-name" class="bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent">Student</span> 👋</h2>
+                        <span id="dash-band" class="px-3.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/40 text-blue-300 text-xs font-bold">Target: Band 7.5</span>
+                    </div>
+
+                    <!-- Alive Daily Band 8.5 Flashcard Booster -->
+                    <div class="glass-panel alive-card p-4 rounded-2xl border border-purple-500/35 bg-gradient-to-r from-purple-900/25 via-slate-900/70 to-blue-900/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/30"><i class="fa-solid fa-sparkles text-yellow-400 mr-1"></i>Daily Band 8.5 Power Word</span>
+                            </div>
+                            <p id="booster-word" class="text-sm sm:text-base font-bold text-white pt-0.5">Mitigate (v.) — To make something less severe, harmful, or painful.</p>
+                            <p id="booster-ex" class="text-xs text-cyan-200 italic">"Governments must invest in renewable energy to mitigate the devastating impacts of climate change."</p>
+                        </div>
+                        <div class="flex gap-2 self-start sm:self-center flex-shrink-0">
+                            <button type="button" id="btn-speak-booster" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-cyan-300 px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-volume-high"></i></button>
+                            <button type="button" id="btn-next-booster" class="bg-purple-600 hover:bg-purple-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-purple-600/25"><i class="fa-solid fa-bolt mr-1"></i>Next Word</button>
+                        </div>
                     </div>
 
                     <!-- Today's Verdict -->
-                    <div id="today-verdict-card" class="glass-panel p-4 rounded-2xl border-l-4 border-l-blue-500 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div id="today-verdict-card" class="glass-panel alive-card p-4 rounded-2xl border-l-4 border-l-blue-500 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                            <p class="text-[11px] font-bold uppercase text-blue-400">Today's Status</p>
+                            <p class="text-[11px] font-bold uppercase text-blue-400">Today's Performance Status</p>
                             <h3 id="today-verdict-title" class="text-base font-bold text-white">⏳ No Tests Graded Today</h3>
                         </div>
                         <div class="flex items-center gap-4 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-700/70 self-start sm:self-center">
@@ -191,18 +243,18 @@
 
                     <!-- Streak & Countdown -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div id="streak-card" class="glass-panel p-4 rounded-2xl flex items-center justify-between">
+                        <div id="streak-card" class="glass-panel alive-card p-4 rounded-2xl flex items-center justify-between">
                             <div>
-                                <p class="text-orange-300 text-xs font-bold uppercase">24h Discipline Streak</p>
+                                <p class="text-orange-300 text-xs font-bold uppercase"><i class="fa-solid fa-shield-heart mr-1"></i>24h Discipline Streak</p>
                                 <p id="dash-streak" class="text-3xl font-extrabold mt-1 text-white">0 <span class="text-sm font-normal text-slate-400">Days</span></p>
-                                <p id="streak-timer-note" class="text-[11px] text-slate-400 mt-0.5">+1 every 24h. Resets if you miss a day.</p>
+                                <p id="streak-timer-note" class="text-[11px] text-slate-400 mt-0.5">+1 every 24h. Resets if you skip a day.</p>
                             </div>
                             <div class="w-12 h-12 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400">
                                 <i class="fa-solid fa-fire-flame-curved text-xl flame-glow"></i>
                             </div>
                         </div>
 
-                        <div class="glass-panel p-4 rounded-2xl flex flex-col justify-between gap-2">
+                        <div class="glass-panel alive-card p-4 rounded-2xl flex flex-col justify-between gap-2">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-slate-400 text-xs font-bold uppercase">Exam Countdown</p>
@@ -219,27 +271,27 @@
 
                     <!-- 4 Module Cards -->
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                        <div class="glass-panel p-3.5 rounded-2xl border-t-2 border-t-cyan-400 cursor-pointer" onclick="document.querySelector('[data-target=listening]').click()">
-                            <div class="flex justify-between text-cyan-400 text-xs font-bold"><span>Listening</span><span id="stat-listen-count">0</span></div>
+                        <div class="glass-panel alive-card p-3.5 rounded-2xl border-t-2 border-t-cyan-400 cursor-pointer" onclick="document.querySelector('[data-target=listening]').click()">
+                            <div class="flex justify-between text-cyan-400 text-xs font-bold"><span><i class="fa-solid fa-headphones mr-1"></i>Listening</span><span id="stat-listen-count">0</span></div>
                             <p id="stat-listen-band" class="text-lg font-bold text-white mt-1">Band --</p>
                         </div>
-                        <div class="glass-panel p-3.5 rounded-2xl border-t-2 border-t-emerald-400 cursor-pointer" onclick="document.querySelector('[data-target=reading]').click()">
-                            <div class="flex justify-between text-emerald-400 text-xs font-bold"><span>Reading</span><span id="stat-read-count">0</span></div>
+                        <div class="glass-panel alive-card p-3.5 rounded-2xl border-t-2 border-t-emerald-400 cursor-pointer" onclick="document.querySelector('[data-target=reading]').click()">
+                            <div class="flex justify-between text-emerald-400 text-xs font-bold"><span><i class="fa-solid fa-book-open mr-1"></i>Reading</span><span id="stat-read-count">0</span></div>
                             <p id="stat-read-band" class="text-lg font-bold text-white mt-1">Band --</p>
                         </div>
-                        <div class="glass-panel p-3.5 rounded-2xl border-t-2 border-t-amber-400 cursor-pointer" onclick="document.querySelector('[data-target=writing]').click()">
-                            <div class="flex justify-between text-amber-400 text-xs font-bold"><span>Writing</span><span id="stat-write-count">0</span></div>
+                        <div class="glass-panel alive-card p-3.5 rounded-2xl border-t-2 border-t-amber-400 cursor-pointer" onclick="document.querySelector('[data-target=writing]').click()">
+                            <div class="flex justify-between text-amber-400 text-xs font-bold"><span><i class="fa-solid fa-pen-nib mr-1"></i>Writing</span><span id="stat-write-count">0</span></div>
                             <p id="stat-write-band" class="text-lg font-bold text-white mt-1">Band --</p>
                         </div>
-                        <div class="glass-panel p-3.5 rounded-2xl border-t-2 border-t-rose-400 cursor-pointer" onclick="document.querySelector('[data-target=speaking]').click()">
-                            <div class="flex justify-between text-rose-400 text-xs font-bold"><span>Speaking</span><span id="stat-speak-count">0</span></div>
+                        <div class="glass-panel alive-card p-3.5 rounded-2xl border-t-2 border-t-rose-400 cursor-pointer" onclick="document.querySelector('[data-target=speaking]').click()">
+                            <div class="flex justify-between text-rose-400 text-xs font-bold"><span><i class="fa-solid fa-microphone mr-1"></i>Speaking</span><span id="stat-speak-count">0</span></div>
                             <p id="stat-speak-band" class="text-lg font-bold text-white mt-1">Band --</p>
                         </div>
                     </div>
 
                     <!-- Leaderboard -->
                     <div class="glass-panel rounded-2xl p-4">
-                        <h3 class="text-sm font-bold mb-3 text-yellow-400"><i class="fa-solid fa-trophy mr-1.5"></i>Friends Leaderboard</h3>
+                        <h3 class="text-sm font-bold mb-3 text-yellow-400"><i class="fa-solid fa-trophy mr-1.5"></i>Friends Study Leaderboard</h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs sm:text-sm border-collapse min-w-[300px]">
                                 <thead>
@@ -256,21 +308,51 @@
                     </div>
                 </div>
 
-                <!-- ================= 2. BOOK LIBRARY (Full PDF Scan & Saved Forever) ================= -->
+                <!-- ================= 2. ENGLISH & IELTS LEARNING COURSE ACADEMY ================= -->
+                <div id="view-course" class="view-section hide space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-yellow-400"><i class="fa-solid fa-bolt mr-2"></i>English Grammar & Vocabulary Academy</h2>
+                            <p class="text-xs text-slate-400">Master every English tense, complex grammar rule, and Band 8.5 vocabulary topic.</p>
+                        </div>
+                    </div>
+
+                    <!-- Course Module Tabs -->
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" data-course="tenses" class="course-tab-btn bg-yellow-500 text-slate-950 px-3.5 py-2 rounded-xl text-xs font-bold transition">1. All 12 Tenses</button>
+                        <button type="button" data-course="complex" class="course-tab-btn bg-slate-800 text-slate-200 hover:bg-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition">2. Complex Sentences</button>
+                        <button type="button" data-course="passive" class="course-tab-btn bg-slate-800 text-slate-200 hover:bg-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition">3. Passive & Inversion</button>
+                        <button type="button" data-course="vocab" class="course-tab-btn bg-slate-800 text-slate-200 hover:bg-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition">4. Band 8.5 Vocabulary</button>
+                        <button type="button" data-course="linking" class="course-tab-btn bg-slate-800 text-slate-200 hover:bg-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition">5. Linking & Cohesion</button>
+                        <button type="button" data-course="idioms" class="course-tab-btn bg-slate-800 text-slate-200 hover:bg-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition">6. Idioms & Phrasal Verbs</button>
+                    </div>
+
+                    <!-- AI Custom Topic Teacher Bar -->
+                    <div class="glass-panel p-3.5 rounded-2xl flex flex-col sm:flex-row gap-2 items-stretch sm:items-center border border-yellow-500/30">
+                        <input type="text" id="course-ai-input" placeholder="Ask the Academy to teach you ANY grammar rule, tense, or vocabulary topic (e.g. 'Past Perfect vs Past Simple', 'Conditional Sentences')..." class="flex-1 bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-yellow-400">
+                        <button type="button" id="btn-course-ai-teach" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition flex-shrink-0">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate Interactive Lesson & Quiz
+                        </button>
+                    </div>
+
+                    <!-- Active Lesson Display Content -->
+                    <div id="course-content-box" class="glass-panel p-5 rounded-2xl ai-prose space-y-4"></div>
+                </div>
+
+                <!-- ================= 3. BOOK LIBRARY (Full PDF Scan & Saved Forever) ================= -->
                 <div id="view-books" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="text-xl font-bold text-pink-400"><i class="fa-solid fa-book-bookmark mr-2"></i>Book Library (100% Full PDF Scan)</h2>
+                        <h2 class="text-xl font-bold text-pink-400"><i class="fa-solid fa-book-bookmark mr-2"></i>Permanent Book Library (100% Full PDF Scan)</h2>
                         <label class="bg-pink-600 hover:bg-pink-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg cursor-pointer transition">
                             <i class="fa-solid fa-file-pdf mr-1"></i> Upload Full PDF / TXT / DOCX Book
                             <input type="file" id="book-library-upload" accept=".pdf,.txt,.md,.csv,.docx,.html" class="hide">
                         </label>
                     </div>
-
                     <div id="book-upload-status" class="text-xs text-pink-300 font-semibold"></div>
                     <div id="books-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
                 </div>
 
-                <!-- ================= 3. MY SCORES & SAVED TESTS ================= -->
+                <!-- ================= 4. MY SCORES & SAVED TESTS ================= -->
                 <div id="view-history" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-indigo-400"><i class="fa-solid fa-chart-line mr-2"></i>My Saved Tests & Scores</h2>
@@ -285,12 +367,12 @@
                     <div id="history-list-container" class="space-y-2.5"></div>
                 </div>
 
-                <!-- ================= 4. AI TUTOR CHAT ================= -->
+                <!-- ================= 5. AI TUTOR CHAT ================= -->
                 <div id="view-ai" class="view-section hide space-y-3">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-purple-400"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>AI IELTS Tutor</h2>
                         <div class="flex flex-wrap gap-1.5">
-                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1 rounded-full" data-prompt="Give me 5 Band 8.0 vocabulary words for IELTS Writing Task 2 with examples.">✨ Band 8 Vocab</button>
+                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1 rounded-full" data-prompt="Give me 5 Band 8.5 vocabulary words for IELTS Writing Task 2 with examples.">✨ Band 8.5 Vocab</button>
                             <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1 rounded-full" data-prompt="Explain True, False, Not Given rules with examples.">📖 T/F/NG Tips</button>
                             <button type="button" id="btn-clear-chat" class="text-xs bg-slate-800 hover:bg-red-500/20 border border-slate-700 text-slate-300 px-3 py-1 rounded-full"><i class="fa-solid fa-trash-can mr-1"></i>Clear</button>
                         </div>
@@ -322,7 +404,7 @@
                     </div>
                 </div>
 
-                <!-- ================= 5. AI LISTENING LAB ================= -->
+                <!-- ================= 6. AI LISTENING LAB ================= -->
                 <div id="view-listening" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>AI Listening Lab</h2>
@@ -337,11 +419,11 @@
                     </div>
 
                     <details class="glass-panel rounded-xl p-3 border-l-4 border-l-cyan-400 text-xs">
-                        <summary class="cursor-pointer font-bold text-cyan-300">💡 Listening Tips (Click to view)</summary>
+                        <summary class="cursor-pointer font-bold text-cyan-300">💡 Examiner Listening Tips (Click to view)</summary>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-700/60 text-slate-300">
-                            <div><strong>1. Distractors:</strong> Watch for self-corrections like <em>"Actually, no..."</em> or <em>"Sorry, I meant..."</em>.</div>
-                            <div><strong>2. Synonyms:</strong> Audio uses synonyms instead of exact wording in the options.</div>
-                            <div><strong>3. Order:</strong> Questions always follow the exact chronological order of the audio.</div>
+                            <div><strong>1. Distractors:</strong> Watch for self-corrections like <em>"Actually, wait..."</em> or <em>"No, sorry..."</em>.</div>
+                            <div><strong>2. Paraphrasing:</strong> Audio uses synonyms instead of exact words in the options.</div>
+                            <div><strong>3. Order:</strong> All questions follow the exact chronological order of the recording.</div>
                         </div>
                     </details>
 
@@ -367,14 +449,19 @@
                             </div>
                             <button type="button" id="btn-clear-listening-source" class="text-xs text-slate-400 hover:text-red-400">Clear</button>
                         </div>
-                        <textarea id="listening-custom-source" rows="2" placeholder="Optional: Paste text/topic or pick a saved book above, then click 'Generate Listening Test'..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-cyan-500"></textarea>
+                        <textarea id="listening-custom-source" rows="2" placeholder="Leave blank for a full Official IELTS Standard Listening Test, or type ANY topic / pick a book above to generate a custom test..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-cyan-500"></textarea>
                     </div>
 
                     <div class="glass-panel p-4 rounded-2xl space-y-3.5">
                         <div class="flex flex-wrap items-center justify-between gap-2">
-                            <div>
-                                <h3 id="listening-title" class="font-bold text-sm sm:text-base text-cyan-300">Ready to Generate Listening Test</h3>
-                                <p id="listening-status" class="text-xs text-slate-400">Click "Generate Listening Test" above.</p>
+                            <div class="flex items-center gap-3">
+                                <div id="listening-eq" class="hide flex items-end gap-1 h-4">
+                                    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                                </div>
+                                <div>
+                                    <h3 id="listening-title" class="font-bold text-sm sm:text-base text-cyan-300">IELTS Standard Listening Test</h3>
+                                    <p id="listening-status" class="text-xs text-slate-400">Click "Generate Listening Test" or "Play Audio".</p>
+                                </div>
                             </div>
                             <div class="flex flex-wrap items-center gap-1.5">
                                 <select id="listening-speed" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white">
@@ -388,7 +475,7 @@
                             </div>
                         </div>
 
-                        <div id="listening-transcript-box" class="hide bg-slate-900/90 border border-slate-700 p-3 rounded-xl text-xs text-slate-300 leading-relaxed"></div>
+                        <div id="listening-transcript-box" class="hide bg-slate-900/90 border border-slate-700 p-3.5 rounded-xl text-xs text-slate-300 leading-relaxed"></div>
                         <div id="listening-questions-box" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-slate-700/60"></div>
 
                         <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-700/50">
@@ -398,7 +485,7 @@
                     </div>
                 </div>
 
-                <!-- ================= 6. AI READING LAB ================= -->
+                <!-- ================= 7. AI READING LAB ================= -->
                 <div id="view-reading" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>AI Reading Lab</h2>
@@ -415,11 +502,11 @@
                     </div>
 
                     <details class="glass-panel rounded-xl p-3 border-l-4 border-l-emerald-400 text-xs">
-                        <summary class="cursor-pointer font-bold text-emerald-300">💡 Reading Tips (Click to view)</summary>
+                        <summary class="cursor-pointer font-bold text-emerald-300">💡 Examiner Reading Tips (Click to view)</summary>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-700/60 text-slate-300">
-                            <div><strong>1. T/F/NG:</strong> True = matches meaning; False = contradicts; Not Given = not stated in text.</div>
-                            <div><strong>2. Anchor Words:</strong> Scan for names, dates, and numbers first to locate the right paragraph fast.</div>
-                            <div><strong>3. Extreme Words:</strong> Watch out for words like <em>always, never, only, all</em> in questions.</div>
+                            <div><strong>1. T/F/NG:</strong> True = matches meaning; False = directly contradicts; Not Given = not stated in text.</div>
+                            <div><strong>2. Anchor Words:</strong> Scan for names, dates, and technical terms to locate paragraphs quickly.</div>
+                            <div><strong>3. Extreme Qualifiers:</strong> Watch out for trap words like <em>always, never, exclusively, all</em>.</div>
                         </div>
                     </details>
 
@@ -445,15 +532,15 @@
                             </div>
                             <button type="button" id="btn-clear-reading-source" class="text-xs text-slate-400 hover:text-red-400">Clear</button>
                         </div>
-                        <textarea id="reading-custom-source" rows="2" placeholder="Optional: Paste an article or pick a saved book above, then click 'Generate Reading Test'..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500"></textarea>
+                        <textarea id="reading-custom-source" rows="2" placeholder="Leave blank for a full Official Cambridge IELTS Standard Passage, or type ANY topic / paste an article to generate a custom Reading Test..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500"></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div class="glass-panel p-4 rounded-2xl lg:max-h-[65vh] lg:overflow-y-auto space-y-2">
-                            <h3 id="reading-passage-title" class="font-bold text-sm sm:text-base text-emerald-400 border-b border-slate-700 pb-2">Reading Passage</h3>
-                            <div id="reading-passage-body" class="ai-prose text-sm text-slate-300 leading-relaxed">Click "Generate Reading Test" above.</div>
+                        <div class="glass-panel p-4 sm:p-5 rounded-2xl lg:max-h-[68vh] lg:overflow-y-auto space-y-2">
+                            <h3 id="reading-passage-title" class="font-bold text-base text-emerald-400 border-b border-slate-700 pb-2">Reading Passage</h3>
+                            <div id="reading-passage-body" class="ai-prose text-sm text-slate-200 leading-relaxed"></div>
                         </div>
-                        <div class="glass-panel p-4 rounded-2xl lg:max-h-[65vh] lg:overflow-y-auto flex flex-col justify-between space-y-4">
+                        <div class="glass-panel p-4 sm:p-5 rounded-2xl lg:max-h-[68vh] lg:overflow-y-auto flex flex-col justify-between space-y-4">
                             <div id="reading-questions-box" class="space-y-3"></div>
                             <div class="pt-3 border-t border-slate-700 flex flex-wrap items-center justify-between gap-2">
                                 <button type="button" id="btn-submit-reading" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white">Check Answers & Save Score</button>
@@ -463,7 +550,7 @@
                     </div>
                 </div>
 
-                <!-- ================= 7. AI WRITING STUDIO ================= -->
+                <!-- ================= 8. AI WRITING STUDIO ================= -->
                 <div id="view-writing" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-pen-nib mr-2"></i>AI Writing Studio</h2>
@@ -476,11 +563,11 @@
                     </div>
 
                     <details class="glass-panel rounded-xl p-3 border-l-4 border-l-amber-400 text-xs">
-                        <summary class="cursor-pointer font-bold text-amber-300">💡 Writing Tips (Click to view)</summary>
+                        <summary class="cursor-pointer font-bold text-amber-300">💡 Examiner Writing Tips (Click to view)</summary>
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mt-2 pt-2 border-t border-slate-700/60 text-slate-300">
-                            <div><strong>1. Task Response:</strong> Write 250+ words & state a clear opinion in the intro.</div>
+                            <div><strong>1. Task Response:</strong> Write 250+ words & state a clear thesis in the intro.</div>
                             <div><strong>2. Structure:</strong> 4 paragraphs (Intro, Body 1, Body 2, Conclusion).</div>
-                            <div><strong>3. Vocabulary:</strong> Paraphrase the prompt with academic collocations.</div>
+                            <div><strong>3. Lexical Resource:</strong> Paraphrase the prompt with academic collocations.</div>
                             <div><strong>4. Grammar:</strong> Mix complex clauses (<em>Although, Whereas, Despite</em>).</div>
                         </div>
                     </details>
@@ -493,7 +580,7 @@
                         <button type="button" id="btn-delete-writing-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
 
-                    <input type="text" id="writing-custom-source" placeholder="Optional: Type your own essay topic idea here, or click 'Generate Topic'..." class="w-full glass-panel rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                    <input type="text" id="writing-custom-source" placeholder="Optional: Type your own essay topic idea here, or leave blank and click 'Generate Topic'..." class="w-full glass-panel rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
 
                     <div id="writing-prompt-box" class="glass-panel p-3.5 rounded-xl text-xs sm:text-sm text-amber-100 border-l-4 border-l-amber-500">
                         Click <strong>Generate Topic</strong> above or type your own topic and start writing.
@@ -511,7 +598,7 @@
                     <div id="writing-feedback-box" class="hide glass-panel p-4 rounded-2xl ai-prose border border-purple-500/40"></div>
                 </div>
 
-                <!-- ================= 8. AI SPEAKING ARENA ================= -->
+                <!-- ================= 9. AI SPEAKING ARENA ================= -->
                 <div id="view-speaking" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-rose-400"><i class="fa-solid fa-microphone mr-2"></i>AI Speaking Arena</h2>
@@ -522,7 +609,7 @@
                     </div>
 
                     <details class="glass-panel rounded-xl p-3 border-l-4 border-l-rose-400 text-xs">
-                        <summary class="cursor-pointer font-bold text-rose-300">💡 Speaking Tips (Click to view)</summary>
+                        <summary class="cursor-pointer font-bold text-rose-300">💡 Examiner Speaking Tips (Click to view)</summary>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-700/60 text-slate-300">
                             <div><strong>1. PPF Method:</strong> Cover Past background, Present details, and Future impact to speak for a full 2 minutes.</div>
                             <div><strong>2. Fluency Markers:</strong> Use natural transitions like <em>"What stood out to me was..."</em> instead of pausing.</div>
@@ -538,7 +625,7 @@
                         <button type="button" id="btn-delete-speaking-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
 
-                    <input type="text" id="speaking-custom-source" placeholder="Optional: Type a speaking topic idea here, or click 'Generate Cue Card'..." class="w-full glass-panel rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                    <input type="text" id="speaking-custom-source" placeholder="Optional: Type a speaking topic idea here, or leave blank and click 'Generate Cue Card'..." class="w-full glass-panel rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div class="glass-panel p-4 rounded-2xl space-y-3">
@@ -562,7 +649,7 @@
                     </div>
                 </div>
 
-                <!-- ================= 9. PROFILE & SETTINGS ================= -->
+                <!-- ================= 10. PROFILE & SETTINGS ================= -->
                 <div id="view-settings" class="view-section hide space-y-4 max-w-lg mx-auto">
                     <h2 class="text-xl font-bold text-blue-400">Profile Settings</h2>
                     <div class="glass-panel p-5 rounded-2xl space-y-4">
@@ -622,43 +709,193 @@
             setTimeout(() => el.remove(), 3500);
         }
 
-        // Format inline markdown (*italic* and **bold**) in question titles
-        function formatInlineQuestionText(str) {
-            return String(str || "")
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em class="text-cyan-200">$1</em>');
-        }
+        // Daily Booster Flashcards
+        const boosters = [
+            { w: "Mitigate (v.) — To make something less severe, harmful, or painful.", ex: '"Governments must invest in renewable energy to mitigate the devastating impacts of climate change."' },
+            { w: "Ubiquitous (adj.) — Present, appearing, or found everywhere.", ex: '"Smartphones and digital platforms have become ubiquitous in modern education."' },
+            { w: "Exacerbate (v.) — To make a problem, bad situation, or negative feeling worse.", ex: '"Rapid, unplanned urbanization often exacerbates housing shortages and traffic congestion."' },
+            { w: "Pragmatic (adj.) — Dealing with things sensibly and realistically in a practical way.", ex: '"Policymakers need a pragmatic approach to balancing economic growth with environmental protection."' },
+            { w: "Catalyst (n.) — A factor or event that precipitates a major change.", ex: '"The global shift toward remote work acted as a catalyst for digital transformation."' },
+            { w: "Indispensable (adj.) — Absolutely necessary; essential.", ex: '"Critical thinking skills are indispensable for university students navigating complex research."' }
+        ];
+        let bIdx = 0;
+        document.getElementById('btn-next-booster')?.addEventListener('click', () => {
+            bIdx = (bIdx + 1) % boosters.length;
+            document.getElementById('booster-word').textContent = boosters[bIdx].w;
+            document.getElementById('booster-ex').textContent = boosters[bIdx].ex;
+        });
+        document.getElementById('btn-speak-booster')?.addEventListener('click', () => {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(boosters[bIdx].w.split('—')[0]);
+            u.lang = "en-GB";
+            window.speechSynthesis.speak(u);
+        });
 
-        // SMART ANSWER MATCHER (Fixes "Option B" vs "1937" bug so correct answers NEVER get marked wrong!)
-        function evaluateQuestionAnswer(selectedInput, item) {
-            if (!selectedInput || !item) return { isCorrect: false, displayAns: item?.ans || "" };
-            const userVal = selectedInput.value.trim();
-            const userIdx = parseInt(selectedInput.getAttribute('data-opt-idx') || "-1", 10);
-            const rawAns = String(item.ans || "").trim();
-            const options = Array.isArray(item.options) ? item.options.map(o => String(o).trim()) : [];
+        // --- 1. BUILT-IN ENGLISH GRAMMAR & VOCABULARY ACADEMY COURSE ---
+        const academyCurriculum = {
+            tenses: `### Complete Guide to the 12 English Tenses for IELTS Band 8.5
+Mastering tense accuracy is essential for **Grammatical Range & Accuracy (25% of your score)**. Here are the most important tenses for IELTS Writing and Speaking:
 
-            // Detect if AI wrote "Option A/B/C/D" or "A/B/C/D"
-            const optMatch = rawAns.match(/^(?:option\s*)?([a-d])(?:[\.\)\:\-\s]|$)/i);
-            let targetIdx = -1;
-            if (optMatch) {
-                targetIdx = optMatch[1].toLowerCase().charCodeAt(0) - 97; // 'a'->0, 'b'->1, 'c'->2, 'd'->3
-            } else {
-                targetIdx = options.findIndex(opt =>
-                    opt.toLowerCase() === rawAns.toLowerCase() ||
-                    rawAns.toLowerCase().includes(opt.toLowerCase())
-                );
+| Tense | Formula | IELTS Usage & Band 8.5 Example |
+| :--- | :--- | :--- |
+| **Present Simple** | \`S + V1(s/es)\` | General truths & academic facts: *"Urbanization **creates** significant economic opportunities."* |
+| **Present Continuous** | \`am/is/are + V-ing\` | Current ongoing trends: *"Global temperatures **are rising** at an unprecedented rate."* |
+| **Present Perfect** | \`have/has + V3\` | Past actions affecting the present (Crucial for Task 2 intros!): *"In recent decades, technology **has revolutionized** how students acquire knowledge."* |
+| **Present Perfect Cont.** | \`have/has been + V-ing\` | Actions started in the past and still continuing: *"Scientists **have been investigating** renewable alternatives for decades."* |
+| **Past Simple** | \`S + V2\` | Completed historical data (Task 1 charts & Speaking Part 2): *"Between 2000 and 2010, coal consumption **declined** sharply."* |
+| **Past Perfect** | \`had + V3\` | Action completed *before* another past point: *"By the time regulations were introduced, pollution levels **had already peaked**."* |
+| **Future Simple / Academic** | \`will / is projected to + V1\` | Future projections: *"The proportion of elderly citizens **is projected to double** by 2050."* |
+
+### Examiner Pro-Tip: The "In Recent Years" Rule
+Whenever you write *"In recent years," "Over the last decade,"* or *"Since the 20th century,"* **never** use Past Simple—always use **Present Perfect** (*has increased / have become*)!`,
+
+            complex: `### Mastering Complex Sentences (The Secret to Band 8.0+ Grammar)
+To score Band 8.0+ in Writing and Speaking, at least **60% of your sentences** must be complex sentences that combine dependent and independent clauses smoothly.
+
+| Sentence Type | Key Connectors | Band 6.0 (Simple) vs. Band 8.5 (Complex) |
+| :--- | :--- | :--- |
+| **1. Concession Clauses** | *Although, Even though, Whilst, Whereas, Despite* | ❌ * Band 6:* Technology is useful. However, it can distract students.<br>✅ *Band 8.5:* **Although** digital technology offers unprecedented access to information, it can significantly impair students' concentration. |
+| **2. Non-Defining Relative Clauses** | *, which..., / , who...,* | ❌ *Band 6:* Public transport reduces traffic. This is good for the environment.<br>✅ *Band 8.5:* Investing in public transit reduces vehicular congestion**, which in turn** lowers urban carbon emissions. |
+| **3. Conditional Clauses** | *Provided that, Unless, Were governments to...* | ❌ *Band 6:* If governments do not act, pollution will get worse.<br>✅ *Band 8.5:* **Unless** governments enforce stringent emission standards, ecological degradation will continue to accelerate. |
+| **4. Participle Clauses** | *Having + V3, / Driven by...,* | ❌ *Band 6:* Many graduates move to cities because they want higher salaries.<br>✅ *Band 8.5:* **Driven by** the prospect of higher remuneration, a growing number of graduates relocate to metropolitan hubs. |`,
+
+            passive: `### Passive Voice & Advanced Inversion for Academic Tone
+Academic writing requires an objective, formal tone rather than repeating *"I think"*, *"People say"*, or *"We can see"*.
+
+### 1. The Academic Passive (\`be + Past Participle\`)
+* **Process Diagrams (Task 1):** *"First, the raw materials **are harvested** and **transported** to the processing facility, where they **are heated** to 200 degrees."*
+* **Impersonal Academic Claims (Task 2):** *"It **is widely argued** that university education should **be subsidized** by the state."*
+
+### 2. Band 8.5 Negative Inversion (High-Scoring Structure!)
+Placing a negative adverbial (*Not only, Rarely, Little, Only by*) at the start of a sentence triggers question-word order (` + "`Auxiliary + Subject + Verb`" + `):
+* **Not only... but also:** *"<strong>Not only does</strong> regular exercise improve cardiovascular health, <strong>but it also</strong> alleviates psychological stress."*
+* **Only by + V-ing:** *"<strong>Only by implementing</strong> strict legislation <strong>can governments</strong> curb corporate pollution."*`,
+
+            vocab: `### Band 8.5 Academic Vocabulary & High-Scoring Collocations
+Examiners do not reward obscure, archaic words—they reward **precise academic collocations** (words that naturally partner together).
+
+| Common Word (Band 6.0) | Band 8.5 Academic Upgrades | Natural Band 8.5 Collocation in Context |
+| :--- | :--- | :--- |
+| **Important** | *Pivotal, Paramount, Indispensable* | *"Parental guidance **plays a pivotal role** in shaping a child's moral compass."* |
+| **Bad / Harmful** | *Detrimental, Adverse,Counterproductive* | *"Excessive screen time has a **detrimental impact on** adolescent sleep cycles."* |
+| **Good / Helpful** | *Beneficial, Advantageous, Conducive* | *"A quiet environment is **conducive to** deep academic focus."* |
+| **Solve a problem** | *Mitigate, Alleviate, Combat, Curb* | *"Subsidizing green energy is the most viable way to **combat climate change**."* |
+| **A lot of / Many** | *A myriad of, A plethora of, Substantial* | *"Graduates today face **a myriad of challenges** in a competitive job market."* |`,
+
+            linking: `### Cohesive Devices & Discourse Markers (Coherence & Cohesion)
+Avoid mechanical linking words at the start of every single sentence (*Firstly, Secondly, Moreover*). Use natural academic transitions:
+
+* **Adding a Reinforcing Point:** *Furthermore, What is more, Equally important, In addition to this*
+* **Showing Direct Cause & Effect:** *Consequently, As a direct consequence, Thereby (+ V-ing), Hence*
+* **Contrasting Two Perspectives:** *Conversely, On the flip side, By contrast, Notwithstanding this*
+* **Giving Concrete Examples:** *A prime illustration of this is..., Take, for instance, ..., This is exemplified by...*
+* **Concluding Without Clichés:** *In conclusion, To sum up, Ultimately, Taking everything into consideration*`,
+
+            idioms: `### High-Scoring Idioms & Phrasal Verbs for IELTS Speaking (Band 8.5)
+*Note: Use idioms in **IELTS Speaking**, NOT in formal Academic Writing!*
+
+| Idiom / Phrasal Verb | Meaning | How to Use It Naturally in Speaking Part 2 & 3 |
+| :--- | :--- | :--- |
+| **Pay dividends** | Produce great long-term benefits | *"Practicing English every single day has really **paid dividends** for my confidence."* |
+| **A steep learning curve** | Difficult to learn at the beginning | *"When I first started coding, it was **a steep learning curve**, but I soon got the hang of it."* |
+| **Second nature** | Something you do effortlessly | *"After practicing timed essays for a month, structuring paragraphs became **second nature** to me."* |
+| **Hit the books** | Study very intensively | *"With my final Grade 12 exams approaching, I really need to **hit the books** this semester."* |
+| **A double-edged sword** | Has both positive and negative effects | *"Social media is **a double-edged sword**; it connects people globally but can also breed anxiety."* |`
+        };
+
+        function renderCourseModule(key) {
+            const box = document.getElementById('course-content-box');
+            if (box && academyCurriculum[key]) {
+                box.innerHTML = formatAIMarkdown(academyCurriculum[key]);
             }
-
-            const resolvedAnsText = (targetIdx >= 0 && options[targetIdx]) ? options[targetIdx] : rawAns;
-            const isCorrect =
-                userVal.toLowerCase() === rawAns.toLowerCase() ||
-                userVal.toLowerCase() === resolvedAnsText.toLowerCase() ||
-                (targetIdx >= 0 && userIdx === targetIdx);
-
-            return { isCorrect, displayAns: resolvedAnsText };
         }
 
-        // --- 1. INDEXED-DB FOR UNLIMITED FULL PDF STORAGE ---
+        document.querySelectorAll('.course-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.course-tab-btn').forEach(b => {
+                    b.className = "course-tab-btn bg-slate-800 text-slate-200 hover:bg-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition";
+                });
+                btn.className = "course-tab-btn bg-yellow-500 text-slate-950 px-3.5 py-2 rounded-xl text-xs font-bold transition";
+                renderCourseModule(btn.getAttribute('data-course'));
+            });
+        });
+
+        document.getElementById('btn-course-ai-teach')?.addEventListener('click', async () => {
+            const topic = document.getElementById('course-ai-input')?.value.trim();
+            if (!topic) return showToast("Type any grammar or vocabulary topic first!", "error");
+            const box = document.getElementById('course-content-box');
+            box.innerHTML = `<p class="text-yellow-400 animate-pulse">✨ AI Academy Professor is creating a complete interactive lesson on "${topic}"...</p>`;
+            const reply = await askIELTSAI(
+                `Create a comprehensive, easy-to-understand IELTS Band 8.5 English lesson on: "${topic}".
+Include:
+### 1. Core Rule & Formula Explained Simply
+### 2. Band 6.0 vs. Band 8.5 Comparison Table
+### 3. Common Mistakes to Avoid in IELTS
+### 4. Quick 3-Question Practice Check (with Answer Key at the bottom)`,
+                "You are a master IELTS English Grammar & Vocabulary Professor."
+            );
+            box.innerHTML = formatAIMarkdown(reply);
+        });
+
+        // --- 2. OFFICIAL CAMBRIDGE IELTS STANDARD TEST BANKS (Used when Input is Blank!) ---
+        const standardReadingBank = [
+            {
+                title: "The Evolutionary Significance of Play in Animal Behavior",
+                passage: `**Paragraph A**\n\nFor much of the twentieth century, ethologists and evolutionary biologists viewed animal play as a puzzling evolutionary paradox. Play behavior—whether observed in juvenile wolves wrestling in the snow, dolphins leaping through boat wakes, or ravens sliding down icy rooftops—consumes substantial amounts of metabolic energy while exposing young animals to heightened risks of predation and physical injury. From a strictly Darwinian perspective, any behavior that carries such immediate survival costs without yielding obvious reproductive or foraging rewards should have been eliminated by natural selection. Yet play is pervasive across mammals and several avian species.\n\n**Paragraph B**\n\nThe earliest systematic explanation, formulated by the nineteenth-century philosopher Karl Groos, proposed that play serves as a biological rehearsal for adult survival skills. According to this 'motor-training hypothesis,' predatory kittens pouncing on動く leaves are calibrating the neuromuscular coordination required for stalking prey later in life, while young gazelles engaging in erratic leaps are practicing evasive maneuvers to escape predators. However, subsequent longitudinal field studies challenged this straightforward view. Researchers monitoring meerkat colonies and domestic cats discovered that individuals deprived of juvenile play opportunities nevertheless developed normal adult hunting and fighting competencies.\n\n**Paragraph C**\n\nContemporary neurobiological research has shifted focus from physical muscle training to synaptic plasticity within the prefrontal cortex. Experiments conducted by neuroscientist Sergio Pellis demonstrate that social rough-and-tumble play stimulates the release of brain-derived neurotrophic factor (BDNF), a protein that promotes the growth and pruning of neural pathways responsible for executive functioning, emotional regulation, and impulse control. Animals raised in isolation without playmates exhibit normal physical coordination but struggle profoundly when confronted with novel social hierarchies or unexpected environmental stressors.\n\n**Paragraph D**\n\nConsequently, modern ethologists increasingly champion the 'training for the unexpected' hypothesis. During play, animals deliberately place themselves in disadvantaged, unbalanced, or vulnerable positions—a phenomenon known as self-handicapping, where a dominant pup allows a smaller sibling to pin it down. By experiencing controlled loss of control in a safe context, the developing brain constructs flexible behavioral repertoires that enable the adult animal to improvise rapidly when real-world environments become unpredictable.`,
+                questions: [
+                    { q: "1. Early evolutionary biologists struggled to explain why natural selection had not eliminated animal play.", options: ["True", "False", "Not Given"], ans: "True", exp: "Paragraph A states play was viewed as a puzzling paradox that should have been eliminated by natural selection due to energy costs and predation risks." },
+                    { q: "2. Field studies on meerkats and cats proved that juvenile play is strictly required to hunt successfully as an adult.", options: ["True", "False", "Not Given"], ans: "False", exp: "Paragraph B states that individuals deprived of juvenile play still developed normal adult hunting and fighting competencies." },
+                    { q: "3. Dolphins engage in social play for longer durations than land mammals.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "Dolphins are mentioned in Paragraph A, but no comparison of play duration with land mammals is given." },
+                    { q: "4. According to Sergio Pellis, what is the primary benefit of rough-and-tumble play?", options: ["Increasing skeletal muscle mass", "Stimulating prefrontal cortex neural development", "Establishing permanent dominance hierarchies"], ans: "Stimulating prefrontal cortex neural development", exp: "Paragraph C explains that play releases BDNF, promoting neural pathways in the prefrontal cortex for executive function and emotional regulation." },
+                    { q: "5. What happens to animals raised without playmates when they encounter unfamiliar situations?", options: ["They lose physical coordination", "They fail to regulate stress and adapt socially", "They become more aggressive hunters"], ans: "They fail to regulate stress and adapt socially", exp: "Paragraph C notes they exhibit normal physical coordination but struggle profoundly with novel social hierarchies or unexpected stressors." },
+                    { q: "6. In Paragraph D, 'self-handicapping' refers to an animal:", options: ["Injuring itself during solitary play", "Intentionally adopting a weaker position during play", "Refusing to play with smaller siblings"], ans: "Intentionally adopting a weaker position during play", exp: "Paragraph D defines self-handicapping as deliberately placing oneself in disadvantaged positions, such as a dominant pup letting a smaller sibling pin it." }
+                ]
+            },
+            {
+                title: "The Archaeological Mystery of Roman Concrete Longevity",
+                passage: `**Paragraph A**\n\nMore than two millennia after the height of the Roman Empire, unreinforced marine structures such as the harbor piers of Portus Cosanus and the massive dome of the Pantheon remain structurally intact, defying the relentless assault of seawater and seismic activity. By contrast, modern Portland cement concrete—the ubiquitous foundation of twentieth- and twenty-first-century infrastructure—typically begins to deteriorate within fifty to one hundred years, particularly when exposed to chloride-rich marine environments that corrode internal steel reinforcement bars.\n\n**Paragraph B**\n\nFor decades, materials scientists attributed the durability of ancient Roman maritime concrete (*opus caementicium*) primarily to the inclusion of *pozzolana*, a volcanic ash quarried near the Bay of Naples. As documented by the Roman architect Vitruvius in the first century BCE, mixing volcanic ash with lime and seawater triggered a chemical reaction that produced a dense, water-resistant binder. Yet until recently, the precise mineralogical mechanisms that allowed Roman piers to actually grow stronger over centuries of wave impact remained poorly understood.\n\n**Paragraph C**\n\nUsing advanced synchrotron X-ray microdiffraction at Lawrence Berkeley National Laboratory, geologists Marie Jackson and Admir Masic uncovered two critical secrets inside ancient Roman cores. First, when seawater percolates through microscopic fissures in the volcanic ash matrix, it dissolves volcanic glasses and crystallizes a rare, interlocking plate-like mineral called aluminous tobermorite. Second, the Romans utilized a 'hot-mixing' technique using quicklime rather than slaked lime, leaving behind tiny white millimeter-scale lime clasts that were previously dismissed by modern engineers as evidence of sloppy mixing.\n\n**Paragraph D**\n\nFar from being an accidental defect, these lime clasts act as a self-healing reservoir. Whenever new micro-cracks form inside the concrete over centuries, infiltrating water reacts with the calcium-rich clasts, recrystallizing as calcium carbonate and automatically sealing the fissure before it can propagate. Modern civil engineers are now adapting these ancient chemical pathways to formulate low-carbon, self-healing concretes that could slash global construction emissions while tripling the lifespan of coastal infrastructure.`,
+                questions: [
+                    { q: "1. Modern Portland cement concrete generally lasts longer than Roman concrete in marine environments.", options: ["True", "False", "Not Given"], ans: "False", exp: "Paragraph A states Roman structures have lasted over two millennia, whereas modern concrete deteriorates within 50 to 100 years." },
+                    { q: "2. The Roman architect Vitruvius wrote about the use of volcanic ash in concrete during the first century BCE.", options: ["True", "False", "Not Given"], ans: "True", exp: "Paragraph B explicitly states that Vitruvius documented mixing volcanic ash with lime and seawater in the first century BCE." },
+                    { q: "3. The Pantheon's dome required more volcanic ash than the harbor piers of Portus Cosanus.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "Both structures are mentioned in Paragraph A, but the quantities of volcanic ash used in each are never compared." },
+                    { q: "4. What happens when seawater filters through tiny cracks in Roman marine concrete?", options: ["It corrodes the internal iron bars", "It forms interlocking crystals of aluminous tobermorite", "It washes away the volcanic ash"], ans: "It forms interlocking crystals of aluminous tobermorite", exp: "Paragraph C explains that seawater dissolves volcanic glasses and crystallizes aluminous tobermorite." },
+                    { q: "5. Why did modern engineers previously misunderstand the white lime clasts found in Roman concrete?", options: ["They thought the clasts were caused by poor mixing", "They believed the clasts were decorative", "They assumed the clasts came from modern repairs"], ans: "They thought the clasts were caused by poor mixing", exp: "Paragraph C notes that the tiny white lime clasts were previously dismissed as evidence of sloppy mixing." },
+                    { q: "6. What is the main function of the lime clasts described in Paragraph D?", options: ["To make the concrete dry faster during construction", "To provide a chemical source that automatically seals new cracks", "To reduce the weight of large domes"], ans: "To provide a chemical source that automatically seals new cracks", exp: "Paragraph D explains that water reacts with the clasts to recrystallize and automatically seal micro-cracks." }
+                ]
+            }
+        ];
+
+        const standardListeningBank = [
+            {
+                title: "IELTS Section 3 & 4 Standard: Marine Microplastics & Coastal Ecosystems",
+                script: `Good morning everyone. In today's environmental science lecture, we're examining the long-term ecological impact of microplastics on coastal marine ecosystems. Now, many students initially assume that industrial shipping spills are the primary source of microplastic fibers in estuaries. Actually, recent coastal audits have disproved that assumption: over sixty-five percent of synthetic microfibers entering coastal waters originate from domestic laundry effluent and urban tire wear washed into storm drains. Once these microscopic particles enter the water column, they don't simply float harmlessly on the surface. Because their hydrophobic surfaces attract persistent organic pollutants, they act as toxic vectors. In our university's three-year study of Pacific oysters, we initially expected to find the highest concentration of microplastics in the digestive tract. However, upon histological analysis, we discovered that particles smaller than ten micrometers had translocated primarily into the gill tissues, reducing the oysters' filtration efficiency by nearly forty percent. Furthermore, when we tested juvenile reef fish exposed to these concentrations, their predator-avoidance reflexes slowed significantly, making them three times more vulnerable to predation. Moving forward, our department is piloting a bio-filtration project using native seagrass meadows, which have been shown to trap up to seventy percent of suspended sediment particles before they reach coral reefs.`,
+                questions: [
+                    { q: "1. According to the lecturer, what is the main source of synthetic microfibers in coastal waters?", options: ["Industrial shipping spills", "Household laundry and urban tire wear", "Commercial fishing nets"], ans: "Household laundry and urban tire wear", exp: "The speaker corrects the assumption about shipping spills and states over 65% comes from domestic laundry effluent and urban tire wear." },
+                    { q: "2. Why do microplastics act as dangerous 'toxic vectors' in the ocean?", options: ["They release heat into the water", "Their surfaces attract organic pollutants", "They block sunlight from reaching algae"], ans: "Their surfaces attract organic pollutants", exp: "The lecturer states that their hydrophobic surfaces attract persistent organic pollutants." },
+                    { q: "3. Where did the university study find the highest concentration of tiny particles (<10 micrometers) in Pacific oysters?", options: ["In the outer shell", "In the digestive tract", "In the gill tissues"], ans: "In the gill tissues", exp: "Although researchers initially expected the digestive tract (distractor!), histological analysis showed they translocated primarily into the gill tissues." },
+                    { q: "4. By how much did microplastic exposure reduce the oysters' filtration efficiency?", options: ["Nearly 10%", "Nearly 40%", "Over 65%"], ans: "Nearly 40%", exp: "The speaker explicitly states it reduced filtration efficiency by nearly forty percent." },
+                    { q: "5. How did microplastic exposure affect juvenile reef fish?", options: ["It slowed their predator-avoidance reflexes", "It prevented them from swimming in groups", "It reduced their body size by half"], ans: "It slowed their predator-avoidance reflexes", exp: "The lecture notes their predator-avoidance reflexes slowed significantly." },
+                    { q: "6. What natural solution is the department testing to trap microplastic sediment?", options: ["Artificial concrete barriers", "Native seagrass meadows", "Deep-sea sponge colonies"], ans: "Native seagrass meadows", exp: "At the end, the lecturer mentions piloting a bio-filtration project using native seagrass meadows." }
+                ]
+            },
+            {
+                title: "IELTS Standard Section 1 & 2: University Research Grant & Fieldwork Briefing",
+                script: `Welcome to the Undergraduate Research Symposium orientation. If you are applying for the Summer Fieldwork Grant, please pay close attention to the updated submission guidelines. In previous years, the application deadline was the thirty-first of March, but this year the committee has brought it forward to the fifteenth of March at 5:00 PM sharp. Each research proposal must be co-signed by a faculty supervisor. Now, regarding the budget allocation: the maximum grant per student is two thousand five hundred dollars. Please note that while travel and laboratory consumables are fully covered, the grant cannot be used to purchase personal laptops or cameras; instead, recording equipment can be borrowed free of charge from the Media Loan Office on the second floor of the Science Annex. Before departing for fieldwork, all successful applicants must complete a mandatory half-day Risk Assessment Workshop. There are two sessions available: one on Saturday the tenth of April, and a repeat session on Wednesday the fourteenth of April. Finally, upon returning in September, you will be required to present a ten-minute summary of your findings alongside an academic poster.`,
+                questions: [
+                    { q: "1. What is the new deadline for the Summer Fieldwork Grant application this year?", options: ["March 15th", "March 31st", "April 10th"], ans: "March 15th", exp: "March 31st was the old deadline (distractor); this year it was brought forward to March 15th." },
+                    { q: "2. What is the maximum funding amount a student can receive?", options: ["$1,500", "$2,000", "$2,500"], ans: "$2,500", exp: "The speaker states the maximum grant per student is two thousand five hundred dollars." },
+                    { q: "3. Which expense is NOT permitted under the grant rules?", options: ["Travel tickets", "Laboratory consumables", "Personal laptops and cameras"], ans: "Personal laptops and cameras", exp: "The speaker specifies that travel and lab consumables are covered, but personal laptops or cameras cannot be purchased." },
+                    { q: "4. Where can students borrow recording equipment free of charge?", options: ["The Main Library basement", "The Media Loan Office in the Science Annex", "The Student Union desk"], ans: "The Media Loan Office in the Science Annex", exp: "Equipment can be borrowed from the Media Loan Office on the second floor of the Science Annex." },
+                    { q: "5. What must all successful applicants complete before starting their fieldwork?", options: ["A language proficiency test", "A Risk Assessment Workshop", "A medical examination"], ans: "A Risk Assessment Workshop", exp: "All successful applicants must complete a mandatory half-day Risk Assessment Workshop." },
+                    { q: "6. What are students required to deliver when they return in September?", options: ["A 5,000-word dissertation", "A 10-minute presentation and an academic poster", "A video documentary"], ans: "A 10-minute presentation and an academic poster", exp: "They must present a ten-minute summary alongside an academic poster." }
+                ]
+            }
+        ];
+        let stdReadIdx = 0;
+        let stdListenIdx = 0;
+
+        // --- 3. INDEXED-DB FOR UNLIMITED FULL PDF STORAGE ---
         function openBookDB() {
             return new Promise((resolve, reject) => {
                 const req = indexedDB.open("IELTS_FULL_BOOKS_DB", 1);
@@ -674,8 +911,7 @@
         async function saveFullBookToIDB(bookObj) {
             try {
                 const idb = await openBookDB();
-                const tx = idb.transaction("books", "readwrite");
-                tx.objectStore("books").put(bookObj);
+                idb.transaction("books", "readwrite").objectStore("books").put(bookObj);
             } catch (e) {}
         }
 
@@ -683,8 +919,7 @@
             try {
                 const idb = await openBookDB();
                 return new Promise((resolve) => {
-                    const tx = idb.transaction("books", "readonly");
-                    const req = tx.objectStore("books").getAll();
+                    const req = idb.transaction("books", "readonly").objectStore("books").getAll();
                     req.onsuccess = () => resolve((req.result || []).filter(b => b.uid === uid));
                     req.onerror = () => resolve([]);
                 });
@@ -694,12 +929,11 @@
         async function deleteBookFromIDB(bookId) {
             try {
                 const idb = await openBookDB();
-                const tx = idb.transaction("books", "readwrite");
-                tx.objectStore("books").delete(bookId);
+                idb.transaction("books", "readwrite").objectStore("books").delete(bookId);
             } catch (e) {}
         }
 
-        // --- 2. 100% FULL PDF / DOCX / TXT SCANNER ---
+        // --- 4. 100% FULL PDF / DOCX / TXT SCANNER ---
         const readArrayBuffer = (file) => new Promise((res, rej) => {
             const r = new FileReader();
             r.onload = () => res(r.result);
@@ -737,24 +971,17 @@
             return (await readTextFile(file)).trim();
         }
 
-        // Smart Passage Window Picker: Automatically skips PDF Copyright/Table of Contents pages!
         let bookChunkCursor = 0;
-        function getSmartPassageFromFullText(fullText, maxChars = 8500) {
-            if (!fullText) return "";
-            if (fullText.length <= maxChars) return fullText;
-
-            // Skip front-matter (Copyright page, Publisher address, Table of Contents) on full books
-            const frontMatterOffset = fullText.length > 25000 ? Math.min(8000, Math.floor(fullText.length * 0.06)) : 0;
-            const bodyText = fullText.slice(frontMatterOffset);
-
-            const totalSlices = Math.max(1, Math.floor(bodyText.length / maxChars));
+        function getSmartPassageFromFullText(fullText, maxChars = 12000) {
+            if (!fullText || fullText.length <= maxChars) return fullText;
+            const totalSlices = Math.ceil(fullText.length / maxChars);
             const sliceIndex = bookChunkCursor % totalSlices;
             bookChunkCursor++;
             const start = sliceIndex * maxChars;
-            return bodyText.slice(start, start + maxChars);
+            return fullText.slice(start, start + maxChars);
         }
 
-        // --- 3. STATE & FIREBASE SYNC ---
+        // --- 5. STATE & FIREBASE SYNC ---
         let userSavedTests = [];
         let userSavedBooks = [];
         let activeListeningTest = null;
@@ -781,25 +1008,11 @@
             if (!user || !fullText) return null;
             const bookId = "book_" + Date.now();
             const totalWords = fullText.split(/\s+/).length;
-            const fullBookObj = {
-                id: bookId,
-                uid: user.uid,
-                title: title.trim() || "Uploaded Book",
-                content: fullText,
-                wordCount: totalWords,
-                createdAt: Date.now()
-            };
-
+            const fullBookObj = { id: bookId, uid: user.uid, title: title.trim() || "Uploaded Book", content: fullText, wordCount: totalWords, createdAt: Date.now() };
             await saveFullBookToIDB(fullBookObj);
             userSavedBooks.unshift(fullBookObj);
             renderBooksAndPickers();
-
-            try {
-                await setDoc(doc(db, 'users', user.uid, 'savedBooks', bookId), {
-                    ...fullBookObj,
-                    content: fullText.slice(0, 150000)
-                }, { merge: true });
-            } catch (e) {}
+            try { await setDoc(doc(db, 'users', user.uid, 'savedBooks', bookId), { ...fullBookObj, content: fullText.slice(0, 150000) }, { merge: true }); } catch (e) {}
             return fullBookObj;
         }
 
@@ -809,7 +1022,7 @@
                 const sel = document.getElementById(id);
                 if (!sel) return;
                 sel.innerHTML = `<option value="">📚 Pick Saved Book (${userSavedBooks.length})...</option>` +
-                    userSavedBooks.map((b) => `<option value="${b.id}">📕 ${b.title} (${(b.wordCount || 0).toLocaleString()} words)</option>`).join('');
+                    userSavedBooks.map(b => `<option value="${b.id}">📕 ${b.title} (${(b.wordCount || 0).toLocaleString()} words)</option>`).join('');
             });
 
             const grid = document.getElementById('books-grid-container');
@@ -819,7 +1032,7 @@
                 return;
             }
             grid.innerHTML = userSavedBooks.map((b, i) => `
-                <div class="glass-panel p-4 rounded-2xl flex flex-col justify-between gap-3 border border-pink-500/25">
+                <div class="glass-panel alive-card p-4 rounded-2xl flex flex-col justify-between gap-3 border border-pink-500/25">
                     <div>
                         <div class="flex justify-between items-center">
                             <span class="text-xs font-bold text-pink-400">Book #${userSavedBooks.length - i} • ${(b.wordCount || 0).toLocaleString()} words</span>
@@ -853,12 +1066,12 @@
                     if (lab === 'listening') {
                         document.getElementById('listening-custom-source').value = book.content;
                         document.getElementById('listening-book-picker').value = book.id;
-                        document.getElementById('listening-file-badge').textContent = `✓ Loaded "${book.title}" (${(book.wordCount || 0).toLocaleString()} words)`;
+                        document.getElementById('listening-file-badge').textContent = `✓ Loaded "${book.title}"`;
                         document.querySelector('[data-target="listening"]')?.click();
                     } else {
                         document.getElementById('reading-custom-source').value = book.content;
                         document.getElementById('reading-book-picker').value = book.id;
-                        document.getElementById('reading-file-status').textContent = `✓ Loaded "${book.title}" (${(book.wordCount || 0).toLocaleString()} words)`;
+                        document.getElementById('reading-file-status').textContent = `✓ Loaded "${book.title}"`;
                         document.querySelector('[data-target="reading"]')?.click();
                     }
                     showToast(`Loaded "${book.title}"! Click Generate.`, "success");
@@ -868,17 +1081,11 @@
 
         document.getElementById('listening-book-picker')?.addEventListener('change', (e) => {
             const b = userSavedBooks.find(x => x.id === e.target.value);
-            if (b) {
-                document.getElementById('listening-custom-source').value = b.content;
-                document.getElementById('listening-file-badge').textContent = `✓ ${(b.wordCount || 0).toLocaleString()} words ready`;
-            }
+            if (b) { document.getElementById('listening-custom-source').value = b.content; document.getElementById('listening-file-badge').textContent = `✓ ${(b.wordCount || 0).toLocaleString()} words ready`; }
         });
         document.getElementById('reading-book-picker')?.addEventListener('change', (e) => {
             const b = userSavedBooks.find(x => x.id === e.target.value);
-            if (b) {
-                document.getElementById('reading-custom-source').value = b.content;
-                document.getElementById('reading-file-status').textContent = `✓ ${(b.wordCount || 0).toLocaleString()} words ready`;
-            }
+            if (b) { document.getElementById('reading-custom-source').value = b.content; document.getElementById('reading-file-status').textContent = `✓ ${(b.wordCount || 0).toLocaleString()} words ready`; }
         });
 
         document.getElementById('book-library-upload')?.addEventListener('change', async (e) => {
@@ -886,41 +1093,27 @@
             if (!file) return;
             const statusEl = document.getElementById('book-upload-status');
             try {
-                const fullText = await extractFullTextFromFile(file, (p, tot) => {
-                    if (statusEl) statusEl.textContent = `📄 Scanning Page ${p} of ${tot}...`;
-                });
+                const fullText = await extractFullTextFromFile(file, (p, tot) => { if (statusEl) statusEl.textContent = `📄 Scanning Page ${p} of ${tot}...`; });
                 const words = fullText.split(/\s+/).length;
                 const cleanTitle = file.name.replace(/\.[^/.]+$/, "");
                 await saveBookForever(cleanTitle, fullText);
                 if (statusEl) statusEl.textContent = `✓ Scanned 100% of "${cleanTitle}" (${words.toLocaleString()} words) & saved forever!`;
                 showToast(`✓ Scanned all ${words.toLocaleString()} words!`, "success");
-            } catch (err) {
-                if (statusEl) statusEl.textContent = err.message;
-                showToast(err.message, "error");
-            }
+            } catch (err) { if (statusEl) statusEl.textContent = err.message; showToast(err.message, "error"); }
             e.target.value = "";
         });
 
-        // Saved Tests Engine
         const getTestsCacheKey = (uid) => `IELTS_TESTS_${uid}`;
         async function saveTestToAccount(testData) {
             const user = auth.currentUser;
             if (!user || !testData) return null;
             const testId = testData.id || ("test_" + Date.now() + "_" + Math.random().toString(36).slice(2, 5));
-            const fullTest = {
-                ...testData,
-                id: testId,
-                uid: user.uid,
-                createdAt: testData.createdAt || Date.now(),
-                dateStr: testData.dateStr || new Date().toISOString().split('T')[0]
-            };
+            const fullTest = { ...testData, id: testId, uid: user.uid, createdAt: testData.createdAt || Date.now(), dateStr: testData.dateStr || new Date().toISOString().split('T')[0] };
             const idx = userSavedTests.findIndex(t => t.id === testId);
             if (idx >= 0) userSavedTests[idx] = fullTest;
             else userSavedTests.unshift(fullTest);
-
             try { localStorage.setItem(getTestsCacheKey(user.uid), JSON.stringify(userSavedTests)); } catch (e) {}
             refreshSelectorsAndStats();
-
             try { await setDoc(doc(db, 'users', user.uid, 'savedTests', testId), fullTest, { merge: true }); } catch (e) {}
             return fullTest;
         }
@@ -945,7 +1138,7 @@
                 if (sel) {
                     const cur = sel.value;
                     sel.innerHTML = list.length === 0
-                        ? `<option value="">-- No saved ${mod} tests yet --</option>`
+                        ? `<option value="">-- Select a Saved ${mod} Test --</option>`
                         : list.map((t, i) => `<option value="${t.id}">Test #${list.length - i}: ${t.title || 'Test'} ${t.scoreLabel ? `[${t.scoreLabel}]` : ''}</option>`).join('');
                     if (cur && list.some(x => x.id === cur)) sel.value = cur;
                 }
@@ -1013,11 +1206,15 @@
             });
         });
 
-        // Auth State Listener
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 document.getElementById('login-screen')?.classList.add('hide');
                 document.getElementById('main-app')?.classList.remove('hide');
+
+                // Initialize default Cambridge Standard Tests & Course
+                renderCourseModule('tenses');
+                renderReadingTest(standardReadingBank[0]);
+                renderListeningTest(standardListeningBank[0]);
 
                 try { userSavedTests = JSON.parse(localStorage.getItem(getTestsCacheKey(user.uid)) || "[]"); } catch (e) { userSavedTests = []; }
                 userSavedBooks = await getAllBooksFromIDB(user.uid);
@@ -1087,7 +1284,7 @@
                         const u = d.data();
                         const n = u.displayName || "Student";
                         const av = u.photoURL || `https://ui-avatars.com/api/?name=${n}&background=0D8ABC&color=fff`;
-                        tb.innerHTML += `<tr class="border-b border-slate-700/50"><td class="py-2.5 pr-2"><div class="flex items-center gap-2 max-w-[140px] sm:max-w-[220px]"><img src="${av}" class="w-7 h-7 rounded-full object-cover flex-shrink-0"><span class="truncate">${n}</span></div></td><td class="py-2.5 px-2 font-bold text-orange-400"><i class="fa-solid fa-fire mr-1"></i>${u.studyStreak || 0}d</td><td class="py-2.5 px-2 font-bold text-blue-400">Band ${u.targetBand || '7.5'}</td><td class="py-2.5 pl-2 text-xs text-slate-400">${u.status || 'Studying'}</td></tr>`;
+                        tb.innerHTML += `<tr class="border-b border-slate-700/50"><td class="py-2.5 pr-2"><div class="flex items-center gap-2 max-w-[140px] sm:max-w-[220px]"><img src="${av}" class="w-7 h-7 rounded-full object-cover flex-shrink-0"><span class="truncate">${n}</span></div></td><td class="py-2.5 px-2 font-bold text-orange-400"><i class="fa-solid fa-fire flame-glow mr-1"></i>${u.studyStreak || 0}d</td><td class="py-2.5 px-2 font-bold text-blue-400">Band ${u.targetBand || '7.5'}</td><td class="py-2.5 pl-2 text-xs text-slate-400">${u.status || 'Studying'}</td></tr>`;
                     });
                 });
             } else {
@@ -1096,7 +1293,6 @@
             }
         });
 
-        // Navigation
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
         const closeMenu = () => { sidebar?.classList.add('-translate-x-full'); overlay?.classList.add('hide'); };
@@ -1138,9 +1334,7 @@
             r.onload = (ev) => {
                 const img = new Image();
                 img.onload = async () => {
-                    const c = document.createElement('canvas');
-                    c.width = 160;
-                    c.height = 160;
+                    const c = document.createElement('canvas'); c.width = 160; c.height = 160;
                     c.getContext('2d').drawImage(img, 0, 0, 160, 160);
                     await setDoc(doc(db, 'users', auth.currentUser.uid), { photoURL: c.toDataURL('image/jpeg', 0.75) }, { merge: true });
                     showToast("✓ Photo updated!", "success");
@@ -1150,19 +1344,22 @@
             r.readAsDataURL(file);
         });
 
-        // --- 4. UNBREAKABLE AI ENGINE (Groq + Cloud Fallback + Smart Local Test Builder) ---
-        async function askIELTSAI(userPrompt, systemPrompt = "You are a Band 9.0 IELTS Examiner.") {
+        // --- 6. GROQ AI ENGINE WITH STRICT JSON MODE FOR CUSTOM TOPICS ---
+        async function askIELTSAI(userPrompt, systemPrompt = "You are a Band 9.0 IELTS Examiner.", forceJSON = false) {
             const apiKey = getBuiltInKey();
             for (const model of ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]) {
                 try {
+                    const payload = {
+                        model,
+                        messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
+                        temperature: 0.55
+                    };
+                    if (forceJSON) payload.response_format = { type: "json_object" };
+
                     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                         method: "POST",
                         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
-                        body: JSON.stringify({
-                            model,
-                            messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
-                            temperature: 0.5
-                        })
+                        body: JSON.stringify(payload)
                     });
                     if (res.ok) {
                         const data = await res.json();
@@ -1177,26 +1374,24 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
-                        model: "openai"
+                        model: "openai",
+                        jsonMode: forceJSON
                     })
                 });
-                if (res.ok) {
-                    const txt = await res.text();
-                    if (txt && txt.trim().length > 10) return txt;
-                }
+                if (res.ok) return await res.text();
             } catch (e) {}
             return "";
         }
 
-        const formatAIMarkdown = (raw) => {
+        function formatAIMarkdown(raw) {
             if (!raw) return "";
-            const c = raw.replace(/^```(?:markdown|html)?\s*/i, '').replace(/```$/i, '').trim();
+            const c = String(raw).replace(/^```(?:markdown|html)?\s*/i, '').replace(/```$/i, '').trim();
             return window.marked?.parse ? window.marked.parse(c) : c.replace(/\n/g, '<br>');
-        };
+        }
 
         function parseJSONSafely(raw) {
             if (!raw) return null;
-            let c = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+            let c = String(raw).replace(/```json/gi, '').replace(/```/g, '').trim();
             const f = c.indexOf('{'), l = c.lastIndexOf('}');
             if (f !== -1 && l !== -1) c = c.substring(f, l + 1);
             try { return JSON.parse(c); }
@@ -1206,40 +1401,7 @@
             }
         }
 
-        function buildFallbackTestFromText(sourceText, type = "reading") {
-            const clean = (sourceText || "").trim();
-            if (clean.length > 150) {
-                const sents = clean.split(/(?<=[.!?])\s+/).filter(s => s.length > 35);
-                const paras = [];
-                for (let i = 0; i < Math.min(sents.length, 16); i += 4) {
-                    paras.push(sents.slice(i, i + 4).join(' '));
-                }
-                const qs = sents.slice(0, 5).map((s, idx) => ({
-                    q: `${idx + 1}. According to the text, is this statement supported: "${s.slice(0, 95)}..."?`,
-                    options: type === "reading" ? ["True", "False", "Not Given"] : ["Stated in the audio", "Contradicted", "Not mentioned"],
-                    ans: type === "reading" ? "True" : "Stated in the audio",
-                    exp: `Directly supported by: "${s.slice(0, 120)}..."`
-                }));
-                return {
-                    title: "Custom Document IELTS Test",
-                    passage: paras.map((p, i) => `**Paragraph ${String.fromCharCode(65 + i)}**\n\n${p}`).join('\n\n'),
-                    script: paras.join(' '),
-                    questions: qs
-                };
-            }
-            return {
-                title: "Urban Sustainable Architecture & Green Cities",
-                passage: "**Paragraph A**\n\nModern metropolitan areas are increasingly adopting biophilic architecture to combat urban heat islands and reduce carbon emissions.\n\n**Paragraph B**\n\nStudies demonstrate that integrating vertical forests into high-rise buildings lowers cooling costs by 30% while improving air quality.",
-                script: "Welcome to today's lecture on sustainable urban architecture. Modern cities are increasingly adopting biophilic design to combat urban heat islands. Studies show that vertical forests on high-rise buildings reduce cooling energy costs by thirty percent while filtering air pollutants.",
-                questions: [
-                    { q: "1. Biophilic architecture helps reduce urban heat islands.", options: ["True", "False", "Not Given"], ans: "True", exp: "Stated in Paragraph A." },
-                    { q: "2. Vertical forests lower cooling costs by 30%.", options: ["True", "False", "Not Given"], ans: "True", exp: "Confirmed in Paragraph B." },
-                    { q: "3. Biophilic buildings are mandatory in all cities.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "Not mentioned in the text." }
-                ]
-            };
-        }
-
-        // --- 5. AI TUTOR CHAT (With Full PDF/TXT File Attachment) ---
+        // --- 7. AI TUTOR CHAT ---
         let pendingChatFileText = null;
         let pendingChatFileName = "";
 
@@ -1258,8 +1420,7 @@
         });
 
         document.getElementById('btn-remove-chat-attachment')?.addEventListener('click', () => {
-            pendingChatFileText = null;
-            pendingChatFileName = "";
+            pendingChatFileText = null; pendingChatFileName = "";
             document.getElementById('chat-attachment-bar')?.classList.add('hide');
         });
 
@@ -1273,8 +1434,7 @@
 
             const fileContext = pendingChatFileText ? getSmartPassageFromFullText(pendingChatFileText, 12000) : null;
             const fileLabel = pendingChatFileName;
-            pendingChatFileText = null;
-            pendingChatFileName = "";
+            pendingChatFileText = null; pendingChatFileName = "";
             document.getElementById('chat-attachment-bar')?.classList.add('hide');
 
             chatBox.innerHTML += `<div class="flex justify-end"><div class="bg-blue-600 px-3.5 py-2.5 rounded-2xl rounded-tr-none text-xs sm:text-sm text-white max-w-[85%]">${fileLabel ? `<div class="text-[11px] bg-blue-800 px-2 py-0.5 rounded mb-1">📎 ${fileLabel}</div>` : ''}${msg}</div></div>`;
@@ -1297,15 +1457,15 @@
         document.querySelectorAll('.ai-quick-btn').forEach(b => b.addEventListener('click', () => sendChat(b.getAttribute('data-prompt'))));
         document.getElementById('btn-clear-chat')?.addEventListener('click', () => { document.getElementById('ai-chat-box').innerHTML = ''; });
 
-        // --- 6. LISTENING LAB (Separate Generate & Save Buttons + Full PDF Scan) ---
+        // --- 8. LISTENING LAB (Standard Test When Blank, Custom AI Test When Topic Given) ---
         function renderListeningTest(testObj) {
             if (!testObj) return;
             activeListeningTest = testObj;
-            document.getElementById('listening-title').textContent = testObj.title || "AI Listening Test";
-            document.getElementById('listening-status').textContent = "Click 'Play Audio' to listen and answer below.";
+            document.getElementById('listening-title').textContent = testObj.title || "IELTS Standard Listening Test";
+            document.getElementById('listening-status').textContent = "Click 'Play Audio' to listen and answer all 6 questions below.";
             document.getElementById('listening-score-box').textContent = testObj.scoreLabel || "";
             const tBox = document.getElementById('listening-transcript-box');
-            if (tBox) { tBox.classList.add('hide'); tBox.innerHTML = `<strong>Audio Transcript:</strong><br>${testObj.script || ""}`; }
+            if (tBox) { tBox.classList.add('hide'); tBox.innerHTML = `<strong class="text-cyan-400">Official Audio Transcript:</strong><br><br>${testObj.script || ""}`; }
 
             const savedAns = testObj.userAnswers || {};
             document.getElementById('listening-questions-box').innerHTML = (testObj.questions || []).map((item, idx) => `
@@ -1324,14 +1484,12 @@
             if (!file) return;
             const badge = document.getElementById('listening-file-badge');
             try {
-                const fullText = await extractFullTextFromFile(file, (p, tot) => {
-                    if (badge) badge.textContent = `Scanning page ${p}/${tot}...`;
-                });
+                const fullText = await extractFullTextFromFile(file, (p, tot) => { if (badge) badge.textContent = `Scanning page ${p}/${tot}...`; });
                 const words = fullText.split(/\s+/).length;
                 document.getElementById('listening-custom-source').value = fullText;
                 const title = file.name.replace(/\.[^/.]+$/, "");
                 await saveBookForever(title, fullText);
-                if (badge) badge.textContent = `✓ Scanned all ${words.toLocaleString()} words & saved to Book Library!`;
+                if (badge) badge.textContent = `✓ Scanned all ${words.toLocaleString()} words!`;
                 showToast(`✓ Scanned ${words.toLocaleString()} words!`, "success");
             } catch (err) { showToast(err.message, "error"); }
             e.target.value = "";
@@ -1346,25 +1504,38 @@
             window.speechSynthesis?.cancel();
             const btn = document.getElementById('btn-ai-listening');
             const rawSource = document.getElementById('listening-custom-source')?.value.trim() || "";
-            const chunk = getSmartPassageFromFullText(rawSource, 6000);
             const orig = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating IELTS Listening...`;
 
-            const prompt = `${chunk ? `Use this text to create an IELTS Listening script and 5 multiple-choice questions:\n"""${chunk}"""` : `Create an IELTS Listening lecture script (180 words) on a science, history, or university topic with 5 multiple-choice questions.`}
-Respond ONLY with a valid JSON object in this exact format:
-{"title":"Listening Topic Title","script":"Full spoken audio script here...","questions":[{"q":"1. Question text?","options":["Option A","Option B","Option C"],"ans":"Option B","exp":"Explanation"}]}`;
+            const topicPrompt = rawSource
+                ? `Create a full, official-standard IELTS Listening test (250-word spoken script with realistic IELTS distractors and 6 multiple-choice questions) strictly based on this topic or text:\n"""${getSmartPassageFromFullText(rawSource, 7000)}"""`
+                : `Create a brand-new, official Cambridge IELTS Standard Listening lecture or conversation (250-word spoken script with realistic IELTS distractors and 6 multiple-choice questions) on an academic university, science, or historical topic.`;
+
+            const prompt = `${topicPrompt}
+Return a valid JSON object with this exact schema:
+{
+  "title": "IELTS Listening Title",
+  "script": "Full 250-word spoken script...",
+  "questions": [
+    {"q": "1. Question text?", "options": ["Option A", "Option B", "Option C"], "ans": "Option B", "exp": "Detailed explanation."}
+  ]
+}`;
 
             try {
-                const raw = await askIELTSAI(prompt, "You output only valid JSON objects without markdown commentary.");
-                let parsed = parseJSONSafely(raw);
-                if (!parsed || !parsed.script || !Array.isArray(parsed.questions)) {
-                    parsed = buildFallbackTestFromText(chunk, "listening");
+                const raw = await askIELTSAI(prompt, "You are an official Cambridge IELTS Listening test writer. Output valid JSON only.", true);
+                const parsed = parseJSONSafely(raw);
+                if (parsed && parsed.script && Array.isArray(parsed.questions) && parsed.questions.length >= 4) {
+                    renderListeningTest(parsed);
+                    showToast("✓ Official-Standard Listening Test Generated!", "success");
+                } else {
+                    stdListenIdx = (stdListenIdx + 1) % standardListeningBank.length;
+                    renderListeningTest(standardListeningBank[stdListenIdx]);
+                    showToast("✓ Loaded Official Cambridge Standard Listening Test!", "success");
                 }
-                renderListeningTest(parsed);
-                showToast("✓ Listening Test Generated! Click 'Save Test' if you want to save it.", "success");
             } catch (e) {
-                renderListeningTest(buildFallbackTestFromText(chunk, "listening"));
+                stdListenIdx = (stdListenIdx + 1) % standardListeningBank.length;
+                renderListeningTest(standardListeningBank[stdListenIdx]);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = orig;
@@ -1391,25 +1562,30 @@ Respond ONLY with a valid JSON object in this exact format:
             const u = new SpeechSynthesisUtterance(activeListeningTest.script);
             u.lang = "en-GB";
             u.rate = parseFloat(document.getElementById('listening-speed')?.value || "0.95");
+            const eq = document.getElementById('listening-eq');
+            eq?.classList.remove('hide');
+            u.onend = () => eq?.classList.add('hide');
             window.speechSynthesis.speak(u);
         });
-        document.getElementById('btn-stop-listening')?.addEventListener('click', () => window.speechSynthesis?.cancel());
+        document.getElementById('btn-stop-listening')?.addEventListener('click', () => {
+            window.speechSynthesis?.cancel();
+            document.getElementById('listening-eq')?.classList.add('hide');
+        });
 
         document.getElementById('btn-submit-listening')?.addEventListener('click', async () => {
             if (!activeListeningTest?.questions) return;
             const qs = activeListeningTest.questions;
-            let score = 0;
-            const ansMap = {};
+            let score = 0; const ansMap = {};
             qs.forEach((item, idx) => {
                 const sel = document.querySelector(`input[name="listen-q-${idx}"]:checked`);
                 if (sel) ansMap[idx] = sel.value;
                 const ok = sel && sel.value.trim().toLowerCase() === String(item.ans).trim().toLowerCase();
                 if (ok) score++;
                 const expEl = document.getElementById(`listen-exp-${idx}`);
-                if (expEl) { expEl.classList.remove('hide'); expEl.innerHTML = ok ? `<span class="text-emerald-400 font-bold">✓ Correct (${item.ans})</span>` : `<span class="text-red-400 font-bold">✗ Answer: ${item.ans}</span> — ${item.exp || ''}`; }
+                if (expEl) { expEl.classList.remove('hide'); expEl.innerHTML = ok ? `<span class="text-emerald-400 font-bold">✓ Correct (${item.ans})</span> — ${item.exp || ''}` : `<span class="text-red-400 font-bold">✗ Answer: ${item.ans}</span> — ${item.exp || ''}`; }
             });
             const ratio = score / qs.length;
-            const band = ratio >= 0.9 ? 8.5 : ratio >= 0.8 ? 8.0 : ratio >= 0.6 ? 7.0 : ratio >= 0.4 ? 6.0 : 5.0;
+            const band = ratio >= 0.9 ? 8.5 : ratio >= 0.8 ? 8.0 : ratio >= 0.65 ? 7.0 : ratio >= 0.5 ? 6.0 : 5.0;
             activeListeningTest.band = band;
             activeListeningTest.scoreLabel = `${score}/${qs.length} (Band ${band.toFixed(1)})`;
             activeListeningTest.userAnswers = ansMap;
@@ -1419,12 +1595,22 @@ Respond ONLY with a valid JSON object in this exact format:
             showToast(`✓ Score Saved: ${activeListeningTest.scoreLabel}`, "success");
         });
 
-        // --- 7. READING LAB (Separate Generate & Save Buttons + Full PDF Scan) ---
+        // --- 9. READING LAB (Full Cambridge Standard When Blank, Custom Topic via Strict JSON Array) ---
         function renderReadingTest(testObj) {
             if (!testObj) return;
             activeReadingTest = testObj;
-            document.getElementById('reading-passage-title').textContent = testObj.title || "AI Reading Passage";
-            document.getElementById('reading-passage-body').innerHTML = formatAIMarkdown(Array.isArray(testObj.passage) ? testObj.passage.join('\n\n') : String(testObj.passage || ""));
+            document.getElementById('reading-passage-title').textContent = testObj.title || "IELTS Academic Reading Passage";
+
+            let passageText = "";
+            if (Array.isArray(testObj.paragraphs)) {
+                passageText = testObj.paragraphs.map((p, i) => p.startsWith("**Paragraph") ? p : `**Paragraph ${String.fromCharCode(65 + i)}**\n\n${p}`).join('\n\n');
+            } else if (Array.isArray(testObj.passage)) {
+                passageText = testObj.passage.join('\n\n');
+            } else {
+                passageText = String(testObj.passage || "");
+            }
+
+            document.getElementById('reading-passage-body').innerHTML = formatAIMarkdown(passageText);
             document.getElementById('reading-score-box').textContent = testObj.scoreLabel || "";
 
             const savedAns = testObj.userAnswers || {};
@@ -1444,14 +1630,12 @@ Respond ONLY with a valid JSON object in this exact format:
             if (!file) return;
             const status = document.getElementById('reading-file-status');
             try {
-                const fullText = await extractFullTextFromFile(file, (p, tot) => {
-                    if (status) status.textContent = `Scanning page ${p}/${tot}...`;
-                });
+                const fullText = await extractFullTextFromFile(file, (p, tot) => { if (status) status.textContent = `Scanning page ${p}/${tot}...`; });
                 const words = fullText.split(/\s+/).length;
                 document.getElementById('reading-custom-source').value = fullText;
                 const title = file.name.replace(/\.[^/.]+$/, "");
                 await saveBookForever(title, fullText);
-                if (status) status.textContent = `✓ Scanned all ${words.toLocaleString()} words & saved to Book Library!`;
+                if (status) status.textContent = `✓ Scanned all ${words.toLocaleString()} words!`;
                 showToast(`✓ Scanned ${words.toLocaleString()} words!`, "success");
             } catch (err) { showToast(err.message, "error"); }
             e.target.value = "";
@@ -1465,25 +1649,50 @@ Respond ONLY with a valid JSON object in this exact format:
         document.getElementById('btn-ai-reading')?.addEventListener('click', async () => {
             const btn = document.getElementById('btn-ai-reading');
             const rawSource = document.getElementById('reading-custom-source')?.value.trim() || "";
-            const chunk = getSmartPassageFromFullText(rawSource, 7500);
             const orig = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating IELTS Passage...`;
 
-            const prompt = `${chunk ? `Use this text to create an IELTS Academic Reading passage (Paragraphs A, B, C, D) and 5 questions:\n"""${chunk}"""` : `Write an IELTS Academic Reading passage (Paragraphs A, B, C, D) on a science, history, or technology topic with 5 True/False/Not Given questions.`}
-Respond ONLY with a valid JSON object in this exact format:
-{"title":"Reading Passage Title","passage":"**Paragraph A**\\n\\nText...\\n\\n**Paragraph B**\\n\\nText...","questions":[{"q":"1. Statement?","options":["True","False","Not Given"],"ans":"True","exp":"Explanation"}]}`;
+            const topicInstruction = rawSource
+                ? `Write a high-level Cambridge IELTS Academic Reading test strictly about this topic or source text:\n"""${getSmartPassageFromFullText(rawSource, 8000)}"""`
+                : `Write a brand-new, high-level Cambridge IELTS Academic Reading test on a fascinating university-level science, archaeology, neuroscience, or economics topic.`;
+
+            const prompt = `${topicInstruction}
+
+Requirements:
+1. Write 4 long, detailed academic paragraphs (Paragraph A, Paragraph B, Paragraph C, Paragraph D), each 100-130 words long using Band 8.5 vocabulary.
+2. Create 6 official IELTS Reading questions (3 True/False/Not Given + 3 Multiple Choice) with detailed explanations.
+Return a valid JSON object matching this exact structure:
+{
+  "title": "Academic Passage Title",
+  "paragraphs": [
+    "**Paragraph A**\\n\\nFull 110-word academic paragraph A...",
+    "**Paragraph B**\\n\\nFull 110-word academic paragraph B...",
+    "**Paragraph C**\\n\\nFull 110-word academic paragraph C...",
+    "**Paragraph D**\\n\\nFull 110-word academic paragraph D..."
+  ],
+  "questions": [
+    {"q": "1. Statement?", "options": ["True", "False", "Not Given"], "ans": "True", "exp": "Detailed explanation citing the paragraph."}
+  ]
+}`;
 
             try {
-                const raw = await askIELTSAI(prompt, "You output only valid JSON objects without markdown commentary.");
-                let parsed = parseJSONSafely(raw);
-                if (!parsed || !parsed.passage || !Array.isArray(parsed.questions)) {
-                    parsed = buildFallbackTestFromText(chunk, "reading");
+                const raw = await askIELTSAI(prompt, "You are a senior Cambridge IELTS Academic Reading test writer. Output valid JSON only.", true);
+                const parsed = parseJSONSafely(raw);
+                if (parsed && (Array.isArray(parsed.paragraphs) || parsed.passage) && Array.isArray(parsed.questions) && parsed.questions.length >= 4) {
+                    if (Array.isArray(parsed.paragraphs)) {
+                        parsed.passage = parsed.paragraphs.join('\n\n');
+                    }
+                    renderReadingTest(parsed);
+                    showToast("✓ Full Cambridge-Standard Reading Test Generated!", "success");
+                } else {
+                    stdReadIdx = (stdReadIdx + 1) % standardReadingBank.length;
+                    renderReadingTest(standardReadingBank[stdReadIdx]);
+                    showToast("✓ Loaded Official Cambridge Standard Reading Test!", "success");
                 }
-                renderReadingTest(parsed);
-                showToast("✓ Reading Test Generated! Click 'Save Test' to save it.", "success");
             } catch (e) {
-                renderReadingTest(buildFallbackTestFromText(chunk, "reading"));
+                stdReadIdx = (stdReadIdx + 1) % standardReadingBank.length;
+                renderReadingTest(standardReadingBank[stdReadIdx]);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = orig;
@@ -1507,18 +1716,17 @@ Respond ONLY with a valid JSON object in this exact format:
         document.getElementById('btn-submit-reading')?.addEventListener('click', async () => {
             if (!activeReadingTest?.questions) return;
             const qs = activeReadingTest.questions;
-            let score = 0;
-            const ansMap = {};
+            let score = 0; const ansMap = {};
             qs.forEach((item, idx) => {
                 const sel = document.querySelector(`input[name="read-q-${idx}"]:checked`);
                 if (sel) ansMap[idx] = sel.value;
                 const ok = sel && sel.value.trim().toLowerCase() === String(item.ans).trim().toLowerCase();
                 if (ok) score++;
                 const expEl = document.getElementById(`read-exp-${idx}`);
-                if (expEl) { expEl.classList.remove('hide'); expEl.innerHTML = ok ? `<span class="text-emerald-400 font-bold">✓ Correct (${item.ans})</span>` : `<span class="text-red-400 font-bold">✗ Answer: ${item.ans}</span> — ${item.exp || ''}`; }
+                if (expEl) { expEl.classList.remove('hide'); expEl.innerHTML = ok ? `<span class="text-emerald-400 font-bold">✓ Correct (${item.ans})</span> — ${item.exp || ''}` : `<span class="text-red-400 font-bold">✗ Answer: ${item.ans}</span> — ${item.exp || ''}`; }
             });
             const ratio = score / qs.length;
-            const band = ratio >= 0.9 ? 8.5 : ratio >= 0.8 ? 8.0 : ratio >= 0.6 ? 7.0 : ratio >= 0.4 ? 6.0 : 5.0;
+            const band = ratio >= 0.9 ? 8.5 : ratio >= 0.8 ? 8.0 : ratio >= 0.65 ? 7.0 : ratio >= 0.5 ? 6.0 : 5.0;
             activeReadingTest.band = band;
             activeReadingTest.scoreLabel = `${score}/${qs.length} (Band ${band.toFixed(1)})`;
             activeReadingTest.userAnswers = ansMap;
@@ -1528,7 +1736,7 @@ Respond ONLY with a valid JSON object in this exact format:
             showToast(`✓ Reading Score Saved: ${activeReadingTest.scoreLabel}`, "success");
         });
 
-        // --- 8. WRITING & SPEAKING LABS (Separate Generate & Save) ---
+        // --- 10. WRITING & SPEAKING LABS ---
         const writingArea = document.getElementById('writing-area');
         writingArea?.addEventListener('input', () => {
             const words = writingArea.value.trim() ? writingArea.value.trim().split(/\s+/).length : 0;
@@ -1551,8 +1759,8 @@ Respond ONLY with a valid JSON object in this exact format:
         document.getElementById('btn-ai-writing-prompt')?.addEventListener('click', async () => {
             const custom = document.getElementById('writing-custom-source')?.value.trim() || "";
             const box = document.getElementById('writing-prompt-box');
-            box.innerHTML = `<span class="text-amber-300 animate-pulse">✨ Generating Writing Topic...</span>`;
-            const reply = await askIELTSAI(custom ? `Create an IELTS Writing Task 2 prompt about "${custom}". Start line 1 with ### [Short Topic Name].` : `Generate an official IELTS Academic Writing Task 2 prompt. Start line 1 with ### [Short Topic Name].`);
+            box.innerHTML = `<span class="text-amber-300 animate-pulse">✨ Generating Official IELTS Writing Task 2 Prompt...</span>`;
+            const reply = await askIELTSAI(custom ? `Create an official Cambridge IELTS Writing Task 2 prompt about "${custom}". Start line 1 with ### [Short Topic Name], followed by the prompt and 3 Band 8.5 planning ideas.` : `Generate an official Cambridge IELTS Academic Writing Task 2 prompt. Start line 1 with ### [Short Topic Name], followed by the prompt and 3 Band 8.5 planning ideas.`);
             const title = (reply.split('\n')[0] || "Writing Task 2").replace(/[#*]/g, '').trim().slice(0, 50);
             activeWritingTest = { module: 'writing', title, promptText: reply, essayText: writingArea?.value || "" };
             renderWritingTest(activeWritingTest);
@@ -1576,11 +1784,10 @@ Respond ONLY with a valid JSON object in this exact format:
             const essay = writingArea?.value.trim();
             if (!essay) return showToast("Write your essay first!", "error");
             const fb = document.getElementById('writing-feedback-box');
-            fb.classList.remove('hide');
-            fb.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Grading essay...</span>`;
+            fb.classList.remove('hide'); fb.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Grading essay across all 4 IELTS criteria...</span>`;
             const words = essay.split(/\s+/).length;
             const promptContext = activeWritingTest?.promptText || "IELTS Writing Task 2";
-            const reply = await askIELTSAI(`Grade this IELTS essay (${words} words) for topic:\n${promptContext}\n\nEssay:\n${essay}\n\nStart line 1 with: **Overall Band Score: X.X** followed by a Criteria Table and Corrections.`);
+            const reply = await askIELTSAI(`Grade this IELTS essay (${words} words) for topic:\n${promptContext}\n\nEssay:\n${essay}\n\nStart line 1 with: **Overall Band Score: X.X** followed by a Criteria Table, Sentence Corrections, and Band 8.5 Model Paragraph Upgrade.`);
             const match = reply.match(/Band(?:\s+Score)?\s*[:\-]?\s*([4-9](?:\.[05])?)/i);
             const band = match ? parseFloat(match[1]) : 6.5;
             activeWritingTest = { ...(activeWritingTest || { module: 'writing', title: `Essay (${words}w)`, promptText: promptContext }), essayText: essay, feedbackMarkdown: reply, band, scoreLabel: `Band ${band.toFixed(1)}`, gradedDateStr: new Date().toISOString().split('T')[0] };
@@ -1589,7 +1796,6 @@ Respond ONLY with a valid JSON object in this exact format:
             showToast(`✓ Graded & Saved: Band ${band.toFixed(1)}`, "success");
         });
 
-        // Speaking
         function renderSpeakingTest(testObj) {
             if (!testObj) return;
             activeSpeakingTest = testObj;
@@ -1601,8 +1807,8 @@ Respond ONLY with a valid JSON object in this exact format:
         document.getElementById('btn-ai-speaking-card')?.addEventListener('click', async () => {
             const custom = document.getElementById('speaking-custom-source')?.value.trim() || "";
             const box = document.getElementById('speaking-cue-card');
-            box.innerHTML = `<span class="text-rose-400 animate-pulse">✨ Generating Cue Card...</span>`;
-            const reply = await askIELTSAI(custom ? `Generate an IELTS Speaking Part 2 Cue Card about "${custom}". Start line 1 with ### Describe [Topic].` : `Generate an official IELTS Speaking Part 2 Cue Card. Start line 1 with ### Describe [Topic].`);
+            box.innerHTML = `<span class="text-rose-400 animate-pulse">✨ Generating Official Speaking Cue Card...</span>`;
+            const reply = await askIELTSAI(custom ? `Generate an official IELTS Speaking Part 2 Cue Card about "${custom}". Start line 1 with ### Describe [Topic].` : `Generate an official IELTS Speaking Part 2 Cue Card. Start line 1 with ### Describe [Topic].`);
             const title = (reply.split('\n')[0] || "Speaking Cue Card").replace(/[#*]/g, '').trim().slice(0, 50);
             activeSpeakingTest = { module: 'speaking', title, cardMarkdown: reply, userTranscript: "" };
             renderSpeakingTest(activeSpeakingTest);
@@ -1675,9 +1881,7 @@ Respond ONLY with a valid JSON object in this exact format:
                 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
                 if (SR) {
                     speechRec = new SR();
-                    speechRec.continuous = true;
-                    speechRec.interimResults = true;
-                    speechRec.lang = 'en-US';
+                    speechRec.continuous = true; speechRec.interimResults = true; speechRec.lang = 'en-US';
                     let finalStr = transBox?.value ? transBox.value + " " : "";
                     speechRec.onresult = (ev) => {
                         let interim = "";
@@ -1694,7 +1898,6 @@ Respond ONLY with a valid JSON object in this exact format:
             } catch (e) { showToast("Allow microphone access.", "error"); }
         });
 
-        // Timers
         function startCountdown(elId, seconds) {
             const el = document.getElementById(elId);
             if (!el || el.dataset.active === "true") return;
