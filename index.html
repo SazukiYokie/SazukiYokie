@@ -1,581 +1,256 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IELTS.STUDIO — The Ultimate Self-Study Platform</title>
+  <title>IELTS.STUDIO — Free Mock Tests & Self-Study</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="aurora-bg">
+<body class="bg-slate-50 text-slate-900 antialiased">
 
   <!-- Toast Notifications -->
-  <div id="toast-container" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none w-full max-w-sm px-4"></div>
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none w-full max-w-sm px-4"></div>
 
-  <!-- ================= 1. LOGIN & REGISTER GATE ================= -->
-  <div id="auth-view" class="min-h-screen flex items-center justify-center p-4">
-    <div class="surface-card p-8 max-w-md w-full shadow-2xl space-y-6 relative overflow-hidden glass-panel">
-      <div class="absolute -right-12 -top-12 w-48 h-48 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(79,70,229,0.2) 0%, transparent 70%);"></div>
-      
-      <div class="text-center space-y-2 relative z-10">
-        <div class="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center font-mono font-bold text-white text-2xl shadow-lg" style="background: linear-gradient(135deg, #4f46e5, #10b981);">9.0</div>
-        <h1 class="text-2xl font-bold tracking-tight mt-4">IELTS.STUDIO</h1>
-        <p class="text-xs text-muted" id="auth-subtitle">Welcome back. Please log in.</p>
+  <!-- ================= 1. LOGIN / SIGNUP PAGE ================= -->
+  <div id="auth-view" class="min-h-screen flex">
+    <!-- Left Side: Branding -->
+    <div class="hidden lg:flex flex-col justify-center w-1/2 bg-blue-900 text-white p-16 relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
+      <div class="relative z-10">
+        <div class="w-16 h-16 bg-white text-blue-900 rounded-2xl flex items-center justify-center font-bold text-3xl mb-8 shadow-xl">9.0</div>
+        <h1 class="text-5xl font-bold mb-6 font-serif leading-tight">Master the IELTS.<br>On your terms.</h1>
+        <p class="text-lg text-blue-200 max-w-md">Join thousands of students using AI-simulated mock tests, comprehensive study guides, and real-time analytics to achieve their target band score.</p>
+        <ul class="mt-10 space-y-4 text-blue-100">
+          <li class="flex items-center gap-3">✅ Unlimited AI Practice Tests</li>
+          <li class="flex items-center gap-3">✅ Band 7-9 Strategies</li>
+          <li class="flex items-center gap-3">✅ Private Progress Tracking</li>
+        </ul>
       </div>
+    </div>
+    
+    <!-- Right Side: Login Form -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+      <div class="max-w-md w-full space-y-8">
+        <div class="text-center lg:text-left">
+          <h2 class="text-3xl font-bold tracking-tight text-slate-900">Welcome to IELTS.STUDIO</h2>
+          <p class="text-sm text-slate-500 mt-2" id="auth-subtitle">Log in to access your personal dashboard.</p>
+        </div>
 
-      <div class="space-y-4 relative z-10 mt-6">
-        <div id="register-name-field" class="hidden">
-          <label class="text-[10px] font-mono uppercase block mb-1 tracking-wider text-muted">Full Name</label>
-          <input type="text" id="auth-name" class="w-full p-3 rounded-xl border bg-transparent text-sm focus:outline-none focus:border-indigo-500 transition-colors" style="border-color: var(--border-subtle);" placeholder="e.g., Saren">
-        </div>
-        <div>
-          <label class="text-[10px] font-mono uppercase block mb-1 tracking-wider text-muted">Email Address</label>
-          <input type="email" id="auth-email" class="w-full p-3 rounded-xl border bg-transparent text-sm focus:outline-none focus:border-indigo-500 transition-colors" style="border-color: var(--border-subtle);" placeholder="you@example.com">
-        </div>
-        <div>
-          <label class="text-[10px] font-mono uppercase block mb-1 tracking-wider text-muted">Password</label>
-          <input type="password" id="auth-pass" class="w-full p-3 rounded-xl border bg-transparent text-sm focus:outline-none focus:border-indigo-500 transition-colors" style="border-color: var(--border-subtle);" placeholder="••••••••">
-        </div>
-        
-        <div class="pt-4">
-          <button onclick="handleAuth()" id="auth-main-btn" class="w-full py-3.5 rounded-xl font-bold text-sm text-white transition hover:scale-[1.02] shadow-lg cursor-pointer flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #4f46e5, #4338ca);">
-            Authenticate & Enter
+        <div class="space-y-5 mt-8">
+          <div id="register-name-field" class="hidden">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Full Name</label>
+            <input type="text" id="auth-name" class="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition-all" placeholder="John Doe">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Email Address</label>
+            <input type="email" id="auth-email" class="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition-all" placeholder="you@example.com">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Password</label>
+            <input type="password" id="auth-pass" class="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition-all" placeholder="••••••••">
+          </div>
+          
+          <button onclick="handleAuth()" id="auth-main-btn" class="w-full py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all active:scale-[0.98]">
+            Log In to Dashboard
           </button>
-        </div>
-        
-        <div class="text-center pt-2">
-          <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
-            Don't have an account? Sign up here.
-          </button>
+          
+          <div class="text-center pt-4">
+            <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+              New student? Create a free account.
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ================= 2. MAIN APPLICATION ================= -->
-  <div id="app-view" class="hidden flex flex-col min-h-screen pb-20 sm:pb-0">
+  <!-- ================= 2. MAIN LMS PLATFORM ================= -->
+  <div id="app-view" class="hidden flex h-screen overflow-hidden bg-slate-50">
     
-    <!-- Top Command Bar (Fixed Background for Mobile Scrolling) -->
-    <header class="sticky top-0 z-40 border-b px-4 py-3 flex items-center justify-between shadow-sm" style="background-color: var(--bg-secondary); border-color: var(--border-subtle);">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl flex items-center justify-center font-mono font-bold text-white shadow-sm" style="background: linear-gradient(135deg, #4f46e5, #10b981);">9.0</div>
-        <span class="font-bold tracking-tight text-lg hidden sm:block">STUDIO</span>
+    <!-- Desktop Sidebar -->
+    <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col justify-between">
+      <div>
+        <div class="p-6 flex items-center gap-3 border-b border-slate-100">
+          <div class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center font-bold text-xl">9.0</div>
+          <span class="font-bold text-xl tracking-tight text-slate-900">STUDIO</span>
+        </div>
+        <nav class="p-4 space-y-1">
+          <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
+            📊 Dashboard
+          </button>
+          <button onclick="switchTab('test-center')" id="tab-test-center" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
+            🎯 Test Center
+          </button>
+          <button onclick="switchTab('academy')" id="tab-academy" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
+            📚 Study Guides
+          </button>
+        </nav>
       </div>
-
-      <nav class="hidden sm:flex items-center gap-1 p-1.5 rounded-full border shadow-inner" style="background: var(--bg-tertiary); border-color: var(--border-subtle);">
-        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-tab active">Hub</button>
-        <button onclick="switchTab('academy')" id="tab-academy" class="nav-tab">🎓 Academy</button>
-        <button onclick="switchTab('builder')" id="tab-builder" class="nav-tab">⚡ AI Builder</button>
-        <button onclick="switchTab('workspace')" id="tab-workspace" class="nav-tab">📝 Workspace</button>
-      </nav>
-
-      <div class="flex items-center gap-3">
-        <button onclick="switchTab('profile')" class="flex items-center gap-3 hover:opacity-80 transition-opacity p-1 pr-3 rounded-full border" style="background-color: var(--bg-tertiary); border-color: var(--border-subtle);">
-          <img id="nav-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=IELTS" alt="Profile" class="w-8 h-8 rounded-full object-cover bg-gray-800">
-          <span id="user-display-name" class="text-xs font-bold tracking-wide">User</span>
-        </button>
+      <div class="p-4 border-t border-slate-100">
+        <div class="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200">
+          <img id="nav-avatar" src="" alt="Avatar" class="w-9 h-9 rounded-full bg-slate-300">
+          <div class="overflow-hidden">
+            <p id="nav-name" class="text-sm font-bold text-slate-900 truncate">Student</p>
+            <button onclick="handleLogout()" class="text-xs text-red-500 font-medium hover:underline">Sign Out</button>
+          </div>
+        </div>
       </div>
-    </header>
+    </aside>
 
-    <!-- Mobile Bottom Navigation -->
-    <nav class="sm:hidden glass-panel fixed bottom-0 left-0 w-full border-t border-x-0 border-b-0 flex justify-around p-3 pb-6 z-50">
-      <button onclick="switchTab('dashboard')" id="mob-tab-dashboard" class="flex flex-col items-center gap-1 opacity-50 active-mob-tab transition-opacity">
-        <span class="text-xl">🏠</span><span class="text-[10px] font-mono">Hub</span>
+    <!-- Mobile Bottom Nav -->
+    <nav class="md:hidden fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-50">
+      <button onclick="switchTab('dashboard')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
+        <span class="text-xl mb-1">📊</span><span class="text-[10px] font-bold">Dash</span>
       </button>
-      <button onclick="switchTab('academy')" id="mob-tab-academy" class="flex flex-col items-center gap-1 opacity-50 transition-opacity">
-        <span class="text-xl">🎓</span><span class="text-[10px] font-mono">Learn</span>
+      <button onclick="switchTab('test-center')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
+        <span class="text-xl mb-1">🎯</span><span class="text-[10px] font-bold">Tests</span>
       </button>
-      <button onclick="switchTab('builder')" id="mob-tab-builder" class="flex flex-col items-center gap-1 opacity-50 transition-opacity">
-        <span class="text-xl">⚡</span><span class="text-[10px] font-mono">Build</span>
-      </button>
-      <button onclick="switchTab('workspace')" id="mob-tab-workspace" class="flex flex-col items-center gap-1 opacity-50 transition-opacity">
-        <span class="text-xl">📝</span><span class="text-[10px] font-mono">Work</span>
+      <button onclick="switchTab('academy')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
+        <span class="text-xl mb-1">📚</span><span class="text-[10px] font-bold">Learn</span>
       </button>
     </nav>
 
-    <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 w-full overflow-x-hidden">
+    <!-- Main Content Area -->
+    <main class="flex-1 h-full overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative">
       
       <!-- ================= TAB: DASHBOARD ================= -->
-      <section id="sec-dashboard" class="space-y-6 slide-up">
-        <div class="surface-card p-6 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
-          <div class="absolute right-0 top-0 w-64 h-64 bg-indigo-500 opacity-5 blur-[100px] rounded-full"></div>
-          <div class="z-10 text-center sm:text-left">
-            <h1 class="text-3xl sm:text-4xl font-extrabold mb-2 tracking-tight">Welcome, <span id="dash-name" class="text-indigo-500">Scholar</span>.</h1>
-            <p class="text-sm" style="color: var(--text-secondary);">Your personal database is synced. Ready to study?</p>
+      <section id="sec-dashboard" class="space-y-8 animate-fade-in">
+        <header>
+          <h1 class="text-3xl font-bold font-serif text-slate-900">Welcome back, <span id="dash-name" class="text-blue-600">Scholar</span>.</h1>
+          <p class="text-slate-500 mt-1">Here is your study progress for this week.</p>
+        </header>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Tests Taken</span>
+            <span class="text-3xl font-bold text-slate-900 mt-2" id="stat-tests">0</span>
           </div>
-          <div class="z-10 flex gap-4 text-center glass-panel p-4 rounded-2xl">
-            <div>
-              <div class="text-4xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400" id="dash-tests-built">0</div>
-              <div class="text-[10px] uppercase mt-1 tracking-widest font-bold" style="color: var(--text-muted);">Saved Tests</div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Target Band</span>
+            <span class="text-3xl font-bold text-blue-600 mt-2">7.5+</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between col-span-2">
+            <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Next Step</span>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-sm font-medium text-slate-700">Take a Reading Practice Test</span>
+              <button onclick="switchTab('test-center')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-900 text-sm font-bold rounded-lg transition-colors">Start →</button>
             </div>
           </div>
         </div>
 
+        <!-- Saved Tests -->
         <div>
-          <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
-            Your Private Mock Tests
-          </h2>
-          <div id="saved-tests-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Tests injected here via JS -->
+          <h2 class="text-xl font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Your Test History</h2>
+          <div id="saved-tests-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Tests injected here -->
           </div>
         </div>
       </section>
 
-      <!-- ================= TAB: PROFILE SETTINGS ================= -->
-      <section id="sec-profile" class="hidden space-y-6 slide-up">
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight">Profile Settings</h1>
-          <p class="text-sm mt-1" style="color: var(--text-secondary);">Manage your account and customize your avatar.</p>
-        </div>
+      <!-- ================= TAB: TEST CENTER (AI GEN) ================= -->
+      <section id="sec-test-center" class="hidden space-y-8 animate-fade-in">
+        <header>
+          <h1 class="text-3xl font-bold font-serif text-slate-900">Test Center</h1>
+          <p class="text-slate-500 mt-1">Generate unlimited AI-powered mock tests based on any topic.</p>
+        </header>
 
-        <div class="surface-card p-6 sm:p-8 max-w-2xl mx-auto space-y-8 relative overflow-hidden">
-          <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-indigo-600 to-emerald-600 opacity-20"></div>
+        <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm max-w-4xl">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-4">
+              <h3 class="font-bold text-slate-900 border-b border-slate-100 pb-2">1. Provide Source Material</h3>
+              <p class="text-xs text-slate-500">Paste an article, essay, or topic. Our AI will build a complete IELTS test around it.</p>
+              <textarea id="ai-source-text" rows="6" class="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition-all text-sm resize-none" placeholder="Paste an interesting article here..."></textarea>
+            </div>
 
-          <div class="flex flex-col sm:flex-row items-center gap-6 relative z-10 pt-4">
-            <img id="settings-avatar" src="" alt="Profile" class="w-28 h-28 rounded-full border-4 border-[var(--bg-secondary)] shadow-xl object-cover bg-gray-800">
-            <div class="text-center sm:text-left w-full">
-              <h3 class="text-xl font-bold" id="settings-name-display">Loading...</h3>
-              <p class="text-xs font-mono text-muted mb-4" id="settings-email-display">loading@email.com</p>
-              
-              <div class="space-y-4 w-full">
-                <div>
-                  <label class="text-[10px] font-mono uppercase block mb-1 tracking-wider">Display Name</label>
-                  <input type="text" id="input-prof-name" class="w-full p-2.5 rounded-lg border bg-transparent text-sm" style="border-color: var(--border-subtle);" placeholder="e.g., Saren">
-                </div>
-                <div>
-                  <label class="text-[10px] font-mono uppercase block mb-1 tracking-wider">Avatar Image URL (Optional)</label>
-                  <input type="url" id="input-prof-avatar" class="w-full p-2.5 rounded-lg border bg-transparent text-sm" style="border-color: var(--border-subtle);" placeholder="Paste an image link here...">
-                </div>
-                <button onclick="saveProfile()" class="w-full sm:w-auto px-6 py-2.5 rounded-lg font-bold text-sm text-white transition hover:scale-105 shadow-lg" style="background: var(--accent-primary);">
-                  Save Changes
+            <div class="space-y-4 flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-slate-900 border-b border-slate-100 pb-2">2. Configure Exam</h3>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 mb-2">Test Module</label>
+                <select id="ai-test-type" class="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50 outline-none font-medium text-slate-700">
+                  <option value="reading">📖 Reading (Academic)</option>
+                  <option value="listening">🎧 Listening</option>
+                  <option value="writing">📝 Writing Task 2</option>
+                  <option value="speaking">🗣️ Speaking Simulator</option>
+                </select>
+              </div>
+
+              <div class="pt-4">
+                <button onclick="generateMockTest()" id="btn-generate" class="w-full py-4 rounded-xl font-bold text-white bg-slate-900 hover:bg-slate-800 shadow-lg transition-all active:scale-[0.98]">
+                  Generate Mock Test
                 </button>
+                <div id="ai-loading" class="hidden text-sm text-center font-bold animate-pulse text-blue-600 py-4 bg-blue-50 rounded-xl border border-blue-100">
+                  Generating your exam... Please wait.
+                </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div class="border-t pt-6 text-center" style="border-color: var(--border-subtle);">
-            <button onclick="handleLogout()" class="px-6 py-2 rounded-full text-sm font-bold text-red-500 bg-red-500/10 hover:bg-red-500/20 transition">
-              Logout
+      <!-- ================= TAB: ACADEMY (STUDY GUIDES) ================= -->
+      <section id="sec-academy" class="hidden space-y-8 animate-fade-in">
+        <header>
+          <h1 class="text-3xl font-bold font-serif text-slate-900">Study Guides</h1>
+          <p class="text-slate-500 mt-1">Band 7-9 strategies, tips, and frameworks.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl mb-4">📖</div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Reading Strategies</h3>
+            <p class="text-sm text-slate-500 mb-4">Master True/False/Not Given and Matching Headings.</p>
+            <ul class="space-y-2 text-sm text-slate-700 font-medium">
+              <li class="flex items-center gap-2 cursor-pointer hover:text-blue-600">• How to Skim & Scan effectively</li>
+              <li class="flex items-center gap-2 cursor-pointer hover:text-blue-600">• Demystifying "Not Given"</li>
+            </ul>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-2xl mb-4">📝</div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Writing Task 2 Framework</h3>
+            <p class="text-sm text-slate-500 mb-4">The exact paragraph structure for a Band 8.0+ essay.</p>
+            <ul class="space-y-2 text-sm text-slate-700 font-medium">
+              <li class="flex items-center gap-2 cursor-pointer hover:text-blue-600">• The Perfect Introduction</li>
+              <li class="flex items-center gap-2 cursor-pointer hover:text-blue-600">• Developing complex ideas</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB: WORKSPACE (ACTIVE TEST) ================= -->
+      <section id="sec-workspace" class="hidden h-full flex flex-col animate-fade-in pb-10">
+        
+        <!-- Test Header & Timer -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between mb-6 sticky top-0 z-10">
+          <div>
+            <h1 class="text-xl font-bold text-slate-900" id="ws-title">Practice Test</h1>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-600" id="ws-type-badge">MODULE</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="bg-slate-900 text-white px-4 py-2 rounded-lg font-mono font-bold text-lg shadow-inner flex items-center gap-2">
+              ⏱️ <span id="exam-timer">60:00</span>
+            </div>
+            <button onclick="submitTest()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-lg transition-colors">
+              Submit
             </button>
           </div>
         </div>
+
+        <!-- Test Content Area -->
+        <div id="ws-content" class="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-10 overflow-y-auto">
+          <!-- Dynamically injected test goes here -->
+        </div>
+
       </section>
 
-      <!-- ================= TAB: THE ACADEMY ================= -->
-      <section id="sec-academy" class="hidden space-y-6 slide-up">
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight">Self-Study Academy</h1>
-          <p class="text-sm mt-1" style="color: var(--text-secondary);">Master the IELTS fundamentals before testing yourself.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          <!-- Reading -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: var(--skill-reading);">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">📖</span> Reading Framework</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">True / False / Not Given</summary>
-                <div class="mt-3 text-xs leading-relaxed text-muted space-y-2">
-                  <p><strong>TRUE:</strong> The statement matches the passage exactly (usually with synonyms).</p>
-                  <p><strong>FALSE:</strong> The statement contradicts the passage. The passage says the opposite.</p>
-                  <p><strong>NOT GIVEN:</strong> The information is not in the passage. Don't use outside knowledge!</p>
-                </div>
-              </details>
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Skimming vs. Scanning</summary>
-                <p class="mt-2 text-xs leading-relaxed text-muted"><strong>Skimming</strong> is rapid reading for the general overview (Main Ideas). <strong>Scanning</strong> is hunting for specific facts (dates, names, numbers) to answer a specific question.</p>
-              </details>
-            </div>
-          </div>
-
-          <!-- Writing -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: var(--skill-writing);">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">📝</span> Writing Architecture</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Task 2: Band 9.0 Body Paragraph</summary>
-                <div class="mt-3 text-xs leading-relaxed text-muted space-y-1">
-                  <p><strong>1. Topic Sentence:</strong> State your main point clearly.</p>
-                  <p><strong>2. Explanation:</strong> Explain *why* or *how* this point is true.</p>
-                  <p><strong>3. Example:</strong> Give a specific, real-world example.</p>
-                  <p><strong>4. Result/Link:</strong> Link it back to the essay question.</p>
-                </div>
-              </details>
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Task 1: The Overview</summary>
-                <p class="mt-2 text-xs leading-relaxed text-muted">The most important part of Task 1 Academic is the Overview paragraph. Summarize the main trends, differences, or stages without using specific numbers.</p>
-              </details>
-            </div>
-          </div>
-
-          <!-- Speaking -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: var(--skill-speaking);">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">🗣️</span> Speaking Strategies</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">The 3 Parts of the Test</summary>
-                <div class="mt-3 text-xs leading-relaxed text-muted space-y-2">
-                  <p><strong>Part 1 (4-5 mins):</strong> Familiar topics (hometown, studies, hobbies).</p>
-                  <p><strong>Part 2 (3-4 mins):</strong> The Cue Card. You get 1 minute to prep, and must speak for up to 2 minutes.</p>
-                  <p><strong>Part 3 (4-5 mins):</strong> Abstract discussion linked to Part 2.</p>
-                </div>
-              </details>
-            </div>
-          </div>
-
-          <!-- Listening -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: #8b5cf6;">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">🎧</span> Listening Tactics</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Beware of Distractors</summary>
-                <p class="mt-2 text-xs leading-relaxed text-muted">Speakers in the recording will often say one answer, and then correct themselves. (e.g., "Let's meet at 5 PM. Oh wait, I have a meeting, let's do 6 PM.") Always wait for the final confirmation!</p>
-              </details>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- ================= TAB: AI BUILDER ================= -->
-      <section id="sec-builder" class="hidden space-y-6 slide-up">
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-500">⚡ AI Sandbox</h1>
-          <p class="text-sm mt-1" style="color: var(--text-secondary);">Upload an article or text. Our AI will automatically generate a custom IELTS test for you.</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="surface-card p-6 space-y-5">
-            <h3 class="font-bold border-b pb-2 text-lg" style="border-color: var(--border-subtle);">1. Source Material</h3>
-            <div>
-              <label class="text-[10px] font-mono uppercase block mb-1 text-muted">Raw Text Input</label>
-              <textarea id="ai-source-text" rows="7" class="w-full p-4 rounded-xl border text-sm custom-scrollbar focus:outline-none focus:border-indigo-500 transition" style="background: var(--bg-primary); border-color: var(--border-subtle);" placeholder="Paste a Wikipedia article, news story, or topic here..."></textarea>
-            </div>
-            <div class="flex items-center gap-4">
-              <div class="flex-1 h-px bg-gray-500/20"></div>
-              <div class="text-[10px] font-mono text-muted uppercase">Or upload file</div>
-              <div class="flex-1 h-px bg-gray-500/20"></div>
-            </div>
-            <div class="p-6 border-2 border-dashed rounded-xl text-center hover:bg-indigo-500/5 transition cursor-pointer relative" style="border-color: var(--border-focus);">
-              <input type="file" id="ai-file-upload" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".txt,.json,.md" onchange="handleFileUpload(event)">
-              <div class="text-2xl mb-2">📁</div>
-              <label class="text-sm font-bold text-indigo-500 block">Select .txt or .md file</label>
-            </div>
-          </div>
-
-          <div class="surface-card p-6 flex flex-col justify-between space-y-5">
-            <div>
-              <h3 class="font-bold border-b pb-2 text-lg mb-4" style="border-color: var(--border-subtle);">2. Generate Test</h3>
-              <p class="text-xs text-muted mb-4">Select the skill you want to practice. The AI will process your text and save the test directly to your account.</p>
-              
-              <div>
-                <label class="text-[10px] font-mono uppercase block mb-1 text-muted">Target Skill</label>
-                <select id="ai-test-type" class="w-full p-3 rounded-xl border text-sm font-bold focus:outline-none" style="background: var(--bg-primary); border-color: var(--border-subtle);">
-                  <option value="reading">📖 Reading Comprehension (TFNG & MCQ)</option>
-                  <option value="writing">📝 Writing Task 2 (Essay Prompt)</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <button onclick="generateMockTest()" id="btn-generate" class="w-full py-4 rounded-xl font-bold text-white transition hover:scale-[1.02] shadow-xl cursor-pointer flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #4f46e5, #10b981);">
-                ✨ Generate IELTS Test
-              </button>
-              <div i</label>
-                  <input type="url" id="input-prof-avatar" class="w-full p-2.5 rounded-lg border bg-transparent text-sm" style="border-color: var(--border-subtle);" placeholder="Paste an image link here...">
-                </div>
-                <button onclick="saveProfile()" class="w-full sm:w-auto px-6 py-2.5 rounded-lg font-bold text-sm text-white transition hover:scale-105 shadow-lg" style="background: var(--accent-primary);">
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="border-t pt-6 text-center" style="border-color: var(--border-subtle);">
-            <button onclick="handleLogout()" class="px-6 py-2 rounded-full text-sm font-bold text-red-500 bg-red-500/10 hover:bg-red-500/20 transition">
-              Logout
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= TAB: THE ACADEMY ================= -->
-      <section id="sec-academy" class="hidden space-y-6 slide-up">
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight">Self-Study Academy</h1>
-          <p class="text-sm mt-1" style="color: var(--text-secondary);">Master the IELTS fundamentals before testing yourself.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          <!-- Reading -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: var(--skill-reading);">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">📖</span> Reading Framework</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">True / False / Not Given</summary>
-                <div class="mt-3 text-xs leading-relaxed text-muted space-y-2">
-                  <p><strong>TRUE:</strong> The statement matches the passage exactly (usually with synonyms).</p>
-                  <p><strong>FALSE:</strong> The statement contradicts the passage. The passage says the opposite.</p>
-                  <p><strong>NOT GIVEN:</strong> The information is not in the passage. Don't use outside knowledge!</p>
-                </div>
-              </details>
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Skimming vs. Scanning</summary>
-                <p class="mt-2 text-xs leading-relaxed text-muted"><strong>Skimming</strong> is rapid reading for the general overview (Main Ideas). <strong>Scanning</strong> is hunting for specific facts (dates, names, numbers) to answer a specific question.</p>
-              </details>
-            </div>
-          </div>
-
-          <!-- Writing -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: var(--skill-writing);">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">📝</span> Writing Architecture</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Task 2: Band 9.0 Body Paragraph</summary>
-                <div class="mt-3 text-xs leading-relaxed text-muted space-y-1">
-                  <p><strong>1. Topic Sentence:</strong> State your main point clearly.</p>
-                  <p><strong>2. Explanation:</strong> Explain *why* or *how* this point is true.</p>
-                  <p><strong>3. Example:</strong> Give a specific, real-world example.</p>
-                  <p><strong>4. Result/Link:</strong> Link it back to the essay question.</p>
-                </div>
-              </details>
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Task 1: The Overview</summary>
-                <p class="mt-2 text-xs leading-relaxed text-muted">The most important part of Task 1 Academic is the Overview paragraph. Summarize the main trends, differences, or stages without using specific numbers.</p>
-              </details>
-            </div>
-          </div>
-
-          <!-- Speaking -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: var(--skill-speaking);">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">🗣️</span> Speaking Strategies</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">The 3 Parts of the Test</summary>
-                <div class="mt-3 text-xs leading-relaxed text-muted space-y-2">
-                  <p><strong>Part 1 (4-5 mins):</strong> Familiar topics (hometown, studies, hobbies).</p>
-                  <p><strong>Part 2 (3-4 mins):</strong> The Cue Card. You get 1 minute to prep, and must speak for up to 2 minutes.</p>
-                  <p><strong>Part 3 (4-5 mins):</strong> Abstract discussion linked to Part 2.</p>
-                </div>
-              </details>
-            </div>
-          </div>
-
-          <!-- Listening -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: #8b5cf6;">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">🎧</span> Listening Tactics</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Beware of Distractors</summary>
-                <p class="mt-2 text-xs leading-relaxed text-muted">Speakers in the recording will often say one answer, and then correct themselves. (e.g., "Let's meet at 5 PM. Oh wait, I have a meeting, let's do 6 PM.") Always wait for the final confirmation!</p>
-              </details>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- ================= TAB: AI BUILDER ================= -->
-      <section id="sec-builder" class="hidden space-y-6 slide-up">
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-500">⚡ AI Sandbox</h1>
-          <p class="text-sm mt-1" style="color: var(--text-secondary);">Upload an article or text. Our AI will automatically generate a custom IELTS test for you.</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="surface-card p-6 space-y-5">
-            <h3 class="font-bold border-b pb-2 text-lg" style="border-color: var(--border-subtle);">1. Source Material</h3>
-            <div>
-              <label class="text-[10px] font-mono uppercase block mb-1 text-muted">Raw Text Input</label>
-              <textarea id="ai-source-text" rows="7" class="w-full p-4 rounded-xl border text-sm custom-scrollbar focus:outline-none focus:border-indigo-500 transition" style="background: var(--bg-primary); border-color: var(--border-subtle);" placeholder="Paste a Wikipedia article, news story, or topic here..."></textarea>
-            </div>
-            <div class="flex items-center gap-4">
-              <div class="flex-1 h-px bg-gray-500/20"></div>
-              <div class="text-[10px] font-mono text-muted uppercase">Or upload file</div>
-              <div class="flex-1 h-px bg-gray-500/20"></div>
-            </div>
-            <div class="p-6 border-2 border-dashed rounded-xl text-center hover:bg-indigo-500/5 transition cursor-pointer relative" style="border-color: var(--border-focus);">
-              <input type="file" id="ai-file-upload" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".txt,.json,.md" onchange="handleFileUpload(event)">
-              <div class="text-2xl mb-2">📁</div>
-              <label class="text-sm font-bold text-indigo-500 block">Select .txt or .md file</label>
-            </div>
-          </div>
-
-          <div class="surface-card p-6 flex flex-col justify-between space-y-5">
-            <div>
-              <h3 class="font-bold border-b pb-2 text-lg mb-4" style="border-color: var(--border-subtle);">2. Generate Test</h3>
-              <p class="text-xs text-muted mb-4">Select the skill you want to practice. The AI will process your text and save the test directly to your account.</p>
-              
-              <div>
-                <label class="text-[10px] font-mono uppercase block mb-1 text-muted">Target Skill</label>
-                <select id="ai-test-type" class="w-full p-3 rounded-xl border text-sm font-bold focus:outline-none" style="background: var(--bg-primary); border-color: var(--border-subtle);">
-                  <option value="reading">📖 Reading Comprehension (TFNG & MCQ)</option>
-                  <option value="writing">📝 Writing Task 2 (Essay Prompt)</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <button onclick="generateMockTest()" id="btn-generate" class="w-full py-4 rounded-xl font-bold text-white transition hover:scale-[1.02] shadow-xl cursor-pointer flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #4f46e5, #10b981);">
-                ✨ Generate IELTS Test
-              </button>
-              <div id="ai-loading" class="hidden text-sm text-center font-bold animate-pulse text-indigo-500 py-4 border rounded-xl border-in</label>
-                  <input type="url" id="input-prof-avatar" class="w-full p-2.5 rounded-lg border bg-transparent text-sm" style="border-color: var(--border-subtle);" placeholder="Paste an image link here...">
-                </div>
-                <button onclick="saveProfile()" class="w-full sm:w-auto px-6 py-2.5 rounded-lg font-bold text-sm text-white transition hover:scale-105 shadow-lg" style="background: var(--accent-primary);">
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="border-t pt-6 text-center" style="border-color: var(--border-subtle);">
-            <button onclick="handleLogout()" class="px-6 py-2 rounded-full text-sm font-bold text-red-500 bg-red-500/10 hover:bg-red-500/20 transition">
-              Logout
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= TAB: THE ACADEMY ================= -->
-      <section id="sec-academy" class="hidden space-y-6 slide-up">
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight">Self-Study Academy</h1>
-          <p class="text-sm mt-1" style="color: var(--text-secondary);">Master the IELTS fundamentals before testing yourself.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          <!-- Reading -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: var(--skill-reading);">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">📖</span> Reading Framework</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">True / False / Not Given</summary>
-                <div class="mt-3 text-xs leading-relaxed text-muted space-y-2">
-                  <p><strong>TRUE:</strong> The statement matches the passage exactly (usually with synonyms).</p>
-                  <p><strong>FALSE:</strong> The statement contradicts the passage. The passage says the opposite.</p>
-                  <p><strong>NOT GIVEN:</strong> The information is not in the passage. Don't use outside knowledge!</p>
-                </div>
-              </details>
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Skimming vs. Scanning</summary>
-                <p class="mt-2 text-xs leading-relaxed text-muted"><strong>Skimming</strong> is rapid reading for the general overview (Main Ideas). <strong>Scanning</strong> is hunting for specific facts (dates, names, numbers) to answer a specific question.</p>
-              </details>
-            </div>
-          </div>
-
-          <!-- Writing -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: var(--skill-writing);">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">📝</span> Writing Architecture</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Task 2: Band 9.0 Body Paragraph</summary>
-                <div class="mt-3 text-xs leading-relaxed text-muted space-y-1">
-                  <p><strong>1. Topic Sentence:</strong> State your main point clearly.</p>
-                  <p><strong>2. Explanation:</strong> Explain *why* or *how* this point is true.</p>
-                  <p><strong>3. Example:</strong> Give a specific, real-world example.</p>
-                  <p><strong>4. Result/Link:</strong> Link it back to the essay question.</p>
-                </div>
-              </details>
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Task 1: The Overview</summary>
-                <p class="mt-2 text-xs leading-relaxed text-muted">The most important part of Task 1 Academic is the Overview paragraph. Summarize the main trends, differences, or stages without using specific numbers.</p>
-              </details>
-            </div>
-          </div>
-
-          <!-- Speaking -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: var(--skill-speaking);">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">🗣️</span> Speaking Strategies</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">The 3 Parts of the Test</summary>
-                <div class="mt-3 text-xs leading-relaxed text-muted space-y-2">
-                  <p><strong>Part 1 (4-5 mins):</strong> Familiar topics (hometown, studies, hobbies).</p>
-                  <p><strong>Part 2 (3-4 mins):</strong> The Cue Card. You get 1 minute to prep, and must speak for up to 2 minutes.</p>
-                  <p><strong>Part 3 (4-5 mins):</strong> Abstract discussion linked to Part 2.</p>
-                </div>
-              </details>
-            </div>
-          </div>
-
-          <!-- Listening -->
-          <div class="surface-card p-6 border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: #8b5cf6;">
-            <h3 class="font-bold text-xl mb-3 flex items-center gap-2"><span class="text-2xl">🎧</span> Listening Tactics</h3>
-            <div class="space-y-3 text-sm">
-              <details class="p-3 border rounded-xl cursor-pointer" style="border-color: var(--border-subtle); background: var(--bg-tertiary);">
-                <summary class="font-bold">Beware of Distractors</summary>
-                <p class="mt-2 text-xs leading-relaxed text-muted">Speakers in the recording will often say one answer, and then correct themselves. (e.g., "Let's meet at 5 PM. Oh wait, I have a meeting, let's do 6 PM.") Always wait for the final confirmation!</p>
-              </details>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- ================= TAB: AI BUILDER ================= -->
-      <section id="sec-builder" class="hidden space-y-6 slide-up">
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-500">⚡ AI Sandbox</h1>
-          <p class="text-sm mt-1" style="color: var(--text-secondary);">Upload an article or text. Our AI will automatically generate a custom IELTS test for you.</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="surface-card p-6 space-y-5">
-            <h3 class="font-bold border-b pb-2 text-lg" style="border-color: var(--border-subtle);">1. Source Material</h3>
-            <div>
-              <label class="text-[10px] font-mono uppercase block mb-1 text-muted">Raw Text Input</label>
-              <textarea id="ai-source-text" rows="7" class="w-full p-4 rounded-xl border text-sm custom-scrollbar focus:outline-none focus:border-indigo-500 transition" style="background: var(--bg-primary); border-color: var(--border-subtle);" placeholder="Paste a Wikipedia article, news story, or topic here..."></textarea>
-            </div>
-            <div class="flex items-center gap-4">
-              <div class="flex-1 h-px bg-gray-500/20"></div>
-              <div class="text-[10px] font-mono text-muted uppercase">Or upload file</div>
-              <div class="flex-1 h-px bg-gray-500/20"></div>
-            </div>
-            <div class="p-6 border-2 border-dashed rounded-xl text-center hover:bg-indigo-500/5 transition cursor-pointer relative" style="border-color: var(--border-focus);">
-              <input type="file" id="ai-file-upload" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".txt,.json,.md" onchange="handleFileUpload(event)">
-              <div class="text-2xl mb-2">📁</div>
-              <label class="text-sm font-bold text-indigo-500 block">Select .txt or .md file</label>
-            </div>
-          </div>
-
-          <div class="surface-card p-6 flex flex-col justify-between space-y-5">
-            <div>
-              <h3 class="font-bold border-b pb-2 text-lg mb-4" style="border-color: var(--border-subtle);">2. Generate Test</h3>
-              <p class="text-xs text-muted mb-4">Select the skill you want to practice. The AI will process your text and save the test directly to your account.</p>
-              
-              <div>
-                <label class="text-[10px] font-mono uppercase block mb-1 text-muted">Target Skill</label>
-                <select id="ai-test-type" class="w-full p-3 rounded-xl border text-sm font-bold focus:outline-none" style="background: var(--bg-primary); border-color: var(--border-subtle);">
-                  <option value="reading">📖 Reading Comprehension (TFNG & MCQ)</option>
-                  <option value="writing">📝 Writing Task 2 (Essay Prompt)</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <button onclick="generateMockTest()" id="btn-generate" class="w-full py-4 rounded-xl font-bold text-white transition hover:scale-[1.02] shadow-xl cursor-pointer flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #4f46e5, #10b981);">
-                ✨ Generate IELTS Test
-              </button>
-              <div id="ai-loading" class="hidden text-sm text-center font-bold animate-pulse text-indigo-500 py-4 border rounded-xl border-in <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold" id="ws-title">Active Workspace</h1>
-          <span class="metric-badge" id="ws-type-badge">No Test Loaded</span>
-        </div>
-        <div id="ws-content" class="surface-card p-6 min-h-[400px] flex items-center justify-center text-sm" style="color: var(--text-muted);">
-          Generate a test from the AI Builder, or load one from your Dashboard Hub.
-        </div>
-      </section>
     </main>
   </div>
 
-  <!-- Link to your separate JS file -->
   <script type="module" src="app.js"></script>
 </body>
 </html>
