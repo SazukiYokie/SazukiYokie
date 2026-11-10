@@ -15,45 +15,30 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// DOM Elements
 const loginScreen = document.getElementById('login-screen');
 const mainApp = document.getElementById('main-app');
 let unsubscribeLeaderboard = null;
 
-// --- MOBILE MENU LOGIC ---
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('sidebar-overlay');
-const toggleMenu = () => {
-    sidebar?.classList.toggle('-translate-x-full');
-    overlay?.classList.toggle('hidden');
-};
-document.getElementById('mobile-menu-btn')?.addEventListener('click', toggleMenu);
-document.getElementById('close-sidebar')?.addEventListener('click', toggleMenu);
-overlay?.addEventListener('click', toggleMenu);
-
-// --- AUTHENTICATION & DATA ---
-document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+// --- AUTHENTICATION ---
+document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-login');
-    if (btn) btn.textContent = "Authenticating...";
+    btn.textContent = "Authenticating...";
     try {
         await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
     } catch (error) {
-        const errEl = document.getElementById('login-error');
-        if (errEl) {
-            errEl.textContent = error.message.replace('Firebase: ', '');
-            errEl.classList.remove('hidden');
-        }
-        if (btn) btn.textContent = "Secure Login";
+        document.getElementById('login-error').textContent = error.message.replace('Firebase: ', '');
+        document.getElementById('login-error').classList.remove('hidden');
+        btn.textContent = "Secure Login";
     }
 });
 
-document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
+document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        loginScreen?.classList.add('hide');
-        mainApp?.classList.remove('hide');
+        loginScreen.classList.add('hide');
+        mainApp.classList.remove('hide');
         
         const userRef = doc(db, 'users', user.uid);
         const docSnap = await getDoc(userRef);
@@ -67,8 +52,6 @@ onAuthStateChanged(auth, async (user) => {
 
         onSnapshot(userRef, async (liveSnap) => {
             const data = liveSnap.data();
-            if (!data) return;
-            
             const now = Date.now();
             let currentStreak = data.studyStreak || 0;
             let lastUpdate = data.lastStreakUpdate || 0;
@@ -78,41 +61,26 @@ onAuthStateChanged(auth, async (user) => {
                 await setDoc(userRef, { studyStreak: currentStreak, lastStreakUpdate: now }, { merge: true });
             }
 
-            const countdownEl = document.getElementById('dash-countdown');
-            if (countdownEl) {
-                if (data.examDate) {
-                    const diffTime = new Date(data.examDate) - new Date();
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    countdownEl.innerHTML = `${diffDays > 0 ? diffDays : 0} <span class="text-lg text-slate-500">Days</span>`;
-                } else {
-                    countdownEl.innerHTML = `-- <span class="text-lg text-slate-500">Days</span>`;
-                }
+            if (data.examDate) {
+                const diffTime = new Date(data.examDate) - new Date();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                document.getElementById('dash-countdown').innerHTML = `${diffDays > 0 ? diffDays : 0} <span class="text-lg text-slate-500">Days</span>`;
             }
 
             const displayName = data.displayName || 'Student';
-            const topbarName = document.getElementById('topbar-name');
-            const dashName = document.getElementById('dash-name');
-            const dashStreak = document.getElementById('dash-streak');
-            const topbarAvatar = document.getElementById('topbar-avatar');
+            document.getElementById('topbar-name').textContent = displayName;
+            document.getElementById('dash-name').textContent = displayName;
+            document.getElementById('dash-streak').innerHTML = `${currentStreak} <span class="text-lg text-slate-500">Days</span>`;
+            document.getElementById('topbar-avatar').src = `https://ui-avatars.com/api/?name=${displayName}&background=0D8ABC&color=fff`;
             
-            if (topbarName) topbarName.textContent = displayName;
-            if (dashName) dashName.textContent = displayName;
-            if (dashStreak) dashStreak.innerHTML = `${currentStreak} <span class="text-lg text-slate-500">Days</span>`;
-            if (topbarAvatar) topbarAvatar.src = `https://ui-avatars.com/api/?name=${displayName}&background=0D8ABC&color=fff`;
-            
-            const setName = document.getElementById('set-name');
-            const setDate = document.getElementById('set-date');
-            const setBand = document.getElementById('set-band');
-            
-            if (setName) setName.value = displayName;
-            if (setDate) setDate.value = data.examDate || '';
-            if (setBand) setBand.value = data.targetBand || '7.5';
+            document.getElementById('set-name').value = displayName;
+            document.getElementById('set-date').value = data.examDate || '';
+            document.getElementById('set-band').value = data.targetBand || '7.5';
         });
 
         const q = query(collection(db, "users"), orderBy("targetBand", "desc"));
         unsubscribeLeaderboard = onSnapshot(q, (snapshot) => {
             const tbody = document.getElementById('leaderboard-body');
-            if (!tbody) return;
             tbody.innerHTML = '';
             snapshot.forEach((uDoc) => {
                 const u = uDoc.data();
@@ -130,15 +98,24 @@ onAuthStateChanged(auth, async (user) => {
             });
         });
     } else {
-        loginScreen?.classList.remove('hide');
-        mainApp?.classList.add('hide');
+        loginScreen.classList.remove('hide');
+        mainApp.classList.add('hide');
         if(unsubscribeLeaderboard) unsubscribeLeaderboard();
-        const btnLogin = document.getElementById('btn-login');
-        if (btnLogin) btnLogin.textContent = "Secure Login";
+        document.getElementById('btn-login').textContent = "Secure Login";
     }
 });
 
-// --- NAVIGATION TABS ---
+// --- NAVIGATION & MOBILE MENU ---
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebar-overlay');
+const toggleMenu = () => {
+    if(sidebar) sidebar.classList.toggle('-translate-x-full');
+    if(overlay) overlay.classList.toggle('hidden');
+};
+if(document.getElementById('mobile-menu-btn')) document.getElementById('mobile-menu-btn').addEventListener('click', toggleMenu);
+if(document.getElementById('close-sidebar')) document.getElementById('close-sidebar').addEventListener('click', toggleMenu);
+if(overlay) overlay.addEventListener('click', toggleMenu);
+
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         document.querySelectorAll('.nav-btn').forEach(b => {
@@ -156,73 +133,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         if(window.innerWidth < 768) toggleMenu();
     });
 });
-
-// --- SETTINGS FORM ---
-document.getElementById('settings-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    await setDoc(doc(db, 'users', auth.currentUser.uid), {
-        displayName: document.getElementById('set-name').value,
-        examDate: document.getElementById('set-date').value,
-        targetBand: document.getElementById('set-band').value
-    }, { merge: true });
-    
-    const suc = document.getElementById('settings-success');
-    if (suc) {
-        suc.classList.remove('hidden');
-        setTimeout(() => suc.classList.add('hidden'), 3000);
-    }
-});
-
-// --- MODULE LOGICS (Labs & Timers) ---
-document.getElementById('btn-calc-listen')?.addEventListener('click', () => {
-    const raw = parseInt(document.getElementById('listen-raw').value);
-    let band = 0;
-    if (raw >= 39) band = 9.0;
-    else if (raw >= 35) band = 8.0;
-    else if (raw >= 30) band = 7.0;
-    else if (raw >= 23) band = 6.0;
-    else band = "< 6.0";
-    const resEl = document.getElementById('listen-result');
-    if (resEl) resEl.textContent = isNaN(raw) ? "" : `Band: ${band}`;
-});
-
-const runTimer = (elementId, seconds, btnEl) => {
-    const el = document.getElementById(elementId);
-    if (!el || el.dataset.running) return;
-    el.dataset.running = "true";
-    let time = seconds;
-    btnEl.classList.add('opacity-50', 'pointer-events-none');
-    
-    const intv = setInterval(() => {
-        time--;
-        const m = Math.floor(time / 60).toString().padStart(2, '0');
-        const s = (time % 60).toString().padStart(2, '0');
-        el.textContent = `${m}:${s}`;
-        if (time <= 0) {
-            clearInterval(intv);
-            delete el.dataset.running;
-            btnEl.classList.remove('opacity-50', 'pointer-events-none');
-        }
-    }, 1000);
-};
-
-document.getElementById('btn-start-read')?.addEventListener('click', (e) => runTimer('reading-timer', 3600, e.currentTarget));
-document.getElementById('btn-start-write')?.addEventListener('click', (e) => runTimer('writing-timer', 2400, e.currentTarget));
-
-const textArea = document.getElementById('writing-area');
-if(textArea) {
-    textArea.addEventListener('input', () => {
-        const text = textArea.value.trim();
-        const wcEl = document.getElementById('word-count');
-        if (wcEl) wcEl.textContent = `${text ? text.split(/\s+/).length : 0} words`;
-    });
-}
-
-document.getElementById('btn-save-essay')?.addEventListener('click', async () => {
-    if(!textArea || !textArea.value.trim()) return;
-    const btn = document.getElementById('btn-save-essay');
-    if (btn) btn.textContent = "Saving...";
-    await addDoc(collection(db, `users/${auth.currentUser.uid}/practiceLogs`), {
+tUser.uid}/practiceLogs`), {
         module: 'writing', text: textArea.value, timestamp: serverTimestamp()
     });
     if (btn) {
