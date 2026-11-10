@@ -4,7 +4,7 @@ import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, order
 import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
 // 1. CONFIGURATION
-const GEMINI_API_KEY = "AQ.Ab8RN6JI623SMRh5mO1uz4vBfPA4ykhxnvtlgOkITyOAYDqAXA"; 
+const GEMINI_API_KEY = "AQ.Ab8RN6J7SFuMqNNXpNlGSGxj-RMgYNINVFft_SvDORRe6cFMiw"; 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const firebaseConfig = {
