@@ -1,4 +1,4 @@
-const GEMINI_API_KEY = "AQ.Ab8RN6JHFgcd1t8Pm2N2d31kAVOIT0VLg8CwfQrIQu8gO3tThA";
+const GEMINI_API_KEY = "AQ.Ab8RN6IF27X1hwDhqR0IpKeAY3vKYDzaLpml16wZtSNQh_bknw";
 
 // --- 1. 3-LAYER UNBREAKABLE AI REQUEST ENGINE ---
 async function askIELTSAI(userPrompt, systemPrompt = "You are an expert IELTS Band 9.0 Tutor in Cambodia. Give clear, structured, encouraging answers.") {
