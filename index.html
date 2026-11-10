@@ -8,9 +8,6 @@
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Hanuman:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- External CSS with Cache Buster -->
-    <link rel="stylesheet" href="./style.css?v=20">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,8 +17,23 @@
             theme: { extend: { fontFamily: { sans: ['Inter', 'Hanuman', 'sans-serif'] } } }
         }
     </script>
+
+    <!-- Built-in Styles (No external style.css needed) -->
+    <style>
+        .hide { display: none !important; }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.78);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.4); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7); }
+    </style>
 </head>
-<body class="h-screen flex flex-col md:flex-row antialiased relative bg-slate-900 text-slate-100">
+<body class="h-screen flex flex-col md:flex-row antialiased relative bg-slate-900 text-slate-100 overflow-hidden">
 
     <!-- ================= LOGIN GATE ================= -->
     <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900">
@@ -67,7 +79,7 @@
         </header>
 
         <!-- Mobile Dark Overlay -->
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hide md:hidden"></div>
 
         <!-- Sidebar Navigation -->
         <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-64 glass-panel border-r border-slate-700/60 flex flex-col justify-between h-full transition-transform duration-300 ease-in-out z-50 flex-shrink-0">
@@ -143,7 +155,6 @@
                                 </div>
                                 <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400"><i class="fa-regular fa-clock text-xl"></i></div>
                             </div>
-                            <!-- Direct Exam Date Bar on Dashboard -->
                             <div class="flex gap-2 items-center pt-2 border-t border-slate-700/50">
                                 <input type="date" id="quick-exam-date" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white">
                                 <button type="button" id="btn-save-quick-date" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition">Set Date</button>
@@ -188,7 +199,7 @@
                             <div class="flex gap-3">
                                 <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
                                 <div class="bg-slate-800 p-3.5 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed">
-                                    Hello! I am your built-in IELTS AI Tutor. Ask me anything about Reading, Listening, Writing, Speaking, grammar, or ask me to generate practice questions!
+                                    Hello! I am your built-in IELTS AI Tutor. Paste your Groq (<code>gsk_...</code>) or Grok (<code>xai-...</code>) API key in the bar above, or ask me anything right away!
                                 </div>
                             </div>
                         </div>
@@ -234,9 +245,9 @@
                     <div class="glass-panel p-5 rounded-2xl flex flex-wrap gap-4 items-end">
                         <div class="flex-1 min-w-[180px]">
                             <label class="block text-xs text-slate-400 mb-1">Full Mock Test Raw Score (0–40)</label>
-                            <input type="number" id="listen-raw" min="0" max="40" placeholder="e.g. 32" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+                            <input type="number" id="listen-raw" min="0" max="40" placeholder="e.g. 32" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white">
                         </div>
-                        <button type="button" id="btn-calc-listen" class="px-5 py-2 bg-blue-600 rounded-xl text-sm font-medium">Convert to Band</button>
+                        <button type="button" id="btn-calc-listen" class="px-5 py-2 bg-blue-600 rounded-xl text-sm font-medium text-white">Convert to Band</button>
                         <div id="listen-result" class="text-lg font-bold text-blue-400"></div>
                     </div>
                 </div>
@@ -250,7 +261,7 @@
                                 <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate AI Reading Test
                             </button>
                             <div id="reading-timer" class="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-1.5 rounded-xl font-mono font-bold text-sm">20:00</div>
-                            <button type="button" id="btn-start-read" class="bg-slate-700 px-3 py-1.5 rounded-xl text-xs"><i class="fa-solid fa-play"></i></button>
+                            <button type="button" id="btn-start-read" class="bg-slate-700 px-3 py-1.5 rounded-xl text-xs text-white"><i class="fa-solid fa-play"></i></button>
                         </div>
                     </div>
 
@@ -274,13 +285,13 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-pen-nib mr-2"></i>AI Writing Studio</h2>
                         <div class="flex flex-wrap items-center gap-2">
-                            <select id="writing-task" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs">
+                            <select id="writing-task" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white">
                                 <option value="Task 2 (250+ words)">Task 2 Essay (250+ words)</option>
                                 <option value="Task 1 (150+ words)">Task 1 Report (150+ words)</option>
                             </select>
                             <button type="button" id="btn-ai-writing-prompt" class="bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>New Topic</button>
                             <div id="writing-timer" class="bg-blue-500/10 text-blue-400 px-3 py-1.5 rounded-xl font-mono font-bold text-xs">40:00</div>
-                            <button type="button" id="btn-start-write" class="bg-slate-700 px-3 py-1.5 rounded-xl text-xs"><i class="fa-solid fa-play"></i></button>
+                            <button type="button" id="btn-start-write" class="bg-slate-700 px-3 py-1.5 rounded-xl text-xs text-white"><i class="fa-solid fa-play"></i></button>
                         </div>
                     </div>
 
@@ -396,7 +407,7 @@
                             <div class="space-y-2">
                                 <label class="inline-block bg-slate-800 hover:bg-slate-700 border border-slate-600 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer">
                                     <i class="fa-solid fa-camera mr-1"></i> Upload Photo
-                                    <input type="file" id="avatar-upload" class="hidden" accept="image/*">
+                                    <input type="file" id="avatar-upload" class="hide" accept="image/*">
                                 </label>
                                 <p class="text-xs text-slate-400">Auto-compressed for fast cloud sync.</p>
                             </div>
@@ -428,7 +439,7 @@
                                 </select>
                             </div>
                             <button type="button" id="btn-save-settings" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-semibold text-sm text-white">Save Profile Changes</button>
-                            <p id="settings-success" class="text-emerald-400 text-xs hidden text-center font-semibold">✓ Saved to Firebase!</p>
+                            <p id="settings-success" class="text-emerald-400 text-xs hide text-center font-semibold">✓ Saved to Firebase!</p>
                         </div>
                     </div>
                 </div>
@@ -437,8 +448,797 @@
         </main>
     </div>
 
-    <!-- Cache-Busted Separate Scripts -->
-    <script type="module" src="./app.js?v=20"></script>
-    <script type="module" src="./ai.js?v=20"></script>
+    <!-- ================= UNIFIED APPLICATION & AI ENGINE ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, orderBy, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
+            authDomain: "ielts-studio-ab42a.firebaseapp.com",
+            projectId: "ielts-studio-ab42a",
+            storageBucket: "ielts-studio-ab42a.firebasestorage.app",
+            messagingSenderId: "235346696121",
+            appId: "1:235346696121:web:9065e6003a9b04b5040868"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.ieltsAuth = auth;
+        window.ieltsDb = db;
+
+        // Visual confirmation on login screen that script parsed and loaded cleanly
+        const statusBadge = document.getElementById('system-status');
+        if (statusBadge) {
+            statusBadge.textContent = "Firebase Ready ✓";
+            statusBadge.className = "inline-block px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs mb-5";
+        }
+
+        const loginScreen = document.getElementById('login-screen');
+        const mainApp = document.getElementById('main-app');
+        let unsubscribeLeaderboard = null;
+        let unsubscribeUser = null;
+
+        // --- 1. BULLETPROOF LOGIN HANDLER ---
+        async function executeLogin() {
+            const emailEl = document.getElementById('login-email');
+            const passEl = document.getElementById('login-password');
+            const btn = document.getElementById('btn-login');
+            const errEl = document.getElementById('login-error');
+
+            const email = emailEl ? emailEl.value.trim() : "";
+            const password = passEl ? passEl.value.trim() : "";
+
+            if (!email || !password) {
+                if (errEl) {
+                    errEl.textContent = "Please enter both your Email and Password.";
+                    errEl.classList.remove('hide');
+                }
+                return;
+            }
+
+            if (btn) btn.textContent = "Signing in...";
+            if (errEl) errEl.classList.add('hide');
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                if (errEl) {
+                    errEl.textContent = "Login Error: " + error.message.replace('Firebase: ', '');
+                    errEl.classList.remove('hide');
+                }
+                if (btn) btn.textContent = "Secure Login";
+            }
+        }
+
+        document.getElementById('btn-login')?.addEventListener('click', executeLogin);
+        document.getElementById('login-password')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') executeLogin();
+        });
+
+        document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
+
+        // --- 2. AUTH STATE & FIRESTORE SYNC ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                loginScreen?.classList.add('hide');
+                mainApp?.classList.remove('hide');
+
+                const userRef = doc(db, 'users', user.uid);
+                try {
+                    const docSnap = await getDoc(userRef);
+                    if (!docSnap.exists()) {
+                        const defaultName = user.email ? user.email.split('@')[0] : "Student";
+                        await setDoc(userRef, {
+                            uid: user.uid,
+                            email: user.email,
+                            displayName: defaultName,
+                            photoURL: `https://ui-avatars.com/api/?name=${defaultName}&background=0D8ABC&color=fff`,
+                            targetBand: "7.5",
+                            status: "IELTS Self-Study",
+                            examDate: "",
+                            studyStreak: 0,
+                            lastStreakUpdate: Date.now()
+                        });
+                    } else {
+                        const existing = docSnap.data();
+                        if (!existing.lastStreakUpdate) {
+                            await setDoc(userRef, { studyStreak: 0, lastStreakUpdate: Date.now() }, { merge: true });
+                        }
+                    }
+                } catch (err) {
+                    console.warn("Firestore init note:", err);
+                }
+
+                // Real-time User Listener
+                if (unsubscribeUser) unsubscribeUser();
+                unsubscribeUser = onSnapshot(userRef, async (snap) => {
+                    const data = snap.data();
+                    if (!data) return;
+
+                    const now = Date.now();
+                    let streak = typeof data.studyStreak === 'number' ? data.studyStreak : 0;
+                    let lastUpdate = data.lastStreakUpdate || now;
+
+                    if (now - lastUpdate >= 86400000) {
+                        const daysPassed = Math.floor((now - lastUpdate) / 86400000);
+                        streak = daysPassed === 1 ? streak + 1 : 0;
+                        await setDoc(userRef, { studyStreak: streak, lastStreakUpdate: now }, { merge: true });
+                    }
+
+                    const name = data.displayName || "Student";
+                    const band = data.targetBand || "7.5";
+                    const avatar = data.photoURL || `https://ui-avatars.com/api/?name=${name}&background=0D8ABC&color=fff`;
+
+                    document.getElementById('topbar-name').textContent = name;
+                    document.getElementById('dash-name').textContent = name;
+                    document.getElementById('topbar-band').textContent = `Target: Band ${band}`;
+                    document.getElementById('dash-band').textContent = `Target: Band ${band}`;
+                    document.getElementById('dash-streak').innerHTML = `${streak} <span class="text-base font-normal text-slate-400">Days</span>`;
+
+                    document.getElementById('topbar-avatar').src = avatar;
+                    document.getElementById('mobile-avatar').src = avatar;
+                    document.getElementById('settings-avatar-preview').src = avatar;
+
+                    const countdownEl = document.getElementById('dash-countdown');
+                    if (data.examDate) {
+                        const targetTime = new Date(data.examDate + "T00:00:00").getTime();
+                        const todayTime = new Date().setHours(0, 0, 0, 0);
+                        const diffDays = Math.ceil((targetTime - todayTime) / 86400000);
+                        countdownEl.innerHTML = `${diffDays > 0 ? diffDays : 0} <span class="text-base font-normal text-slate-400">Days Left</span>`;
+                        document.getElementById('quick-exam-date').value = data.examDate;
+                    } else {
+                        countdownEl.innerHTML = `-- <span class="text-base font-normal text-slate-400">Days Left</span>`;
+                    }
+
+                    document.getElementById('set-name').value = name;
+                    document.getElementById('set-status').value = data.status || "";
+                    document.getElementById('set-date').value = data.examDate || "";
+                    document.getElementById('set-band').value = band;
+                }, (err) => {
+                    console.warn("User snapshot note:", err);
+                });
+
+                // Real-time Leaderboard Listener
+                if (unsubscribeLeaderboard) unsubscribeLeaderboard();
+                const q = query(collection(db, "users"), orderBy("targetBand", "desc"));
+                unsubscribeLeaderboard = onSnapshot(q, (snapshot) => {
+                    const tbody = document.getElementById('leaderboard-body');
+                    if (!tbody) return;
+                    tbody.innerHTML = '';
+                    snapshot.forEach((uDoc) => {
+                        const u = uDoc.data();
+                        const uName = u.displayName || "Student";
+                        const uAvatar = u.photoURL || `https://ui-avatars.com/api/?name=${uName}&background=0D8ABC&color=fff`;
+                        tbody.innerHTML += `
+                            <tr class="border-b border-slate-700/50">
+                                <td class="py-3 flex items-center gap-2.5">
+                                    <img src="${uAvatar}" class="w-8 h-8 rounded-full border border-slate-600 object-cover">
+                                    <span class="font-medium text-slate-200">${uName}</span>
+                                </td>
+                                <td class="py-3 font-bold text-orange-400"><i class="fa-solid fa-fire mr-1"></i>${u.studyStreak || 0}d</td>
+                                <td class="py-3 font-bold text-blue-400">Band ${u.targetBand || '7.5'}</td>
+                                <td class="py-3 text-xs text-slate-400">${u.status || 'Studying'}</td>
+                            </tr>
+                        `;
+                    });
+                }, (err) => {
+                    console.warn("Leaderboard note:", err);
+                });
+
+            } else {
+                loginScreen?.classList.remove('hide');
+                mainApp?.classList.add('hide');
+                const btn = document.getElementById('btn-login');
+                if (btn) btn.textContent = "Secure Login";
+            }
+        });
+
+        // --- 3. MOBILE SIDEBAR & TAB NAVIGATION ---
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function closeMobileMenu() {
+            sidebar?.classList.add('-translate-x-full');
+            overlay?.classList.add('hide');
+        }
+
+        function openMobileMenu() {
+            sidebar?.classList.remove('-translate-x-full');
+            overlay?.classList.remove('hide');
+        }
+
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', openMobileMenu);
+        document.getElementById('close-sidebar')?.addEventListener('click', closeMobileMenu);
+        overlay?.addEventListener('click', closeMobileMenu);
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => {
+                    b.classList.remove('bg-blue-600/20', 'text-blue-400');
+                    b.classList.add('text-slate-300');
+                });
+                btn.classList.add('bg-blue-600/20', 'text-blue-400');
+                btn.classList.remove('text-slate-300');
+
+                document.querySelectorAll('.view-section').forEach(v => v.classList.add('hide'));
+                const targetId = `view-${btn.getAttribute('data-target')}`;
+                document.getElementById(targetId)?.classList.remove('hide');
+
+                if (window.innerWidth < 768) closeMobileMenu();
+            });
+        });
+
+        // --- 4. STREAK RESET, EXAM DATE & PROFILE SAVE ---
+        document.getElementById('btn-dash-reset-streak')?.addEventListener('click', async () => {
+            if (!auth.currentUser) return;
+            await setDoc(doc(db, 'users', auth.currentUser.uid), {
+                studyStreak: 0,
+                lastStreakUpdate: Date.now()
+            }, { merge: true });
+        });
+
+        document.getElementById('btn-save-quick-date')?.addEventListener('click', async () => {
+            if (!auth.currentUser) return;
+            const dateVal = document.getElementById('quick-exam-date').value;
+            await setDoc(doc(db, 'users', auth.currentUser.uid), { examDate: dateVal }, { merge: true });
+        });
+
+        document.getElementById('btn-save-settings')?.addEventListener('click', async () => {
+            if (!auth.currentUser) return;
+            const name = document.getElementById('set-name').value.trim() || "Student";
+            const status = document.getElementById('set-status').value.trim();
+            const examDate = document.getElementById('set-date').value;
+            const targetBand = document.getElementById('set-band').value;
+
+            await setDoc(doc(db, 'users', auth.currentUser.uid), {
+                displayName: name,
+                status: status,
+                examDate: examDate,
+                targetBand: targetBand
+            }, { merge: true });
+
+            const suc = document.getElementById('settings-success');
+            suc?.classList.remove('hide');
+            setTimeout(() => suc?.classList.add('hide'), 3000);
+        });
+
+        // Avatar Image Compression
+        document.getElementById('avatar-upload')?.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file || !auth.currentUser) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = async () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 160;
+                    canvas.height = 160;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 160, 160);
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.75);
+                    await setDoc(doc(db, 'users', auth.currentUser.uid), { photoURL: compressedBase64 }, { merge: true });
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // --- 5. TIMERS, WORD COUNTER & VOICE RECORDER ---
+        document.getElementById('btn-calc-listen')?.addEventListener('click', () => {
+            const raw = parseInt(document.getElementById('listen-raw').value);
+            if (isNaN(raw)) return;
+            let band = 5.0;
+            if (raw >= 39) band = 9.0;
+            else if (raw >= 37) band = 8.5;
+            else if (raw >= 35) band = 8.0;
+            else if (raw >= 32) band = 7.5;
+            else if (raw >= 30) band = 7.0;
+            else if (raw >= 26) band = 6.5;
+            else if (raw >= 23) band = 6.0;
+            else if (raw >= 18) band = 5.5;
+            document.getElementById('listen-result').textContent = `Band ${band}`;
+        });
+
+        function startCountdown(elId, seconds) {
+            const el = document.getElementById(elId);
+            if (!el || el.dataset.active === "true") return;
+            el.dataset.active = "true";
+            let rem = seconds;
+            const timer = setInterval(() => {
+                rem--;
+                const m = String(Math.floor(rem / 60)).padStart(2, '0');
+                const s = String(rem % 60).padStart(2, '0');
+                el.textContent = `${m}:${s}`;
+                if (rem <= 0) {
+                    clearInterval(timer);
+                    el.dataset.active = "false";
+                }
+            }, 1000);
+        }
+
+        document.getElementById('btn-start-read')?.addEventListener('click', () => startCountdown('reading-timer', 1200));
+        document.getElementById('btn-start-write')?.addEventListener('click', () => startCountdown('writing-timer', 2400));
+
+        const writingArea = document.getElementById('writing-area');
+        writingArea?.addEventListener('input', () => {
+            const words = writingArea.value.trim() ? writingArea.value.trim().split(/\s+/).length : 0;
+            document.getElementById('word-count').textContent = `${words} words`;
+        });
+
+        document.getElementById('btn-save-essay')?.addEventListener('click', async () => {
+            if (!auth.currentUser || !writingArea.value.trim()) return;
+            const btn = document.getElementById('btn-save-essay');
+            btn.textContent = "Saving...";
+            await addDoc(collection(db, `users/${auth.currentUser.uid}/practiceLogs`), {
+                module: "writing",
+                essay: writingArea.value,
+                timestamp: serverTimestamp()
+            });
+            btn.textContent = "Saved ✓";
+            setTimeout(() => btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save to Cloud`, 2000);
+        });
+
+        let mediaRec = null;
+        let audioChunks = [];
+        document.getElementById('btn-record')?.addEventListener('click', async () => {
+            const btn = document.getElementById('btn-record');
+            const status = document.getElementById('rec-status');
+            const player = document.getElementById('audio-playback');
+
+            if (mediaRec && mediaRec.state === "recording") {
+                mediaRec.stop();
+                btn.innerHTML = `<i class="fa-solid fa-record-vinyl mr-1"></i> Record Voice`;
+                status?.classList.add('hide');
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRec = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRec.ondataavailable = e => audioChunks.push(e.data);
+                mediaRec.onstop = () => {
+                    player.src = URL.createObjectURL(new Blob(audioChunks, { type: 'audio/webm' }));
+                    player.classList.remove('hide');
+                    stream.getTracks().forEach(t => t.stop());
+                };
+                mediaRec.start();
+                btn.innerHTML = `<i class="fa-solid fa-stop mr-1"></i> Stop Recording`;
+                status?.classList.remove('hide');
+                player?.classList.add('hide');
+            } catch (e) {
+                alert("Please allow microphone permission in your browser.");
+            }
+        });
+
+        // ============================================================================
+        // MULTI-PROVIDER AI ENGINE (GROQ gsk_ / XAI GROK xai- / GEMINI / KEYLESS CLOUD)
+        // ============================================================================
+        function getSavedKey() {
+            return (localStorage.getItem("IELTS_PRIVATE_AI_KEY") || "").trim();
+        }
+
+        function setupKeyManagerUI() {
+            const chatBox = document.getElementById('ai-chat-box');
+            if (!chatBox || document.getElementById('ai-key-bar')) return;
+
+            const bar = document.createElement('div');
+            bar.id = 'ai-key-bar';
+            bar.className = 'p-3 bg-slate-900 border-b border-slate-700 flex flex-wrap items-center justify-between gap-2 text-xs';
+            
+            const updateBarHTML = () => {
+                const currentKey = getSavedKey();
+                let providerLabel = "Private AI Key";
+                if (currentKey.startsWith("gsk_")) providerLabel = "Groq AI Key";
+                else if (currentKey.startsWith("xai-")) providerLabel = "xAI Grok Key";
+                else if (currentKey.startsWith("AIza") || currentKey.startsWith("AQ.")) providerLabel = "Gemini Key";
+
+                const statusText = currentKey 
+                    ? `<span class="text-emerald-400 font-semibold">✓ ${providerLabel} Active (${currentKey.slice(0, 6)}...)</span>`
+                    : `<span class="text-blue-400 font-semibold">⚡ Running in Keyless Free AI Mode</span>`;
+
+                bar.innerHTML = `
+                    <div>${statusText}</div>
+                    <div class="flex gap-1.5 items-center">
+                        <input type="password" id="private-key-input" placeholder="Paste Groq (gsk_) or Grok (xai-) key" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-white text-xs w-52 focus:outline-none focus:border-purple-500">
+                        <button type="button" id="btn-save-private-key" class="bg-purple-600 hover:bg-purple-500 text-white px-2.5 py-1 rounded-lg font-medium">Save Key</button>
+                        ${currentKey ? `<button type="button" id="btn-clear-private-key" class="bg-slate-700 hover:bg-red-600 text-white px-2 py-1 rounded-lg">Clear</button>` : ''}
+                    </div>
+                `;
+
+                bar.querySelector('#btn-save-private-key')?.addEventListener('click', () => {
+                    const val = bar.querySelector('#private-key-input').value.trim();
+                    if (!val) return;
+                    localStorage.setItem("IELTS_PRIVATE_AI_KEY", val);
+                    updateBarHTML();
+                    alert("API Key saved privately in your browser! GitHub cannot see or delete it.");
+                });
+
+                bar.querySelector('#btn-clear-private-key')?.addEventListener('click', () => {
+                    localStorage.removeItem("IELTS_PRIVATE_AI_KEY");
+                    updateBarHTML();
+                });
+            };
+
+            chatBox.parentNode.insertBefore(bar, chatBox);
+            updateBarHTML();
+        }
+
+        setupKeyManagerUI();
+
+        async function askIELTSAI(userPrompt, systemPrompt = "You are a supportive Band 9.0 IELTS Examiner and Tutor in Cambodia. Give clear, practical, well-structured answers.") {
+            const apiKey = getSavedKey();
+
+            // ROUTE A1: Groq API Key (starts with gsk_)
+            if (apiKey.startsWith("gsk_")) {
+                try {
+                    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: "llama-3.3-70b-versatile",
+                            messages: [
+                                { role: "system", content: systemPrompt },
+                                { role: "user", content: userPrompt }
+                            ],
+                            temperature: 0.6
+                        })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        return data.choices[0].message.content;
+                    }
+                } catch (err) {
+                    console.warn("Groq request failed, trying fallback:", err);
+                }
+            }
+
+            // ROUTE A2: xAI Grok API Key (starts with xai-)
+            if (apiKey.startsWith("xai-")) {
+                try {
+                    const res = await fetch("https://api.x.ai/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: "grok-2-latest",
+                            messages: [
+                                { role: "system", content: systemPrompt },
+                                { role: "user", content: userPrompt }
+                            ],
+                            temperature: 0.6
+                        })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        return data.choices[0].message.content;
+                    }
+                } catch (err) {
+                    console.warn("xAI Grok request failed, trying fallback:", err);
+                }
+            }
+
+            // ROUTE B: Google Gemini API Key (AIza... or AQ....)
+            if (apiKey.startsWith("AIza") || apiKey.startsWith("AQ.")) {
+                try {
+                    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-goog-api-key": apiKey
+                        },
+                        body: JSON.stringify({
+                            systemInstruction: { parts: [{ text: systemPrompt }] },
+                            contents: [{ parts: [{ text: userPrompt }] }]
+                        })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (reply) return reply;
+                    }
+                } catch (err) {
+                    console.warn("Gemini request failed, switching to keyless AI:", err);
+                }
+            }
+
+            // ROUTE C: Keyless Cloud AI
+            try {
+                const res = await fetch("https://text.pollinations.ai/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        messages: [
+                            { role: "system", content: systemPrompt },
+                            { role: "user", content: userPrompt }
+                        ],
+                        model: "openai"
+                    })
+                });
+                if (res.ok) {
+                    const text = await res.text();
+                    if (text && text.trim().length > 5) return text;
+                }
+            } catch (err) {
+                console.warn("Keyless POST route skipped.");
+            }
+
+            return generateOfflineIELTSReply(userPrompt);
+        }
+
+        function generateOfflineIELTSReply(prompt) {
+            const p = prompt.toLowerCase();
+            if (p.includes("vocab")) {
+                return `<strong>Band 8.0+ Academic Vocabulary:</strong><br>
+1. <strong>Mitigate (v.):</strong> Reduce the severity of something. <em>"Governments must mitigate the effects of climate change."</em><br>
+2. <strong>Ubiquitous (adj.):</strong> Existing everywhere. <em>"Smartphones have become ubiquitous among high school students."</em><br>
+3. <strong>Detrimental (adj.):</strong> Causing harm. <em>"Lack of sleep is detrimental to academic performance."</em><br>
+4. <strong>Catalyst (n.):</strong> Something that triggers rapid change. <em>"Online platforms are a catalyst for self-directed learning."</em><br>
+5. <strong>Pragmatic (adj.):</strong> Practical and realistic. <em>"We need a pragmatic solution to urban traffic congestion."</em>`;
+            }
+            if (p.includes("essay") || p.includes("writing") || p.includes("task 2")) {
+                return `<strong>Band 8.5 Writing Task 2 Structure (250+ Words):</strong><br>
+- <strong>1. Introduction (40–50 words):</strong> Paraphrase the prompt + state your clear thesis/opinion.<br>
+- <strong>2. Body Paragraph 1 (90–100 words):</strong> Topic sentence + explanation + concrete real-world example.<br>
+- <strong>3. Body Paragraph 2 (90–100 words):</strong> Second main view/argument + explanation + example.<br>
+- <strong>4. Conclusion (30–40 words):</strong> Summarize main points and restate your final position without adding new ideas.`;
+            }
+            return `<strong>IELTS Band 8.0+ Study Guide:</strong><br>
+- <strong>Reading:</strong> Skim for main ideas first, then scan for keywords and synonyms. Remember that <em>Not Given</em> means there is no proof in the text.<br>
+- <strong>Writing:</strong> Always plan for 5 minutes before typing. Use linking words naturally (<em>Furthermore, Consequently, On the other hand</em>).<br>
+- <strong>Speaking:</strong> Extend every answer with a reason and a personal example instead of stopping at one sentence.`;
+        }
+
+        // --- CHAT INTERFACE ---
+        let isSendingChat = false;
+
+        async function processUserChat(customText) {
+            if (isSendingChat) return;
+            const inputEl = document.getElementById('ai-input');
+            const chatBox = document.getElementById('ai-chat-box');
+            if (!chatBox) return;
+
+            const msg = customText || (inputEl ? inputEl.value.trim() : "");
+            if (!msg) return;
+            if (!customText && inputEl) inputEl.value = '';
+
+            isSendingChat = true;
+
+            chatBox.innerHTML += `
+                <div class="flex gap-3 flex-row-reverse">
+                    <div class="bg-blue-600 p-3 rounded-2xl rounded-tr-none text-sm text-white max-w-[85%]">${msg}</div>
+                </div>
+            `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const loadId = "load-" + Date.now();
+            chatBox.innerHTML += `
+                <div id="${loadId}" class="flex gap-3">
+                    <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
+                    <div class="bg-slate-800 p-3 rounded-2xl rounded-tl-none text-sm text-slate-400 animate-pulse">Thinking...</div>
+                </div>
+            `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const reply = await askIELTSAI(msg);
+            document.getElementById(loadId)?.remove();
+
+            const formatted = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            chatBox.innerHTML += `
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
+                    <div class="bg-slate-800 p-3.5 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed max-w-[88%]">${formatted}</div>
+                </div>
+            `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            isSendingChat = false;
+        }
+
+        document.getElementById('ai-send-btn')?.addEventListener('click', () => processUserChat());
+        document.getElementById('ai-input')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                processUserChat();
+            }
+        });
+        document.querySelectorAll('.ai-quick-btn').forEach(btn => {
+            btn.addEventListener('click', () => processUserChat(btn.getAttribute('data-prompt')));
+        });
+
+        // --- READING, LISTENING, WRITING & SPEAKING GENERATORS ---
+        const readingBank = [
+            {
+                title: "The Rise of Vertical Farming in Urban Centers",
+                passage: `<p>As global urbanization accelerates, traditional agriculture faces unprecedented pressure from land scarcity and climate variability. Vertical farming—the practice of growing crops in vertically stacked layers indoors—has emerged as a promising solution. By utilizing controlled-environment agriculture (CEA) technology, these facilities regulate light, humidity, and nutrients with pinpoint accuracy.</p>
+                <p>Proponents highlight that vertical farms use up to 95% less water than conventional fields because transpired water is captured and recycled. Furthermore, because farms can be located inside abandoned warehouses in city centers, food miles are drastically reduced. However, critics point out that the high energy cost required to power artificial LED lighting remains a major economic barrier, limiting production primarily to fast-growing leafy greens rather than staple crops like wheat or rice.</p>`,
+                questions: [
+                    { q: "1. Vertical farming uses up to 95% less water than traditional outdoor farming.", options: ["True", "False", "Not Given"], ans: "True" },
+                    { q: "2. Vertical farms are currently more profitable for growing wheat than leafy greens.", options: ["True", "False", "Not Given"], ans: "False" },
+                    { q: "3. Every major city in Southeast Asia has built a government-funded vertical farm.", options: ["True", "False", "Not Given"], ans: "Not Given" }
+                ]
+            },
+            {
+                title: "The Neuroscience of Bilingualism and Cognitive Reserve",
+                passage: `<p>For decades, neuroscientists have investigated how speaking more than one language shapes the human brain. Recent neuroimaging studies reveal that bilingual individuals constantly activate both languages in their minds, requiring the prefrontal cortex to select the appropriate language while inhibiting the other. This continuous mental workout strengthens executive control networks.</p>
+                <p>Longitudinal studies suggest that lifelong bilingualism builds 'cognitive reserve,' which can delay the onset of age-related cognitive decline by up to four years compared to monolinguals. Interestingly, these structural benefits are observed even when a second language is acquired during adolescence or adulthood, provided the speaker uses it actively in daily life.</p>`,
+                questions: [
+                    { q: "1. Only people who learn a second language before age five gain cognitive benefits.", options: ["True", "False", "Not Given"], ans: "False" },
+                    { q: "2. Lifelong bilingualism can delay symptoms of cognitive decline by up to four years.", options: ["True", "False", "Not Given"], ans: "True" },
+                    { q: "3. Bilinguals have a larger hippocampus than professional musicians.", options: ["True", "False", "Not Given"], ans: "Not Given" }
+                ]
+            }
+        ];
+
+        let currentReadingIndex = 0;
+        function renderReadingTest(testObj) {
+            const titleEl = document.getElementById('reading-passage-title');
+            const bodyEl = document.getElementById('reading-passage-body');
+            const qBox = document.getElementById('reading-questions-box');
+            if (!titleEl || !bodyEl || !qBox) return;
+
+            titleEl.textContent = testObj.title;
+            bodyEl.innerHTML = testObj.passage;
+            document.getElementById('reading-score-box').textContent = "";
+            qBox.innerHTML = "";
+            testObj.questions.forEach((item, idx) => {
+                qBox.innerHTML += `
+                    <div class="bg-slate-800/70 p-3.5 rounded-xl border border-slate-700">
+                        <p class="text-sm font-medium mb-2">${item.q}</p>
+                        <div class="flex gap-3 text-xs">
+                            ${item.options.map(opt => `
+                                <label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
+                                    <input type="radio" name="read-q-${idx}" value="${opt}"> ${opt}
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        renderReadingTest(readingBank[0]);
+
+        document.getElementById('btn-ai-reading')?.addEventListener('click', () => {
+            currentReadingIndex = (currentReadingIndex + 1) % readingBank.length;
+            renderReadingTest(readingBank[currentReadingIndex]);
+        });
+
+        document.getElementById('btn-submit-reading')?.addEventListener('click', () => {
+            const testObj = readingBank[currentReadingIndex];
+            let score = 0;
+            testObj.questions.forEach((item, idx) => {
+                const selected = document.querySelector(`input[name="read-q-${idx}"]:checked`);
+                if (selected && selected.value === item.ans) score++;
+            });
+            const bandEst = score === 3 ? "8.5" : score === 2 ? "7.0" : score === 1 ? "5.5" : "4.5";
+            document.getElementById('reading-score-box').textContent = `Score: ${score}/${testObj.questions.length} (Est. Band ${bandEst})`;
+        });
+
+        const listeningBank = [
+            {
+                title: "Section 1: University Library Orientation",
+                script: "Welcome to the University Central Library orientation. From Monday to Friday, the main reading hall opens at 8 AM and closes at 10 PM. On weekends, we close earlier at 6 PM. Undergraduate students may borrow up to 12 books at a time for three weeks. Group discussions are strictly restricted to the third floor.",
+                questions: [
+                    { q: "1. What time does the library close on weekdays?", options: ["6:00 PM", "8:00 PM", "10:00 PM"], ans: "10:00 PM" },
+                    { q: "2. How many books can an undergraduate borrow at once?", options: ["6 books", "12 books", "15 books"], ans: "12 books" },
+                    { q: "3. Which floor is designated for group discussions?", options: ["First floor", "Second floor", "Third floor"], ans: "Third floor" }
+                ]
+            },
+            {
+                title: "Section 2: Eco-Tourism Resort Briefing",
+                script: "Good morning everyone, and welcome to Koh Rong Eco-Resort. Breakfast is served daily in the Bamboo Pavilion between 6:30 AM and 9:30 AM. Today's guided mangrove kayaking tour departs from the north pier at 2:00 PM sharp. Single-use plastics are prohibited on the island.",
+                questions: [
+                    { q: "1. Where is breakfast served each morning?", options: ["North Pier", "Bamboo Pavilion", "Boat House"], ans: "Bamboo Pavilion" },
+                    { q: "2. What time does the kayaking tour depart?", options: ["9:30 AM", "2:00 PM", "4:00 PM"], ans: "2:00 PM" },
+                    { q: "3. What item is prohibited on the island?", options: ["Single-use plastics", "Kayaks", "Cameras"], ans: "Single-use plastics" }
+                ]
+            }
+        ];
+
+        let currentListeningIndex = 0;
+        function renderListeningTest(testObj) {
+            const titleEl = document.getElementById('listening-title');
+            const qBox = document.getElementById('listening-questions-box');
+            if (!titleEl || !qBox) return;
+            titleEl.textContent = testObj.title;
+            document.getElementById('listening-score-box').textContent = "";
+            qBox.innerHTML = "";
+            testObj.questions.forEach((item, idx) => {
+                qBox.innerHTML += `
+                    <div class="bg-slate-800/70 p-3.5 rounded-xl border border-slate-700">
+                        <p class="text-sm font-medium mb-2">${item.q}</p>
+                        <div class="flex flex-wrap gap-3 text-xs">
+                            ${item.options.map(opt => `
+                                <label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
+                                    <input type="radio" name="listen-q-${idx}" value="${opt}"> ${opt}
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        renderListeningTest(listeningBank[0]);
+
+        document.getElementById('btn-ai-listening')?.addEventListener('click', () => {
+            window.speechSynthesis?.cancel();
+            currentListeningIndex = (currentListeningIndex + 1) % listeningBank.length;
+            renderListeningTest(listeningBank[currentListeningIndex]);
+        });
+
+        document.getElementById('btn-play-listening')?.addEventListener('click', () => {
+            if (!('speechSynthesis' in window)) return alert("Audio synthesis not supported on this browser.");
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(listeningBank[currentListeningIndex].script);
+            utter.lang = "en-GB";
+            utter.rate = 0.95;
+            window.speechSynthesis.speak(utter);
+        });
+
+        document.getElementById('btn-stop-listening')?.addEventListener('click', () => window.speechSynthesis?.cancel());
+
+        document.getElementById('btn-submit-listening')?.addEventListener('click', () => {
+            const testObj = listeningBank[currentListeningIndex];
+            let score = 0;
+            testObj.questions.forEach((item, idx) => {
+                const selected = document.querySelector(`input[name="listen-q-${idx}"]:checked`);
+                if (selected && selected.value === item.ans) score++;
+            });
+            const bandEst = score === 3 ? "8.5" : score === 2 ? "7.0" : score === 1 ? "5.5" : "4.5";
+            document.getElementById('listening-score-box').textContent = `Score: ${score}/${testObj.questions.length} (Est. Band ${bandEst})`;
+        });
+
+        // Writing New Prompt & AI Essay Grading
+        document.getElementById('btn-ai-writing-prompt')?.addEventListener('click', async () => {
+            const promptBox = document.getElementById('writing-prompt-box');
+            const taskType = document.getElementById('writing-task')?.value || "Task 2";
+            if (!promptBox) return;
+            promptBox.innerHTML = `<span class="animate-pulse">✨ Generating new ${taskType} prompt...</span>`;
+            const reply = await askIELTSAI(`Generate one official-style IELTS Academic Writing ${taskType} prompt. Return only the prompt text.`);
+            promptBox.innerHTML = `<strong>Prompt:</strong> ${reply}`;
+        });
+
+        document.getElementById('btn-ai-grade-essay')?.addEventListener('click', async () => {
+            const essay = document.getElementById('writing-area')?.value.trim();
+            const fbBox = document.getElementById('writing-feedback-box');
+            if (!fbBox) return;
+            if (!essay) {
+                fbBox.classList.remove('hide');
+                fbBox.innerHTML = `<span class="text-amber-400">Please write your essay first before clicking grade.</span>`;
+                return;
+            }
+            fbBox.classList.remove('hide');
+            fbBox.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Evaluating your essay across the 4 IELTS criteria...</span>`;
+            const words = essay.split(/\s+/).length;
+            const reply = await askIELTSAI(`Grade this IELTS essay (${words} words). Give an estimated Band Score (0-9) for Task Response, Coherence, Lexical Resource, and Grammar, plus 3 specific improvements:\n\n${essay}`);
+            fbBox.innerHTML = `<div class="leading-relaxed">${reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</div>`;
+        });
+
+        // Speaking Cue Card & Model Sample Generators
+        document.getElementById('btn-ai-speaking-card')?.addEventListener('click', async () => {
+            const cardBox = document.getElementById('speaking-cue-card');
+            if (!cardBox) return;
+            cardBox.innerHTML = `<p class="text-rose-400 animate-pulse">✨ Generating new Part 2 Cue Card...</p>`;
+            const reply = await askIELTSAI("Generate one IELTS Speaking Part 2 Cue Card with a main topic and 4 bullet points. Keep it concise.");
+            cardBox.innerHTML = `<div class="leading-relaxed">${reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</div>`;
+        });
+
+        document.getElementById('btn-ai-speaking-sample')?.addEventListener('click', async () => {
+            const sampleBox = document.getElementById('speaking-sample-box');
+            const currentCard = document.getElementById('speaking-cue-card')?.innerText || "Describe a skill you learned recently.";
+            if (!sampleBox) return;
+            sampleBox.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Crafting Band 8.5 Model Answer & idioms...</span>`;
+            const reply = await askIELTSAI(`Provide a Band 8.5 model spoken answer and 4 high-scoring idioms/collocations for this IELTS Speaking Part 2 Cue Card:\n${currentCard}`);
+            sampleBox.innerHTML = `<div class="leading-relaxed">${reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</div>`;
+        });
+    </script>
 </body>
 </html>
