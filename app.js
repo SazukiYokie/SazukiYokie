@@ -20,7 +20,7 @@ const myFirebaseConfig = {
 
 // 2. Gemini AI Key (Users do not see this in the UI anymore)
 // PLEASE PASTE YOUR GEMINI API KEY HERE BEFORE UPLOADING TO GITHUB:
-const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6ILRE_I1bh6aFJxlYIH3ng2DeSw7AcI1GBrri5wlUU1AA"; 
+const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6KxKwbXhmcQMF_LX0LU2UkyoRm7Cu_sqwsddoc-3U-r8g"; 
 
 // ==========================================
 
