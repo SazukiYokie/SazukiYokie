@@ -17,8 +17,9 @@ const myFirebaseConfig = {
   appId: "1:235346696121:web:9065e6003a9b04b5040868"
 };
 
-// Your exact API Key is embedded here securely:
-const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6KES1M5wCgSfEChkGyoZbQoqGRe6j0cMsn7KPipFWACqQ"; 
+// Paste your permanent "AIza..." key here. 
+// If it fails, the app will now automatically ask you for a backup key and save it permanently!
+const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6IfwJHe1GN63eTsV83JYuvABrNgbVAXRcco4Qr3OeB2aw"; 
 
 // ==========================================
 
@@ -216,13 +217,33 @@ window.handleFileUpload = function(e) {
 };
 
 // ==========================================
-// GEMINI AI GENERATOR
+// RESILIENT GEMINI AI GENERATOR
 // ==========================================
+
+// Helper function to get the best available API key
+function getActiveApiKey() {
+  // Check if user saved a backup key in the browser
+  const savedBackupKey = localStorage.getItem("IELTS_STUDIO_BACKUP_KEY");
+  if (savedBackupKey) return savedBackupKey;
+  return DEVELOPER_GEMINI_API_KEY;
+}
+
 window.generateMockTest = async function() {
   const sourceText = document.getElementById('ai-source-text').value.trim();
   const type = document.getElementById('ai-test-type').value;
   
   if(!sourceText) { showToast('Provide some text for the AI to read first.', '#ea580c'); return; }
+
+  const activeKey = getActiveApiKey();
+  if(!activeKey || activeKey === "YOUR_AIZA_KEY_HERE") {
+    // If no key is found, prompt the user and save it to browser memory forever
+    const newKey = prompt("API Key missing or expired. Please enter a permanent AIza key from Google AI Studio:");
+    if (newKey && newKey.trim() !== "") {
+      localStorage.setItem("IELTS_STUDIO_BACKUP_KEY", newKey.trim());
+      showToast('Key saved to browser memory! Click Generate again.', '#10b981');
+    }
+    return;
+  }
 
   document.getElementById('btn-generate').classList.add('hidden');
   document.getElementById('ai-loading').classList.remove('hidden');
@@ -238,7 +259,88 @@ window.generateMockTest = async function() {
   };
 
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${DEVELOPER_GEMINI_API_KEY}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    if(!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error?.message || "API request rejected.");
+    }
+
+    const data = await res.json();
+    const jsonStr = data.candidates[0].content.parts[0].text;
+    const parsed = JSON.parse(jsonStr);
+
+    const newTest = {
+      type: type,
+      title: parsed.title || 'Generated Test',
+      content: parsed,
+      timestamp: Date.now()
+    };
+
+    const testsRef = collection(db, 'artifacts', state.appId, 'users', state.user.uid, 'tests');
+    await addDoc(testsRef, newTest);
+    
+    showToast('Test Generated & Saved Successfully!', '#10b981');
+    switchTab('dashboard');
+    document.getElementById('ai-source-text').value = '';
+
+  } catch (err) {
+    console.error("Gemini Error:", err);
+    showToast(`Engine Failure: ${err.message}`, '#dc2626');
+    
+    // If the error was caused by an expired token, clear the saved token so they can enter a new one
+    if (err.message.includes("API key not valid") || err.message.includes("expired")) {
+       localStorage.removeItem("IELTS_STUDIO_BACKUP_KEY");
+       showToast("Your API token expired. Click Generate again to enter a new one.", '#ea580c');
+    }
+  } finally {
+    document.getElementById('btn-generate').classList.remove('hidden');
+    document.getElementById('ai-loading').classList.add('hidden');
+  }
+};
+
+window.loadTestIntoWorkspace = function(id) {
+  const test = state.savedTests.find(t => t.id === id);
+  if(!test) return;
+
+  switchTab('workspace');
+  document.getElementById('ws-title').textContent = test.title;
+  document.getElementById('ws-type-badge').textContent = test.type.toUpperCase();
+
+  const container = document.getElementById('ws-content');
+  
+  if(test.type === 'reading') {
+    const qHtml = test.content.questions.map((q, i) => `
+      <div class="mb-5 p-4 rounded-xl border bg-gray-50/50 dark:bg-black/20" style="border-color: var(--border-subtle);">
+        <p class="font-bold text-sm mb-3 text-[var(--text-primary)]">${i+1}. ${q.q}</p>
+        <div class="space-y-2">
+            ${q.options.map(opt => `<div class="ml-2 text-xs p-2 rounded border bg-[var(--bg-secondary)]" style="border-color: var(--border-subtle);">${opt}</div>`).join('')}
+        </div>
+        <div class="mt-4 pt-3 border-t text-[10px] uppercase text-emerald-500 font-bold tracking-wider" style="border-color: var(--border-subtle);">Key: ${q.answer}</div>
+      </div>
+    `).join('');
+
+    container.innerHTML = `
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full text-left items-start">
+        <div class="prose prose-sm dark:prose-invert max-w-none text-[15px] leading-relaxed font-serif p-6 rounded-2xl glass-panel">${test.content.passage}</div>
+        <div class="space-y-4">${qHtml}</div>
+      </div>
+    `;
+  } else {
+    container.innerHTML = `
+      <div class="max-w-3xl w-full text-left space-y-6 glass-panel p-8 rounded-2xl mx-auto">
+        <div class="inline-block px-3 py-1 rounded-md text-[10px] font-mono uppercase font-bold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">Writing Task 2</div>
+        <h3 class="text-2xl font-bold font-serif leading-snug">${test.content.prompt}</h3>
+        <p class="text-sm text-gray-500 italic border-l-4 border-gray-300 dark:border-gray-700 pl-4 py-1">${test.content.instructions}</p>
+        <textarea class="w-full h-80 p-5 rounded-xl border bg-[var(--bg-primary)] focus:outline-none focus:border-indigo-500 transition-colors custom-scrollbar text-sm leading-relaxed mt-6" style="border-color: var(--border-subtle);" placeholder="Commence drafting your response here..."></textarea>
+      </div>
+    `;
+  }
+};uage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${DEVELOPER_GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
