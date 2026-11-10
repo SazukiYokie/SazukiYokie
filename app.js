@@ -1,6 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, orderBy, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+// 1. CONFIGURATION
+const GEMINI_API_KEY = "AQ.Ab8RN6IPUaZ1UiQJj-WiYD4WTfN0gP-gyG06SJ1O0TGA7PKSLQ"; 
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const firebaseConfig = {
     apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
@@ -20,20 +25,29 @@ const loginScreen = document.getElementById('login-screen');
 const mainApp = document.getElementById('main-app');
 let unsubscribeLeaderboard = null;
 
-// -- AUTHENTICATION --
+// --- 2. MOBILE MENU LOGIC ---
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebar-overlay');
+const toggleMenu = () => {
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+};
+document.getElementById('mobile-menu-btn')?.addEventListener('click', toggleMenu);
+document.getElementById('close-sidebar')?.addEventListener('click', toggleMenu);
+overlay?.addEventListener('click', toggleMenu);
+
+
+// --- 3. AUTHENTICATION & DATA ---
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-login');
-    const errEl = document.getElementById('login-error');
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...`;
-    
+    btn.textContent = "Authenticating...";
     try {
-        errEl.classList.add('hidden');
         await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
     } catch (error) {
-        errEl.textContent = error.message.replace('Firebase: ', '');
-        errEl.classList.remove('hidden');
-        btn.innerHTML = `Secure Login`;
+        document.getElementById('login-error').textContent = error.message.replace('Firebase: ', '');
+        document.getElementById('login-error').classList.remove('hidden');
+        btn.textContent = "Secure Login";
     }
 });
 
@@ -44,34 +58,61 @@ onAuthStateChanged(auth, async (user) => {
         loginScreen.classList.add('hide');
         mainApp.classList.remove('hide');
         
-        // Ensure user doc exists
         const userRef = doc(db, 'users', user.uid);
         const docSnap = await getDoc(userRef);
+        
+        // Initialize User Data if completely new
         if (!docSnap.exists()) {
             await setDoc(userRef, {
                 uid: user.uid,
                 email: user.email,
                 displayName: user.email.split('@')[0],
                 targetBand: "7.5",
-                lastActive: serverTimestamp()
+                examDate: "",
+                studyStreak: 0,
+                lastStreakUpdate: 0 
             });
-        } else {
-            await setDoc(userRef, { lastActive: serverTimestamp() }, { merge: true });
         }
 
-        // Live user UI updates
-        onSnapshot(userRef, (docSnap) => {
-            const data = docSnap.data();
-            const name = data.displayName || 'Student';
-            const band = data.targetBand || '7.5';
-            const avatar = data.photoURL || `https://ui-avatars.com/api/?name=${name}&background=0D8ABC&color=fff`;
+        // Live User Sync (Streak & Countdown)
+        onSnapshot(userRef, async (liveSnap) => {
+            const data = liveSnap.data();
+            
+            // Streak Logic (Resets to 0 for new users, then strictly +1 every 24 hours)
+            const now = Date.now();
+            let currentStreak = data.studyStreak || 0;
+            let lastUpdate = data.lastStreakUpdate || 0;
+            
+            if (now - lastUpdate >= 86400000) { // 24 Hours in Milliseconds
+                currentStreak = lastUpdate === 0 ? 0 : currentStreak + 1; 
+                await setDoc(userRef, { 
+                    studyStreak: currentStreak, 
+                    lastStreakUpdate: now 
+                }, { merge: true });
+            }
 
-            document.getElementById('topbar-name').textContent = name;
-            document.getElementById('dash-name').textContent = name;
-            document.getElementById('topbar-band').textContent = `Target: Band ${band}`;
-            document.getElementById('topbar-avatar').src = avatar;
-            document.getElementById('set-name').value = name;
-            document.getElementById('set-band').value = band;
+            // Countdown Logic
+            if (data.examDate) {
+                const diffTime = new Date(data.examDate) - new Date();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                document.getElementById('dash-countdown').innerHTML = `${diffDays > 0 ? diffDays : 0} <span class="text-lg text-slate-500">Days</span>`;
+            } else {
+                document.getElementById('dash-countdown').innerHTML = `-- <span class="text-lg text-slate-500">Days</span>`;
+            }
+
+            // Update Header & Dashboard Text
+            const displayName = data.displayName || 'Student';
+            document.getElementById('topbar-name').textContent = displayName;
+            document.getElementById('dash-name').textContent = displayName;
+            document.getElementById('dash-streak').innerHTML = `${currentStreak} <span class="text-lg text-slate-500">Days</span>`;
+            
+            const avatarUrl = `https://ui-avatars.com/api/?name=${displayName}&background=0D8ABC&color=fff`;
+            document.getElementById('topbar-avatar').src = avatarUrl;
+            
+            // Fill Settings Form
+            document.getElementById('set-name').value = displayName;
+            document.getElementById('set-date').value = data.examDate || '';
+            document.getElementById('set-band').value = data.targetBand || '7.5';
         });
 
         // Live Leaderboard
@@ -79,18 +120,17 @@ onAuthStateChanged(auth, async (user) => {
         unsubscribeLeaderboard = onSnapshot(q, (snapshot) => {
             const tbody = document.getElementById('leaderboard-body');
             tbody.innerHTML = '';
-            snapshot.forEach((docSnap) => {
-                const u = docSnap.data();
-                const avatar = u.photoURL || `https://ui-avatars.com/api/?name=${u.displayName}&background=0D8ABC&color=fff`;
-                const dateStr = u.lastActive ? new Date(u.lastActive.toDate()).toLocaleDateString() : 'Just now';
+            snapshot.forEach((uDoc) => {
+                const u = uDoc.data();
+                const avatar = `https://ui-avatars.com/api/?name=${u.displayName}&background=0D8ABC&color=fff`;
                 tbody.innerHTML += `
                     <tr class="border-b border-slate-700/50">
                         <td class="py-3 flex items-center gap-3">
                             <img src="${avatar}" class="w-8 h-8 rounded-full border border-slate-600">
                             <span class="font-medium text-slate-200">${u.displayName}</span>
                         </td>
+                        <td class="py-3 font-bold text-orange-400"><i class="fa-solid fa-fire text-xs"></i> ${u.studyStreak || 0}</td>
                         <td class="py-3 font-bold text-slate-200">${u.targetBand}</td>
-                        <td class="py-3 text-slate-500 text-xs">${dateStr}</td>
                     </tr>
                 `;
             });
@@ -100,45 +140,98 @@ onAuthStateChanged(auth, async (user) => {
         loginScreen.classList.remove('hide');
         mainApp.classList.add('hide');
         if(unsubscribeLeaderboard) unsubscribeLeaderboard();
-        document.getElementById('btn-login').innerHTML = `Secure Login`;
+        document.getElementById('btn-login').textContent = "Secure Login";
     }
 });
 
-// -- NAVIGATION --
+
+// --- 4. NAVIGATION TABS ---
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         document.querySelectorAll('.nav-btn').forEach(b => {
             b.classList.remove('bg-blue-600/10', 'text-blue-400');
             b.classList.add('text-slate-300');
         });
-        const targetBtn = e.currentTarget;
-        targetBtn.classList.add('bg-blue-600/10', 'text-blue-400');
-        targetBtn.classList.remove('text-slate-300');
+        const target = e.currentTarget;
+        target.classList.add('bg-blue-600/10', 'text-blue-400');
+        target.classList.remove('text-slate-300');
         
         document.querySelectorAll('.view-section').forEach(v => v.classList.add('hide'));
-        document.getElementById(`view-${targetBtn.getAttribute('data-target')}`).classList.remove('hide');
+        const targetView = document.getElementById(`view-${target.getAttribute('data-target')}`);
+        if(targetView) targetView.classList.remove('hide');
+        
+        // Auto-close menu on mobile after clicking
+        if(window.innerWidth < 768) toggleMenu();
     });
 });
 
-// -- PROFILE SETTINGS --
+
+// --- 5. SETTINGS FORM ---
 document.getElementById('settings-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const name = document.getElementById('set-name').value;
     await setDoc(doc(db, 'users', auth.currentUser.uid), {
-        displayName: name,
+        displayName: document.getElementById('set-name').value,
+        examDate: document.getElementById('set-date').value,
         targetBand: document.getElementById('set-band').value
     }, { merge: true });
-    await updateProfile(auth.currentUser, { displayName: name });
     
-    const sucEl = document.getElementById('settings-success');
-    sucEl.classList.remove('hidden');
-    setTimeout(() => sucEl.classList.add('hidden'), 3000);
+    const suc = document.getElementById('settings-success');
+    suc.classList.remove('hidden');
+    setTimeout(() => suc.classList.add('hidden'), 3000);
 });
 
-// -- MODULES LOGIC --
 
-// 1. Listening Calculator
-document.getElementById('btn-calc-listen').addEventListener('click', () => {
+// --- 6. GEMINI AI TUTOR ---
+document.getElementById('ai-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const inputEl = document.getElementById('ai-input');
+    const msg = inputEl.value;
+    const chatBox = document.getElementById('ai-chat-box');
+    inputEl.value = '';
+
+    chatBox.innerHTML += `
+        <div class="flex gap-3 flex-row-reverse">
+            <div class="bg-blue-600 p-3 rounded-xl rounded-tr-none text-sm text-white">${msg}</div>
+        </div>
+    `;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    const loadingId = "load-" + Date.now();
+    chatBox.innerHTML += `
+        <div id="${loadingId}" class="flex gap-3">
+            <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot"></i></div>
+            <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none text-sm text-slate-400 animate-pulse">Thinking...</div>
+        </div>
+    `;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+        const model = genAI.getGenerativeModel({ 
+            model: "gemini-1.5-flash",
+            systemInstruction: "You are an expert AI tutor for a Grade 12 student at វិទ្យាល័យ បឹងត្របែក in Cambodia. Keep answers concise, highly supportive, and focused on helping them score a Band 8.0+ in IELTS."
+        });
+        const result = await model.generateContent(msg);
+        const responseText = result.response.text();
+        
+        document.getElementById(loadingId).remove();
+        chatBox.innerHTML += `
+            <div class="flex gap-3">
+                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white"></i></div>
+                <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none text-sm text-slate-200 leading-relaxed">${responseText.replace(/\n/g, '<br>')}</div>
+            </div>
+        `;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    } catch (error) {
+        document.getElementById(loadingId).remove();
+        chatBox.innerHTML += `<div class="text-red-400 text-xs text-center mt-2">Error: ${error.message}</div>`;
+    }
+});
+
+
+// --- 7. MODULE LOGICS (Labs & Timers) ---
+
+// Listening Lab Calculator
+document.getElementById('btn-calc-listen')?.addEventListener('click', () => {
     const raw = parseInt(document.getElementById('listen-raw').value);
     let band = 0;
     if (raw >= 39) band = 9.0;
@@ -149,10 +242,10 @@ document.getElementById('btn-calc-listen').addEventListener('click', () => {
     document.getElementById('listen-result').textContent = isNaN(raw) ? "" : `Band: ${band}`;
 });
 
-// 2. Timers
+// Timers for Reading & Writing
 const runTimer = (elementId, seconds, btnEl) => {
     const el = document.getElementById(elementId);
-    if (el.dataset.running) return;
+    if (!el || el.dataset.running) return;
     el.dataset.running = "true";
     let time = seconds;
     btnEl.classList.add('opacity-50', 'pointer-events-none');
@@ -170,18 +263,20 @@ const runTimer = (elementId, seconds, btnEl) => {
     }, 1000);
 };
 
-document.getElementById('btn-start-read').addEventListener('click', (e) => runTimer('reading-timer', 3600, e.currentTarget));
-document.getElementById('btn-start-write').addEventListener('click', (e) => runTimer('writing-timer', 2400, e.currentTarget));
+document.getElementById('btn-start-read')?.addEventListener('click', (e) => runTimer('reading-timer', 3600, e.currentTarget));
+document.getElementById('btn-start-write')?.addEventListener('click', (e) => runTimer('writing-timer', 2400, e.currentTarget));
 
-// 3. Writing Text Area
+// Writing Area Logic
 const textArea = document.getElementById('writing-area');
-textArea.addEventListener('input', () => {
-    const text = textArea.value.trim();
-    document.getElementById('word-count').textContent = `${text ? text.split(/\s+/).length : 0} words`;
-});
+if(textArea) {
+    textArea.addEventListener('input', () => {
+        const text = textArea.value.trim();
+        document.getElementById('word-count').textContent = `${text ? text.split(/\s+/).length : 0} words`;
+    });
+}
 
-document.getElementById('btn-save-essay').addEventListener('click', async () => {
-    if(!textArea.value.trim()) return;
+document.getElementById('btn-save-essay')?.addEventListener('click', async () => {
+    if(!textArea || !textArea.value.trim()) return;
     const btn = document.getElementById('btn-save-essay');
     btn.textContent = "Saving...";
     await addDoc(collection(db, `users/${auth.currentUser.uid}/practiceLogs`), {
@@ -193,9 +288,9 @@ document.getElementById('btn-save-essay').addEventListener('click', async () => 
     setTimeout(() => btn.textContent = "Save to Cloud", 2000);
 });
 
-// 4. Speaking Recorder
+// Speaking Recorder
 let mediaRec, chunks = [];
-document.getElementById('btn-record').addEventListener('click', async (e) => {
+document.getElementById('btn-record')?.addEventListener('click', async (e) => {
     const btn = e.currentTarget;
     const status = document.getElementById('rec-status');
     const audio = document.getElementById('audio-playback');
@@ -207,20 +302,24 @@ document.getElementById('btn-record').addEventListener('click', async (e) => {
         return;
     }
     
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRec = new MediaRecorder(stream);
-    chunks = [];
-    
-    mediaRec.ondataavailable = ev => chunks.push(ev.data);
-    mediaRec.onstop = () => {
-        audio.src = URL.createObjectURL(new Blob(chunks, { type: 'audio/webm' }));
-        audio.classList.remove('hide');
-        stream.getTracks().forEach(t => t.stop());
-    };
-    
-    mediaRec.start();
-    btn.innerHTML = `<i class="fa-solid fa-stop mr-2"></i> Stop`;
-    status.classList.remove('hide');
-    audio.classList.add('hide');
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRec = new MediaRecorder(stream);
+        chunks = [];
+        
+        mediaRec.ondataavailable = ev => chunks.push(ev.data);
+        mediaRec.onstop = () => {
+            audio.src = URL.createObjectURL(new Blob(chunks, { type: 'audio/webm' }));
+            audio.classList.remove('hide');
+            stream.getTracks().forEach(t => t.stop());
+        };
+        
+        mediaRec.start();
+        btn.innerHTML = `<i class="fa-solid fa-stop mr-2"></i> Stop`;
+        status.classList.remove('hide');
+        audio.classList.add('hide');
+    } catch(err) {
+        console.error("Microphone denied", err);
+        alert("Please allow microphone access to record.");
+    }
 });
-
