@@ -1,11 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, orderBy, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
 // 1. CONFIGURATION
-const GEMINI_API_KEY = "AQ.Ab8RN6J7SFuMqNNXpNlGSGxj-RMgYNINVFft_SvDORRe6cFMiw"; 
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const GEMINI_API_KEY = "AQ.Ab8RN6J_hXFh98X_30h_2yNyYDGDwdoK1Yf5Ei6pC7_EyPHi2g"; 
 
 const firebaseConfig = {
     apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
@@ -35,7 +33,6 @@ const toggleMenu = () => {
 document.getElementById('mobile-menu-btn')?.addEventListener('click', toggleMenu);
 document.getElementById('close-sidebar')?.addEventListener('click', toggleMenu);
 overlay?.addEventListener('click', toggleMenu);
-
 
 // --- 3. AUTHENTICATION & DATA ---
 document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -144,7 +141,6 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-
 // --- 4. NAVIGATION TABS ---
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -165,7 +161,6 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     });
 });
 
-
 // --- 5. SETTINGS FORM ---
 document.getElementById('settings-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -180,8 +175,7 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
     setTimeout(() => suc.classList.add('hidden'), 3000);
 });
 
-
-// --- 6. GEMINI AI TUTOR ---
+// --- 6. GEMINI AI TUTOR (NATIVE FETCH) ---
 document.getElementById('ai-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const inputEl = document.getElementById('ai-input');
@@ -206,12 +200,28 @@ document.getElementById('ai-form').addEventListener('submit', async (e) => {
     chatBox.scrollTop = chatBox.scrollHeight;
 
     try {
-        const model = genAI.getGenerativeModel({ 
-            model: "gemini-1.5-flash",
-            systemInstruction: "You are an expert AI tutor for a Grade 12 student at វិទ្យាល័យ បឹងត្របែក in Cambodia. Keep answers concise, highly supportive, and focused on helping them score a Band 8.0+ in IELTS."
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                systemInstruction: {
+                    parts: [{ text: "You are an expert AI tutor for a Grade 12 student at វិទ្យាល័យ បឹងត្របែក in Cambodia. Keep answers concise, highly supportive, and focused on helping them score a Band 8.0+ in IELTS." }]
+                },
+                contents: [{
+                    parts: [{ text: msg }]
+                }]
+            })
         });
-        const result = await model.generateContent(msg);
-        const responseText = result.response.text();
+
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error?.message || "Failed to fetch response");
+        }
+
+        const result = await response.json();
+        const responseText = result.candidates[0].content.parts[0].text;
         
         document.getElementById(loadingId).remove();
         chatBox.innerHTML += `
@@ -219,6 +229,110 @@ document.getElementById('ai-form').addEventListener('submit', async (e) => {
                 <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white"></i></div>
                 <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none text-sm text-slate-200 leading-relaxed">${responseText.replace(/\n/g, '<br>')}</div>
             </div>
+        `;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    } catch (error) {
+        document.getElementById(loadingId).remove();
+        chatBox.innerHTML += `<div class="text-red-400 text-xs text-center mt-2">Error: ${error.message}</div>`;
+    }
+});
+
+// --- 7. MODULE LOGICS (Labs & Timers) ---
+
+// Listening Lab Calculator
+document.getElementById('btn-calc-listen')?.addEventListener('click', () => {
+    const raw = parseInt(document.getElementById('listen-raw').value);
+    let band = 0;
+    if (raw >= 39) band = 9.0;
+    else if (raw >= 35) band = 8.0;
+    else if (raw >= 30) band = 7.0;
+    else if (raw >= 23) band = 6.0;
+    else band = "< 6.0";
+    document.getElementById('listen-result').textContent = isNaN(raw) ? "" : `Band: ${band}`;
+});
+
+// Timers for Reading & Writing
+const runTimer = (elementId, seconds, btnEl) => {
+    const el = document.getElementById(elementId);
+    if (!el || el.dataset.running) return;
+    el.dataset.running = "true";
+    let time = seconds;
+    btnEl.classList.add('opacity-50', 'pointer-events-none');
+    
+    const intv = setInterval(() => {
+        time--;
+        const m = Math.floor(time / 60).toString().padStart(2, '0');
+        const s = (time % 60).toString().padStart(2, '0');
+        el.textContent = `${m}:${s}`;
+        if (time <= 0) {
+            clearInterval(intv);
+            delete el.dataset.running;
+            btnEl.classList.remove('opacity-50', 'pointer-events-none');
+        }
+    }, 1000);
+};
+
+document.getElementById('btn-start-read')?.addEventListener('click', (e) => runTimer('reading-timer', 3600, e.currentTarget));
+document.getElementById('btn-start-write')?.addEventListener('click', (e) => runTimer('writing-timer', 2400, e.currentTarget));
+
+// Writing Area Logic
+const textArea = document.getElementById('writing-area');
+if(textArea) {
+    textArea.addEventListener('input', () => {
+        const text = textArea.value.trim();
+        document.getElementById('word-count').textContent = `${text ? text.split(/\s+/).length : 0} words`;
+    });
+}
+
+document.getElementById('btn-save-essay')?.addEventListener('click', async () => {
+    if(!textArea || !textArea.value.trim()) return;
+    const btn = document.getElementById('btn-save-essay');
+    btn.textContent = "Saving...";
+    await addDoc(collection(db, `users/${auth.currentUser.uid}/practiceLogs`), {
+        module: 'writing',
+        text: textArea.value,
+        timestamp: serverTimestamp()
+    });
+    btn.textContent = "Saved ✓";
+    setTimeout(() => btn.textContent = "Save to Cloud", 2000);
+});
+
+// Speaking Recorder
+let mediaRec, chunks = [];
+document.getElementById('btn-record')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const status = document.getElementById('rec-status');
+    const audio = document.getElementById('audio-playback');
+
+    if (mediaRec && mediaRec.state === "recording") {
+        mediaRec.stop();
+        btn.innerHTML = `<i class="fa-solid fa-record-vinyl mr-2"></i> Record Answer`;
+        status.classList.add('hide');
+        return;
+    }
+    
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRec = new MediaRecorder(stream);
+        chunks = [];
+        
+        mediaRec.ondataavailable = ev => chunks.push(ev.data);
+        mediaRec.onstop = () => {
+            audio.src = URL.createObjectURL(new Blob(chunks, { type: 'audio/webm' }));
+            audio.classList.remove('hide');
+            stream.getTracks().forEach(t => t.stop());
+        };
+        
+        mediaRec.start();
+        btn.innerHTML = `<i class="fa-solid fa-stop mr-2"></i> Stop`;
+        status.classList.remove('hide');
+        audio.classList.add('hide');
+    } catch(err) {
+        console.error("Microphone denied", err);
+        alert("Please allow microphone access to record.");
+    }
+});
+          </div>
         `;
         chatBox.scrollTop = chatBox.scrollHeight;
     } catch (error) {
