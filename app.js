@@ -1,3 +1,5 @@
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -18,9 +20,9 @@ const myFirebaseConfig = {
   appId: "1:235346696121:web:9065e6003a9b04b5040868"
 };
 
-// 2. Gemini AI Key (Users do not see this in the UI anymore)
-// PLEASE PASTE YOUR GEMINI API KEY HERE BEFORE UPLOADING TO GITHUB:
-const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6KxKwbXhmcQMF_LX0LU2UkyoRm7Cu_sqwsddoc-3U-r8g"; 
+// 2. Gemini AI Key
+// PASTE YOUR "AQ." KEY RIGHT HERE INSIDE THE QUOTES:
+const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6JcjiNISKybNsof_aJ-cC83ZerceXP4sW0fpmj7RguzVQ"; 
 
 // ==========================================
 
@@ -28,7 +30,7 @@ const state = {
   appId: 'ielts-masterclass',
   user: null,
   savedTests: [],
-  isLoginMode: true // Tracks whether we are logging in or signing up
+  isLoginMode: true
 };
 
 let auth, db;
@@ -58,10 +60,9 @@ try {
 }
 
 // ==========================================
-// USER AUTHENTICATION (PUBLIC REGISTRATION)
+// USER AUTHENTICATION
 // ==========================================
 
-// Toggle between Login and Register UI
 window.toggleAuthMode = function() {
   state.isLoginMode = !state.isLoginMode;
   
@@ -89,24 +90,21 @@ onAuthStateChanged(auth, (user) => {
     document.getElementById('auth-view').classList.add('hidden');
     document.getElementById('app-view').classList.remove('hidden');
     
-    // Setup UI with User Data
     const displayName = user.displayName || "Scholar";
     const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
     const avatarUrl = user.photoURL || defaultAvatar;
 
-    // Update Top Nav & Dashboard
     document.getElementById('user-display-name').textContent = displayName;
     document.getElementById('nav-avatar').src = avatarUrl;
     document.getElementById('dash-name').textContent = displayName;
 
-    // Update Profile Settings Page
     document.getElementById('settings-name-display').textContent = displayName;
     document.getElementById('settings-email-display').textContent = user.email;
     document.getElementById('settings-avatar').src = avatarUrl;
     document.getElementById('input-prof-name').value = user.displayName || "";
     document.getElementById('input-prof-avatar').value = user.photoURL || "";
 
-    initFirestoreListeners(); // This isolates data to ONLY this user
+    initFirestoreListeners();
   } else {
     state.user = null;
     document.getElementById('auth-view').classList.remove('hidden');
@@ -114,7 +112,6 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// Handle Login OR Registration
 window.handleAuth = async function() {
   const email = document.getElementById('auth-email').value;
   const pass = document.getElementById('auth-pass').value;
@@ -124,29 +121,22 @@ window.handleAuth = async function() {
   
   try { 
     if (state.isLoginMode) {
-      // Login logic
       await signInWithEmailAndPassword(auth, email, pass); 
       showToast('Login Successful!', '#10b981'); 
     } else {
-      // Registration logic
       const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-      
-      // If they provided a name during signup, save it to their profile immediately
       if (name) {
         await updateProfile(userCredential.user, { displayName: name });
       }
       showToast('Account Created Successfully!', '#10b981');
     }
   } catch(err) { 
-    console.error(err);
-    // Show exact Firebase error to the user
     showToast(err.message.replace('Firebase: ', ''), '#dc2626'); 
   }
 };
 
 window.handleLogout = () => signOut(auth);
 
-// Profile Update Function
 window.saveProfile = async function() {
   const newName = document.getElementById('input-prof-name').value.trim();
   const newAvatar = document.getElementById('input-prof-avatar').value.trim();
@@ -184,10 +174,9 @@ window.switchTab = function(tabId) {
 };
 
 // ==========================================
-// DATABASE & FILE LOGIC (ISOLATED PER USER)
+// DATABASE & FILE LOGIC
 // ==========================================
 function initFirestoreListeners() {
-  // 🔒 Security: Only fetches tests where the path matches this specific user's UID
   const testsRef = collection(db, 'artifacts', state.appId, 'users', state.user.uid, 'tests');
   onSnapshot(testsRef, (snap) => {
     state.savedTests = [];
@@ -239,8 +228,9 @@ window.generateMockTest = async function() {
   
   if(!sourceText) { showToast('Provide some text for the AI to read first.', '#ea580c'); return; }
   
-  if(DEVELOPER_GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") { 
-    showToast('Developer Error: Missing Gemini API Key in app.js', '#dc2626'); 
+  // Notice there is NO "AIza" check here! Any key (including AQ.) will work.
+  if(DEVELOPER_GEMINI_API_KEY === "PASTE_YOUR_AQ_KEY_HERE" || DEVELOPER_GEMINI_API_KEY.length < 15) { 
+    showToast('Engine Failure: Please paste your API key into app.js', '#dc2626'); 
     return; 
   }
 
@@ -249,6 +239,92 @@ window.generateMockTest = async function() {
 
   const sysPrompt = type === 'reading' 
     ? "Act as an IELTS examiner. Read the provided text and generate a Reading Comprehension test. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"passage\": \"string (use HTML <p> tags and break into multiple paragraphs)\", \"questions\": [ { \"q\": \"string\", \"options\": [\"A. ...\", \"B. ...\", \"C. ...\"], \"answer\": \"A, B, or C\" } ] }"
+    : "Act as an IELTS examiner. Read the provided text and generate a Writing Task 2 prompt based on its themes. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"prompt\": \"string\", \"instructions\": \"string\" }";
+
+  const payload = {
+    contents: [{ role: "user", parts: [{ text: `Source material: ${sourceText}` }] }],
+    systemInstruction: { parts: [{ text: sysPrompt }] },
+    generationConfig: { responseMimeType: "application/json" }
+  };
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${DEVELOPER_GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    if(!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error?.message || "API request rejected.");
+    }
+
+    const data = await res.json();
+    const jsonStr = data.candidates[0].content.parts[0].text;
+    const parsed = JSON.parse(jsonStr);
+
+    const newTest = {
+      type: type,
+      title: parsed.title || 'Generated Test',
+      content: parsed,
+      timestamp: Date.now()
+    };
+
+    const testsRef = collection(db, 'artifacts', state.appId, 'users', state.user.uid, 'tests');
+    await addDoc(testsRef, newTest);
+    
+    showToast('Test Generated & Saved Successfully!', '#10b981');
+    switchTab('dashboard');
+    document.getElementById('ai-source-text').value = '';
+
+  } catch (err) {
+    console.error("Gemini Error:", err);
+    showToast(`Engine Failure: ${err.message}`, '#dc2626');
+  } finally {
+    document.getElementById('btn-generate').classList.remove('hidden');
+    document.getElementById('ai-loading').classList.add('hidden');
+  }
+};
+
+window.loadTestIntoWorkspace = function(id) {
+  const test = state.savedTests.find(t => t.id === id);
+  if(!test) return;
+
+  switchTab('workspace');
+  document.getElementById('ws-title').textContent = test.title;
+  document.getElementById('ws-type-badge').textContent = test.type.toUpperCase();
+
+  const container = document.getElementById('ws-content');
+  
+  if(test.type === 'reading') {
+    const qHtml = test.content.questions.map((q, i) => `
+      <div class="mb-5 p-4 rounded-xl border bg-gray-50/50 dark:bg-black/20" style="border-color: var(--border-subtle);">
+        <p class="font-bold text-sm mb-3 text-[var(--text-primary)]">${i+1}. ${q.q}</p>
+        <div class="space-y-2">
+            ${q.options.map(opt => `<div class="ml-2 text-xs p-2 rounded border bg-[var(--bg-secondary)]" style="border-color: var(--border-subtle);">${opt}</div>`).join('')}
+        </div>
+        <div class="mt-4 pt-3 border-t text-[10px] uppercase text-emerald-500 font-bold tracking-wider" style="border-color: var(--border-subtle);">Key: ${q.answer}</div>
+      </div>
+    `).join('');
+
+    container.innerHTML = `
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full text-left items-start">
+        <div class="prose prose-sm dark:prose-invert max-w-none text-[15px] leading-relaxed font-serif p-6 rounded-2xl glass-panel">${test.content.passage}</div>
+        <div class="space-y-4">${qHtml}</div>
+      </div>
+    `;
+  } else {
+    container.innerHTML = `
+      <div class="max-w-3xl w-full text-left space-y-6 glass-panel p-8 rounded-2xl mx-auto">
+        <div class="inline-block px-3 py-1 rounded-md text-[10px] font-mono uppercase font-bold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">Writing Task 2</div>
+        <h3 class="text-2xl font-bold font-serif leading-snug">${test.content.prompt}</h3>
+        <p class="text-sm text-gray-500 italic border-l-4 border-gray-300 dark:border-gray-700 pl-4 py-1">${test.content.instructions}</p>
+        <textarea class="w-full h-80 p-5 rounded-xl border bg-[var(--bg-primary)] focus:outline-none focus:border-indigo-500 transition-colors custom-scrollbar text-sm leading-relaxed mt-6" style="border-color: var(--border-subtle);" placeholder="Commence drafting your response here..."></textarea>
+      </div>
+    `;
+  }
+};
+``` as an IELTS examiner. Read the provided text and generate a Reading Comprehension test. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"passage\": \"string (use HTML <p> tags and break into multiple paragraphs)\", \"questions\": [ { \"q\": \"string\", \"options\": [\"A. ...\", \"B. ...\", \"C. ...\"], \"answer\": \"A, B, or C\" } ] }"
     : "Act as an IELTS examiner. Read the provided text and generate a Writing Task 2 prompt based on its themes. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"prompt\": \"string\", \"instructions\": \"string\" }";
 
   const payload = {
