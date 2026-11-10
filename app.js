@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, orderBy, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
@@ -17,18 +17,23 @@ const db = getFirestore(app);
 
 const loginScreen = document.getElementById('login-screen');
 const mainApp = document.getElementById('main-app');
-let unsubscribeLeaderboard = null;
 
-// --- AUTHENTICATION ---
+// --- SIMPLE LOGIN LISTENER ---
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
     const btn = document.getElementById('btn-login');
-    btn.textContent = "Authenticating...";
+    const errEl = document.getElementById('login-error');
+    
+    btn.textContent = "Logging in...";
+    errEl.classList.add('hidden');
+
     try {
-        await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
+        await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-        document.getElementById('login-error').textContent = error.message.replace('Firebase: ', '');
-        document.getElementById('login-error').classList.remove('hidden');
+        errEl.textContent = error.message;
+        errEl.classList.remove('hidden');
         btn.textContent = "Secure Login";
     }
 });
@@ -45,77 +50,31 @@ onAuthStateChanged(auth, async (user) => {
         
         if (!docSnap.exists()) {
             await setDoc(userRef, {
-                uid: user.uid, email: user.email, displayName: user.email.split('@')[0],
-                targetBand: "7.5", examDate: "", studyStreak: 0, lastStreakUpdate: 0 
+                uid: user.uid, 
+                email: user.email, 
+                displayName: user.email.split('@')[0],
+                targetBand: "7.5", 
+                studyStreak: 0 
             });
         }
 
-        onSnapshot(userRef, async (liveSnap) => {
+        onSnapshot(userRef, (liveSnap) => {
             const data = liveSnap.data();
-            const now = Date.now();
-            let currentStreak = data.studyStreak || 0;
-            let lastUpdate = data.lastStreakUpdate || 0;
-            
-            if (now - lastUpdate >= 86400000) { 
-                currentStreak = lastUpdate === 0 ? 0 : currentStreak + 1; 
-                await setDoc(userRef, { studyStreak: currentStreak, lastStreakUpdate: now }, { merge: true });
-            }
-
-            if (data.examDate) {
-                const diffTime = new Date(data.examDate) - new Date();
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                document.getElementById('dash-countdown').innerHTML = `${diffDays > 0 ? diffDays : 0} <span class="text-lg text-slate-500">Days</span>`;
-            }
-
-            const displayName = data.displayName || 'Student';
-            document.getElementById('topbar-name').textContent = displayName;
-            document.getElementById('dash-name').textContent = displayName;
-            document.getElementById('dash-streak').innerHTML = `${currentStreak} <span class="text-lg text-slate-500">Days</span>`;
-            document.getElementById('topbar-avatar').src = `https://ui-avatars.com/api/?name=${displayName}&background=0D8ABC&color=fff`;
-            
-            document.getElementById('set-name').value = displayName;
-            document.getElementById('set-date').value = data.examDate || '';
-            document.getElementById('set-band').value = data.targetBand || '7.5';
-        });
-
-        const q = query(collection(db, "users"), orderBy("targetBand", "desc"));
-        unsubscribeLeaderboard = onSnapshot(q, (snapshot) => {
-            const tbody = document.getElementById('leaderboard-body');
-            tbody.innerHTML = '';
-            snapshot.forEach((uDoc) => {
-                const u = uDoc.data();
-                const avatar = `https://ui-avatars.com/api/?name=${u.displayName}&background=0D8ABC&color=fff`;
-                tbody.innerHTML += `
-                    <tr class="border-b border-slate-700/50">
-                        <td class="py-3 flex items-center gap-3">
-                            <img src="${avatar}" class="w-8 h-8 rounded-full border border-slate-600">
-                            <span class="font-medium text-slate-200">${u.displayName}</span>
-                        </td>
-                        <td class="py-3 font-bold text-orange-400"><i class="fa-solid fa-fire text-xs"></i> ${u.studyStreak || 0}</td>
-                        <td class="py-3 font-bold text-slate-200">${u.targetBand}</td>
-                    </tr>
-                `;
-            });
+            if(!data) return;
+            document.getElementById('topbar-name').textContent = data.displayName || 'Student';
+            document.getElementById('dash-name').textContent = data.displayName || 'Student';
+            document.getElementById('dash-streak').innerHTML = `${data.studyStreak || 0} <span class="text-lg text-slate-500">Days</span>`;
+            document.getElementById('topbar-avatar').src = `https://ui-avatars.com/api/?name=${data.displayName}&background=0D8ABC&color=fff`;
         });
     } else {
         loginScreen.classList.remove('hide');
         mainApp.classList.add('hide');
-        if(unsubscribeLeaderboard) unsubscribeLeaderboard();
-        document.getElementById('btn-login').textContent = "Secure Login";
+        const btn = document.getElementById('btn-login');
+        if(btn) btn.textContent = "Secure Login";
     }
 });
 
-// --- NAVIGATION & MOBILE MENU ---
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('sidebar-overlay');
-const toggleMenu = () => {
-    if(sidebar) sidebar.classList.toggle('-translate-x-full');
-    if(overlay) overlay.classList.toggle('hidden');
-};
-if(document.getElementById('mobile-menu-btn')) document.getElementById('mobile-menu-btn').addEventListener('click', toggleMenu);
-if(document.getElementById('close-sidebar')) document.getElementById('close-sidebar').addEventListener('click', toggleMenu);
-if(overlay) overlay.addEventListener('click', toggleMenu);
-
+// --- NAVIGATION ---
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         document.querySelectorAll('.nav-btn').forEach(b => {
@@ -129,102 +88,9 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         document.querySelectorAll('.view-section').forEach(v => v.classList.add('hide'));
         const targetView = document.getElementById(`view-${target.getAttribute('data-target')}`);
         if(targetView) targetView.classList.remove('hide');
-        
-        if(window.innerWidth < 768) toggleMenu();
     });
 });
-tUser.uid}/practiceLogs`), {
-        module: 'writing', text: textArea.value, timestamp: serverTimestamp()
-    });
-    if (btn) {
-        btn.textContent = "Saved ✓";
-        setTimeout(() => btn.textContent = "Save to Cloud", 2000);
-    }
-});
-
-let mediaRec, chunks = [];
-document.getElementById('btn-record')?.addEventListener('click', async (e) => {
-    const btn = e.currentTarget;
-    const status = document.getElementById('rec-status');
-    const audio = document.getElementById('audio-playback');
-
-    if (mediaRec && mediaRec.state === "recording") {
-        mediaRec.stop();
-        btn.innerHTML = `<i class="fa-solid fa-record-vinyl mr-2"></i> Record Answer`;
-        if (status) status.classList.add('hide');
-        return;
-    }
-    
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRec = new MediaRecorder(stream);
-        chunks = [];
-        
-        mediaRec.ondataavailable = ev => chunks.push(ev.data);
-        mediaRec.onstop = () => {
-            if (audio) {
-                audio.src = URL.createObjectURL(new Blob(chunks, { type: 'audio/webm' }));
-                audio.classList.remove('hide');
-            }
-            stream.getTracks().forEach(t => t.stop());
-        };
-        
-        mediaRec.start();
-        btn.innerHTML = `<i class="fa-solid fa-stop mr-2"></i> Stop`;
-        if (status) status.classList.remove('hide');
-        if (audio) audio.classList.add('hide');
-    } catch(err) {
-        alert("Please allow microphone access to record.");
-    }
-});
-;
-        mediaRec = new MediaRecorder(stream);
-        chunks = [];
-        
-        mediaRec.ondataavailable = ev => chunks.push(ev.data);
-        mediaRec.onstop = () => {
-            audio.src = URL.createObjectURL(new Blob(chunks, { type: 'audio/webm' }));
-            audio.classList.remove('hide');
-            stream.getTracks().forEach(t => t.stop());
-        };
-        
-        mediaRec.start();
-        btn.innerHTML = `<i class="fa-solid fa-stop mr-2"></i> Stop`;
-        status.classList.remove('hide');
-        audio.classList.add('hide');
-    } catch(err) {
-        alert("Please allow microphone access to record.");
-    }
-});
-;
-        mediaRec = new MediaRecorder(stream);
-        chunks = [];
-        
-        mediaRec.ondataavailable = ev => chunks.push(ev.data);
-        mediaRec.onstop = () => {
-            audio.src = URL.createObjectURL(new Blob(chunks, { type: 'audio/webm' }));
-            audio.classList.remove('hide');
-            stream.getTracks().forEach(t => t.stop());
-        };
-        
-        mediaRec.start();
-        btn.innerHTML = `<i class="fa-solid fa-stop mr-2"></i> Stop`;
-        status.classList.remove('hide');
-        audio.classList.add('hide');
-    } catch(err) {
-        alert("Please allow microphone access to record.");
-    }
-});
- document.getElementById(loadingId).remove();
-        chatBox.innerHTML += `
-            <div class="flex gap-3">
-                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white"></i></div>
-                <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none text-sm text-slate-200 leading-relaxed">${responseText.replace(/\n/g, '<br>')}</div>
-            </div>
-        `;
-        chatBox.scrollTop = chatBox.scrollHeight;
-    } catch (error) {
-        document.getElementById(loadingId).remove();
+d(loadingId).remove();
         chatBox.innerHTML += `<div class="text-red-400 text-xs text-center mt-2">Error: ${error.message}</div>`;
     }
 });
