@@ -24,33 +24,36 @@ let unsubscribeLeaderboard = null;
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebar-overlay');
 const toggleMenu = () => {
-    sidebar.classList.toggle('-translate-x-full');
-    overlay.classList.toggle('hidden');
+    sidebar?.classList.toggle('-translate-x-full');
+    overlay?.classList.toggle('hidden');
 };
 document.getElementById('mobile-menu-btn')?.addEventListener('click', toggleMenu);
 document.getElementById('close-sidebar')?.addEventListener('click', toggleMenu);
 overlay?.addEventListener('click', toggleMenu);
 
 // --- AUTHENTICATION & DATA ---
-document.getElementById('login-form').addEventListener('submit', async (e) => {
+document.getElementById('login-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-login');
-    btn.textContent = "Authenticating...";
+    if (btn) btn.textContent = "Authenticating...";
     try {
         await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
     } catch (error) {
-        document.getElementById('login-error').textContent = error.message.replace('Firebase: ', '');
-        document.getElementById('login-error').classList.remove('hidden');
-        btn.textContent = "Secure Login";
+        const errEl = document.getElementById('login-error');
+        if (errEl) {
+            errEl.textContent = error.message.replace('Firebase: ', '');
+            errEl.classList.remove('hidden');
+        }
+        if (btn) btn.textContent = "Secure Login";
     }
 });
 
-document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        loginScreen.classList.add('hide');
-        mainApp.classList.remove('hide');
+        loginScreen?.classList.add('hide');
+        mainApp?.classList.remove('hide');
         
         const userRef = doc(db, 'users', user.uid);
         const docSnap = await getDoc(userRef);
@@ -64,6 +67,8 @@ onAuthStateChanged(auth, async (user) => {
 
         onSnapshot(userRef, async (liveSnap) => {
             const data = liveSnap.data();
+            if (!data) return;
+            
             const now = Date.now();
             let currentStreak = data.studyStreak || 0;
             let lastUpdate = data.lastStreakUpdate || 0;
@@ -73,28 +78,41 @@ onAuthStateChanged(auth, async (user) => {
                 await setDoc(userRef, { studyStreak: currentStreak, lastStreakUpdate: now }, { merge: true });
             }
 
-            if (data.examDate) {
-                const diffTime = new Date(data.examDate) - new Date();
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                document.getElementById('dash-countdown').innerHTML = `${diffDays > 0 ? diffDays : 0} <span class="text-lg text-slate-500">Days</span>`;
-            } else {
-                document.getElementById('dash-countdown').innerHTML = `-- <span class="text-lg text-slate-500">Days</span>`;
+            const countdownEl = document.getElementById('dash-countdown');
+            if (countdownEl) {
+                if (data.examDate) {
+                    const diffTime = new Date(data.examDate) - new Date();
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    countdownEl.innerHTML = `${diffDays > 0 ? diffDays : 0} <span class="text-lg text-slate-500">Days</span>`;
+                } else {
+                    countdownEl.innerHTML = `-- <span class="text-lg text-slate-500">Days</span>`;
+                }
             }
 
             const displayName = data.displayName || 'Student';
-            document.getElementById('topbar-name').textContent = displayName;
-            document.getElementById('dash-name').textContent = displayName;
-            document.getElementById('dash-streak').innerHTML = `${currentStreak} <span class="text-lg text-slate-500">Days</span>`;
-            document.getElementById('topbar-avatar').src = `https://ui-avatars.com/api/?name=${displayName}&background=0D8ABC&color=fff`;
+            const topbarName = document.getElementById('topbar-name');
+            const dashName = document.getElementById('dash-name');
+            const dashStreak = document.getElementById('dash-streak');
+            const topbarAvatar = document.getElementById('topbar-avatar');
             
-            document.getElementById('set-name').value = displayName;
-            document.getElementById('set-date').value = data.examDate || '';
-            document.getElementById('set-band').value = data.targetBand || '7.5';
+            if (topbarName) topbarName.textContent = displayName;
+            if (dashName) dashName.textContent = displayName;
+            if (dashStreak) dashStreak.innerHTML = `${currentStreak} <span class="text-lg text-slate-500">Days</span>`;
+            if (topbarAvatar) topbarAvatar.src = `https://ui-avatars.com/api/?name=${displayName}&background=0D8ABC&color=fff`;
+            
+            const setName = document.getElementById('set-name');
+            const setDate = document.getElementById('set-date');
+            const setBand = document.getElementById('set-band');
+            
+            if (setName) setName.value = displayName;
+            if (setDate) setDate.value = data.examDate || '';
+            if (setBand) setBand.value = data.targetBand || '7.5';
         });
 
         const q = query(collection(db, "users"), orderBy("targetBand", "desc"));
         unsubscribeLeaderboard = onSnapshot(q, (snapshot) => {
             const tbody = document.getElementById('leaderboard-body');
+            if (!tbody) return;
             tbody.innerHTML = '';
             snapshot.forEach((uDoc) => {
                 const u = uDoc.data();
@@ -112,10 +130,11 @@ onAuthStateChanged(auth, async (user) => {
             });
         });
     } else {
-        loginScreen.classList.remove('hide');
-        mainApp.classList.add('hide');
+        loginScreen?.classList.remove('hide');
+        mainApp?.classList.add('hide');
         if(unsubscribeLeaderboard) unsubscribeLeaderboard();
-        document.getElementById('btn-login').textContent = "Secure Login";
+        const btnLogin = document.getElementById('btn-login');
+        if (btnLogin) btnLogin.textContent = "Secure Login";
     }
 });
 
@@ -139,7 +158,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 });
 
 // --- SETTINGS FORM ---
-document.getElementById('settings-form').addEventListener('submit', async (e) => {
+document.getElementById('settings-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     await setDoc(doc(db, 'users', auth.currentUser.uid), {
         displayName: document.getElementById('set-name').value,
@@ -148,8 +167,10 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
     }, { merge: true });
     
     const suc = document.getElementById('settings-success');
-    suc.classList.remove('hidden');
-    setTimeout(() => suc.classList.add('hidden'), 3000);
+    if (suc) {
+        suc.classList.remove('hidden');
+        setTimeout(() => suc.classList.add('hidden'), 3000);
+    }
 });
 
 // --- MODULE LOGICS (Labs & Timers) ---
@@ -161,7 +182,8 @@ document.getElementById('btn-calc-listen')?.addEventListener('click', () => {
     else if (raw >= 30) band = 7.0;
     else if (raw >= 23) band = 6.0;
     else band = "< 6.0";
-    document.getElementById('listen-result').textContent = isNaN(raw) ? "" : `Band: ${band}`;
+    const resEl = document.getElementById('listen-result');
+    if (resEl) resEl.textContent = isNaN(raw) ? "" : `Band: ${band}`;
 });
 
 const runTimer = (elementId, seconds, btnEl) => {
@@ -191,19 +213,22 @@ const textArea = document.getElementById('writing-area');
 if(textArea) {
     textArea.addEventListener('input', () => {
         const text = textArea.value.trim();
-        document.getElementById('word-count').textContent = `${text ? text.split(/\s+/).length : 0} words`;
+        const wcEl = document.getElementById('word-count');
+        if (wcEl) wcEl.textContent = `${text ? text.split(/\s+/).length : 0} words`;
     });
 }
 
 document.getElementById('btn-save-essay')?.addEventListener('click', async () => {
     if(!textArea || !textArea.value.trim()) return;
     const btn = document.getElementById('btn-save-essay');
-    btn.textContent = "Saving...";
+    if (btn) btn.textContent = "Saving...";
     await addDoc(collection(db, `users/${auth.currentUser.uid}/practiceLogs`), {
         module: 'writing', text: textArea.value, timestamp: serverTimestamp()
     });
-    btn.textContent = "Saved ✓";
-    setTimeout(() => btn.textContent = "Save to Cloud", 2000);
+    if (btn) {
+        btn.textContent = "Saved ✓";
+        setTimeout(() => btn.textContent = "Save to Cloud", 2000);
+    }
 });
 
 let mediaRec, chunks = [];
@@ -215,12 +240,33 @@ document.getElementById('btn-record')?.addEventListener('click', async (e) => {
     if (mediaRec && mediaRec.state === "recording") {
         mediaRec.stop();
         btn.innerHTML = `<i class="fa-solid fa-record-vinyl mr-2"></i> Record Answer`;
-        status.classList.add('hide');
+        if (status) status.classList.add('hide');
         return;
     }
     
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRec = new MediaRecorder(stream);
+        chunks = [];
+        
+        mediaRec.ondataavailable = ev => chunks.push(ev.data);
+        mediaRec.onstop = () => {
+            if (audio) {
+                audio.src = URL.createObjectURL(new Blob(chunks, { type: 'audio/webm' }));
+                audio.classList.remove('hide');
+            }
+            stream.getTracks().forEach(t => t.stop());
+        };
+        
+        mediaRec.start();
+        btn.innerHTML = `<i class="fa-solid fa-stop mr-2"></i> Stop`;
+        if (status) status.classList.remove('hide');
+        if (audio) audio.classList.add('hide');
+    } catch(err) {
+        alert("Please allow microphone access to record.");
+    }
+});
+;
         mediaRec = new MediaRecorder(stream);
         chunks = [];
         
