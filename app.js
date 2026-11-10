@@ -1,10 +1,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-console.log("🚀 app.js has loaded successfully!");
+console.log("🚀 IELTS SaaS Platform Initialized.");
 
-// 🛠️ YOUR FIREBASE CONFIGURATION:
+// ==========================================
+// 🛠️ DEVELOPER CONFIGURATION (YOUR KEYS)
+// ==========================================
+
+// 1. Firebase Keys
 const myFirebaseConfig = {
   apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
   authDomain: "ielts-studio-ab42a.firebaseapp.com",
@@ -14,110 +18,176 @@ const myFirebaseConfig = {
   appId: "1:235346696121:web:9065e6003a9b04b5040868"
 };
 
+// 2. Gemini AI Key (Users do not see this in the UI anymore)
+// PLEASE PASTE YOUR GEMINI API KEY HERE BEFORE UPLOADING TO GITHUB:
+const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6ILRE_I1bh6aFJxlYIH3ng2DeSw7AcI1GBrri5wlUU1AA"; 
+
+// ==========================================
+
 const state = {
   appId: 'ielts-masterclass',
   user: null,
-  savedTests: []
+  savedTests: [],
+  isLoginMode: true // Tracks whether we are logging in or signing up
 };
 
 let auth, db;
 
-// Toast Utility (UI Feedback)
+// Beautiful Toast Utility
 window.showToast = function(msg, color = 'var(--accent-primary)') {
-  console.log("TOAST:", msg); // Prints to F12 Console
   const c = document.getElementById('toast-container');
   if(!c) return;
   const t = document.createElement('div');
-  t.className = 'glass-panel px-4 py-2.5 text-xs font-medium shadow-lg transition-all duration-300 text-white';
-  t.style.borderLeft = `4px solid ${color}`;
+  t.className = 'glass-panel px-5 py-3 text-sm font-bold shadow-2xl transition-all duration-500 transform translate-y-0 rounded-xl flex items-center gap-3 border';
+  t.style.borderColor = color;
   t.style.backgroundColor = 'var(--bg-secondary)';
   t.style.color = 'var(--text-primary)';
-  t.textContent = msg;
+  t.innerHTML = `<div class="w-2 h-2 rounded-full" style="background-color: ${color}"></div> ${msg}`;
+  
   c.appendChild(t);
-  setTimeout(() => { t.style.opacity = 0; setTimeout(() => t.remove(), 300); }, 3000);
+  setTimeout(() => { t.style.opacity = 0; t.style.transform = 'translateY(10px)'; setTimeout(() => t.remove(), 500); }, 4000);
 }
 
-// Initialize Firebase safely
+// Initialize Firebase
 try {
   const app = initializeApp(myFirebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
-  console.log("✅ Firebase Initialized");
 } catch (error) {
   console.error("❌ Firebase Init Error:", error);
 }
 
-// Auth Listener
+// ==========================================
+// USER AUTHENTICATION (PUBLIC REGISTRATION)
+// ==========================================
+
+// Toggle between Login and Register UI
+window.toggleAuthMode = function() {
+  state.isLoginMode = !state.isLoginMode;
+  
+  const nameField = document.getElementById('register-name-field');
+  const mainBtn = document.getElementById('auth-main-btn');
+  const toggleBtn = document.getElementById('auth-toggle-btn');
+  const subtitle = document.getElementById('auth-subtitle');
+
+  if (state.isLoginMode) {
+    nameField.classList.add('hidden');
+    mainBtn.textContent = 'Authenticate & Enter';
+    toggleBtn.textContent = "Don't have an account? Sign up here.";
+    subtitle.textContent = "Welcome back. Please log in.";
+  } else {
+    nameField.classList.remove('hidden');
+    mainBtn.textContent = 'Create Account';
+    toggleBtn.textContent = "Already have an account? Log in here.";
+    subtitle.textContent = "Create an account to save your progress.";
+  }
+};
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    console.log("👤 User is logged in:", user.email);
     state.user = user;
     document.getElementById('auth-view').classList.add('hidden');
     document.getElementById('app-view').classList.remove('hidden');
-    document.getElementById('user-email-display').textContent = user.email;
-    initFirestoreListeners();
+    
+    // Setup UI with User Data
+    const displayName = user.displayName || "Scholar";
+    const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+    const avatarUrl = user.photoURL || defaultAvatar;
+
+    // Update Top Nav & Dashboard
+    document.getElementById('user-display-name').textContent = displayName;
+    document.getElementById('nav-avatar').src = avatarUrl;
+    document.getElementById('dash-name').textContent = displayName;
+
+    // Update Profile Settings Page
+    document.getElementById('settings-name-display').textContent = displayName;
+    document.getElementById('settings-email-display').textContent = user.email;
+    document.getElementById('settings-avatar').src = avatarUrl;
+    document.getElementById('input-prof-name').value = user.displayName || "";
+    document.getElementById('input-prof-avatar').value = user.photoURL || "";
+
+    initFirestoreListeners(); // This isolates data to ONLY this user
   } else {
-    console.log("🔒 User is logged out.");
     state.user = null;
     document.getElementById('auth-view').classList.remove('hidden');
     document.getElementById('app-view').classList.add('hidden');
   }
 });
 
-// ==========================================
-// BULLETPROOF EVENT LISTENERS
-// This ensures the buttons work even when split into modules.
-// ==========================================
+// Handle Login OR Registration
+window.handleAuth = async function() {
+  const email = document.getElementById('auth-email').value;
+  const pass = document.getElementById('auth-pass').value;
+  const name = document.getElementById('auth-name').value;
+  
+  if(!email || !pass) return showToast('Email and password required.', '#ea580c');
+  
+  try { 
+    if (state.isLoginMode) {
+      // Login logic
+      await signInWithEmailAndPassword(auth, email, pass); 
+      showToast('Login Successful!', '#10b981'); 
+    } else {
+      // Registration logic
+      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+      
+      // If they provided a name during signup, save it to their profile immediately
+      if (name) {
+        await updateProfile(userCredential.user, { displayName: name });
+      }
+      showToast('Account Created Successfully!', '#10b981');
+    }
+  } catch(err) { 
+    console.error(err);
+    // Show exact Firebase error to the user
+    showToast(err.message.replace('Firebase: ', ''), '#dc2626'); 
+  }
+};
 
-// Global functions attached to window for HTML access
+window.handleLogout = () => signOut(auth);
+
+// Profile Update Function
+window.saveProfile = async function() {
+  const newName = document.getElementById('input-prof-name').value.trim();
+  const newAvatar = document.getElementById('input-prof-avatar').value.trim();
+  
+  try {
+    await updateProfile(auth.currentUser, {
+      displayName: newName || null,
+      photoURL: newAvatar || null
+    });
+    showToast('Profile updated! Reloading...', '#10b981');
+    setTimeout(() => window.location.reload(), 1500);
+  } catch(err) {
+    showToast('Failed to update profile.', '#dc2626');
+  }
+}
+
+// ==========================================
+// NAVIGATION & UI
+// ==========================================
 window.switchTab = function(tabId) {
-  ['dashboard', 'academy', 'builder', 'workspace'].forEach(t => {
-    document.getElementById(`sec-${t}`).classList.toggle('hidden', t !== tabId);
-    document.getElementById(`tab-${t}`).classList.toggle('active', t === tabId);
+  const tabs = ['dashboard', 'academy', 'builder', 'workspace', 'profile'];
+  tabs.forEach(t => {
+    const sec = document.getElementById(`sec-${t}`);
+    if(sec) sec.classList.toggle('hidden', t !== tabId);
+    
+    const dTab = document.getElementById(`tab-${t}`);
+    if(dTab) dTab.classList.toggle('active', t === tabId);
+
+    const mTab = document.getElementById(`mob-tab-${t}`);
+    if(mTab) {
+      if(t === tabId) mTab.classList.add('active-mob-tab');
+      else mTab.classList.remove('active-mob-tab');
+    }
   });
 };
 
-window.handleLogout = function() {
-  console.log("Logging out...");
-  signOut(auth);
-};
-
-window.handleFileUpload = function(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    document.getElementById('ai-source-text').value = evt.target.result;
-    showToast('File extracted.', '#10b981');
-  };
-  reader.readAsText(file);
-};
-
-// Login Button Logic
-window.handleLogin = async function() {
-  console.log("Login button clicked!");
-  const e = document.getElementById('auth-email').value;
-  const p = document.getElementById('auth-pass').value;
-  
-  if(!e || !p) {
-    showToast('Please enter both email and password.', '#ea580c');
-    return;
-  }
-  
-  try { 
-      showToast('Attempting to log in...');
-      await signInWithEmailAndPassword(auth, e, p); 
-      showToast('Logged in successfully!', '#10b981'); 
-  }
-  catch(err) { 
-      console.error("Login Error:", err);
-      showToast('Login failed. Check your email/password.', '#dc2626'); 
-  }
-};
-
-
-// Database Logic
+// ==========================================
+// DATABASE & FILE LOGIC (ISOLATED PER USER)
+// ==========================================
 function initFirestoreListeners() {
+  // 🔒 Security: Only fetches tests where the path matches this specific user's UID
   const testsRef = collection(db, 'artifacts', state.appId, 'users', state.user.uid, 'tests');
   onSnapshot(testsRef, (snap) => {
     state.savedTests = [];
@@ -132,37 +202,53 @@ function renderDashboard() {
   const grid = document.getElementById('saved-tests-grid');
   
   if(state.savedTests.length === 0) {
-    grid.innerHTML = '<div class="text-sm" style="color: var(--text-muted);">No tests generated yet.</div>';
+    grid.innerHTML = '<div class="col-span-full p-8 text-center border border-dashed rounded-xl border-gray-400/30 text-gray-500 text-sm">Your database is empty. Go to the AI Builder to generate a test!</div>';
     return;
   }
 
   grid.innerHTML = state.savedTests.map(test => `
-    <div class="surface-card p-4 flex flex-col justify-between items-start gap-3">
+    <div class="surface-card p-5 flex flex-col justify-between items-start gap-4 hover:-translate-y-1 transition-transform">
       <div>
-        <span class="text-[10px] font-mono px-2 py-0.5 rounded border mb-2 inline-block uppercase" style="border-color: var(--border-subtle); color: var(--accent-primary);">${test.type}</span>
-        <h4 class="font-bold text-sm line-clamp-2">${test.title || 'Generated Assessment'}</h4>
+        <span class="text-[10px] font-mono px-2.5 py-1 rounded-md border mb-3 inline-block uppercase font-bold" style="border-color: var(--border-focus); color: var(--accent-primary); background: var(--bg-tertiary)">${test.type}</span>
+        <h4 class="font-bold text-sm leading-snug line-clamp-2">${test.title || 'Generated Assessment'}</h4>
       </div>
-      <button onclick="loadTestIntoWorkspace('${test.id}')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border w-full hover:opacity-80 transition" style="border-color: var(--border-subtle);">
-        Load into Workspace →
+      <button onclick="loadTestIntoWorkspace('${test.id}')" class="text-xs font-bold px-4 py-2.5 rounded-lg border w-full hover:bg-indigo-500 hover:text-white hover:border-indigo-500 transition-colors" style="border-color: var(--border-subtle);">
+        Practice Now →
       </button>
     </div>
   `).join('');
 }
 
+window.handleFileUpload = function(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    document.getElementById('ai-source-text').value = evt.target.result;
+    showToast('Document successfully parsed.', '#10b981');
+  };
+  reader.readAsText(file);
+};
 
-// AI Generator Logic
+// ==========================================
+// GEMINI AI GENERATOR
+// ==========================================
 window.generateMockTest = async function() {
-  const apiKey = document.getElementById('gemini-api-key').value.trim() || ""; 
   const sourceText = document.getElementById('ai-source-text').value.trim();
   const type = document.getElementById('ai-test-type').value;
   
-  if(!sourceText) { showToast('Provide source material first.', '#ea580c'); return; }
+  if(!sourceText) { showToast('Provide some text for the AI to read first.', '#ea580c'); return; }
+  
+  if(DEVELOPER_GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") { 
+    showToast('Developer Error: Missing Gemini API Key in app.js', '#dc2626'); 
+    return; 
+  }
 
   document.getElementById('btn-generate').classList.add('hidden');
   document.getElementById('ai-loading').classList.remove('hidden');
 
   const sysPrompt = type === 'reading' 
-    ? "Act as an IELTS examiner. Read the provided text and generate a Reading Comprehension test. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"passage\": \"string (use HTML <p> tags)\", \"questions\": [ { \"q\": \"string\", \"options\": [\"A. ...\", \"B. ...\", \"C. ...\"], \"answer\": \"A, B, or C\" } ] }"
+    ? "Act as an IELTS examiner. Read the provided text and generate a Reading Comprehension test. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"passage\": \"string (use HTML <p> tags and break into multiple paragraphs)\", \"questions\": [ { \"q\": \"string\", \"options\": [\"A. ...\", \"B. ...\", \"C. ...\"], \"answer\": \"A, B, or C\" } ] }"
     : "Act as an IELTS examiner. Read the provided text and generate a Writing Task 2 prompt based on its themes. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"prompt\": \"string\", \"instructions\": \"string\" }";
 
   const payload = {
@@ -172,12 +258,18 @@ window.generateMockTest = async function() {
   };
 
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
+    // We use the embedded DEVELOPER_GEMINI_API_KEY here
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${DEVELOPER_GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
     
+    if(!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error?.message || "API request rejected.");
+    }
+
     const data = await res.json();
     const jsonStr = data.candidates[0].content.parts[0].text;
     const parsed = JSON.parse(jsonStr);
@@ -189,15 +281,17 @@ window.generateMockTest = async function() {
       timestamp: Date.now()
     };
 
+    // Save to Firestore under the current user's UID
     const testsRef = collection(db, 'artifacts', state.appId, 'users', state.user.uid, 'tests');
     await addDoc(testsRef, newTest);
     
-    showToast('Test generated and saved!', '#10b981');
+    showToast('Test Generated & Saved Successfully!', '#10b981');
     switchTab('dashboard');
+    document.getElementById('ai-source-text').value = ''; // Clear box
 
   } catch (err) {
-    console.error(err);
-    showToast('Failed to generate test. Check API Key.', '#dc2626');
+    console.error("Gemini Error:", err);
+    showToast(`Engine Failure: ${err.message}`, '#dc2626');
   } finally {
     document.getElementById('btn-generate').classList.remove('hidden');
     document.getElementById('ai-loading').classList.add('hidden');
@@ -216,26 +310,28 @@ window.loadTestIntoWorkspace = function(id) {
   
   if(test.type === 'reading') {
     const qHtml = test.content.questions.map((q, i) => `
-      <div class="mb-4">
-        <p class="font-bold text-sm mb-2">${i+1}. ${q.q}</p>
-        ${q.options.map(opt => `<div class="ml-4 text-xs mb-1 text-gray-500">${opt}</div>`).join('')}
-        <div class="mt-2 text-[10px] uppercase text-emerald-500 font-mono">Ans: ${q.answer}</div>
+      <div class="mb-5 p-4 rounded-xl border bg-gray-50/50 dark:bg-black/20" style="border-color: var(--border-subtle);">
+        <p class="font-bold text-sm mb-3 text-[var(--text-primary)]">${i+1}. ${q.q}</p>
+        <div class="space-y-2">
+            ${q.options.map(opt => `<div class="ml-2 text-xs p-2 rounded border bg-[var(--bg-secondary)]" style="border-color: var(--border-subtle);">${opt}</div>`).join('')}
+        </div>
+        <div class="mt-4 pt-3 border-t text-[10px] uppercase text-emerald-500 font-bold tracking-wider" style="border-color: var(--border-subtle);">Key: ${q.answer}</div>
       </div>
     `).join('');
 
     container.innerHTML = `
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full text-left items-start">
-        <div class="prose prose-sm dark:prose-invert max-w-none text-[15px] leading-relaxed font-serif p-4 border rounded" style="border-color: var(--border-subtle);">${test.content.passage}</div>
-        <div class="p-4 border rounded" style="border-color: var(--border-subtle);">${qHtml}</div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full text-left items-start">
+        <div class="prose prose-sm dark:prose-invert max-w-none text-[15px] leading-relaxed font-serif p-6 rounded-2xl glass-panel">${test.content.passage}</div>
+        <div class="space-y-4">${qHtml}</div>
       </div>
     `;
   } else {
     container.innerHTML = `
-      <div class="max-w-2xl w-full text-left space-y-4">
-        <div class="text-xs font-mono uppercase text-indigo-500">Writing Task 2</div>
-        <h3 class="text-xl font-bold font-serif">${test.content.prompt}</h3>
-        <p class="text-sm text-gray-500 italic">${test.content.instructions}</p>
-        <textarea class="w-full h-64 p-4 rounded border mt-4 bg-transparent focus:outline-none" style="border-color: var(--border-subtle);" placeholder="Start typing your essay here..."></textarea>
+      <div class="max-w-3xl w-full text-left space-y-6 glass-panel p-8 rounded-2xl mx-auto">
+        <div class="inline-block px-3 py-1 rounded-md text-[10px] font-mono uppercase font-bold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">Writing Task 2</div>
+        <h3 class="text-2xl font-bold font-serif leading-snug">${test.content.prompt}</h3>
+        <p class="text-sm text-gray-500 italic border-l-4 border-gray-300 dark:border-gray-700 pl-4 py-1">${test.content.instructions}</p>
+        <textarea class="w-full h-80 p-5 rounded-xl border bg-[var(--bg-primary)] focus:outline-none focus:border-indigo-500 transition-colors custom-scrollbar text-sm leading-relaxed mt-6" style="border-color: var(--border-subtle);" placeholder="Commence drafting your response here..."></textarea>
       </div>
     `;
   }
