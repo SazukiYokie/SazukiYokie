@@ -1,5 +1,3 @@
-
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -10,7 +8,6 @@ console.log("🚀 IELTS SaaS Platform Initialized.");
 // 🛠️ DEVELOPER CONFIGURATION (YOUR KEYS)
 // ==========================================
 
-// 1. Firebase Keys
 const myFirebaseConfig = {
   apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
   authDomain: "ielts-studio-ab42a.firebaseapp.com",
@@ -20,8 +17,7 @@ const myFirebaseConfig = {
   appId: "1:235346696121:web:9065e6003a9b04b5040868"
 };
 
-// 2. Gemini AI Key
-// PASTE YOUR "AQ." KEY RIGHT HERE INSIDE THE QUOTES:
+// Your exact API Key is embedded here securely:
 const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6JcjiNISKybNsof_aJ-cC83ZerceXP4sW0fpmj7RguzVQ"; 
 
 // ==========================================
@@ -227,12 +223,6 @@ window.generateMockTest = async function() {
   const type = document.getElementById('ai-test-type').value;
   
   if(!sourceText) { showToast('Provide some text for the AI to read first.', '#ea580c'); return; }
-  
-  // Notice there is NO "AIza" check here! Any key (including AQ.) will work.
-  if(DEVELOPER_GEMINI_API_KEY === "PASTE_YOUR_AQ_KEY_HERE" || DEVELOPER_GEMINI_API_KEY.length < 15) { 
-    showToast('Engine Failure: Please paste your API key into app.js', '#dc2626'); 
-    return; 
-  }
 
   document.getElementById('btn-generate').classList.add('hidden');
   document.getElementById('ai-loading').classList.remove('hidden');
@@ -240,6 +230,91 @@ window.generateMockTest = async function() {
   const sysPrompt = type === 'reading' 
     ? "Act as an IELTS examiner. Read the provided text and generate a Reading Comprehension test. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"passage\": \"string (use HTML <p> tags and break into multiple paragraphs)\", \"questions\": [ { \"q\": \"string\", \"options\": [\"A. ...\", \"B. ...\", \"C. ...\"], \"answer\": \"A, B, or C\" } ] }"
     : "Act as an IELTS examiner. Read the provided text and generate a Writing Task 2 prompt based on its themes. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"prompt\": \"string\", \"instructions\": \"string\" }";
+
+  const payload = {
+    contents: [{ role: "user", parts: [{ text: `Source material: ${sourceText}` }] }],
+    systemInstruction: { parts: [{ text: sysPrompt }] },
+    generationConfig: { responseMimeType: "application/json" }
+  };
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${DEVELOPER_GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    if(!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error?.message || "API request rejected.");
+    }
+
+    const data = await res.json();
+    const jsonStr = data.candidates[0].content.parts[0].text;
+    const parsed = JSON.parse(jsonStr);
+
+    const newTest = {
+      type: type,
+      title: parsed.title || 'Generated Test',
+      content: parsed,
+      timestamp: Date.now()
+    };
+
+    const testsRef = collection(db, 'artifacts', state.appId, 'users', state.user.uid, 'tests');
+    await addDoc(testsRef, newTest);
+    
+    showToast('Test Generated & Saved Successfully!', '#10b981');
+    switchTab('dashboard');
+    document.getElementById('ai-source-text').value = '';
+
+  } catch (err) {
+    console.error("Gemini Error:", err);
+    showToast(`Engine Failure: ${err.message}`, '#dc2626');
+  } finally {
+    document.getElementById('btn-generate').classList.remove('hidden');
+    document.getElementById('ai-loading').classList.add('hidden');
+  }
+};
+
+window.loadTestIntoWorkspace = function(id) {
+  const test = state.savedTests.find(t => t.id === id);
+  if(!test) return;
+
+  switchTab('workspace');
+  document.getElementById('ws-title').textContent = test.title;
+  document.getElementById('ws-type-badge').textContent = test.type.toUpperCase();
+
+  const container = document.getElementById('ws-content');
+  
+  if(test.type === 'reading') {
+    const qHtml = test.content.questions.map((q, i) => `
+      <div class="mb-5 p-4 rounded-xl border bg-gray-50/50 dark:bg-black/20" style="border-color: var(--border-subtle);">
+        <p class="font-bold text-sm mb-3 text-[var(--text-primary)]">${i+1}. ${q.q}</p>
+        <div class="space-y-2">
+            ${q.options.map(opt => `<div class="ml-2 text-xs p-2 rounded border bg-[var(--bg-secondary)]" style="border-color: var(--border-subtle);">${opt}</div>`).join('')}
+        </div>
+        <div class="mt-4 pt-3 border-t text-[10px] uppercase text-emerald-500 font-bold tracking-wider" style="border-color: var(--border-subtle);">Key: ${q.answer}</div>
+      </div>
+    `).join('');
+
+    container.innerHTML = `
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full text-left items-start">
+        <div class="prose prose-sm dark:prose-invert max-w-none text-[15px] leading-relaxed font-serif p-6 rounded-2xl glass-panel">${test.content.passage}</div>
+        <div class="space-y-4">${qHtml}</div>
+      </div>
+    `;
+  } else {
+    container.innerHTML = `
+      <div class="max-w-3xl w-full text-left space-y-6 glass-panel p-8 rounded-2xl mx-auto">
+        <div class="inline-block px-3 py-1 rounded-md text-[10px] font-mono uppercase font-bold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">Writing Task 2</div>
+        <h3 class="text-2xl font-bold font-serif leading-snug">${test.content.prompt}</h3>
+        <p class="text-sm text-gray-500 italic border-l-4 border-gray-300 dark:border-gray-700 pl-4 py-1">${test.content.instructions}</p>
+        <textarea class="w-full h-80 p-5 rounded-xl border bg-[var(--bg-primary)] focus:outline-none focus:border-indigo-500 transition-colors custom-scrollbar text-sm leading-relaxed mt-6" style="border-color: var(--border-subtle);" placeholder="Commence drafting your response here..."></textarea>
+      </div>
+    `;
+  }
+};
+```ng\", \"instructions\": \"string\" }";
 
   const payload = {
     contents: [{ role: "user", parts: [{ text: `Source material: ${sourceText}` }] }],
