@@ -24,9 +24,18 @@ document.getElementById('ai-form')?.addEventListener('submit', async (e) => {
     chatBox.scrollTop = chatBox.scrollHeight;
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        // Detect if using an Auth Token (AQ.) or a standard API Key (AIza)
+        const isAuthKey = GEMINI_API_KEY.startsWith("AQ.");
+        const endpoint = isAuthKey 
+            ? `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`
+            : `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            
+        const headers = { 'Content-Type': 'application/json' };
+        if (isAuthKey) headers['Authorization'] = `Bearer ${GEMINI_API_KEY}`;
+
+        const response = await fetch(endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify({
                 systemInstruction: {
                     parts: [{ text: "You are an expert AI tutor for a Grade 12 student at វិទ្យាល័យ បឹងត្របែក in Cambodia. Keep answers concise, highly supportive, and focused on helping them score a Band 8.0+ in IELTS." }]
