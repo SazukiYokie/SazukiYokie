@@ -19,7 +19,7 @@ const myFirebaseConfig = {
 
 // Paste your permanent "AIza..." key here. 
 // If it fails, the app will now automatically ask you for a backup key and save it permanently!
-const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6IfwJHe1GN63eTsV83JYuvABrNgbVAXRcco4Qr3OeB2aw"; 
+const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6KUpSHM9ByPmkrZmZCJziCxq1tHtiXmRqNdNhi0DtqnEg"; 
 
 // ==========================================
 
