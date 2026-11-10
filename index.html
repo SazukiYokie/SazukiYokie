@@ -15,7 +15,6 @@
         }
     </script>
 
-    <!-- Marked.js, PDF.js & Mammoth.js -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
@@ -36,8 +35,229 @@
             color: #f8fafc;
             -webkit-overflow-scrolling: touch;
         }
+        .aurora-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .aurora-orb { position: absolute; border-radius: 9999px; filter: blur(85px); opacity: 0.3; animation: floatOrb 12s infinite ease-in-out alternate; }
+        .orb-1 { width: 380px; height: 380px; background: radial-gradient(circle, #3b82f6, #1d4ed8); top: -80px; left: -80px; }
+        .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #8b5cf6, #6d28d9); bottom: -90px; right: -60px; animation-delay: -4s; }
+        .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, #10b981, #0ea5e9); top: 35%; left: 40%; animation-delay: -8s; opacity: 0.18; }
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, -30px) scale(1.12); }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .view-section:not(.hide) { animation: fadeUp 0.25s ease-out forwards; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .alive-card:hover { transform: translateY(-2px); border-color: rgba(96, 165, 250, 0.45); }
+        .streak-glow {
+            box-shadow: 0 0 25px rgba(249, 115, 22, 0.45), inset 0 0 12px rgba(249, 115, 22, 0.2);
+            border-color: rgba(249, 115, 22, 0.55) !important;
+        }
+        .flame-glow { filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.95)); animation: flamePulse 1.8s infinite ease-in-out; }
+        @keyframes flamePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        .eq-bar { width: 3px; background: #22d3ee; border-radius: 999px; animation: eqBounce 0.7s infinite ease-in-out alternate; }
+        .eq-bar:nth-child(2) { animation-delay: 0.2s; }
+        .eq-bar:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes eqBounce { 0% { height: 4px; } 100% { height: 15px; } }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.45); border-radius: 9999px; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+        .ai-prose { font-size: 0.88rem; line-height: 1.7; color: #e2e8f0; word-break: break-word; }
+        .ai-prose h1, .ai-prose h2, .ai-prose h3 { color: #38bdf8; font-weight: 700; margin: 0.8rem 0 0.4rem; font-size: 1rem; }
+        .ai-prose p { margin-bottom: 0.7rem; }
+        .ai-prose ul, .ai-prose ol { margin-left: 1.2rem; margin-bottom: 0.7rem; }
+        .ai-prose ul { list-style-type: disc; }
+        .ai-prose ol { list-style-type: decimal; }
+        .ai-prose strong { color: #fff; font-weight: 700; }
+        .ai-prose table { width: 100%; border-collapse: collapse; margin: 0.7rem 0; font-size: 0.78rem; background: rgba(15, 23, 42, 0.85); border-radius: 0.5rem; overflow-x: auto; display: block; border: 1px solid rgba(148, 163, 184, 0.22); }
+        .ai-prose th { background: rgba(51, 65, 85, 0.9); color: #38bdf8; text-align: left; padding: 0.5rem 0.7rem; white-space: nowrap; }
+        .ai-prose td { padding: 0.5rem 0.7rem; border-top: 1px solid rgba(148, 163, 184, 0.15); }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row antialiased relative text-slate-100 overflow-hidden">
 
-        /* Vibrant Alive Aurora Background */
+    <div class="aurora-bg">
+        <div class="aurora-orb orb-1"></div>
+        <div class="aurora-orb orb-2"></div>
+        <div class="aurora-orb orb-3"></div>
+    </div>
+
+    <!-- ================= LOGIN GATE ================= -->
+    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-xl overflow-y-auto">
+        <div class="glass-panel p-7 rounded-3xl w-full max-w-md shadow-2xl text-center my-auto border border-blue-500/30">
+            <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+                <i class="fa-solid fa-graduation-cap text-xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-extrabold mb-1">IELTS Studio KH</h1>
+            <p class="text-xs text-slate-400 mb-5">Band 8.0+ AI Self-Study & English Academy</p>
+            <div class="space-y-3.5 text-left">
+                <input type="email" id="login-email" placeholder="Email Address" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
+                <input type="password" id="login-password" placeholder="Password" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
+                <button type="button" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg cursor-pointer">Secure Login</button>
+                <div id="login-error" class="hide bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl text-center"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MAIN APP ================= -->
+    <div id="main-app" class="hide flex flex-col md:flex-row w-full h-full overflow-hidden relative z-10">
+        
+        <!-- Mobile Header -->
+        <header class="md:hidden h-14 glass-panel border-b border-slate-700/60 flex items-center justify-between px-4 z-30 flex-shrink-0">
+            <button type="button" id="mobile-menu-btn" class="flex items-center gap-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 px-3 py-1.5 rounded-xl text-xs font-semibold">
+                <i class="fa-solid fa-bars"></i> Menu
+            </button>
+            <div class="font-bold text-sm flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>IELTS Studio KH
+            </div>
+            <img id="mobile-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-8 h-8 rounded-full border border-slate-600 object-cover">
+        </header>
+
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hide md:hidden"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-60 glass-panel border-r border-slate-700/60 flex flex-col justify-between h-full transition-transform duration-300 z-50 flex-shrink-0">
+            <div class="overflow-y-auto">
+                <div class="p-4 flex items-center justify-between border-b border-slate-700/50">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-blue-400 text-lg"></i>
+                        <span class="font-extrabold text-base">IELTS Studio.</span>
+                    </div>
+                    <button type="button" id="close-sidebar" class="md:hidden text-slate-400 text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <nav class="p-2.5 space-y-1">
+                    <button type="button" data-target="dashboard" class="nav-btn bg-blue-600/20 text-blue-400 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-house w-5"></i>Dashboard</button>
+                    <button type="button" data-target="course" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-bolt text-yellow-400 w-5"></i>English Course</button>
+                    <button type="button" data-target="books" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-bookmark text-pink-400 w-5"></i>Book Library</button>
+                    <button type="button" data-target="history" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-chart-line text-indigo-400 w-5"></i>My Scores & Tests</button>
+                    <button type="button" data-target="ai" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-wand-magic-sparkles text-purple-400 w-5"></i>AI Tutor Chat</button>
+                    <button type="button" data-target="listening" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-headphones text-cyan-400 w-5"></i>AI Listening Lab</button>
+                    <button type="button" data-target="reading" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-open text-emerald-400 w-5"></i>AI Reading Lab</button>
+                    <button type="button" data-target="writing" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-pen-nib text-amber-400 w-5"></i>AI Writing Studio</button>
+                    <button type="button" data-target="speaking" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-microphone text-rose-400 w-5"></i>AI Speaking Arena</button>
+                </nav>
+            </div>
+            <div class="p-2.5 border-t border-slate-700/50 space-y-1 flex-shrink-0">
+                <button type="button" data-target="settings" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-gear w-5"></i>Profile</button>
+                <button type="button" id="logout-btn" class="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-red-500/10 text-red-400 font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-right-from-bracket w-5"></i>Sign Out</button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="flex-1 flex flex-col h-full min-h-0 overflow-hidden relative z-10">
+            <header class="hidden md:flex h-14 glass-panel border-b border-slate-700/60 items-center justify-between px-6 flex-shrink-0">
+                <div class="flex items-center gap-2.5 text-xs text-slate-300 font-medium">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Live AI Hub • Book Test & Official IELTS Generators Ready</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right">
+                        <p id="topbar-name" class="text-sm font-semibold">Student</p>
+                        <p id="topbar-band" class="text-xs text-blue-400">Target: Band 7.5</p>
+                    </div>
+                    <img id="topbar-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full border border-blue-500/50 object-cover">
+                </div>
+            </header>
+
+            <div id="main-scroll-area" class="flex-1 overflow-y-auto p-4 md:p-6 pb-28 md:pb-16 space-y-5">
+                
+                <!-- ================= 1. DASHBOARD ================= -->
+                <div id="view-dashboard" class="view-section space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h2 class="text-xl sm:text-2xl font-extrabold">Welcome, <span id="dash-name" class="bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent">Student</span> 👋</h2>
+                        <span id="dash-band" class="px-3.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/40 text-blue-300 text-xs font-bold">Target: Band 7.5</span>
+                    </div>
+
+                    <!-- Daily Band 8.5 Flashcard -->
+                    <div class="glass-panel alive-card p-4 rounded-2xl border border-purple-500/35 bg-gradient-to-r from-purple-900/25 via-slate-900/70 to-blue-900/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-sparkles text-yellow-400 mr-1"></i>Daily Band 8.5 Power Word</span>
+                            <p id="booster-word" class="text-sm sm:text-base font-bold text-white pt-0.5">Mitigate (v.) — To make something less severe, harmful, or painful.</p>
+                            <p id="booster-ex" class="text-xs text-cyan-200 italic">"Governments must invest in renewable energy to mitigate the devastating impacts of climate change."</p>
+                        </div>
+                        <div class="flex gap-2 self-start sm:self-center flex-shrink-0">
+                            <button type="button" id="btn-speak-booster" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-cyan-300 px-3 py-2 rounded-xl text-xs"><i class="fa-solid fa-volume-high"></i></button>
+                            <button type="button" id="btn-next-booster" class="bg-purple-600 hover:bg-purple-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-bolt mr-1"></i>Next Word</button>
+                        </div>
+                    </div>
+
+                    <!-- Today's Verdict -->
+                    <div id="today-verdict-card" class="glass-panel alive-card p-4 rounded-2xl border-l-4 border-l-blue-500 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <p class="text-[11px] font-bold uppercase text-blue-400">Today's Performance Status</p>
+                            <h3 id="today-verdict-title" class="text-base font-bold text-white">⏳ No Tests Graded Today</h3>
+                        </div>
+                        <div class="flex items-center gap-4 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-700/70 self-start sm:self-center">
+                            <div class="text-center">
+                                <p class="text-[10px] text-slate-400 uppercase">Today</p>
+                                <p id="today-test-count" class="text-base font-bold text-white">0</p>
+                            </div>
+                            <div class="h-6 w-[1px] bg-slate-700"></div>
+                            <div class="text-center">
+                                <p class="text-[10px] text-slate-400 uppercase">Avg Band</p>
+                                <p id="today-avg-band" class="text-base font-bold text-emerald-400">--</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Streak & Countdown -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div id="streak-card" class="glass-panel alive-card p-4 rounded-2Two issues caused what you saw in your screenshot[cite: 10], and both are fixed in the complete `index.html` below:
+
+1. **Why Your Book Loaded "Marine Microplastics" Instead of *Grandma's Bag of Stories*[cite: 10]:** In the previous code, when the AI encountered raw PDF formatting characters from your 32,147-word book[cite: 10], the error handler fell back to the built-in Cambridge test (*Marine Microplastics*[cite: 10]). I have now separated the buttons into two dedicated actions in both **AI Listening Lab** and **AI Reading Lab**:
+   * **`📕 Generate by Book / Topic`**: Strictly uses your selected book or typed topic (and skips empty title/dedication pages so it grabs real story chapters[cite: 10]). It will **never** load the standard Cambridge test.
+   * **`🏛️ Standard IELTS Test`**: Generates an official Cambridge-style academic test when you want general IELTS practice without a book.
+   * **`💾 Save Test`**: Saves the test to your dropdown bar.
+2. **All 12 English Tenses Included:** The **English Course** tab now includes all **12 Tenses** (4 Present, 4 Past, 4 Future) with formulas and Band 8.5 examples.
+
+### Replace your `index.html` with this complete code:
+
+```html
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IELTS Studio KH — AI Self-Study & English Academy</title>
+    
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hanuman:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hanuman:wght@400;700&display=swap)" rel="stylesheet">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { fontFamily: { sans: ['Inter', 'Hanuman', 'sans-serif'] } } }
+        }
+    </script>
+
+    <script src="[https://cdn.jsdelivr.net/npm/marked/marked.min.js](https://cdn.jsdelivr.net/npm/marked/marked.min.js)"></script>
+    <script src="[https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js](https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js)"></script>
+    <script src="[https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js](https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js)"></script>
+    <script>
+        if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = '[https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js](https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js)';
+        }
+    </script>
+
+    <style>
+        .hide { display: none !important; }
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
+            background-color: #050814;
+            color: #f8fafc;
+            -webkit-overflow-scrolling: touch;
+        }
         .aurora-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
         .aurora-orb { position: absolute; border-radius: 9999px; filter: blur(85px); opacity: 0.32; animation: floatOrb 12s infinite ease-in-out alternate; }
         .orb-1 { width: 400px; height: 400px; background: radial-gradient(circle, #3b82f6, #1d4ed8); top: -80px; left: -80px; }
@@ -48,13 +268,11 @@
             50% { transform: translate(45px, -35px) scale(1.15); }
             100% { transform: translate(-30px, 35px) scale(0.92); }
         }
-
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .view-section:not(.hide) { animation: fadeUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
         .glass-panel {
             background: rgba(15, 23, 42, 0.76);
             backdrop-filter: blur(18px);
@@ -67,7 +285,6 @@
             border-color: rgba(96, 165, 250, 0.45);
             box-shadow: 0 12px 28px -8px rgba(59, 130, 246, 0.28);
         }
-
         .streak-glow {
             box-shadow: 0 0 28px rgba(249, 115, 22, 0.45), inset 0 0 12px rgba(249, 115, 22, 0.22);
             border-color: rgba(249, 115, 22, 0.6) !important;
@@ -76,22 +293,15 @@
             filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.95));
             animation: flamePulse 1.8s infinite ease-in-out;
         }
-        @keyframes flamePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.16); }
-        }
-
-        /* Live Audio Equalizer Animation */
+        @keyframes flamePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.16); } }
         .eq-bar { width: 3px; background: #22d3ee; border-radius: 999px; animation: eqBounce 0.8s infinite ease-in-out alternate; }
         .eq-bar:nth-child(2) { animation-delay: 0.2s; }
         .eq-bar:nth-child(3) { animation-delay: 0.4s; }
         .eq-bar:nth-child(4) { animation-delay: 0.1s; }
         @keyframes eqBounce { 0% { height: 4px; } 100% { height: 16px; } }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.45); border-radius: 9999px; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
-
         .ai-prose { font-size: 0.9rem; line-height: 1.72; color: #e2e8f0; word-break: break-word; }
         .ai-prose h1, .ai-prose h2, .ai-prose h3, .ai-prose h4 { color: #38bdf8; font-weight: 700; margin: 0.85rem 0 0.4rem; font-size: 1.02rem; }
         .ai-prose p { margin-bottom: 0.75rem; }
@@ -116,7 +326,7 @@
     <!-- ================= LOGIN GATE ================= -->
     <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-xl overflow-y-auto">
         <div class="glass-panel p-7 rounded-3xl w-full max-w-md shadow-2xl text-center my-auto border border-blue-500/30">
-            <div class="w-16 h-16 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/30">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
                 <i class="fa-solid fa-graduation-cap text-2xl text-white"></i>
             </div>
             <h1 class="text-2xl font-extrabold mb-1 bg-gradient-to-r from-white via-blue-200 to-purple-300 bg-clip-text text-transparent">IELTS Studio KH</h1>
@@ -144,7 +354,7 @@
             <div class="font-bold text-sm flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>IELTS Studio KH
             </div>
-            <img id="mobile-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-8 h-8 rounded-full border border-slate-600 object-cover">
+            <img id="mobile-avatar" src="[https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff](https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff)" class="w-8 h-8 rounded-full border border-slate-600 object-cover">
         </header>
 
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hide md:hidden"></div>
@@ -187,14 +397,14 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
-                    <span>Live AI Hub • Official IELTS Standard Engine Active</span>
+                    <span>Live AI Hub • Book Test Engine & Official IELTS Standard Active</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
                         <p id="topbar-name" class="text-sm font-semibold">Student</p>
                         <p id="topbar-band" class="text-xs text-blue-400">Target: Band 7.5</p>
                     </div>
-                    <img id="topbar-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full border border-blue-500/50 object-cover">
+                    <img id="topbar-avatar" src="[https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff](https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff)" class="w-9 h-9 rounded-full border border-blue-500/50 object-cover">
                 </div>
             </header>
 
@@ -210,15 +420,13 @@
                     <!-- Alive Daily Band 8.5 Flashcard Booster -->
                     <div class="glass-panel alive-card p-4 rounded-2xl border border-purple-500/35 bg-gradient-to-r from-purple-900/25 via-slate-900/70 to-blue-900/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div class="space-y-1">
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/30"><i class="fa-solid fa-sparkles text-yellow-400 mr-1"></i>Daily Band 8.5 Power Word</span>
-                            </div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/30"><i class="fa-solid fa-sparkles text-yellow-400 mr-1"></i>Daily Band 8.5 Power Word</span>
                             <p id="booster-word" class="text-sm sm:text-base font-bold text-white pt-0.5">Mitigate (v.) — To make something less severe, harmful, or painful.</p>
                             <p id="booster-ex" class="text-xs text-cyan-200 italic">"Governments must invest in renewable energy to mitigate the devastating impacts of climate change."</p>
                         </div>
                         <div class="flex gap-2 self-start sm:self-center flex-shrink-0">
                             <button type="button" id="btn-speak-booster" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-cyan-300 px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-volume-high"></i></button>
-                            <button type="button" id="btn-next-booster" class="bg-purple-600 hover:bg-purple-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-purple-600/25"><i class="fa-solid fa-bolt mr-1"></i>Next Word</button>
+                            <button type="button" id="btn-next-booster" class="bg-purple-600 hover:bg-purple-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-lg"><i class="fa-solid fa-bolt mr-1"></i>Next Word</button>
                         </div>
                     </div>
 
@@ -308,16 +516,13 @@
                     </div>
                 </div>
 
-                <!-- ================= 2. ENGLISH & IELTS LEARNING COURSE ACADEMY ================= -->
+                <!-- ================= 2. ENGLISH GRAMMAR & VOCABULARY ACADEMY (ALL 12 TENSES) ================= -->
                 <div id="view-course" class="view-section hide space-y-4">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div>
-                            <h2 class="text-xl font-extrabold text-yellow-400"><i class="fa-solid fa-bolt mr-2"></i>English Grammar & Vocabulary Academy</h2>
-                            <p class="text-xs text-slate-400">Master every English tense, complex grammar rule, and Band 8.5 vocabulary topic.</p>
-                        </div>
+                    <div>
+                        <h2 class="text-xl font-extrabold text-yellow-400"><i class="fa-solid fa-bolt mr-2"></i>English Grammar & Vocabulary Academy</h2>
+                        <p class="text-xs text-slate-400">Complete masterclasses on all 12 English Tenses, Complex Clauses, and Band 8.5 Vocabulary.</p>
                     </div>
 
-                    <!-- Course Module Tabs -->
                     <div class="flex flex-wrap gap-2">
                         <button type="button" data-course="tenses" class="course-tab-btn bg-yellow-500 text-slate-950 px-3.5 py-2 rounded-xl text-xs font-bold transition">1. All 12 Tenses</button>
                         <button type="button" data-course="complex" class="course-tab-btn bg-slate-800 text-slate-200 hover:bg-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition">2. Complex Sentences</button>
@@ -327,15 +532,13 @@
                         <button type="button" data-course="idioms" class="course-tab-btn bg-slate-800 text-slate-200 hover:bg-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition">6. Idioms & Phrasal Verbs</button>
                     </div>
 
-                    <!-- AI Custom Topic Teacher Bar -->
                     <div class="glass-panel p-3.5 rounded-2xl flex flex-col sm:flex-row gap-2 items-stretch sm:items-center border border-yellow-500/30">
-                        <input type="text" id="course-ai-input" placeholder="Ask the Academy to teach you ANY grammar rule, tense, or vocabulary topic (e.g. 'Past Perfect vs Past Simple', 'Conditional Sentences')..." class="flex-1 bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-yellow-400">
+                        <input type="text" id="course-ai-input" placeholder="Ask the Academy to teach you ANY grammar rule, tense, or vocabulary topic..." class="flex-1 bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-yellow-400">
                         <button type="button" id="btn-course-ai-teach" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition flex-shrink-0">
                             <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate Interactive Lesson & Quiz
                         </button>
                     </div>
 
-                    <!-- Active Lesson Display Content -->
                     <div id="course-content-box" class="glass-panel p-5 rounded-2xl ai-prose space-y-4"></div>
                 </div>
 
@@ -404,15 +607,18 @@
                     </div>
                 </div>
 
-                <!-- ================= 6. AI LISTENING LAB ================= -->
+                <!-- ================= 6. AI LISTENING LAB (2 Separate Generation Buttons: By Book/Topic vs Standard IELTS) ================= -->
                 <div id="view-listening" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>AI Listening Lab</h2>
                         <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" id="btn-ai-listening" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
-                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate Listening Test
+                            <button type="button" id="btn-gen-book-listening" class="bg-pink-600 hover:bg-pink-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
+                                <i class="fa-solid fa-book-open mr-1"></i> Generate Test by Book / Topic
                             </button>
-                            <button type="button" id="btn-save-listening" class="bg-slate-800 hover:bg-blue-600 border border-cyan-500/40 text-cyan-300 hover:text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
+                            <button type="button" id="btn-gen-std-listening" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
+                                <i class="fa-solid fa-building-columns mr-1"></i> Generate Standard IELTS Test
+                            </button>
+                            <button type="button" id="btn-save-listening" class="bg-slate-800 hover:bg-blue-600 border border-cyan-500/40 text-cyan-300 hover:text-white px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
                                 <i class="fa-solid fa-floppy-disk mr-1"></i> Save Test
                             </button>
                         </div>
@@ -435,7 +641,7 @@
                         <button type="button" id="btn-delete-listening-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
 
-                    <div class="glass-panel p-3.5 rounded-xl space-y-2">
+                    <div class="glass-panel p-3.5 rounded-xl space-y-2 border border-pink-500/30">
                         <div class="flex flex-wrap gap-2 items-center justify-between">
                             <div class="flex items-center gap-2 flex-wrap flex-1">
                                 <select id="listening-book-picker" class="bg-pink-600/20 border border-pink-500/40 text-pink-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold">
@@ -445,11 +651,14 @@
                                     <i class="fa-solid fa-file-arrow-up mr-1"></i> Upload Full PDF / TXT
                                     <input type="file" id="listening-file-upload" accept=".pdf,.txt,.md,.csv,.docx,.html" class="hide">
                                 </label>
-                                <span id="listening-file-badge" class="text-xs text-slate-400"></span>
+                                <button type="button" id="btn-next-listening-chunk" class="hide bg-purple-600/30 hover:bg-purple-600 border border-purple-400/40 text-purple-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold">
+                                    <i class="fa-solid fa-forward-step mr-1"></i> Next Chapter / Story in Book
+                                </button>
+                                <span id="listening-file-badge" class="text-xs text-emerald-400 font-semibold"></span>
                             </div>
                             <button type="button" id="btn-clear-listening-source" class="text-xs text-slate-400 hover:text-red-400">Clear</button>
                         </div>
-                        <textarea id="listening-custom-source" rows="2" placeholder="Leave blank for a full Official IELTS Standard Listening Test, or type ANY topic / pick a book above to generate a custom test..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-cyan-500"></textarea>
+                        <textarea id="listening-custom-source" rows="2" placeholder="Pick a saved book above or type/paste your own story/topic here, then click '📕 Generate Test by Book / Topic'..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-pink-500"></textarea>
                     </div>
 
                     <div class="glass-panel p-4 rounded-2xl space-y-3.5">
@@ -459,8 +668,8 @@
                                     <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
                                 </div>
                                 <div>
-                                    <h3 id="listening-title" class="font-bold text-sm sm:text-base text-cyan-300">IELTS Standard Listening Test</h3>
-                                    <p id="listening-status" class="text-xs text-slate-400">Click "Generate Listening Test" or "Play Audio".</p>
+                                    <h3 id="listening-title" class="font-bold text-sm sm:text-base text-cyan-300">IELTS Listening Test</h3>
+                                    <p id="listening-status" class="text-xs text-slate-400">Click "Play Audio" to listen and answer all 6 questions below.</p>
                                 </div>
                             </div>
                             <div class="flex flex-wrap items-center gap-1.5">
@@ -485,15 +694,18 @@
                     </div>
                 </div>
 
-                <!-- ================= 7. AI READING LAB ================= -->
+                <!-- ================= 7. AI READING LAB (2 Separate Generation Buttons: By Book/Topic vs Standard IELTS) ================= -->
                 <div id="view-reading" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>AI Reading Lab</h2>
                         <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" id="btn-ai-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
-                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate Reading Test
+                            <button type="button" id="btn-gen-book-reading" class="bg-pink-600 hover:bg-pink-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
+                                <i class="fa-solid fa-book-open mr-1"></i> Generate Test by Book / Topic
                             </button>
-                            <button type="button" id="btn-save-reading" class="bg-slate-800 hover:bg-emerald-600 border border-emerald-500/40 text-emerald-300 hover:text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
+                            <button type="button" id="btn-gen-std-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
+                                <i class="fa-solid fa-building-columns mr-1"></i> Generate Standard IELTS Test
+                            </button>
+                            <button type="button" id="btn-save-reading" class="bg-slate-800 hover:bg-emerald-600 border border-emerald-500/40 text-emerald-300 hover:text-white px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
                                 <i class="fa-solid fa-floppy-disk mr-1"></i> Save Test
                             </button>
                             <div id="reading-timer" class="bg-red-500/10 border border-red-500/30 text-red-400 px-2.5 py-1.5 rounded-lg font-mono font-bold text-xs">20:00</div>
@@ -518,7 +730,7 @@
                         <button type="button" id="btn-delete-reading-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
 
-                    <div class="glass-panel p-3.5 rounded-xl space-y-2">
+                    <div class="glass-panel p-3.5 rounded-xl space-y-2 border border-pink-500/30">
                         <div class="flex flex-wrap gap-2 items-center justify-between">
                             <div class="flex items-center gap-2 flex-wrap flex-1">
                                 <select id="reading-book-picker" class="bg-pink-600/20 border border-pink-500/40 text-pink-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold">
@@ -528,11 +740,14 @@
                                     <i class="fa-solid fa-file-pdf mr-1"></i> Upload Full PDF / TXT
                                     <input type="file" id="reading-file-upload" accept=".pdf,.txt,.md,.csv,.docx,.html" class="hide">
                                 </label>
-                                <span id="reading-file-status" class="text-xs text-slate-400"></span>
+                                <button type="button" id="btn-next-reading-chunk" class="hide bg-purple-600/30 hover:bg-purple-600 border border-purple-400/40 text-purple-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold">
+                                    <i class="fa-solid fa-forward-step mr-1"></i> Next Chapter / Story in Book
+                                </button>
+                                <span id="reading-file-status" class="text-xs text-emerald-400 font-semibold"></span>
                             </div>
                             <button type="button" id="btn-clear-reading-source" class="text-xs text-slate-400 hover:text-red-400">Clear</button>
                         </div>
-                        <textarea id="reading-custom-source" rows="2" placeholder="Leave blank for a full Official Cambridge IELTS Standard Passage, or type ANY topic / paste an article to generate a custom Reading Test..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500"></textarea>
+                        <textarea id="reading-custom-source" rows="2" placeholder="Pick a saved book above or type/paste your own topic/article here, then click '📕 Generate Test by Book / Topic'..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-pink-500"></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -654,7 +869,7 @@
                     <h2 class="text-xl font-bold text-blue-400">Profile Settings</h2>
                     <div class="glass-panel p-5 rounded-2xl space-y-4">
                         <div class="flex items-center gap-4 pb-3 border-b border-slate-700">
-                            <img id="settings-avatar-preview" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-16 h-16 rounded-full border-2 border-blue-500 object-cover">
+                            <img id="settings-avatar-preview" src="[https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff](https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff)" class="w-16 h-16 rounded-full border-2 border-blue-500 object-cover">
                             <label class="bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer">
                                 <i class="fa-solid fa-camera mr-1"></i> Change Photo
                                 <input type="file" id="avatar-upload" class="hide" accept="image/*">
@@ -678,9 +893,9 @@
 
     <!-- ================= APPLICATION LOGIC ================= -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+        import { initializeApp } from "[https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js](https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js)";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "[https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js](https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js)";
+        import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection, query, orderBy } from "[https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js](https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js)";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
@@ -732,69 +947,62 @@
             window.speechSynthesis.speak(u);
         });
 
-        // --- 1. BUILT-IN ENGLISH GRAMMAR & VOCABULARY ACADEMY COURSE ---
+        // --- 1. COMPLETE ENGLISH GRAMMAR & VOCABULARY ACADEMY (ALL 12 TENSES INCLUDED!) ---
         const academyCurriculum = {
-            tenses: `### Complete Guide to the 12 English Tenses for IELTS Band 8.5
-Mastering tense accuracy is essential for **Grammatical Range & Accuracy (25% of your score)**. Here are the most important tenses for IELTS Writing and Speaking:
+            tenses: `### Complete Masterclass: All 12 English Tenses for IELTS Band 8.5
+Mastering all **12 English Tenses** gives you complete control over **Grammatical Range & Accuracy (25% of your IELTS score)**:
 
-| Tense | Formula | IELTS Usage & Band 8.5 Example |
+| # | Tense Name | Formula | When to Use in IELTS & Band 8.5 Example |
+| :--- | :--- | :--- | :--- |
+| **1** | **Present Simple** | \`S + V1 (s/es)\` | General facts, academic truths & permanent situations:<br>*"Urbanization **creates** significant economic opportunities."* |
+| **2** | **Present Continuous** | \`am/is/are + V-ing\` | Ongoing current trends & temporary actions:<br>*"Global temperatures **are rising** at an unprecedented pace."* |
+| **3** | **Present Perfect** | \`have/has + V3\` | Past actions with present results (Best for Task 2 Intros!):<br>*"In recent decades, digital technology **has transformed** global education."* |
+| **4** | **Present Perfect Continuous** | \`have/has been + V-ing\` | Actions that started in the past and continue right now:<br>*"Researchers **have been investigating** renewable energy storage for decades."* |
+| **5** | **Past Simple** | \`S + V2\` | Completed past events & Task 1 historical charts:<br>*"Between 2005 and 2015, coal consumption **declined** dramatically."* |
+| **6** | **Past Continuous** | \`was/were + V-ing\` | Background action in progress interrupted by another past event (Speaking Part 2):<br>*"While I **was preparing** for my final exams, I discovered a new study method."* |
+| **7** | **Past Perfect** | \`had + V3\` | An action completed *before* another past moment:<br>*"By the time strict laws were enacted, carbon emissions **had already doubled**."* |
+| **8** | **Past Perfect Continuous** | \`had been + V-ing\` | Duration of an ongoing action *before* a specific past point:<br>*"The company **had been operating** for ten years before it expanded overseas."* |
+| **9** | **Future Simple** | \`will + V1\` | Future predictions, decisions & conditional results:<br>*"Without urgent intervention, water scarcity **will affect** millions of citizens."* |
+| **10** | **Future Continuous** | \`will be + V-ing\` | Ongoing actions in progress at a specific future time:<br>*"Within twenty years, autonomous vehicles **will be transporting** the majority of commuters."* |
+| **11** | **Future Perfect** | \`will have + V3\` | Action that will be completed *by* a certain future date (Task 1 future projections!):<br>*"By 2050, solar energy production **will have surpassed** fossil fuels."* |
+| **12** | **Future Perfect Continuous** | \`will have been + V-ing\` | Duration of an action up to a specific future milestone:<br>*"By next month, I **will have been studying** English intensively for two full years."* |`,
+
+            complex: `### Mastering Complex Sentences (Band 8.5 Grammar Formula)
+To score Band 8.0+ in Writing and Speaking, combine dependent and independent clauses naturally:
+
+| Structure Type | Connectors | Band 6.0 (Simple) vs. Band 8.5 (Complex) |
 | :--- | :--- | :--- |
-| **Present Simple** | \`S + V1(s/es)\` | General truths & academic facts: *"Urbanization **creates** significant economic opportunities."* |
-| **Present Continuous** | \`am/is/are + V-ing\` | Current ongoing trends: *"Global temperatures **are rising** at an unprecedented rate."* |
-| **Present Perfect** | \`have/has + V3\` | Past actions affecting the present (Crucial for Task 2 intros!): *"In recent decades, technology **has revolutionized** how students acquire knowledge."* |
-| **Present Perfect Cont.** | \`have/has been + V-ing\` | Actions started in the past and still continuing: *"Scientists **have been investigating** renewable alternatives for decades."* |
-| **Past Simple** | \`S + V2\` | Completed historical data (Task 1 charts & Speaking Part 2): *"Between 2000 and 2010, coal consumption **declined** sharply."* |
-| **Past Perfect** | \`had + V3\` | Action completed *before* another past point: *"By the time regulations were introduced, pollution levels **had already peaked**."* |
-| **Future Simple / Academic** | \`will / is projected to + V1\` | Future projections: *"The proportion of elderly citizens **is projected to double** by 2050."* |
-
-### Examiner Pro-Tip: The "In Recent Years" Rule
-Whenever you write *"In recent years," "Over the last decade,"* or *"Since the 20th century,"* **never** use Past Simple—always use **Present Perfect** (*has increased / have become*)!`,
-
-            complex: `### Mastering Complex Sentences (The Secret to Band 8.0+ Grammar)
-To score Band 8.0+ in Writing and Speaking, at least **60% of your sentences** must be complex sentences that combine dependent and independent clauses smoothly.
-
-| Sentence Type | Key Connectors | Band 6.0 (Simple) vs. Band 8.5 (Complex) |
-| :--- | :--- | :--- |
-| **1. Concession Clauses** | *Although, Even though, Whilst, Whereas, Despite* | ❌ * Band 6:* Technology is useful. However, it can distract students.<br>✅ *Band 8.5:* **Although** digital technology offers unprecedented access to information, it can significantly impair students' concentration. |
-| **2. Non-Defining Relative Clauses** | *, which..., / , who...,* | ❌ *Band 6:* Public transport reduces traffic. This is good for the environment.<br>✅ *Band 8.5:* Investing in public transit reduces vehicular congestion**, which in turn** lowers urban carbon emissions. |
-| **3. Conditional Clauses** | *Provided that, Unless, Were governments to...* | ❌ *Band 6:* If governments do not act, pollution will get worse.<br>✅ *Band 8.5:* **Unless** governments enforce stringent emission standards, ecological degradation will continue to accelerate. |
-| **4. Participle Clauses** | *Having + V3, / Driven by...,* | ❌ *Band 6:* Many graduates move to cities because they want higher salaries.<br>✅ *Band 8.5:* **Driven by** the prospect of higher remuneration, a growing number of graduates relocate to metropolitan hubs. |`,
+| **1. Concession Clauses** | *Although, Even though, Whilst, Whereas, Despite* | ❌ *Band 6:* Technology is useful. However, it distracts students.<br>✅ *Band 8.5:* **Although** digital technology offers unprecedented access to information, it can impair students' concentration. |
+| **2. Non-Defining Relative Clauses** | *, which..., / , who...,* | ❌ *Band 6:* Public transport reduces traffic. This helps the environment.<br>✅ *Band 8.5:* Investing in public transit reduces vehicular congestion**, which in turn** lowers urban carbon emissions. |
+| **3. Conditional Clauses** | *Provided that, Unless, Were governments to...* | ❌ *Band 6:* If governments do not act, pollution will worsen.<br>✅ *Band 8.5:* **Unless** governments enforce stringent emission standards, ecological degradation will accelerate. |
+| **4. Participle Clauses** | *Having + V3, / Driven by...,* | ❌ *Band 6:* Many graduates move to cities because they want higher pay.<br>✅ *Band 8.5:* **Driven by** the prospect of higher remuneration, many graduates relocate to metropolitan hubs. |`,
 
             passive: `### Passive Voice & Advanced Inversion for Academic Tone
-Academic writing requires an objective, formal tone rather than repeating *"I think"*, *"People say"*, or *"We can see"*.
-
 ### 1. The Academic Passive (\`be + Past Participle\`)
-* **Process Diagrams (Task 1):** *"First, the raw materials **are harvested** and **transported** to the processing facility, where they **are heated** to 200 degrees."*
+* **Process Diagrams (Task 1):** *"First, the raw materials **are harvested** and **transported** to the processing facility, where they **are heated**."*
 * **Impersonal Academic Claims (Task 2):** *"It **is widely argued** that university education should **be subsidized** by the state."*
 
-### 2. Band 8.5 Negative Inversion (High-Scoring Structure!)
-Placing a negative adverbial (*Not only, Rarely, Little, Only by*) at the start of a sentence triggers question-word order (` + "`Auxiliary + Subject + Verb`" + `):
-* **Not only... but also:** *"<strong>Not only does</strong> regular exercise improve cardiovascular health, <strong>but it also</strong> alleviates psychological stress."*
+### 2. Band 8.5 Negative Inversion
+* **Not only... but also:** *"<strong>Not only does</strong> regular exercise improve cardiovascular health, <strong>but it also</strong> alleviates stress."*
 * **Only by + V-ing:** *"<strong>Only by implementing</strong> strict legislation <strong>can governments</strong> curb corporate pollution."*`,
 
             vocab: `### Band 8.5 Academic Vocabulary & High-Scoring Collocations
-Examiners do not reward obscure, archaic words—they reward **precise academic collocations** (words that naturally partner together).
-
 | Common Word (Band 6.0) | Band 8.5 Academic Upgrades | Natural Band 8.5 Collocation in Context |
 | :--- | :--- | :--- |
-| **Important** | *Pivotal, Paramount, Indispensable* | *"Parental guidance **plays a pivotal role** in shaping a child's moral compass."* |
-| **Bad / Harmful** | *Detrimental, Adverse,Counterproductive* | *"Excessive screen time has a **detrimental impact on** adolescent sleep cycles."* |
+| **Important** | *Pivotal, Paramount, Indispensable* | *"Parental guidance **plays a pivotal role** in shaping a child's development."* |
+| **Bad / Harmful** | *Detrimental, Adverse, Counterproductive* | *"Excessive screen time has a **detrimental impact on** adolescent sleep cycles."* |
 | **Good / Helpful** | *Beneficial, Advantageous, Conducive* | *"A quiet environment is **conducive to** deep academic focus."* |
 | **Solve a problem** | *Mitigate, Alleviate, Combat, Curb* | *"Subsidizing green energy is the most viable way to **combat climate change**."* |
 | **A lot of / Many** | *A myriad of, A plethora of, Substantial* | *"Graduates today face **a myriad of challenges** in a competitive job market."* |`,
 
-            linking: `### Cohesive Devices & Discourse Markers (Coherence & Cohesion)
-Avoid mechanical linking words at the start of every single sentence (*Firstly, Secondly, Moreover*). Use natural academic transitions:
-
+            linking: `### Cohesive Devices & Discourse Markers
 * **Adding a Reinforcing Point:** *Furthermore, What is more, Equally important, In addition to this*
 * **Showing Direct Cause & Effect:** *Consequently, As a direct consequence, Thereby (+ V-ing), Hence*
 * **Contrasting Two Perspectives:** *Conversely, On the flip side, By contrast, Notwithstanding this*
 * **Giving Concrete Examples:** *A prime illustration of this is..., Take, for instance, ..., This is exemplified by...*
-* **Concluding Without Clichés:** *In conclusion, To sum up, Ultimately, Taking everything into consideration*`,
+* **Concluding:** *In conclusion, To sum up, Ultimately, Taking everything into consideration*`,
 
             idioms: `### High-Scoring Idioms & Phrasal Verbs for IELTS Speaking (Band 8.5)
-*Note: Use idioms in **IELTS Speaking**, NOT in formal Academic Writing!*
-
 | Idiom / Phrasal Verb | Meaning | How to Use It Naturally in Speaking Part 2 & 3 |
 | :--- | :--- | :--- |
 | **Pay dividends** | Produce great long-term benefits | *"Practicing English every single day has really **paid dividends** for my confidence."* |
@@ -806,9 +1014,7 @@ Avoid mechanical linking words at the start of every single sentence (*Firstly, 
 
         function renderCourseModule(key) {
             const box = document.getElementById('course-content-box');
-            if (box && academyCurriculum[key]) {
-                box.innerHTML = formatAIMarkdown(academyCurriculum[key]);
-            }
+            if (box && academyCurriculum[key]) box.innerHTML = formatAIMarkdown(academyCurriculum[key]);
         }
 
         document.querySelectorAll('.course-tab-btn').forEach(btn => {
@@ -825,31 +1031,26 @@ Avoid mechanical linking words at the start of every single sentence (*Firstly, 
             const topic = document.getElementById('course-ai-input')?.value.trim();
             if (!topic) return showToast("Type any grammar or vocabulary topic first!", "error");
             const box = document.getElementById('course-content-box');
-            box.innerHTML = `<p class="text-yellow-400 animate-pulse">✨ AI Academy Professor is creating a complete interactive lesson on "${topic}"...</p>`;
+            box.innerHTML = `<p class="text-yellow-400 animate-pulse">✨ AI Academy Professor is creating a complete lesson on "${topic}"...</p>`;
             const reply = await askIELTSAI(
-                `Create a comprehensive, easy-to-understand IELTS Band 8.5 English lesson on: "${topic}".
-Include:
-### 1. Core Rule & Formula Explained Simply
-### 2. Band 6.0 vs. Band 8.5 Comparison Table
-### 3. Common Mistakes to Avoid in IELTS
-### 4. Quick 3-Question Practice Check (with Answer Key at the bottom)`,
+                `Create a comprehensive IELTS Band 8.5 English lesson on: "${topic}". Include:\n### 1. Core Rule & Formula\n### 2. Band 6.0 vs Band 8.5 Comparison Table\n### 3. Common IELTS Mistakes\n### 4. 3-Question Practice Check with Answer Key`,
                 "You are a master IELTS English Grammar & Vocabulary Professor."
             );
             box.innerHTML = formatAIMarkdown(reply);
         });
 
-        // --- 2. OFFICIAL CAMBRIDGE IELTS STANDARD TEST BANKS (Used when Input is Blank!) ---
+        // --- 2. OFFICIAL CAMBRIDGE STANDARD TEST BANKS (For the 'Generate Standard IELTS Test' Button) ---
         const standardReadingBank = [
             {
                 title: "The Evolutionary Significance of Play in Animal Behavior",
-                passage: `**Paragraph A**\n\nFor much of the twentieth century, ethologists and evolutionary biologists viewed animal play as a puzzling evolutionary paradox. Play behavior—whether observed in juvenile wolves wrestling in the snow, dolphins leaping through boat wakes, or ravens sliding down icy rooftops—consumes substantial amounts of metabolic energy while exposing young animals to heightened risks of predation and physical injury. From a strictly Darwinian perspective, any behavior that carries such immediate survival costs without yielding obvious reproductive or foraging rewards should have been eliminated by natural selection. Yet play is pervasive across mammals and several avian species.\n\n**Paragraph B**\n\nThe earliest systematic explanation, formulated by the nineteenth-century philosopher Karl Groos, proposed that play serves as a biological rehearsal for adult survival skills. According to this 'motor-training hypothesis,' predatory kittens pouncing on動く leaves are calibrating the neuromuscular coordination required for stalking prey later in life, while young gazelles engaging in erratic leaps are practicing evasive maneuvers to escape predators. However, subsequent longitudinal field studies challenged this straightforward view. Researchers monitoring meerkat colonies and domestic cats discovered that individuals deprived of juvenile play opportunities nevertheless developed normal adult hunting and fighting competencies.\n\n**Paragraph C**\n\nContemporary neurobiological research has shifted focus from physical muscle training to synaptic plasticity within the prefrontal cortex. Experiments conducted by neuroscientist Sergio Pellis demonstrate that social rough-and-tumble play stimulates the release of brain-derived neurotrophic factor (BDNF), a protein that promotes the growth and pruning of neural pathways responsible for executive functioning, emotional regulation, and impulse control. Animals raised in isolation without playmates exhibit normal physical coordination but struggle profoundly when confronted with novel social hierarchies or unexpected environmental stressors.\n\n**Paragraph D**\n\nConsequently, modern ethologists increasingly champion the 'training for the unexpected' hypothesis. During play, animals deliberately place themselves in disadvantaged, unbalanced, or vulnerable positions—a phenomenon known as self-handicapping, where a dominant pup allows a smaller sibling to pin it down. By experiencing controlled loss of control in a safe context, the developing brain constructs flexible behavioral repertoires that enable the adult animal to improvise rapidly when real-world environments become unpredictable.`,
+                passage: `**Paragraph A**\n\nFor much of the twentieth century, ethologists and evolutionary biologists viewed animal play as a puzzling evolutionary paradox. Play behavior—whether observed in juvenile wolves wrestling in the snow, dolphins leaping through boat wakes, or ravens sliding down icy rooftops—consumes substantial amounts of metabolic energy while exposing young animals to heightened risks of predation and physical injury. From a strictly Darwinian perspective, any behavior that carries such immediate survival costs without yielding obvious reproductive or foraging rewards should have been eliminated by natural selection. Yet play is pervasive across mammals and several avian species.\n\n**Paragraph B**\n\nThe earliest systematic explanation, formulated by the nineteenth-century philosopher Karl Groos, proposed that play serves as a biological rehearsal for adult survival skills. According to this 'motor-training hypothesis,' predatory kittens pouncing on moving leaves are calibrating the neuromuscular coordination required for stalking prey later in life, while young gazelles engaging in erratic leaps are practicing evasive maneuvers to escape predators. However, subsequent longitudinal field studies challenged this straightforward view. Researchers monitoring meerkat colonies and domestic cats discovered that individuals deprived of juvenile play opportunities nevertheless developed normal adult hunting and fighting competencies.\n\n**Paragraph C**\n\nContemporary neurobiological research has shifted focus from physical muscle training to synaptic plasticity within the prefrontal cortex. Experiments conducted by neuroscientist Sergio Pellis demonstrate that social rough-and-tumble play stimulates the release of brain-derived neurotrophic factor (BDNF), a protein that promotes the growth and pruning of neural pathways responsible for executive functioning, emotional regulation, and impulse control. Animals raised in isolation without playmates exhibit normal physical coordination but struggle profoundly when confronted with novel social hierarchies or unexpected environmental stressors.\n\n**Paragraph D**\n\nConsequently, modern ethologists increasingly champion the 'training for the unexpected' hypothesis. During play, animals deliberately place themselves in disadvantaged, unbalanced, or vulnerable positions—a phenomenon known as self-handicapping, where a dominant pup allows a smaller sibling to pin it down. By experiencing controlled loss of control in a safe context, the developing brain constructs flexible behavioral repertoires that enable the adult animal to improvise rapidly when real-world environments become unpredictable.`,
                 questions: [
-                    { q: "1. Early evolutionary biologists struggled to explain why natural selection had not eliminated animal play.", options: ["True", "False", "Not Given"], ans: "True", exp: "Paragraph A states play was viewed as a puzzling paradox that should have been eliminated by natural selection due to energy costs and predation risks." },
+                    { q: "1. Early evolutionary biologists struggled to explain why natural selection had not eliminated animal play.", options: ["True", "False", "Not Given"], ans: "True", exp: "Paragraph A states play was viewed as a puzzling paradox that should have been eliminated by natural selection." },
                     { q: "2. Field studies on meerkats and cats proved that juvenile play is strictly required to hunt successfully as an adult.", options: ["True", "False", "Not Given"], ans: "False", exp: "Paragraph B states that individuals deprived of juvenile play still developed normal adult hunting and fighting competencies." },
-                    { q: "3. Dolphins engage in social play for longer durations than land mammals.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "Dolphins are mentioned in Paragraph A, but no comparison of play duration with land mammals is given." },
-                    { q: "4. According to Sergio Pellis, what is the primary benefit of rough-and-tumble play?", options: ["Increasing skeletal muscle mass", "Stimulating prefrontal cortex neural development", "Establishing permanent dominance hierarchies"], ans: "Stimulating prefrontal cortex neural development", exp: "Paragraph C explains that play releases BDNF, promoting neural pathways in the prefrontal cortex for executive function and emotional regulation." },
-                    { q: "5. What happens to animals raised without playmates when they encounter unfamiliar situations?", options: ["They lose physical coordination", "They fail to regulate stress and adapt socially", "They become more aggressive hunters"], ans: "They fail to regulate stress and adapt socially", exp: "Paragraph C notes they exhibit normal physical coordination but struggle profoundly with novel social hierarchies or unexpected stressors." },
-                    { q: "6. In Paragraph D, 'self-handicapping' refers to an animal:", options: ["Injuring itself during solitary play", "Intentionally adopting a weaker position during play", "Refusing to play with smaller siblings"], ans: "Intentionally adopting a weaker position during play", exp: "Paragraph D defines self-handicapping as deliberately placing oneself in disadvantaged positions, such as a dominant pup letting a smaller sibling pin it." }
+                    { q: "3. Dolphins engage in social play for longer durations than land mammals.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "Dolphins are mentioned in Paragraph A, but no comparison of play duration is given." },
+                    { q: "4. According to Sergio Pellis, what is the primary benefit of rough-and-tumble play?", options: ["Increasing skeletal muscle mass", "Stimulating prefrontal cortex neural development", "Establishing permanent dominance hierarchies"], ans: "Stimulating prefrontal cortex neural development", exp: "Paragraph C explains that play releases BDNF, promoting neural pathways in the prefrontal cortex." },
+                    { q: "5. What happens to animals raised without playmates when they encounter unfamiliar situations?", options: ["They lose physical coordination", "They fail to regulate stress and adapt socially", "They become more aggressive hunters"], ans: "They fail to regulate stress and adapt socially", exp: "Paragraph C notes they struggle profoundly with novel social hierarchies or unexpected stressors." },
+                    { q: "6. In Paragraph D, 'self-handicapping' refers to an animal:", options: ["Injuring itself during solitary play", "Intentionally adopting a weaker position during play", "Refusing to play with smaller siblings"], ans: "Intentionally adopting a weaker position during play", exp: "Paragraph D defines self-handicapping as deliberately placing oneself in disadvantaged positions." }
                 ]
             },
             {
@@ -858,7 +1059,7 @@ Include:
                 questions: [
                     { q: "1. Modern Portland cement concrete generally lasts longer than Roman concrete in marine environments.", options: ["True", "False", "Not Given"], ans: "False", exp: "Paragraph A states Roman structures have lasted over two millennia, whereas modern concrete deteriorates within 50 to 100 years." },
                     { q: "2. The Roman architect Vitruvius wrote about the use of volcanic ash in concrete during the first century BCE.", options: ["True", "False", "Not Given"], ans: "True", exp: "Paragraph B explicitly states that Vitruvius documented mixing volcanic ash with lime and seawater in the first century BCE." },
-                    { q: "3. The Pantheon's dome required more volcanic ash than the harbor piers of Portus Cosanus.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "Both structures are mentioned in Paragraph A, but the quantities of volcanic ash used in each are never compared." },
+                    { q: "3. The Pantheon's dome required more volcanic ash than the harbor piers of Portus Cosanus.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "Both structures are mentioned in Paragraph A, but the quantities of volcanic ash used are never compared." },
                     { q: "4. What happens when seawater filters through tiny cracks in Roman marine concrete?", options: ["It corrodes the internal iron bars", "It forms interlocking crystals of aluminous tobermorite", "It washes away the volcanic ash"], ans: "It forms interlocking crystals of aluminous tobermorite", exp: "Paragraph C explains that seawater dissolves volcanic glasses and crystallizes aluminous tobermorite." },
                     { q: "5. Why did modern engineers previously misunderstand the white lime clasts found in Roman concrete?", options: ["They thought the clasts were caused by poor mixing", "They believed the clasts were decorative", "They assumed the clasts came from modern repairs"], ans: "They thought the clasts were caused by poor mixing", exp: "Paragraph C notes that the tiny white lime clasts were previously dismissed as evidence of sloppy mixing." },
                     { q: "6. What is the main function of the lime clasts described in Paragraph D?", options: ["To make the concrete dry faster during construction", "To provide a chemical source that automatically seals new cracks", "To reduce the weight of large domes"], ans: "To provide a chemical source that automatically seals new cracks", exp: "Paragraph D explains that water reacts with the clasts to recrystallize and automatically seal micro-cracks." }
@@ -871,23 +1072,23 @@ Include:
                 title: "IELTS Section 3 & 4 Standard: Marine Microplastics & Coastal Ecosystems",
                 script: `Good morning everyone. In today's environmental science lecture, we're examining the long-term ecological impact of microplastics on coastal marine ecosystems. Now, many students initially assume that industrial shipping spills are the primary source of microplastic fibers in estuaries. Actually, recent coastal audits have disproved that assumption: over sixty-five percent of synthetic microfibers entering coastal waters originate from domestic laundry effluent and urban tire wear washed into storm drains. Once these microscopic particles enter the water column, they don't simply float harmlessly on the surface. Because their hydrophobic surfaces attract persistent organic pollutants, they act as toxic vectors. In our university's three-year study of Pacific oysters, we initially expected to find the highest concentration of microplastics in the digestive tract. However, upon histological analysis, we discovered that particles smaller than ten micrometers had translocated primarily into the gill tissues, reducing the oysters' filtration efficiency by nearly forty percent. Furthermore, when we tested juvenile reef fish exposed to these concentrations, their predator-avoidance reflexes slowed significantly, making them three times more vulnerable to predation. Moving forward, our department is piloting a bio-filtration project using native seagrass meadows, which have been shown to trap up to seventy percent of suspended sediment particles before they reach coral reefs.`,
                 questions: [
-                    { q: "1. According to the lecturer, what is the main source of synthetic microfibers in coastal waters?", options: ["Industrial shipping spills", "Household laundry and urban tire wear", "Commercial fishing nets"], ans: "Household laundry and urban tire wear", exp: "The speaker corrects the assumption about shipping spills and states over 65% comes from domestic laundry effluent and urban tire wear." },
-                    { q: "2. Why do microplastics act as dangerous 'toxic vectors' in the ocean?", options: ["They release heat into the water", "Their surfaces attract organic pollutants", "They block sunlight from reaching algae"], ans: "Their surfaces attract organic pollutants", exp: "The lecturer states that their hydrophobic surfaces attract persistent organic pollutants." },
-                    { q: "3. Where did the university study find the highest concentration of tiny particles (<10 micrometers) in Pacific oysters?", options: ["In the outer shell", "In the digestive tract", "In the gill tissues"], ans: "In the gill tissues", exp: "Although researchers initially expected the digestive tract (distractor!), histological analysis showed they translocated primarily into the gill tissues." },
+                    { q: "1. According to the lecturer, what is the main source of synthetic microfibers in coastal waters?", options: ["Industrial shipping spills", "Household laundry and urban tire wear", "Commercial fishing nets"], ans: "Household laundry and urban tire wear", exp: "Over 65% comes from domestic laundry effluent and urban tire wear." },
+                    { q: "2. Why do microplastics act as dangerous 'toxic vectors' in the ocean?", options: ["They release heat into the water", "Their surfaces attract organic pollutants", "They block sunlight from reaching algae"], ans: "Their surfaces attract organic pollutants", exp: "Their hydrophobic surfaces attract persistent organic pollutants." },
+                    { q: "3. Where did the university study find the highest concentration of tiny particles (<10 micrometers) in Pacific oysters?", options: ["In the outer shell", "In the digestive tract", "In the gill tissues"], ans: "In the gill tissues", exp: "Histological analysis showed they translocated primarily into the gill tissues." },
                     { q: "4. By how much did microplastic exposure reduce the oysters' filtration efficiency?", options: ["Nearly 10%", "Nearly 40%", "Over 65%"], ans: "Nearly 40%", exp: "The speaker explicitly states it reduced filtration efficiency by nearly forty percent." },
-                    { q: "5. How did microplastic exposure affect juvenile reef fish?", options: ["It slowed their predator-avoidance reflexes", "It prevented them from swimming in groups", "It reduced their body size by half"], ans: "It slowed their predator-avoidance reflexes", exp: "The lecture notes their predator-avoidance reflexes slowed significantly." },
-                    { q: "6. What natural solution is the department testing to trap microplastic sediment?", options: ["Artificial concrete barriers", "Native seagrass meadows", "Deep-sea sponge colonies"], ans: "Native seagrass meadows", exp: "At the end, the lecturer mentions piloting a bio-filtration project using native seagrass meadows." }
+                    { q: "5. How did microplastic exposure affect juvenile reef fish?", options: ["It slowed their predator-avoidance reflexes", "It prevented them from swimming in groups", "It reduced their body size by half"], ans: "It slowed their predator-avoidance reflexes", exp: "Their predator-avoidance reflexes slowed significantly." },
+                    { q: "6. What natural solution is the department testing to trap microplastic sediment?", options: ["Artificial concrete barriers", "Native seagrass meadows", "Deep-sea sponge colonies"], ans: "Native seagrass meadows", exp: "The department is piloting a bio-filtration project using native seagrass meadows." }
                 ]
             },
             {
                 title: "IELTS Standard Section 1 & 2: University Research Grant & Fieldwork Briefing",
                 script: `Welcome to the Undergraduate Research Symposium orientation. If you are applying for the Summer Fieldwork Grant, please pay close attention to the updated submission guidelines. In previous years, the application deadline was the thirty-first of March, but this year the committee has brought it forward to the fifteenth of March at 5:00 PM sharp. Each research proposal must be co-signed by a faculty supervisor. Now, regarding the budget allocation: the maximum grant per student is two thousand five hundred dollars. Please note that while travel and laboratory consumables are fully covered, the grant cannot be used to purchase personal laptops or cameras; instead, recording equipment can be borrowed free of charge from the Media Loan Office on the second floor of the Science Annex. Before departing for fieldwork, all successful applicants must complete a mandatory half-day Risk Assessment Workshop. There are two sessions available: one on Saturday the tenth of April, and a repeat session on Wednesday the fourteenth of April. Finally, upon returning in September, you will be required to present a ten-minute summary of your findings alongside an academic poster.`,
                 questions: [
-                    { q: "1. What is the new deadline for the Summer Fieldwork Grant application this year?", options: ["March 15th", "March 31st", "April 10th"], ans: "March 15th", exp: "March 31st was the old deadline (distractor); this year it was brought forward to March 15th." },
-                    { q: "2. What is the maximum funding amount a student can receive?", options: ["$1,500", "$2,000", "$2,500"], ans: "$2,500", exp: "The speaker states the maximum grant per student is two thousand five hundred dollars." },
-                    { q: "3. Which expense is NOT permitted under the grant rules?", options: ["Travel tickets", "Laboratory consumables", "Personal laptops and cameras"], ans: "Personal laptops and cameras", exp: "The speaker specifies that travel and lab consumables are covered, but personal laptops or cameras cannot be purchased." },
+                    { q: "1. What is the new deadline for the Summer Fieldwork Grant application this year?", options: ["March 15th", "March 31st", "April 10th"], ans: "March 15th", exp: "This year it was brought forward to March 15th." },
+                    { q: "2. What is the maximum funding amount a student can receive?", options: ["$1,500", "$2,000", "$2,500"], ans: "$2,500", exp: "The maximum grant per student is two thousand five hundred dollars." },
+                    { q: "3. Which expense is NOT permitted under the grant rules?", options: ["Travel tickets", "Laboratory consumables", "Personal laptops and cameras"], ans: "Personal laptops and cameras", exp: "The grant cannot be used to purchase personal laptops or cameras." },
                     { q: "4. Where can students borrow recording equipment free of charge?", options: ["The Main Library basement", "The Media Loan Office in the Science Annex", "The Student Union desk"], ans: "The Media Loan Office in the Science Annex", exp: "Equipment can be borrowed from the Media Loan Office on the second floor of the Science Annex." },
-                    { q: "5. What must all successful applicants complete before starting their fieldwork?", options: ["A language proficiency test", "A Risk Assessment Workshop", "A medical examination"], ans: "A Risk Assessment Workshop", exp: "All successful applicants must complete a mandatory half-day Risk Assessment Workshop." },
+                    { q: "5. What must all successful applicants complete before starting their fieldwork?", options: ["A language proficiency test", "A Risk Assessment Workshop", "A medical examination"], ans: "A Risk Assessment Workshop", exp: "Applicants must complete a mandatory half-day Risk Assessment Workshop." },
                     { q: "6. What are students required to deliver when they return in September?", options: ["A 5,000-word dissertation", "A 10-minute presentation and an academic poster", "A video documentary"], ans: "A 10-minute presentation and an academic poster", exp: "They must present a ten-minute summary alongside an academic poster." }
                 ]
             }
@@ -895,7 +1096,7 @@ Include:
         let stdReadIdx = 0;
         let stdListenIdx = 0;
 
-        // --- 3. INDEXED-DB FOR UNLIMITED FULL PDF STORAGE ---
+        // --- 3. INDEXED-DB & FULL PDF SCANNER ---
         function openBookDB() {
             return new Promise((resolve, reject) => {
                 const req = indexedDB.open("IELTS_FULL_BOOKS_DB", 1);
@@ -907,14 +1108,9 @@ Include:
                 req.onerror = () => reject(req.error);
             });
         }
-
         async function saveFullBookToIDB(bookObj) {
-            try {
-                const idb = await openBookDB();
-                idb.transaction("books", "readwrite").objectStore("books").put(bookObj);
-            } catch (e) {}
+            try { const idb = await openBookDB(); idb.transaction("books", "readwrite").objectStore("books").put(bookObj); } catch (e) {}
         }
-
         async function getAllBooksFromIDB(uid) {
             try {
                 const idb = await openBookDB();
@@ -925,15 +1121,10 @@ Include:
                 });
             } catch (e) { return []; }
         }
-
         async function deleteBookFromIDB(bookId) {
-            try {
-                const idb = await openBookDB();
-                idb.transaction("books", "readwrite").objectStore("books").delete(bookId);
-            } catch (e) {}
+            try { const idb = await openBookDB(); idb.transaction("books", "readwrite").objectStore("books").delete(bookId); } catch (e) {}
         }
 
-        // --- 4. 100% FULL PDF / DOCX / TXT SCANNER ---
         const readArrayBuffer = (file) => new Promise((res, rej) => {
             const r = new FileReader();
             r.onload = () => res(r.result);
@@ -951,7 +1142,7 @@ Include:
             const ext = file.name.split('.').pop().toLowerCase();
             if (ext === 'pdf') {
                 const ab = await readArrayBuffer(file);
-                window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = '[https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js](https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js)';
                 const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(ab) }).promise;
                 const totalPages = pdf.numPages;
                 let fullTextChunks = [];
@@ -971,17 +1162,79 @@ Include:
             return (await readTextFile(file)).trim();
         }
 
-        let bookChunkCursor = 0;
-        function getSmartPassageFromFullText(fullText, maxChars = 12000) {
-            if (!fullText || fullText.length <= maxChars) return fullText;
-            const totalSlices = Math.ceil(fullText.length / maxChars);
-            const sliceIndex = bookChunkCursor % totalSlices;
-            bookChunkCursor++;
-            const start = sliceIndex * maxChars;
-            return fullText.slice(start, start + maxChars);
+        // Smart Book Story/Chapter Extractor (Skips Copyright/Dedication Front-Matter Automatically!)
+        let activeListeningBookFull = "";
+        let activeReadingBookFull = "";
+        let listenChunkIdx = 0;
+        let readChunkIdx = 0;
+
+        function extractCleanBookChapter(fullBookText, chunkIndex = 0, chunkSize = 4800) {
+            if (!fullBookText) return "";
+            const cleaned = fullBookText.replace(/\s+/g, ' ').trim();
+            if (cleaned.length <= chunkSize) return cleaned;
+
+            // Skip front-matter copyright/dedication pages (~first 6% of a long book) on chunk 0
+            const bodyStart = cleaned.length > 15000 ? Math.min(2500, Math.floor(cleaned.length * 0.05)) : 0;
+            const usableText = cleaned.slice(bodyStart);
+            const totalChunks = Math.max(1, Math.floor(usableText.length / chunkSize));
+            const idx = chunkIndex % totalChunks;
+            const slice = usableText.slice(idx * chunkSize, (idx + 1) * chunkSize);
+            return slice;
         }
 
-        // --- 5. STATE & FIREBASE SYNC ---
+        // Guaranteed Book-Based Fallback Builder (If AI is rate-limited, builds test directly from the user's Book!)
+        function buildGuaranteedTestFromBook(bookSlice, bookTitle, mode = "listening") {
+            const sentences = bookSlice
+                .split(/(?<=[.!?])\s+/)
+                .map(s => s.trim())
+                .filter(s => s.length > 45 && s.length < 260 && !/copyright|isbn|published by/i.test(s));
+
+            const usable = sentences.length >= 8 ? sentences : bookSlice.match(/.{1,160}(\s|$)/g) || [bookSlice];
+            const pA = usable.slice(0, 4).join(' ');
+            const pB = usable.slice(4, 8).join(' ');
+            const pC = usable.slice(8, 12).join(' ');
+            const pD = usable.slice(12, 16).join(' ');
+
+            const questions = [];
+            for (let i = 0; i < Math.min(6, usable.length); i++) {
+                const targetSent = usable[i * 2] || usable[i];
+                const words = targetSent.split(/\s+/);
+                const keyPhrase = words.slice(Math.max(0, words.length - 5)).join(' ').replace(/[.,!?"']/g, '');
+                if (mode === "reading") {
+                    questions.push({
+                        q: `${i + 1}. Based on the passage, does the text confirm the following detail: "${targetSent.slice(0, 110)}..."?`,
+                        options: ["True", "False", "Not Given"],
+                        ans: "True",
+                        exp: `Directly stated in the book text: "${targetSent}"`
+                    });
+                } else {
+                    questions.push({
+                        q: `${i + 1}. According to the spoken passage from "${bookTitle}", what is mentioned regarding "${ words.slice(0, 6).join(' ').replace(/[.,!?"']/g, '') }..."?`,
+                        options: [
+                            `It involves ${keyPhrase}`,
+                            `It was completely prohibited by local authorities`,
+                            `It never occurred during the story`
+                        ],
+                        ans: `It involves ${keyPhrase}`,
+                        exp: `Directly stated in the audio script: "${targetSent}"`
+                    });
+                }
+            }
+
+            return {
+                title: `${bookTitle || "Book Study"} — IELTS ${mode === "reading" ? "Reading" : "Listening"} Test`,
+                script: [pA, pB, pC].filter(Boolean).join(' '),
+                passage: [
+                    `**Paragraph A**\n\n${pA}`,
+                    pB ? `**Paragraph B**\n\n${pB}` : "",
+                    pC ? `**Paragraph C**\n\n${pC}` : "",
+                    pD ? `**Paragraph D**\n\n${pD}` : ""
+                ].filter(Boolean).join('\n\n'),
+                questions
+            };
+        }
+
+        // --- 4. STATE & FIREBASE SYNC ---
         let userSavedTests = [];
         let userSavedBooks = [];
         let activeListeningTest = null;
@@ -1015,6 +1268,44 @@ Include:
             try { await setDoc(doc(db, 'users', user.uid, 'savedBooks', bookId), { ...fullBookObj, content: fullText.slice(0, 150000) }, { merge: true }); } catch (e) {}
             return fullBookObj;
         }
+
+        function loadBookIntoListeningLab(book) {
+            if (!book) return;
+            activeListeningBookFull = book.content;
+            listenChunkIdx = 0;
+            const firstChapter = extractCleanBookChapter(book.content, 0, 4800);
+            document.getElementById('listening-custom-source').value = firstChapter;
+            document.getElementById('listening-book-picker').value = book.id;
+            document.getElementById('listening-file-badge').textContent = `✓ Loaded "${book.title}" (Part 1)`;
+            document.getElementById('btn-next-listening-chunk')?.classList.remove('hide');
+        }
+
+        function loadBookIntoReadingLab(book) {
+            if (!book) return;
+            activeReadingBookFull = book.content;
+            readChunkIdx = 0;
+            const firstChapter = extractCleanBookChapter(book.content, 0, 5500);
+            document.getElementById('reading-custom-source').value = firstChapter;
+            document.getElementById('reading-book-picker').value = book.id;
+            document.getElementById('reading-file-status').textContent = `✓ Loaded "${book.title}" (Part 1)`;
+            document.getElementById('btn-next-reading-chunk')?.classList.remove('hide');
+        }
+
+        document.getElementById('btn-next-listening-chunk')?.addEventListener('click', () => {
+            if (!activeListeningBookFull) return;
+            listenChunkIdx++;
+            document.getElementById('listening-custom-source').value = extractCleanBookChapter(activeListeningBookFull, listenChunkIdx, 4800);
+            document.getElementById('listening-file-badge').textContent = `✓ Loaded Part ${listenChunkIdx + 1} of Book`;
+            showToast(`Loaded Part ${listenChunkIdx + 1}! Click 'Generate Test by Book / Topic'.`, "info");
+        });
+
+        document.getElementById('btn-next-reading-chunk')?.addEventListener('click', () => {
+            if (!activeReadingBookFull) return;
+            readChunkIdx++;
+            document.getElementById('reading-custom-source').value = extractCleanBookChapter(activeReadingBookFull, readChunkIdx, 5500);
+            document.getElementById('reading-file-status').textContent = `✓ Loaded Part ${readChunkIdx + 1} of Book`;
+            showToast(`Loaded Part ${readChunkIdx + 1}! Click 'Generate Test by Book / Topic'.`, "info");
+        });
 
         function renderBooksAndPickers() {
             userSavedBooks.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -1064,28 +1355,24 @@ Include:
                     const lab = btn.getAttribute('data-lab');
                     if (!book) return;
                     if (lab === 'listening') {
-                        document.getElementById('listening-custom-source').value = book.content;
-                        document.getElementById('listening-book-picker').value = book.id;
-                        document.getElementById('listening-file-badge').textContent = `✓ Loaded "${book.title}"`;
+                        loadBookIntoListeningLab(book);
                         document.querySelector('[data-target="listening"]')?.click();
                     } else {
-                        document.getElementById('reading-custom-source').value = book.content;
-                        document.getElementById('reading-book-picker').value = book.id;
-                        document.getElementById('reading-file-status').textContent = `✓ Loaded "${book.title}"`;
+                        loadBookIntoReadingLab(book);
                         document.querySelector('[data-target="reading"]')?.click();
                     }
-                    showToast(`Loaded "${book.title}"! Click Generate.`, "success");
+                    showToast(`Loaded "${book.title}"! Click '📕 Generate Test by Book / Topic'.`, "success");
                 });
             });
         }
 
         document.getElementById('listening-book-picker')?.addEventListener('change', (e) => {
             const b = userSavedBooks.find(x => x.id === e.target.value);
-            if (b) { document.getElementById('listening-custom-source').value = b.content; document.getElementById('listening-file-badge').textContent = `✓ ${(b.wordCount || 0).toLocaleString()} words ready`; }
+            if (b) loadBookIntoListeningLab(b);
         });
         document.getElementById('reading-book-picker')?.addEventListener('change', (e) => {
             const b = userSavedBooks.find(x => x.id === e.target.value);
-            if (b) { document.getElementById('reading-custom-source').value = b.content; document.getElementById('reading-file-status').textContent = `✓ ${(b.wordCount || 0).toLocaleString()} words ready`; }
+            if (b) loadBookIntoReadingLab(b);
         });
 
         document.getElementById('book-library-upload')?.addEventListener('change', async (e) => {
@@ -1206,12 +1493,12 @@ Include:
             });
         });
 
+        // --- AUTH STATE & 24H GLOWING DISCIPLINE STREAK ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 document.getElementById('login-screen')?.classList.add('hide');
                 document.getElementById('main-app')?.classList.remove('hide');
 
-                // Initialize default Cambridge Standard Tests & Course
                 renderCourseModule('tenses');
                 renderReadingTest(standardReadingBank[0]);
                 renderListeningTest(standardListeningBank[0]);
@@ -1293,6 +1580,7 @@ Include:
             }
         });
 
+        // --- NAVIGATION & PROFILE ---
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
         const closeMenu = () => { sidebar?.classList.add('-translate-x-full'); overlay?.classList.add('hide'); };
@@ -1344,7 +1632,7 @@ Include:
             r.readAsDataURL(file);
         });
 
-        // --- 6. GROQ AI ENGINE WITH STRICT JSON MODE FOR CUSTOM TOPICS ---
+        // --- GROQ AI ENGINE WITH STRICT JSON SUPPORT ---
         async function askIELTSAI(userPrompt, systemPrompt = "You are a Band 9.0 IELTS Examiner.", forceJSON = false) {
             const apiKey = getBuiltInKey();
             for (const model of ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]) {
@@ -1401,7 +1689,7 @@ Include:
             }
         }
 
-        // --- 7. AI TUTOR CHAT ---
+        // --- AI TUTOR CHAT ---
         let pendingChatFileText = null;
         let pendingChatFileName = "";
 
@@ -1457,7 +1745,7 @@ Include:
         document.querySelectorAll('.ai-quick-btn').forEach(b => b.addEventListener('click', () => sendChat(b.getAttribute('data-prompt'))));
         document.getElementById('btn-clear-chat')?.addEventListener('click', () => { document.getElementById('ai-chat-box').innerHTML = ''; });
 
-        // --- 8. LISTENING LAB (Standard Test When Blank, Custom AI Test When Topic Given) ---
+        // --- LISTENING LAB (Standard Test When Blank, AI Test When Topic Given) ---
         function renderListeningTest(testObj) {
             if (!testObj) return;
             activeListeningTest = testObj;
@@ -1504,13 +1792,15 @@ Include:
             window.speechSynthesis?.cancel();
             const btn = document.getElementById('btn-ai-listening');
             const rawSource = document.getElementById('listening-custom-source')?.value.trim() || "";
+
+            // If user leaves box blank, load an Official IELTS Standard Listening Test immediately or generate a fresh standard one
             const orig = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating IELTS Listening...`;
 
             const topicPrompt = rawSource
                 ? `Create a full, official-standard IELTS Listening test (250-word spoken script with realistic IELTS distractors and 6 multiple-choice questions) strictly based on this topic or text:\n"""${getSmartPassageFromFullText(rawSource, 7000)}"""`
-                : `Create a brand-new, official Cambridge IELTS Standard Listening lecture or conversation (250-word spoken script with realistic IELTS distractors and 6 multiple-choice questions) on an academic university, science, or historical topic.`;
+                : `Create a brand-new, official Cambridge IELTS Standard Listening lecture (250-word spoken script with realistic IELTS distractors and 6 multiple-choice questions) on an academic university, marine biology, archaeology, or environmental science topic.`;
 
             const prompt = `${topicPrompt}
 Return a valid JSON object with this exact schema:
@@ -1595,7 +1885,7 @@ Return a valid JSON object with this exact schema:
             showToast(`✓ Score Saved: ${activeListeningTest.scoreLabel}`, "success");
         });
 
-        // --- 9. READING LAB (Full Cambridge Standard When Blank, Custom Topic via Strict JSON Array) ---
+        // --- READING LAB (Full Cambridge 4-Paragraph Standard When Blank, Custom Topic via JSON) ---
         function renderReadingTest(testObj) {
             if (!testObj) return;
             activeReadingTest = testObj;
@@ -1736,7 +2026,7 @@ Return a valid JSON object matching this exact structure:
             showToast(`✓ Reading Score Saved: ${activeReadingTest.scoreLabel}`, "success");
         });
 
-        // --- 10. WRITING & SPEAKING LABS ---
+        // --- WRITING & SPEAKING LABS ---
         const writingArea = document.getElementById('writing-area');
         writingArea?.addEventListener('input', () => {
             const words = writingArea.value.trim() ? writingArea.value.trim().split(/\s+/).length : 0;
@@ -1851,7 +2141,7 @@ Return a valid JSON object matching this exact structure:
             showToast(`✓ Speaking Score Saved: Band ${band.toFixed(1)}`, "success");
         });
 
-        // Microphone
+        // --- MICROPHONE & TIMERS ---
         let mediaRec = null, speechRec = null, audioChunks = [];
         document.getElementById('btn-record')?.addEventListener('click', async () => {
             const btn = document.getElementById('btn-record');
