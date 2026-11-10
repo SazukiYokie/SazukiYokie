@@ -60,7 +60,8 @@
             <input type="password" id="auth-pass" class="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition-all" placeholder="••••••••">
           </div>
           
-          <button id="login-btn" class="w-full py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-all active:scale-[0.98]">
+          <!-- HARDWIRED BUTTON -->
+          <button id="login-btn" onclick="window.handleAuth()" class="w-full py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-all active:scale-[0.98]">
             Authenticate & Enter
           </button>
         </div>
@@ -79,19 +80,19 @@
           <span class="font-bold text-xl tracking-tight text-slate-900">ACADEMY</span>
         </div>
         <nav class="p-4 space-y-1">
-          <button id="tab-dashboard" class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
+          <button id="tab-dashboard" onclick="window.switchTab('dashboard')" class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
             📊 My Dashboard
           </button>
-          <button id="tab-test-center" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
+          <button id="tab-test-center" onclick="window.switchTab('test-center')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
             🎯 AI Test Engine
           </button>
-          <button id="tab-academy" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
+          <button id="tab-academy" onclick="window.switchTab('academy')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left">
             📚 Study Guides
           </button>
         </nav>
       </div>
       <div class="p-4 border-t border-slate-100">
-        <button id="tab-profile" class="w-full flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors text-left">
+        <button id="tab-profile" onclick="window.switchTab('profile')" class="w-full flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors text-left">
           <img id="nav-avatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover bg-slate-300">
           <div class="overflow-hidden flex-1">
             <p id="nav-name" class="text-sm font-bold text-slate-900 truncate">Student</p>
@@ -103,16 +104,16 @@
 
     <!-- Mobile Bottom Nav -->
     <nav class="md:hidden fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-50">
-      <button id="mob-dash" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
+      <button id="mob-dash" onclick="window.switchTab('dashboard')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
         <span class="text-xl mb-1">📊</span><span class="text-[10px] font-bold">Dash</span>
       </button>
-      <button id="mob-engine" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
+      <button id="mob-engine" onclick="window.switchTab('test-center')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
         <span class="text-xl mb-1">🎯</span><span class="text-[10px] font-bold">Engine</span>
       </button>
-      <button id="mob-learn" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
+      <button id="mob-learn" onclick="window.switchTab('academy')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
         <span class="text-xl mb-1">📚</span><span class="text-[10px] font-bold">Learn</span>
       </button>
-      <button id="mob-prof" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
+      <button id="mob-prof" onclick="window.switchTab('profile')" class="flex flex-col items-center p-2 text-slate-500 hover:text-blue-600">
         <span class="text-xl mb-1">👤</span><span class="text-[10px] font-bold">Profile</span>
       </button>
     </nav>
@@ -136,7 +137,7 @@
             <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Next Step</span>
             <div class="mt-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <span class="text-sm font-medium text-slate-700">Ready to challenge yourself? Generate a new practice test.</span>
-              <button id="btn-quick-start" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-lg">Start Practicing →</button>
+              <button id="btn-quick-start" onclick="window.switchTab('test-center')" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-lg">Start Practicing →</button>
             </div>
           </div>
         </div>
@@ -165,6 +166,183 @@
             <div class="space-y-4 flex flex-col justify-between">
               <div>
                 <h3 class="font-bold text-slate-900 border-b border-slate-100 pb-2">2. Configure Exam</h3>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 mb-2">Test Module</label>
+                <select id="ai-test-type" class="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50 outline-none font-medium text-slate-700">
+                  <option value="reading">📖 Reading (Academic)</option>
+                  <option value="writing">📝 Writing Task 2</option>
+                </select>
+              </div>
+
+              <div class="pt-4">
+                <button id="btn-generate" onclick="window.generateMockTest()" class="w-full py-4 rounded-xl font-bold text-white bg-slate-900 hover:bg-slate-800 shadow-lg transition-all active:scale-[0.98]">
+                  Generate Mock Test
+                </button>
+                <div id="ai-loading" class="hidden text-sm text-center font-bold animate-pulse text-blue-600 py-4 bg-blue-50 rounded-xl border border-blue-100">
+                  Connecting to AI... Please wait.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFILE SETTINGS -->
+      <section id="sec-profile" class="hidden space-y-8 animate-fade-in max-w-2xl">
+        <header>
+          <h1 class="text-3xl font-bold font-serif text-slate-900">User Profile</h1>
+          <p class="text-slate-500 mt-1">Manage your identity and platform settings.</p>
+        </header>
+
+        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+          <div class="flex items-center gap-6 pb-6 border-b border-slate-100">
+            <img id="settings-avatar-preview" src="" class="w-24 h-24 rounded-2xl object-cover border border-slate-200 shadow-sm">
+            <div>
+              <h3 class="text-2xl font-bold text-slate-900" id="settings-name-display">Student Name</h3>
+              <p class="text-slate-500 text-sm" id="settings-email-display">email@example.com</p>
+              <button id="btn-logout" onclick="window.handleLogout()" class="mt-2 text-sm text-red-600 font-bold hover:underline">Sign Out of Academy</button>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Display Name</label>
+              <input type="text" id="input-prof-name" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none" placeholder="Your Name">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Profile Avatar URL (Optional)</label>
+              <input type="text" id="input-prof-avatar" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none" placeholder="https://image.com/my-avatar.jpg">
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-xl space-y-4 text-white">
+          <h3 class="text-xl font-bold font-serif">Admin Integrations</h3>
+          <p class="text-sm text-slate-400">Save your permanent Google Gemini API Key here.</p>
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-1">Gemini API Key</label>
+            <input type="password" id="input-api-key" class="w-full p-3 rounded-xl border border-slate-700 bg-slate-800 text-white focus:bg-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="AIzaSy...">
+          </div>
+          <button id="btn-save-profile" onclick="window.saveProfile()" class="w-full mt-4 py-4 rounded-xl font-bold text-slate-900 bg-emerald-400 hover:bg-emerald-300 shadow-lg transition-all active:scale-[0.98]">
+            Save All Profile Settings
+          </button>
+        </div>
+      </section>
+
+      <!-- ACADEMY GUIDE -->
+      <section id="sec-academy" class="hidden space-y-8 animate-fade-in">
+        <header>
+          <h1 class="text-3xl font-bold font-serif text-slate-900">Study Guides</h1>
+          <p class="text-slate-500 mt-1">Band 7-9 strategies, tips, and frameworks.</p>
+        </header>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Reading Strategies</h3>
+            <p class="text-sm text-slate-500">Master True/False/Not Given and Matching Headings.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- WORKSPACE -->
+      <section id="sec-workspace" class="hidden h-full flex flex-col animate-fade-in pb-10">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between mb-6 sticky top-0 z-10">
+          <div>
+            <h1 class="text-xl font-bold text-slate-900" id="ws-title">Practice Test</h1>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-600" id="ws-type-badge">MODULE</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="bg-slate-900 text-white px-4 py-2 rounded-lg font-mono font-bold text-lg shadow-inner flex items-center gap-2">
+              ⏱️ <span id="exam-timer">60:00</span>
+            </div>
+            <button id="btn-submit-test" onclick="window.submitTest()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-lg transition-colors">
+              Submit
+            </button>
+          </div>
+        </div>
+        <div id="ws-content" class="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-10 overflow-y-auto"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module">
+    // 1. GLOBAL CRASH DETECTOR
+    window.onerror = function(message, source, lineno, colno, error) {
+      alert("CRITICAL SYSTEM ERROR\n\nLine: " + lineno + "\nError: " + message);
+      return false;
+    };
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const myFirebaseConfig = {
+      apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
+      authDomain: "ielts-studio-ab42a.firebaseapp.com",
+      projectId: "ielts-studio-ab42a",
+      storageBucket: "ielts-studio-ab42a.firebasestorage.app",
+      messagingSenderId: "235346696121",
+      appId: "1:235346696121:web:9065e6003a9b04b5040868"
+    };
+
+    const state = { appId: 'ielts-masterclass', user: null, savedTests: [], timerInterval: null };
+    let auth, db;
+
+    // We expose functions globally so the HTML onclick="" buttons can see them.
+    window.showToast = function(msg, isError = false) {
+      const c = document.getElementById('toast-container');
+      if(!c) return;
+      const t = document.createElement('div');
+      t.className = `p-4 rounded-xl shadow-xl border text-sm font-bold flex items-start gap-3 transition-all duration-300 transform translate-y-0 ${isError ? 'bg-red-50 text-red-900 border-red-200' : 'bg-white text-slate-900 border-slate-200'}`;
+      t.innerHTML = `<span class="text-xl mt-0.5">${isError ? '⚠️' : '✅'}</span> <div>${msg}</div>`;
+      c.appendChild(t);
+      setTimeout(() => { t.style.opacity = 0; setTimeout(() => t.remove(), 300); }, 5000); 
+    };
+
+    try {
+      const app = initializeApp(myFirebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+    } catch (error) { 
+      alert("FIREBASE INIT FAILED: " + error.message); 
+    }
+
+    // ==========================================
+    // AUTHENTICATION
+    // ==========================================
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        state.user = user;
+        document.getElementById('auth-view').classList.add('hidden');
+        document.getElementById('app-view').classList.remove('hidden');
+        
+        const name = user.displayName || user.email.split('@')[0];
+        const defaultAvatar = `https://api.dicebear.com/7.x/shapes/svg?seed=${user.email}&backgroundColor=2563eb`;
+        const avatar = user.photoURL || defaultAvatar;
+        
+        document.getElementById('nav-name').textContent = name;
+        document.getElementById('nav-avatar').src = avatar;
+        document.getElementById('settings-name-display').textContent = name;
+        document.getElementById('settings-email-display').textContent = user.email;
+        document.getElementById('settings-avatar-preview').src = avatar;
+        document.getElementById('input-prof-name').value = user.displayName || "";
+        document.getElementById('input-prof-avatar').value = user.photoURL || "";
+        
+        const savedKey = localStorage.getItem('gemini_api_key');
+        if (savedKey) document.getElementById('input-api-key').value = savedKey;
+
+        initFirestoreListeners();
+      } else {
+        state.user = null;
+        document.getElementById('auth-view').classList.remove('hidden');
+        document.getElementById('app-view').classList.add('hidden');
+      }
+    });
+
+    window.handleAuth = async function() {
+      const email = document.getElementById('auth-email').value;
+      const pass = document.getElementById('auth-pass').value;
+      const btn = document.getElementById('login-btn');
+      border-slate-100 pb-2">2. Configure Exam</h3>
                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 mb-2">Test Module</label>
                 <select id="ai-test-type" class="w-full p-3.5 rounded-xl border border-slate-200 bg-slate-50 outline-none font-medium text-slate-700">
                   <option value="reading">📖 Reading (Academic)</option>
