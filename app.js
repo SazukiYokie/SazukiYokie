@@ -239,6 +239,25 @@ document.getElementById('btn-record')?.addEventListener('click', async (e) => {
         alert("Please allow microphone access to record.");
     }
 });
+;
+        mediaRec = new MediaRecorder(stream);
+        chunks = [];
+        
+        mediaRec.ondataavailable = ev => chunks.push(ev.data);
+        mediaRec.onstop = () => {
+            audio.src = URL.createObjectURL(new Blob(chunks, { type: 'audio/webm' }));
+            audio.classList.remove('hide');
+            stream.getTracks().forEach(t => t.stop());
+        };
+        
+        mediaRec.start();
+        btn.innerHTML = `<i class="fa-solid fa-stop mr-2"></i> Stop`;
+        status.classList.remove('hide');
+        audio.classList.add('hide');
+    } catch(err) {
+        alert("Please allow microphone access to record.");
+    }
+});
  document.getElementById(loadingId).remove();
         chatBox.innerHTML += `
             <div class="flex gap-3">
