@@ -1,338 +1,172 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-console.log("🚀 IELTS SaaS Platform Initialized.");
-
-// ==========================================
-// 🛠️ DEVELOPER CONFIGURATION (YOUR KEYS)
-// ==========================================
-
-// 1. Firebase Keys
-const myFirebaseConfig = {
-  apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
-  authDomain: "ielts-studio-ab42a.firebaseapp.com",
-  projectId: "ielts-studio-ab42a",
-  storageBucket: "ielts-studio-ab42a.firebasestorage.app",
-  messagingSenderId: "235346696121",
-  appId: "1:235346696121:web:9065e6003a9b04b5040868"
-};
-
-// 2. Gemini AI Key (Users do not see this in the UI anymore)
-// PLEASE PASTE YOUR GEMINI API KEY HERE BEFORE UPLOADING TO GITHUB:
-const DEVELOPER_GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
-
-// ==========================================
-
-const state = {
-  appId: 'ielts-masterclass',
-  user: null,
-  savedTests: [],
-  isLoginMode: true // Tracks whether we are logging in or signing up
-};
-
-let auth, db;
-
-// Beautiful Toast Utility
-window.showToast = function(msg, color = 'var(--accent-primary)') {
-  const c = document.getElementById('toast-container');
-  if(!c) return;
-  const t = document.createElement('div');
-  t.className = 'glass-panel px-5 py-3 text-sm font-bold shadow-2xl transition-all duration-500 transform translate-y-0 rounded-xl flex items-center gap-3 border';
-  t.style.borderColor = color;
-  t.style.backgroundColor = 'var(--bg-secondary)';
-  t.style.color = 'var(--text-primary)';
-  t.innerHTML = `<div class="w-2 h-2 rounded-full" style="background-color: ${color}"></div> ${msg}`;
-  
-  c.appendChild(t);
-  setTimeout(() => { t.style.opacity = 0; t.style.transform = 'translateY(10px)'; setTimeout(() => t.remove(), 500); }, 4000);
+:root {
+/* Typography */
+--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+--font-serif: 'Newsreader', Georgia, serif;
+--font-mono: 'JetBrains Mono', monospace;
+/* Light Mode Palette (Crisp & Clean) */
+--bg-primary: #f8fafc;
+--bg-secondary: #ffffff;
+--bg-tertiary: #f1f5f9;
+--bg-glass: rgba(255, 255, 255, 0.65);
+--text-primary: #09090b;
+--text-secondary: #3f3f46;
+--text-muted: #71717a;
+/* Delicate borders and neon accents */
+--border-subtle: rgba(0, 0, 0, 0.06);
+--border-glass: rgba(255, 255, 255, 0.8);
+--border-focus: rgba(79, 70, 229, 0.5);
+--accent-primary: #4f46e5;
+--skill-reading: #3b82f6;
+--skill-writing: #10b981;
+--skill-speaking: #f59e0b;
+--radius-md: 18px;
+--shadow-float: 0 20px 40px -10px rgba(79, 70, 229, 0.15);
 }
-
-// Initialize Firebase
-try {
-  const app = initializeApp(myFirebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
-} catch (error) {
-  console.error("❌ Firebase Init Error:", error);
+[data-theme="dark"] {
+/* OLED Deep Dark Mode (Ultra Premium) */
+--bg-primary: #030303;
+--bg-secondary: #0a0a0c;
+--bg-tertiary: #121216;
+--bg-glass: rgba(10, 10, 12, 0.6);
+--text-primary: #ffffff;
+--text-secondary: #a1a1aa;
+--text-muted: #52525b;
+--border-subtle: rgba(255, 255, 255, 0.08);
+--border-glass: rgba(255, 255, 255, 0.03);
+--border-focus: rgba(129, 140, 248, 0.6);
+--shadow-float: 0 20px 40px -10px rgba(0, 0, 0, 0.8);
 }
-
-// ==========================================
-// USER AUTHENTICATION (PUBLIC REGISTRATION)
-// ==========================================
-
-// Toggle between Login and Register UI
-window.toggleAuthMode = function() {
-  state.isLoginMode = !state.isLoginMode;
-  
-  const nameField = document.getElementById('register-name-field');
-  const mainBtn = document.getElementById('auth-main-btn');
-  const toggleBtn = document.getElementById('auth-toggle-btn');
-  const subtitle = document.getElementById('auth-subtitle');
-
-  if (state.isLoginMode) {
-    nameField.classList.add('hidden');
-    mainBtn.textContent = 'Authenticate & Enter';
-    toggleBtn.textContent = "Don't have an account? Sign up here.";
-    subtitle.textContent = "Welcome back. Please log in.";
-  } else {
-    nameField.classList.remove('hidden');
-    mainBtn.textContent = 'Create Account';
-    toggleBtn.textContent = "Already have an account? Log in here.";
-    subtitle.textContent = "Create an account to save your progress.";
-  }
-};
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    state.user = user;
-    document.getElementById('auth-view').classList.add('hidden');
-    document.getElementById('app-view').classList.remove('hidden');
-    
-    // Setup UI with User Data
-    const displayName = user.displayName || "Scholar";
-    const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
-    const avatarUrl = user.photoURL || defaultAvatar;
-
-    // Update Top Nav & Dashboard
-    document.getElementById('user-display-name').textContent = displayName;
-    document.getElementById('nav-avatar').src = avatarUrl;
-    document.getElementById('dash-name').textContent = displayName;
-
-    // Update Profile Settings Page
-    document.getElementById('settings-name-display').textContent = displayName;
-    document.getElementById('settings-email-display').textContent = user.email;
-    document.getElementById('settings-avatar').src = avatarUrl;
-    document.getElementById('input-prof-name').value = user.displayName || "";
-    document.getElementById('input-prof-avatar').value = user.photoURL || "";
-
-    initFirestoreListeners(); // This isolates data to ONLY this user
-  } else {
-    state.user = null;
-    document.getElementById('auth-view').classList.remove('hidden');
-    document.getElementById('app-view').classList.add('hidden');
-  }
-});
-
-// Handle Login OR Registration
-window.handleAuth = async function() {
-  const email = document.getElementById('auth-email').value;
-  const pass = document.getElementById('auth-pass').value;
-  const name = document.getElementById('auth-name').value;
-  
-  if(!email || !pass) return showToast('Email and password required.', '#ea580c');
-  
-  try { 
-    if (state.isLoginMode) {
-      // Login logic
-      await signInWithEmailAndPassword(auth, email, pass); 
-      showToast('Login Successful!', '#10b981'); 
-    } else {
-      // Registration logic
-      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-      
-      // If they provided a name during signup, save it to their profile immediately
-      if (name) {
-        await updateProfile(userCredential.user, { displayName: name });
-      }
-      showToast('Account Created Successfully!', '#10b981');
-    }
-  } catch(err) { 
-    console.error(err);
-    // Show exact Firebase error to the user
-    showToast(err.message.replace('Firebase: ', ''), '#dc2626'); 
-  }
-};
-
-window.handleLogout = () => signOut(auth);
-
-// Profile Update Function
-window.saveProfile = async function() {
-  const newName = document.getElementById('input-prof-name').value.trim();
-  const newAvatar = document.getElementById('input-prof-avatar').value.trim();
-  
-  try {
-    await updateProfile(auth.currentUser, {
-      displayName: newName || null,
-      photoURL: newAvatar || null
-    });
-    showToast('Profile updated! Reloading...', '#10b981');
-    setTimeout(() => window.location.reload(), 1500);
-  } catch(err) {
-    showToast('Failed to update profile.', '#dc2626');
-  }
+/* Base Reset & Smooth Scrolling */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+background-color: var(--bg-primary);
+color: var(--text-primary);
+font-family: var(--font-sans);
+transition: background-color 0.4s ease, color 0.4s ease;
+min-height: 100vh;
+overflow-x: hidden;
+-webkit-font-smoothing: antialiased;
 }
-
-// ==========================================
-// NAVIGATION & UI
-// ==========================================
-window.switchTab = function(tabId) {
-  const tabs = ['dashboard', 'academy', 'builder', 'workspace', 'profile'];
-  tabs.forEach(t => {
-    const sec = document.getElementById(`sec-${t}`);
-    if(sec) sec.classList.toggle('hidden', t !== tabId);
-    
-    const dTab = document.getElementById(`tab-${t}`);
-    if(dTab) dTab.classList.toggle('active', t === tabId);
-
-    const mTab = document.getElementById(`mob-tab-${t}`);
-    if(mTab) {
-      if(t === tabId) mTab.classList.add('active-mob-tab');
-      else mTab.classList.remove('active-mob-tab');
-    }
-  });
-};
-
-// ==========================================
-// DATABASE & FILE LOGIC (ISOLATED PER USER)
-// ==========================================
-function initFirestoreListeners() {
-  // 🔒 Security: Only fetches tests where the path matches this specific user's UID
-  const testsRef = collection(db, 'artifacts', state.appId, 'users', state.user.uid, 'tests');
-  onSnapshot(testsRef, (snap) => {
-    state.savedTests = [];
-    snap.forEach(doc => state.savedTests.push({ id: doc.id, ...doc.data() }));
-    state.savedTests.sort((a,b) => b.timestamp - a.timestamp);
-    renderDashboard();
-  }, (err) => console.error(err));
+.text-muted { color: var(--text-muted); }
+/* ==========================================
+ADVANCED GLASSMORPHISM & SURFACES
+========================================== /
+.glass-panel {
+background: var(--bg-glass);
+backdrop-filter: saturate(180%) blur(24px);
+-webkit-backdrop-filter: saturate(180%) blur(24px);
+/ Inner reflection trick for premium glass */
+box-shadow: inset 0 1px 1px var(--border-glass), 0 4px 20px rgba(0, 0, 0, 0.05);
 }
-
-function renderDashboard() {
-  document.getElementById('dash-tests-built').textContent = state.savedTests.length;
-  const grid = document.getElementById('saved-tests-grid');
-  
-  if(state.savedTests.length === 0) {
-    grid.innerHTML = '<div class="col-span-full p-8 text-center border border-dashed rounded-xl border-gray-400/30 text-gray-500 text-sm">Your database is empty. Go to the AI Builder to generate a test!</div>';
-    return;
-  }
-
-  grid.innerHTML = state.savedTests.map(test => `
-    <div class="surface-card p-5 flex flex-col justify-between items-start gap-4 hover:-translate-y-1 transition-transform">
-      <div>
-        <span class="text-[10px] font-mono px-2.5 py-1 rounded-md border mb-3 inline-block uppercase font-bold" style="border-color: var(--border-focus); color: var(--accent-primary); background: var(--bg-tertiary)">${test.type}</span>
-        <h4 class="font-bold text-sm leading-snug line-clamp-2">${test.title || 'Generated Assessment'}</h4>
-      </div>
-      <button onclick="loadTestIntoWorkspace('${test.id}')" class="text-xs font-bold px-4 py-2.5 rounded-lg border w-full hover:bg-indigo-500 hover:text-white hover:border-indigo-500 transition-colors" style="border-color: var(--border-subtle);">
-        Practice Now →
-      </button>
-    </div>
-  `).join('');
+.surface-card {
+background: var(--bg-secondary);
+border: 1px solid var(--border-subtle);
+border-radius: var(--radius-md);
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
 }
-
-window.handleFileUpload = function(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    document.getElementById('ai-source-text').value = evt.target.result;
-    showToast('Document successfully parsed.', '#10b981');
-  };
-  reader.readAsText(file);
-};
-
-// ==========================================
-// GEMINI AI GENERATOR
-// ==========================================
-window.generateMockTest = async function() {
-  const sourceText = document.getElementById('ai-source-text').value.trim();
-  const type = document.getElementById('ai-test-type').value;
-  
-  if(!sourceText) { showToast('Provide some text for the AI to read first.', '#ea580c'); return; }
-  
-  if(DEVELOPER_GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") { 
-    showToast('Developer Error: Missing Gemini API Key in app.js', '#dc2626'); 
-    return; 
-  }
-
-  document.getElementById('btn-generate').classList.add('hidden');
-  document.getElementById('ai-loading').classList.remove('hidden');
-
-  const sysPrompt = type === 'reading' 
-    ? "Act as an IELTS examiner. Read the provided text and generate a Reading Comprehension test. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"passage\": \"string (use HTML <p> tags and break into multiple paragraphs)\", \"questions\": [ { \"q\": \"string\", \"options\": [\"A. ...\", \"B. ...\", \"C. ...\"], \"answer\": \"A, B, or C\" } ] }"
-    : "Act as an IELTS examiner. Read the provided text and generate a Writing Task 2 prompt based on its themes. Return ONLY a JSON object with this schema: { \"title\": \"string\", \"prompt\": \"string\", \"instructions\": \"string\" }";
-
-  const payload = {
-    contents: [{ role: "user", parts: [{ text: `Source material: ${sourceText}` }] }],
-    systemInstruction: { parts: [{ text: sysPrompt }] },
-    generationConfig: { responseMimeType: "application/json" }
-  };
-
-  try {
-    // We use the embedded DEVELOPER_GEMINI_API_KEY here
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${DEVELOPER_GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    
-    if(!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error?.message || "API request rejected.");
-    }
-
-    const data = await res.json();
-    const jsonStr = data.candidates[0].content.parts[0].text;
-    const parsed = JSON.parse(jsonStr);
-
-    const newTest = {
-      type: type,
-      title: parsed.title || 'Generated Test',
-      content: parsed,
-      timestamp: Date.now()
-    };
-
-    // Save to Firestore under the current user's UID
-    const testsRef = collection(db, 'artifacts', state.appId, 'users', state.user.uid, 'tests');
-    await addDoc(testsRef, newTest);
-    
-    showToast('Test Generated & Saved Successfully!', '#10b981');
-    switchTab('dashboard');
-    document.getElementById('ai-source-text').value = ''; // Clear box
-
-  } catch (err) {
-    console.error("Gemini Error:", err);
-    showToast(`Engine Failure: ${err.message}`, '#dc2626');
-  } finally {
-    document.getElementById('btn-generate').classList.remove('hidden');
-    document.getElementById('ai-loading').classList.add('hidden');
-  }
-};
-
-window.loadTestIntoWorkspace = function(id) {
-  const test = state.savedTests.find(t => t.id === id);
-  if(!test) return;
-
-  switchTab('workspace');
-  document.getElementById('ws-title').textContent = test.title;
-  document.getElementById('ws-type-badge').textContent = test.type.toUpperCase();
-
-  const container = document.getElementById('ws-content');
-  
-  if(test.type === 'reading') {
-    const qHtml = test.content.questions.map((q, i) => `
-      <div class="mb-5 p-4 rounded-xl border bg-gray-50/50 dark:bg-black/20" style="border-color: var(--border-subtle);">
-        <p class="font-bold text-sm mb-3 text-[var(--text-primary)]">${i+1}. ${q.q}</p>
-        <div class="space-y-2">
-            ${q.options.map(opt => `<div class="ml-2 text-xs p-2 rounded border bg-[var(--bg-secondary)]" style="border-color: var(--border-subtle);">${opt}</div>`).join('')}
-        </div>
-        <div class="mt-4 pt-3 border-t text-[10px] uppercase text-emerald-500 font-bold tracking-wider" style="border-color: var(--border-subtle);">Key: ${q.answer}</div>
-      </div>
-    `).join('');
-
-    container.innerHTML = `
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full text-left items-start">
-        <div class="prose prose-sm dark:prose-invert max-w-none text-[15px] leading-relaxed font-serif p-6 rounded-2xl glass-panel">${test.content.passage}</div>
-        <div class="space-y-4">${qHtml}</div>
-      </div>
-    `;
-  } else {
-    container.innerHTML = `
-      <div class="max-w-3xl w-full text-left space-y-6 glass-panel p-8 rounded-2xl mx-auto">
-        <div class="inline-block px-3 py-1 rounded-md text-[10px] font-mono uppercase font-bold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">Writing Task 2</div>
-        <h3 class="text-2xl font-bold font-serif leading-snug">${test.content.prompt}</h3>
-        <p class="text-sm text-gray-500 italic border-l-4 border-gray-300 dark:border-gray-700 pl-4 py-1">${test.content.instructions}</p>
-        <textarea class="w-full h-80 p-5 rounded-xl border bg-[var(--bg-primary)] focus:outline-none focus:border-indigo-500 transition-colors custom-scrollbar text-sm leading-relaxed mt-6" style="border-color: var(--border-subtle);" placeholder="Commence drafting your response here..."></textarea>
-      </div>
-    `;
-  }
-};
+/* Interactive Card Hover States */
+#saved-tests-grid .surface-card:hover,
+#sec-academy .surface-card:hover {
+transform: translateY(-6px) scale(1.01);
+box-shadow: var(--shadow-float);
+border-color: var(--border-focus);
+}
+/* ==========================================
+TYPOGRAPHY & BADGES
+========================================== */
+.metric-badge {
+font-family: var(--font-mono);
+font-size: 0.75rem;
+font-weight: 700;
+padding: 0.4rem 0.9rem;
+border-radius: 999px;
+border: 1px solid var(--border-subtle);
+background: var(--bg-secondary);
+text-transform: uppercase;
+letter-spacing: 0.08em;
+box-shadow: inset 0 1px 1px var(--border-glass);
+}
+/* Animated Gradient Text for main titles */
+.text-gradient {
+background: linear-gradient(135deg, #818cf8, #34d399);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
+/* ==========================================
+NAVIGATION & TABS
+========================================== */
+.nav-tab {
+padding: 0.55rem 1.4rem;
+border-radius: 999px;
+font-size: 0.85rem;
+font-weight: 600;
+color: var(--text-secondary);
+cursor: pointer;
+border: 1px solid transparent;
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-tab:hover {
+color: var(--text-primary);
+background: rgba(255,255,255,0.05);
+}
+.nav-tab.active {
+color: var(--text-primary);
+background: var(--bg-secondary);
+border-color: var(--border-subtle);
+box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+/* Mobile Bottom Nav */
+.active-mob-tab {
+opacity: 1 !important;
+color: var(--accent-primary);
+transform: translateY(-4px);
+filter: drop-shadow(0 4px 6px rgba(79, 70, 229, 0.3));
+}
+/* ==========================================
+ANIMATIONS & EFFECTS
+========================================== /
+/ The "Alive" Aurora Background */
+.aurora-bg {
+background: radial-gradient(900px circle at 10% 10%, rgba(79, 70, 229, 0.08), transparent 60%),
+radial-gradient(900px circle at 90% 90%, rgba(16, 185, 129, 0.08), transparent 60%);
+background-attachment: fixed;
+animation: breathe 15s ease-in-out infinite alternate;
+}
+@keyframes breathe {
+0% { background-position: 0% 0%; }
+100% { background-position: 100% 100%; }
+}
+@keyframes slideUp {
+from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+.slide-up {
+animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+/* ==========================================
+FORM INPUTS & SCROLLBARS
+========================================== */
+input, textarea, select {
+transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input:focus, textarea:focus, select:focus {
+box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+background-color: var(--border-subtle);
+border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+background-color: var(--text-muted);
+}
+/* Clean Academy Dropdowns */
+details { transition: all 0.3s ease; }
+details > summary {
+list-style: none;
+position: relative;
+}
+details > summary::-webkit-details-marker { display: none; }
