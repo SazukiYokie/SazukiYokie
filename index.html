@@ -5,28 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IELTS Studio KH — Global & Cambodia Self-Study Hub</title>
     
-    <!-- Fonts: Inter & Hanuman for Khmer support -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Hanuman:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'Hanuman', 'sans-serif'],
-                    },
-                    colors: {
-                        glass: 'rgba(255, 255, 255, 0.05)',
-                        glassBorder: 'rgba(255, 255, 255, 0.1)',
-                    }
-                }
-            }
+            theme: { extend: { fontFamily: { sans: ['Inter', 'Hanuman', 'sans-serif'] } } }
         }
     </script>
     <style>
@@ -40,34 +25,22 @@
 </head>
 <body class="h-screen flex flex-col md:flex-row antialiased">
 
-    <!-- ================= LOGIN GATE ================= -->
+    <!-- LOGIN GATE -->
     <div id="login-screen" class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-black">
         <div class="glass-panel p-8 rounded-2xl w-full max-w-md shadow-2xl text-center">
-            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30">
-                <i class="fa-solid fa-graduation-cap text-2xl"></i>
-            </div>
+            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-graduation-cap text-2xl"></i></div>
             <h1 class="text-2xl font-bold mb-1">IELTS Studio KH</h1>
             <p class="text-sm text-slate-400 mb-6">ទំនើប • ផ្លូវឆ្ពោះទៅកាន់ Band 8.0+</p>
-            
-            <div class="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs p-3 rounded-lg mb-6 text-left">
-                <i class="fa-solid fa-lock mr-2"></i> Private Study Portal — Contact Admin for Credentials.
-            </div>
-
             <form id="login-form" class="space-y-4">
                 <div class="text-left">
                     <label class="block text-xs font-medium text-slate-400 mb-1">Email</label>
-                    <input type="email" id="login-email" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 transition-colors" required>
+                    <input type="email" id="login-email" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500" required>
                 </div>
                 <div class="text-left">
                     <label class="block text-xs font-medium text-slate-400 mb-1">Password</label>
-                    <input type="password" id="login-password" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 transition-colors" required>
+                    <input type="password" id="login-password" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500" required>
                 </div>
-                <div class="flex items-center justify-between mt-2">
-                    <label class="flex items-center text-xs text-slate-400 cursor-pointer">
-                        <input type="checkbox" class="mr-2 rounded bg-slate-800 border-slate-700"> Remember Me
-                    </label>
-                </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors mt-4 shadow-lg shadow-blue-600/20">
+                <button type="submit" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors mt-4">
                     Secure Login
                 </button>
                 <p id="login-error" class="text-red-400 text-xs mt-2 hidden"></p>
@@ -75,56 +48,36 @@
         </div>
     </div>
 
-    <!-- ================= MAIN APP (Hidden by Default) ================= -->
+    <!-- MAIN APP -->
     <div id="main-app" class="hide flex w-full h-full">
-        
         <!-- Sidebar -->
         <aside class="w-20 md:w-64 glass-panel border-r flex flex-col justify-between hidden md:flex h-full flex-shrink-0 relative z-20">
             <div>
                 <div class="p-6 flex items-center gap-3 border-b border-slate-700/50">
                     <i class="fa-solid fa-graduation-cap text-blue-500 text-xl"></i>
-                    <span class="font-bold text-lg hidden md:block tracking-tight">IELTS Studio<span class="text-blue-500">.</span></span>
+                    <span class="font-bold text-lg hidden md:block">IELTS Studio<span class="text-blue-500">.</span></span>
                 </div>
-                <nav class="p-4 space-y-2" id="nav-menu">
-                    <button data-target="dashboard" class="nav-btn w-full flex items-center gap-3 p-3 rounded-xl bg-blue-600/10 text-blue-400 font-medium transition-all">
-                        <i class="fa-solid fa-house w-5"></i><span class="hidden md:block">Dashboard</span>
-                    </button>
-                    <button data-target="listening" class="nav-btn w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800/50 text-slate-300 font-medium transition-all">
-                        <i class="fa-solid fa-headphones w-5"></i><span class="hidden md:block">Listening Lab</span>
-                    </button>
-                    <button data-target="reading" class="nav-btn w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800/50 text-slate-300 font-medium transition-all">
-                        <i class="fa-solid fa-book-open w-5"></i><span class="hidden md:block">Reading Lab</span>
-                    </button>
-                    <button data-target="writing" class="nav-btn w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800/50 text-slate-300 font-medium transition-all">
-                        <i class="fa-solid fa-pen-nib w-5"></i><span class="hidden md:block">Writing Studio</span>
-                    </button>
-                    <button data-target="speaking" class="nav-btn w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800/50 text-slate-300 font-medium transition-all">
-                        <i class="fa-solid fa-microphone w-5"></i><span class="hidden md:block">Speaking Arena</span>
-                    </button>
-                    <button data-target="resources" class="nav-btn w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800/50 text-slate-300 font-medium transition-all">
-                        <i class="fa-solid fa-layer-group w-5"></i><span class="hidden md:block">Resource Hub</span>
-                    </button>
+                <nav class="p-4 space-y-2">
+                    <button data-target="dashboard" class="nav-btn bg-blue-600/10 text-blue-400 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-house w-5"></i><span class="hidden md:block">Dashboard</span></button>
+                    <button data-target="listening" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-headphones w-5"></i><span class="hidden md:block">Listening Lab</span></button>
+                    <button data-target="reading" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-book-open w-5"></i><span class="hidden md:block">Reading Lab</span></button>
+                    <button data-target="writing" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-pen-nib w-5"></i><span class="hidden md:block">Writing Studio</span></button>
+                    <button data-target="speaking" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all"><i class="fa-solid fa-microphone w-5"></i><span class="hidden md:block">Speaking Arena</span></button>
                 </nav>
             </div>
             <div class="p-4 border-t border-slate-700/50">
-                <button data-target="settings" class="nav-btn w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800/50 text-slate-300 font-medium transition-all mb-2">
-                    <i class="fa-solid fa-gear w-5"></i><span class="hidden md:block">Profile Settings</span>
-                </button>
-                <button id="logout-btn" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-red-400 font-medium transition-all">
-                    <i class="fa-solid fa-right-from-bracket w-5"></i><span class="hidden md:block">Sign Out</span>
-                </button>
+                <button data-target="settings" class="nav-btn text-slate-300 hover:bg-slate-800/50 w-full flex items-center gap-3 p-3 rounded-xl font-medium transition-all mb-2"><i class="fa-solid fa-gear w-5"></i><span class="hidden md:block">Profile Settings</span></button>
+                <button id="logout-btn" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-red-400 font-medium transition-all"><i class="fa-solid fa-right-from-bracket w-5"></i><span class="hidden md:block">Sign Out</span></button>
             </div>
         </aside>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 flex flex-col h-full overflow-hidden bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-opacity-5">
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden bg-opacity-5">
             <!-- Topbar -->
             <header class="h-16 glass-panel border-b flex items-center justify-between px-6 flex-shrink-0">
                 <div class="flex items-center gap-4">
-                    <div class="md:hidden text-blue-500 text-xl font-bold"><i class="fa-solid fa-graduation-cap"></i> Studio</div>
                     <div class="hidden md:flex items-center bg-slate-800/50 rounded-full px-4 py-1.5 border border-slate-700">
-                        <span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-                        <span class="text-xs text-slate-300 font-medium">System Online</span>
+                        <span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span><span class="text-xs text-slate-300">System Online</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
@@ -132,26 +85,103 @@
                         <p id="topbar-name" class="text-sm font-semibold">User</p>
                         <p id="topbar-band" class="text-xs text-blue-400">Target: Band 8.0</p>
                     </div>
-                    <img id="topbar-avatar" src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" class="w-10 h-10 rounded-full border-2 border-slate-700 object-cover">
+                    <img id="topbar-avatar" src="" class="w-10 h-10 rounded-full border-2 border-slate-700 object-cover">
                 </div>
             </header>
 
-            <!-- Scrollable Content Views -->
-            <div class="flex-1 overflow-y-auto p-4 md:p-8" id="view-container">
-                
-                <!-- Dashboard View -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-8">
+                <!-- Dashboard -->
                 <div id="view-dashboard" class="view-section space-y-6">
                     <h2 class="text-2xl font-bold">Welcome Back, <span id="dash-name" class="text-blue-400">Student</span> 👋</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="glass-panel p-5 rounded-2xl flex items-center justify-between">
-                            <div>
-                                <p class="text-slate-400 text-sm">Overall Target Band</p>
-                                <p id="dash-band" class="text-3xl font-bold mt-1">7.5</p>
-                            </div>
-                            <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400"><i class="fa-solid fa-chart-line text-xl"></i></div>
+                    <div class="glass-panel rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold mb-4 text-yellow-500"><i class="fa-solid fa-trophy"></i> Friends Leaderboard</h3>
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b border-slate-700 text-slate-400 text-sm">
+                                    <th class="pb-3">Student</th><th class="pb-3">Target</th><th class="pb-3">Last Active</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Listening -->
+                <div id="view-listening" class="view-section hide space-y-6">
+                    <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-headphones"></i> Listening Lab</h2>
+                    <div class="glass-panel p-6 rounded-2xl flex gap-4 items-end">
+                        <div class="flex-1">
+                            <label class="block text-sm mb-2">Raw Score (0-40)</label>
+                            <input type="number" id="listen-raw" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2">
                         </div>
-                        <div class="glass-panel p-5 rounded-2xl flex items-center justify-between">
+                        <button id="btn-calc-listen" class="px-6 py-2 bg-blue-600 rounded-lg">Calculate</button>
+                        <div id="listen-result" class="text-xl font-bold text-blue-400 px-4"></div>
+                    </div>
+                </div>
+
+                <!-- Reading -->
+                <div id="view-reading" class="view-section hide space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-book-open"></i> Reading Lab</h2>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-red-500/10 text-red-400 px-4 py-1.5 rounded-lg font-mono font-bold text-lg" id="reading-timer">60:00</div>
+                            <button id="btn-start-read" class="bg-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-600"><i class="fa-solid fa-play"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Writing -->
+                <div id="view-writing" class="view-section hide h-full flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-pen-nib"></i> Writing Studio</h2>
+                        <div class="flex items-center gap-3">
+                            <select id="writing-task" class="bg-slate-800 rounded-lg px-3 py-1.5 text-sm">
+                                <option value="task1">Task 1 (150 words)</option><option value="task2">Task 2 (250 words)</option>
+                            </select>
+                            <div class="bg-blue-500/10 text-blue-400 px-4 py-1.5 rounded-lg font-mono font-bold" id="writing-timer">40:00</div>
+                            <button id="btn-start-write" class="bg-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-600"><i class="fa-solid fa-play"></i></button>
+                        </div>
+                    </div>
+                    <textarea id="writing-area" class="flex-1 w-full bg-slate-800 p-6 rounded-t-2xl resize-none" placeholder="Start typing..."></textarea>
+                    <div class="bg-slate-900 p-4 rounded-b-2xl flex justify-between items-center">
+                        <span id="word-count" class="font-bold text-blue-400">0 words</span>
+                        <button id="btn-save-essay" class="bg-blue-600 px-5 py-2 rounded-lg text-sm">Save to Cloud</button>
+                    </div>
+                </div>
+
+                <!-- Speaking -->
+                <div id="view-speaking" class="view-section hide space-y-6">
+                    <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-microphone"></i> Speaking Arena</h2>
+                    <div class="glass-panel p-6 rounded-2xl text-center">
+                        <button id="btn-record" class="bg-red-600 px-6 py-3 rounded-lg font-bold"><i class="fa-solid fa-record-vinyl mr-2"></i> Record Answer</button>
+                        <p id="rec-status" class="text-red-400 mt-3 font-bold animate-pulse hide">Recording...</p>
+                        <audio id="audio-playback" controls class="mt-4 w-full hide rounded-lg bg-slate-800"></audio>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div id="view-settings" class="view-section hide space-y-6 max-w-2xl mx-auto">
+                    <h2 class="text-2xl font-bold text-blue-400"><i class="fa-solid fa-gear"></i> Profile</h2>
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <form id="settings-form" class="space-y-4">
+                            <input type="text" id="set-name" class="w-full bg-slate-800 rounded-lg px-4 py-2" placeholder="Display Name" required>
+                            <select id="set-band" class="w-full bg-slate-800 rounded-lg px-4 py-2">
+                                <option value="6.0">6.0</option><option value="7.0">7.0</option><option value="8.0">8.0</option>
+                            </select>
+                            <button type="submit" class="w-full bg-blue-600 py-2.5 rounded-lg">Save Profile</button>
+                            <p id="settings-success" class="text-green-400 text-xs mt-2 hidden text-center">Updated!</p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- CRITICAL: Import JS Module via src -->
+    <script type="module" src="./app.js"></script>
+</body>
+</html>
+iv class="glass-panel p-5 rounded-2xl flex items-center justify-between">
                             <div>
                                 <p class="text-slate-400 text-sm">Study Streak</p>
                                 <p class="text-3xl font-bold mt-1">12 <span class="text-lg text-slate-500">Days</span></p>
