@@ -282,7 +282,7 @@
                                 <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md"><i class="fa-solid fa-robot text-white text-sm"></i></div>
                                 <div class="bg-slate-800/90 border border-slate-700/70 p-4 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed max-w-[90%] shadow-sm">
                                     <p class="font-semibold text-purple-300 mb-1">Welcome to your Personal IELTS AI Examiner</p>
-                                    <p class="text-slate-300 text-xs sm:text-sm">Your Groq / Grok key powers all 4 labs. Ask me for Band 8.5 essay blueprints, grammar corrections, speaking idioms, or upload any PDF/article in the Reading & Listening Labs to generate full custom mock exams!</p>
+                                    <p class="text-slate-300 text-xs sm:text-sm">Your Groq / Grok key powers all 4 labs. Ask me for Band 8.5 essay blueprints, grammar corrections, speaking idioms, or go to any lab to upload your own PDF/TXT files and generate custom IELTS tests!</p>
                                 </div>
                             </div>
                         </div>
@@ -298,19 +298,11 @@
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div>
                             <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>AI Listening Lab</h2>
-                            <p class="text-xs text-slate-400">Dynamically generate multi-question IELTS Listening tests via Groq/Grok AI or from your own uploaded file.</p>
+                            <p class="text-xs text-slate-400">Upload any PDF/TXT file or enter your own topic, then click Generate AI Listening Test.</p>
                         </div>
-                        <div class="flex flex-wrap gap-2">
-                            <select id="listening-section-type" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
-                                <option value="Section 1 (Everyday Conversation - 6 Questions)">Section 1: Everyday Context (6 Qs)</option>
-                                <option value="Section 2 (Public Information Monologue - 6 Questions)">Section 2: Guided Briefing (6 Qs)</option>
-                                <option value="Section 3 (Academic Discussion - 6 Questions)">Section 3: University Seminar (6 Qs)</option>
-                                <option value="Section 4 (Academic Lecture - 6 Questions)">Section 4: Academic Lecture (6 Qs)</option>
-                            </select>
-                            <button type="button" id="btn-ai-listening" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg shadow-cyan-600/20 transition">
-                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate AI Listening Test
-                            </button>
-                        </div>
+                        <button type="button" id="btn-ai-listening" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow-lg shadow-cyan-600/20 transition">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate AI Listening Test
+                        </button>
                     </div>
 
                     <!-- Examiner Strategy & Tips Banner -->
@@ -335,24 +327,27 @@
                         </div>
                     </details>
 
-                    <!-- Custom File / Topic Upload Bar for Listening -->
-                    <div class="glass-panel p-4 rounded-2xl flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-                        <div class="flex items-center gap-3 flex-1">
-                            <label class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-cyan-300 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer flex-shrink-0 transition">
-                                <i class="fa-solid fa-file-arrow-up mr-1.5"></i> Upload PDF / TXT
-                                <input type="file" id="listening-file-upload" accept=".pdf,.txt,.md,.csv,.html" class="hide">
-                            </label>
-                            <input type="text" id="listening-custom-source" placeholder="Or type a custom topic / paste an article here to turn into an audio test..." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    <!-- Upload PDF / TXT or Custom Source Input -->
+                    <div class="glass-panel p-4 rounded-2xl space-y-3">
+                        <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <label class="bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/40 text-cyan-300 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer transition">
+                                    <i class="fa-solid fa-file-arrow-up mr-1.5"></i> Upload PDF / TXT File
+                                    <input type="file" id="listening-file-upload" accept=".pdf,.txt,.md,.csv,.html" class="hide">
+                                </label>
+                                <span id="listening-file-badge" class="text-xs text-slate-400">Upload a PDF/TXT document or type your own topic/article below.</span>
+                            </div>
+                            <button type="button" id="btn-clear-listening-source" class="text-xs text-slate-400 hover:text-red-400 self-start md:self-auto">Clear Source</button>
                         </div>
-                        <span id="listening-file-badge" class="text-[11px] text-slate-400">Ready for AI generation</span>
+                        <textarea id="listening-custom-source" rows="2" placeholder="Paste your article/text or type any topic you want (or leave blank and click 'Generate AI Listening Test' to let Groq/Grok create one)..." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyan-500 leading-relaxed"></textarea>
                     </div>
 
-                    <!-- Audio Player & Script Controls -->
+                    <!-- Audio Player & Questions Workspace -->
                     <div class="glass-panel p-5 rounded-2xl space-y-4">
                         <div class="flex flex-wrap items-center justify-between gap-3">
                             <div>
-                                <h3 id="listening-title" class="font-bold text-base text-cyan-300">IELTS Listening Practice Track</h3>
-                                <p id="listening-status" class="text-xs text-slate-400">Click "Play Audio Track" to listen, or click "Generate AI Listening Test" for a fresh AI exam.</p>
+                                <h3 id="listening-title" class="font-bold text-base text-cyan-300">No Listening Test Generated Yet</h3>
+                                <p id="listening-status" class="text-xs text-slate-400">Upload your PDF/TXT file or enter a topic above, then click "Generate AI Listening Test".</p>
                             </div>
                             <div class="flex flex-wrap items-center gap-2">
                                 <select id="listening-speed" class="bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white">
@@ -366,11 +361,15 @@
                             </div>
                         </div>
 
-                        <!-- Hidden Audio Transcript Box (for post-test review) -->
+                        <!-- Hidden Audio Transcript Box -->
                         <div id="listening-transcript-box" class="hide bg-slate-900/90 border border-slate-700/80 p-4 rounded-xl text-xs text-slate-300 leading-relaxed"></div>
 
                         <!-- Questions Container -->
-                        <div id="listening-questions-box" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-slate-700/60"></div>
+                        <div id="listening-questions-box" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-slate-700/60">
+                            <div class="col-span-full py-8 text-center text-xs text-slate-400">
+                                Your AI-generated listening questions will appear here once you click <strong>Generate AI Listening Test</strong>.
+                            </div>
+                        </div>
 
                         <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-700/50">
                             <button type="button" id="btn-submit-listening" class="bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 rounded-xl text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition">Check Listening Answers</button>
@@ -394,15 +393,10 @@
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div>
                             <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>AI Reading Lab</h2>
-                            <p class="text-xs text-slate-400">Upload any PDF/article or let Groq/Grok AI generate a full Academic Reading Passage & test.</p>
+                            <p class="text-xs text-slate-400">Upload any PDF/TXT file or enter your own topic/article, then click Generate AI Reading Test.</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
-                            <select id="reading-q-type" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
-                                <option value="Mixed IELTS Questions (True/False/Not Given & Multiple Choice - 6 Questions)">Mixed (T/F/NG + MCQ - 6 Qs)</option>
-                                <option value="True / False / Not Given (6 Questions)">True / False / Not Given (6 Qs)</option>
-                                <option value="Multiple Choice & Main Idea (6 Questions)">Multiple Choice (6 Qs)</option>
-                            </select>
-                            <button type="button" id="btn-ai-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg shadow-emerald-600/20 transition">
+                            <button type="button" id="btn-ai-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow-lg shadow-emerald-600/20 transition">
                                 <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate AI Reading Test
                             </button>
                             <div id="reading-timer" class="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-1.5 rounded-xl font-mono font-bold text-sm">20:00</div>
@@ -437,23 +431,29 @@
                         <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
                             <div class="flex items-center gap-2.5 flex-wrap">
                                 <label class="bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer transition">
-                                    <i class="fa-solid fa-file-pdf mr-1.5"></i> Upload PDF / Article File
+                                    <i class="fa-solid fa-file-pdf mr-1.5"></i> Upload PDF / TXT File
                                     <input type="file" id="reading-file-upload" accept=".pdf,.txt,.md,.csv,.html" class="hide">
                                 </label>
-                                <span id="reading-file-status" class="text-xs text-slate-400">Upload any PDF/text file or type a topic below, then click <strong>Generate AI Reading Test</strong>.</span>
+                                <span id="reading-file-status" class="text-xs text-slate-400">Upload any PDF/TXT file or type your own topic/article below, then click <strong>Generate AI Reading Test</strong>.</span>
                             </div>
                             <button type="button" id="btn-clear-reading-source" class="text-xs text-slate-400 hover:text-red-400 self-start md:self-auto">Clear Source</button>
                         </div>
-                        <textarea id="reading-custom-source" rows="2" placeholder="Optional: Paste any article, essay, PDF text, or simply type a topic (e.g., 'Quantum Computing in Medicine' or 'Ancient Angkor Hydraulic Engineering')..." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 leading-relaxed"></textarea>
+                        <textarea id="reading-custom-source" rows="2" placeholder="Paste any article, PDF text, or type your own topic here (or leave blank and click 'Generate AI Reading Test')..." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 leading-relaxed"></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div class="glass-panel p-5 rounded-2xl max-h-[65vh] overflow-y-auto space-y-3">
-                            <h3 id="reading-passage-title" class="font-bold text-base text-emerald-400 border-b border-slate-700 pb-2">Academic Reading Passage</h3>
-                            <div id="reading-passage-body" class="ai-prose text-sm text-slate-200 leading-relaxed space-y-3"></div>
+                            <h3 id="reading-passage-title" class="font-bold text-base text-emerald-400 border-b border-slate-700 pb-2">No Reading Passage Generated Yet</h3>
+                            <div id="reading-passage-body" class="ai-prose text-sm text-slate-300 leading-relaxed space-y-3">
+                                <p class="text-xs text-slate-400 py-6 text-center">Upload a PDF/TXT file or enter a topic above and click <strong>Generate AI Reading Test</strong> to create your passage.</p>
+                            </div>
                         </div>
                         <div class="glass-panel p-5 rounded-2xl max-h-[65vh] overflow-y-auto flex flex-col justify-between space-y-4">
-                            <div id="reading-questions-box" class="space-y-4"></div>
+                            <div id="reading-questions-box" class="space-y-4">
+                                <div class="py-8 text-center text-xs text-slate-400">
+                                    Your AI-generated reading questions will appear here once you click <strong>Generate AI Reading Test</strong>.
+                                </div>
+                            </div>
                             <div class="pt-4 border-t border-slate-700 flex flex-wrap items-center justify-between gap-2">
                                 <button type="button" id="btn-submit-reading" class="bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 rounded-xl text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition">Submit & Grade Reading</button>
                                 <div id="reading-score-box" class="text-sm font-bold text-emerald-400"></div>
@@ -465,13 +465,12 @@
                 <!-- ================= 5. AI WRITING STUDIO ================= -->
                 <div id="view-writing" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-pen-nib mr-2"></i>AI Writing Studio</h2>
+                        <div>
+                            <h2 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-pen-nib mr-2"></i>AI Writing Studio</h2>
+                            <p class="text-xs text-slate-400">Upload a PDF/TXT file or type your own topic idea to generate a custom IELTS Writing prompt via Groq/Grok.</p>
+                        </div>
                         <div class="flex flex-wrap items-center gap-2">
-                            <select id="writing-task" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white">
-                                <option value="Task 2 (250+ words)">Task 2 Essay (250+ words)</option>
-                                <option value="Task 1 Academic (150+ words)">Task 1 Report (150+ words)</option>
-                            </select>
-                            <button type="button" id="btn-ai-writing-prompt" class="bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-xl text-xs font-semibold text-white transition"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>New Topic</button>
+                            <button type="button" id="btn-ai-writing-prompt" class="bg-amber-600 hover:bg-amber-500 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-lg shadow-amber-600/20 transition"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Generate AI Topic</button>
                             <div id="writing-timer" class="bg-blue-500/10 text-blue-400 px-3 py-1.5 rounded-xl font-mono font-bold text-xs">40:00</div>
                             <button type="button" id="btn-start-write" class="bg-slate-700 px-3 py-1.5 rounded-xl text-xs text-white"><i class="fa-solid fa-play"></i></button>
                         </div>
@@ -503,9 +502,21 @@
                         </div>
                     </details>
 
+                    <!-- Upload PDF / TXT or Custom Topic Input for Writing -->
+                    <div class="glass-panel p-4 rounded-2xl flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+                        <div class="flex items-center gap-3 flex-1">
+                            <label class="bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/40 text-amber-300 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer flex-shrink-0 transition">
+                                <i class="fa-solid fa-file-arrow-up mr-1.5"></i> Upload PDF / TXT
+                                <input type="file" id="writing-file-upload" accept=".pdf,.txt,.md,.csv,.html" class="hide">
+                            </label>
+                            <input type="text" id="writing-custom-source" placeholder="Type your own essay topic or upload a PDF/TXT file, then click 'Generate AI Topic'..." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <span id="writing-file-badge" class="text-[11px] text-slate-400">Your Own Topic / AI Generator</span>
+                    </div>
+
                     <div id="writing-prompt-box" class="glass-panel p-4 rounded-xl text-sm text-amber-100 border-l-4 border-l-amber-500 leading-relaxed">
-                        <span class="text-xs font-bold uppercase tracking-wider text-amber-400 block mb-1">Official Writing Prompt</span>
-                        Some people believe that technology has made learning easier, while others think it distracts students. Discuss both views and give your own opinion.
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-400 block mb-1">Your Writing Topic</span>
+                        <span class="text-slate-400 text-xs">No topic set yet. Type your own topic above or click <strong>Generate AI Topic</strong> to create one with your Groq/Grok API key.</span>
                     </div>
 
                     <textarea id="writing-area" rows="10" class="w-full glass-panel p-4 rounded-2xl text-sm text-white focus:outline-none focus:border-amber-500 leading-relaxed" placeholder="Write your essay here... Then click 'AI Grade My Essay' for a clean, structured Band Score report & corrections!"></textarea>
@@ -528,8 +539,11 @@
                 <!-- ================= 6. AI SPEAKING ARENA ================= -->
                 <div id="view-speaking" class="view-section hide space-y-5">
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="text-xl font-bold text-rose-400"><i class="fa-solid fa-microphone mr-2"></i>AI Speaking Arena</h2>
-                        <button type="button" id="btn-ai-speaking-card" class="bg-rose-600 hover:bg-rose-500 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-lg shadow-rose-600/20 transition">
+                        <div>
+                            <h2 class="text-xl font-bold text-rose-400"><i class="fa-solid fa-microphone mr-2"></i>AI Speaking Arena</h2>
+                            <p class="text-xs text-slate-400">Upload a PDF/TXT file or type your own topic, then click Generate New Cue Card.</p>
+                        </div>
+                        <button type="button" id="btn-ai-speaking-card" class="bg-rose-600 hover:bg-rose-500 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-lg shadow-rose-600/20 transition">
                             <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate New Cue Card
                         </button>
                     </div>
@@ -556,16 +570,23 @@
                         </div>
                     </details>
 
+                    <!-- Upload PDF / TXT or Custom Topic Input for Speaking -->
+                    <div class="glass-panel p-4 rounded-2xl flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+                        <div class="flex items-center gap-3 flex-1">
+                            <label class="bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer flex-shrink-0 transition">
+                                <i class="fa-solid fa-file-arrow-up mr-1.5"></i> Upload PDF / TXT
+                                <input type="file" id="speaking-file-upload" accept=".pdf,.txt,.md,.csv,.html" class="hide">
+                            </label>
+                            <input type="text" id="speaking-custom-source" placeholder="Type your own speaking topic or upload a PDF/TXT file, then click 'Generate New Cue Card'..." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                        <span id="speaking-file-badge" class="text-[11px] text-slate-400">Your Own Topic / AI Generator</span>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="glass-panel p-5 rounded-2xl space-y-4">
                             <div id="speaking-cue-card" class="bg-slate-800/90 border border-slate-700 p-4 rounded-xl ai-prose text-sm space-y-2">
-                                <p class="font-bold text-rose-400">Part 2 Cue Card: Describe a skill you learned recently.</p>
-                                <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                                    <li>What the skill is and why you learned it</li>
-                                    <li>How you practiced it</li>
-                                    <li>What difficulties you faced</li>
-                                    <li>And explain how this skill helps you in life.</li>
-                                </ul>
+                                <p class="font-bold text-rose-400">No Speaking Cue Card Generated Yet</p>
+                                <p class="text-xs text-slate-400">Upload a file or enter your own topic above, or click <strong>Generate New Cue Card</strong> to let Groq/Grok create one for you.</p>
                             </div>
 
                             <div class="flex gap-2">
@@ -583,85 +604,7 @@
                         <div class="glass-panel p-5 rounded-2xl max-h-[60vh] overflow-y-auto">
                             <h3 class="font-bold text-sm text-purple-400 mb-3 border-b border-slate-700 pb-2">AI Band 8.5 Model Answer & Vocabulary</h3>
                             <div id="speaking-sample-box" class="ai-prose text-sm text-slate-300 leading-relaxed space-y-2">
-                                Click <strong>"Band 8.5 Sample"</strong> to generate a clean, structured model response, idioms, and follow-up Part 3 questions for the current Cue Card.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ================= 5. AI WRITING STUDIO ================= -->
-                <div id="view-writing" class="view-section hide space-y-4">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-pen-nib mr-2"></i>AI Writing Studio</h2>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <select id="writing-task" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white">
-                                <option value="Task 2 (250+ words)">Task 2 Essay (250+ words)</option>
-                                <option value="Task 1 (150+ words)">Task 1 Report (150+ words)</option>
-                            </select>
-                            <button type="button" id="btn-ai-writing-prompt" class="bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>New Topic</button>
-                            <div id="writing-timer" class="bg-blue-500/10 text-blue-400 px-3 py-1.5 rounded-xl font-mono font-bold text-xs">40:00</div>
-                            <button type="button" id="btn-start-write" class="bg-slate-700 px-3 py-1.5 rounded-xl text-xs text-white"><i class="fa-solid fa-play"></i></button>
-                        </div>
-                    </div>
-
-                    <div id="writing-prompt-box" class="glass-panel p-4 rounded-xl text-sm text-amber-200 border-l-4 border-l-amber-500">
-                        <strong>Prompt:</strong> Some people believe that technology has made learning easier, while others think it distracts students. Discuss both views and give your own opinion.
-                    </div>
-
-                    <textarea id="writing-area" rows="10" class="w-full glass-panel p-4 rounded-2xl text-sm text-white focus:outline-none focus:border-amber-500 leading-relaxed" placeholder="Write your essay here... Then click 'AI Grade My Essay' for an instant Band Score & corrections!"></textarea>
-
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <span id="word-count" class="text-sm font-bold text-blue-400">0 words</span>
-                        <div class="flex gap-2">
-                            <button type="button" id="btn-ai-grade-essay" class="bg-purple-600 hover:bg-purple-500 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-lg shadow-purple-600/20">
-                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> AI Grade My Essay
-                            </button>
-                            <button type="button" id="btn-save-essay" class="bg-blue-600 hover:bg-blue-500 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white">
-                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save to Cloud
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="writing-feedback-box" class="hide glass-panel p-5 rounded-2xl text-sm text-slate-200 space-y-2 border border-purple-500/40"></div>
-                </div>
-
-                <!-- ================= 6. AI SPEAKING ARENA ================= -->
-                <div id="view-speaking" class="view-section hide space-y-6">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="text-xl font-bold text-rose-400"><i class="fa-solid fa-microphone mr-2"></i>AI Speaking Arena</h2>
-                        <button type="button" id="btn-ai-speaking-card" class="bg-rose-600 hover:bg-rose-500 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white">
-                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Generate New Cue Card
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="glass-panel p-5 rounded-2xl space-y-4">
-                            <div id="speaking-cue-card" class="bg-slate-800/90 border border-slate-700 p-4 rounded-xl text-sm space-y-2">
-                                <p class="font-bold text-rose-400">Part 2 Cue Card: Describe a skill you learned recently.</p>
-                                <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                                    <li>What the skill is and why you learned it</li>
-                                    <li>How you practiced it</li>
-                                    <li>What difficulties you faced</li>
-                                    <li>And explain how this skill helps you in life.</li>
-                                </ul>
-                            </div>
-
-                            <div class="flex gap-2">
-                                <button type="button" id="btn-record" class="flex-1 bg-rose-600 hover:bg-rose-500 py-2.5 rounded-xl text-sm font-semibold text-white">
-                                    <i class="fa-solid fa-record-vinyl mr-1"></i> Record Voice
-                                </button>
-                                <button type="button" id="btn-ai-speaking-sample" class="flex-1 bg-purple-600 hover:bg-purple-500 py-2.5 rounded-xl text-sm font-semibold text-white">
-                                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Band 8.5 Sample
-                                </button>
-                            </div>
-                            <p id="rec-status" class="text-rose-400 text-xs font-bold text-center animate-pulse hide">🔴 Recording your voice... Click Stop when finished.</p>
-                            <audio id="audio-playback" controls class="w-full hide rounded-xl"></audio>
-                        </div>
-
-                        <div class="glass-panel p-5 rounded-2xl">
-                            <h3 class="font-bold text-sm text-purple-400 mb-3 border-b border-slate-700 pb-2">AI Band 8.5 Model Answer & Vocabulary</h3>
-                            <div id="speaking-sample-box" class="text-sm text-slate-300 leading-relaxed space-y-2">
-                                Click <strong>"Band 8.5 Sample"</strong> to generate a high-scoring model response and idioms for the current Cue Card.
+                                Click <strong>"Band 8.5 Sample"</strong> after generating a Cue Card to get a structured Band 8.5 model response, idioms, and follow-up Part 3 questions.
                             </div>
                         </div>
                     </div>
@@ -757,6 +700,9 @@
         </main>
     </div>
 
+    <!-- Non-blocking Toast Notification Container -->
+    <div id="toast-box" class="fixed bottom-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+
     <!-- ================= UNIFIED APPLICATION & AI ENGINE ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -778,6 +724,21 @@
 
         window.ieltsAuth = auth;
         window.ieltsDb = db;
+
+        // Clean Toast Notification (Replaces browser alerts)
+        function showToast(message, type = "info") {
+            const box = document.getElementById('toast-box');
+            if (!box) return;
+            const item = document.createElement('div');
+            const borderColor = type === "error" ? "border-red-500/60 text-red-200" : type === "success" ? "border-emerald-500/60 text-emerald-200" : "border-purple-500/60 text-slate-100";
+            item.className = `glass-panel px-4 py-3 rounded-xl border ${borderColor} text-xs font-semibold shadow-2xl max-w-sm pointer-events-auto transition-all duration-300`;
+            item.innerHTML = message;
+            box.appendChild(item);
+            setTimeout(() => {
+                item.style.opacity = "0";
+                setTimeout(() => item.remove(), 300);
+            }, 4000);
+        }
 
         // Visual confirmation on login screen that script parsed and loaded cleanly
         const statusBadge = document.getElementById('system-status');
@@ -854,6 +815,11 @@
                         });
                     } else {
                         const existing = docSnap.data();
+                        // Sync AI key from cloud profile if saved previously
+                        if (existing.aiApiKey && !localStorage.getItem("IELTS_PRIVATE_AI_KEY")) {
+                            localStorage.setItem("IELTS_PRIVATE_AI_KEY", existing.aiApiKey);
+                            setupKeyManagerUI();
+                        }
                         if (!existing.lastStreakUpdate) {
                             await setDoc(userRef, { studyStreak: 0, lastStreakUpdate: Date.now() }, { merge: true });
                         }
@@ -867,6 +833,11 @@
                 unsubscribeUser = onSnapshot(userRef, async (snap) => {
                     const data = snap.data();
                     if (!data) return;
+
+                    if (data.aiApiKey && !localStorage.getItem("IELTS_PRIVATE_AI_KEY")) {
+                        localStorage.setItem("IELTS_PRIVATE_AI_KEY", data.aiApiKey);
+                        setupKeyManagerUI();
+                    }
 
                     const now = Date.now();
                     let streak = typeof data.studyStreak === 'number' ? data.studyStreak : 0;
@@ -994,6 +965,7 @@
             if (!auth.currentUser) return;
             const dateVal = document.getElementById('quick-exam-date').value;
             await setDoc(doc(db, 'users', auth.currentUser.uid), { examDate: dateVal }, { merge: true });
+            showToast("✓ Exam date updated!", "success");
         });
 
         document.getElementById('btn-save-settings')?.addEventListener('click', async () => {
@@ -1088,6 +1060,7 @@
                 timestamp: serverTimestamp()
             });
             btn.textContent = "Saved ✓";
+            showToast("✓ Essay saved to your Firebase Cloud!", "success");
             setTimeout(() => btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save to Cloud`, 2000);
         });
 
@@ -1120,7 +1093,7 @@
                 status?.classList.remove('hide');
                 player?.classList.add('hide');
             } catch (e) {
-                alert("Please allow microphone permission in your browser.");
+                showToast("Please allow microphone permission in your browser.", "error");
             }
         });
 
@@ -1128,16 +1101,20 @@
         // MULTI-PROVIDER AI ENGINE (GROQ gsk_ / XAI GROK xai- / GEMINI / KEYLESS CLOUD)
         // ============================================================================
         function getSavedKey() {
-            return (localStorage.getItem("IELTS_PRIVATE_AI_KEY") || "").trim();
+            return (localStorage.getItem("IELTS_PRIVATE_AI_KEY") || "").replace(/['"]/g, '').trim();
         }
 
         function setupKeyManagerUI() {
             const chatBox = document.getElementById('ai-chat-box');
-            if (!chatBox || document.getElementById('ai-key-bar')) return;
+            if (!chatBox) return;
 
-            const bar = document.createElement('div');
-            bar.id = 'ai-key-bar';
-            bar.className = 'p-3 bg-slate-900 border-b border-slate-700 flex flex-wrap items-center justify-between gap-2 text-xs';
+            let bar = document.getElementById('ai-key-bar');
+            if (!bar) {
+                bar = document.createElement('div');
+                bar.id = 'ai-key-bar';
+                bar.className = 'p-3 bg-slate-900 border-b border-slate-700 flex flex-wrap items-center justify-between gap-2 text-xs';
+                chatBox.parentNode.insertBefore(bar, chatBox);
+            }
             
             const updateBarHTML = () => {
                 const currentKey = getSavedKey();
@@ -1147,8 +1124,8 @@
                 else if (currentKey.startsWith("AIza") || currentKey.startsWith("AQ.")) providerLabel = "Gemini Key";
 
                 const statusText = currentKey 
-                    ? `<span class="text-emerald-400 font-semibold">✓ ${providerLabel} Active (${currentKey.slice(0, 6)}...)</span>`
-                    : `<span class="text-blue-400 font-semibold">⚡ Running in Keyless Free AI Mode</span>`;
+                    ? `<span class="text-emerald-400 font-semibold">✓ ${providerLabel} Active (${currentKey.slice(0, 7)}...) — Powers All 4 Labs</span>`
+                    : `<span class="text-blue-400 font-semibold">⚡ Paste your Groq (gsk_) or Grok (xai-) key to power all 4 Labs</span>`;
 
                 bar.innerHTML = `
                     <div>${statusText}</div>
@@ -1159,86 +1136,111 @@
                     </div>
                 `;
 
-                bar.querySelector('#btn-save-private-key')?.addEventListener('click', () => {
-                    const val = bar.querySelector('#private-key-input').value.trim();
+                bar.querySelector('#btn-save-private-key')?.addEventListener('click', async () => {
+                    const val = bar.querySelector('#private-key-input').value.replace(/['"]/g, '').trim();
                     if (!val) return;
                     localStorage.setItem("IELTS_PRIVATE_AI_KEY", val);
+                    if (auth.currentUser) {
+                        try {
+                            await setDoc(doc(db, 'users', auth.currentUser.uid), { aiApiKey: val }, { merge: true });
+                        } catch (e) {}
+                    }
                     updateBarHTML();
-                    alert("API Key saved privately in your browser! GitHub cannot see or delete it.");
+                    showToast("✓ API Key saved & synced across all 4 IELTS Labs!", "success");
                 });
 
-                bar.querySelector('#btn-clear-private-key')?.addEventListener('click', () => {
+                bar.querySelector('#btn-clear-private-key')?.addEventListener('click', async () => {
                     localStorage.removeItem("IELTS_PRIVATE_AI_KEY");
+                    if (auth.currentUser) {
+                        try {
+                            await setDoc(doc(db, 'users', auth.currentUser.uid), { aiApiKey: "" }, { merge: true });
+                        } catch (e) {}
+                    }
                     updateBarHTML();
+                    showToast("API Key cleared.", "info");
                 });
             };
 
-            chatBox.parentNode.insertBefore(bar, chatBox);
             updateBarHTML();
         }
 
         setupKeyManagerUI();
 
-        async function askIELTSAI(userPrompt, systemPrompt = "You are a supportive Band 9.0 IELTS Examiner and Tutor in Cambodia. Give clear, practical, well-structured answers.") {
+        async function askIELTSAI(userPrompt, systemPrompt = "You are a supportive Band 9.0 IELTS Examiner and Tutor in Cambodia. Give clear, practical, well-structured answers.", jsonMode = false) {
             const apiKey = getSavedKey();
 
             // ROUTE A1: Groq API Key (starts with gsk_)
             if (apiKey.startsWith("gsk_")) {
-                try {
-                    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${apiKey}`
-                        },
-                        body: JSON.stringify({
-                            model: "llama-3.3-70b-versatile",
+                const groqModels = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"];
+                for (const modelName of groqModels) {
+                    try {
+                        const bodyPayload = {
+                            model: modelName,
                             messages: [
                                 { role: "system", content: systemPrompt },
                                 { role: "user", content: userPrompt }
                             ],
-                            temperature: 0.6
-                        })
-                    });
-                    if (res.ok) {
-                        const data = await res.json();
-                        return data.choices[0].message.content;
+                            temperature: 0.5
+                        };
+                        if (jsonMode) {
+                            bodyPayload.response_format = { type: "json_object" };
+                        }
+                        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${apiKey}`
+                            },
+                            body: JSON.stringify(bodyPayload)
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            return data.choices[0].message.content;
+                        }
+                    } catch (err) {
+                        console.warn(`Groq (${modelName}) error:`, err);
                     }
-                } catch (err) {
-                    console.warn("Groq request failed, trying fallback:", err);
                 }
             }
 
             // ROUTE A2: xAI Grok API Key (starts with xai-)
             if (apiKey.startsWith("xai-")) {
-                try {
-                    const res = await fetch("https://api.x.ai/v1/chat/completions", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${apiKey}`
-                        },
-                        body: JSON.stringify({
-                            model: "grok-2-latest",
+                const xaiModels = ["grok-2-latest", "grok-beta"];
+                for (const modelName of xaiModels) {
+                    try {
+                        const bodyPayload = {
+                            model: modelName,
                             messages: [
                                 { role: "system", content: systemPrompt },
                                 { role: "user", content: userPrompt }
                             ],
-                            temperature: 0.6
-                        })
-                    });
-                    if (res.ok) {
-                        const data = await res.json();
-                        return data.choices[0].message.content;
+                            temperature: 0.5
+                        };
+                        if (jsonMode) {
+                            bodyPayload.response_format = { type: "json_object" };
+                        }
+                        const res = await fetch("https://api.x.ai/v1/chat/completions", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${apiKey}`
+                            },
+                            body: JSON.stringify(bodyPayload)
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            return data.choices[0].message.content;
+                        }
+                    } catch (err) {
+                        console.warn(`xAI Grok (${modelName}) error:`, err);
                     }
-                } catch (err) {
-                    console.warn("xAI Grok request failed, trying fallback:", err);
                 }
             }
 
             // ROUTE B: Google Gemini API Key (AIza... or AQ....)
             if (apiKey.startsWith("AIza") || apiKey.startsWith("AQ.")) {
                 try {
+                    const genConfig = jsonMode ? { responseMimeType: "application/json" } : {};
                     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
                         method: "POST",
                         headers: {
@@ -1247,7 +1249,8 @@
                         },
                         body: JSON.stringify({
                             systemInstruction: { parts: [{ text: systemPrompt }] },
-                            contents: [{ parts: [{ text: userPrompt }] }]
+                            contents: [{ parts: [{ text: userPrompt }] }],
+                            generationConfig: genConfig
                         })
                     });
                     if (res.ok) {
@@ -1256,11 +1259,11 @@
                         if (reply) return reply;
                     }
                 } catch (err) {
-                    console.warn("Gemini request failed, switching to keyless AI:", err);
+                    console.warn("Gemini request failed:", err);
                 }
             }
 
-            // ROUTE C: Keyless Cloud AI
+            // ROUTE C: Keyless Cloud AI Fallback
             try {
                 const res = await fetch("https://text.pollinations.ai/", {
                     method: "POST",
@@ -1270,7 +1273,8 @@
                             { role: "system", content: systemPrompt },
                             { role: "user", content: userPrompt }
                         ],
-                        model: "openai"
+                        model: "openai",
+                        jsonMode: jsonMode
                     })
                 });
                 if (res.ok) {
@@ -1281,7 +1285,7 @@
                 console.warn("Keyless POST route skipped.");
             }
 
-            return generateOfflineIELTSReply(userPrompt);
+            return "";
         }
 
         // Clean Markdown-to-HTML Renderer using Marked.js
@@ -1309,7 +1313,7 @@
                 const arrayBuffer = await file.arrayBuffer();
                 const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                 let fullText = "";
-                const maxPages = Math.min(pdf.numPages, 8);
+                const maxPages = Math.min(pdf.numPages, 10);
                 for (let i = 1; i <= maxPages; i++) {
                     const page = await pdf.getPage(i);
                     const content = await page.getTextContent();
@@ -1322,29 +1326,22 @@
             }
         }
 
-        function generateOfflineIELTSReply(prompt) {
-            const p = prompt.toLowerCase();
-            if (p.includes("vocab")) {
-                return `### Band 8.0+ Academic Vocabulary
-| Word | Meaning | Band 8.5 Example |
-|---|---|---|
-| **Mitigate (v.)** | Reduce the severity of something | *Governments must mitigate the effects of climate change.* |
-| **Ubiquitous (adj.)** | Existing everywhere | *Smartphones have become ubiquitous among university students.* |
-| **Detrimental (adj.)** | Causing harm or damage | *Chronic sleep deprivation is detrimental to cognitive performance.* |
-| **Catalyst (n.)** | Something that triggers rapid change | *Digital platforms act as a catalyst for self-directed learning.* |
-| **Pragmatic (adj.)** | Practical and realistic | *Policymakers need a pragmatic approach to urban congestion.* |`;
+        // Resilient JSON Parser for AI Test Generation (Handles multiline strings & markdown fences)
+        function extractJSONFromAI(rawText) {
+            if (!rawText) return null;
+            let cleaned = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+            const firstBrace = cleaned.indexOf('{');
+            const lastBrace = cleaned.lastIndexOf('}');
+            if (firstBrace !== -1 && lastBrace !== -1) {
+                cleaned = cleaned.substring(firstBrace, lastBrace + 1);
             }
-            if (p.includes("essay") || p.includes("writing") || p.includes("task 2")) {
-                return `### Band 8.5 Writing Task 2 Structure (250+ Words)
-* **1. Introduction (40–50 words):** Paraphrase the prompt using synonyms + state your clear thesis/opinion.
-* **2. Body Paragraph 1 (90–100 words):** Clear topic sentence + logical explanation + concrete real-world example.
-* **3. Body Paragraph 2 (90–100 words):** Second main view/argument + explanation + supporting evidence.
-* **4. Conclusion (30–40 words):** Summarize main points and restate your final position without introducing new arguments.`;
+            try {
+                return JSON.parse(cleaned);
+            } catch (e1) {
+                // Sanitize unescaped control newlines inside JSON string values
+                const sanitized = cleaned.replace(/[\r\n]+/g, ' ');
+                return JSON.parse(sanitized);
             }
-            return `### IELTS Band 8.0+ Study Strategy
-* **Reading:** Skim for main ideas first, then scan for keywords and synonyms. Remember that *Not Given* means there is no proof in the text.
-* **Writing:** Always plan for 5 minutes before typing. Use linking words naturally (*Furthermore, Consequently, On the other hand*).
-* **Speaking:** Extend every answer with a clear reason and a personal example instead of stopping at one sentence.`;
         }
 
         // --- CHAT INTERFACE ---
@@ -1380,11 +1377,12 @@
 
             const reply = await askIELTSAI(
                 msg,
-                "You are an elite Band 9.0 IELTS Examiner. Format your response cleanly using Markdown headings (###), bullet points, bold key terms, and clean tables only when comparing items. Keep explanations clear, practical, and easy to read."
+                "You are an elite Band 9.0 IELTS Examiner. Format your response cleanly using Markdown headings (###), bullet points, bold key terms, and clean tables only when comparing items. Keep explanations clear, practical, and easy to read.",
+                false
             );
             document.getElementById(loadId)?.remove();
 
-            const formatted = formatAIMarkdown(reply);
+            const formatted = formatAIMarkdown(reply || "Please check your internet connection or saved Groq/Grok API key.");
             chatBox.innerHTML += `
                 <div class="flex gap-3.5 items-start">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md"><i class="fa-solid fa-robot text-white text-sm"></i></div>
@@ -1419,33 +1417,8 @@
             }
         });
 
-        // Helper to safely parse JSON from AI response
-        function extractJSONFromAI(rawText) {
-            if (!rawText) return null;
-            const cleaned = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
-            const firstBrace = cleaned.indexOf('{');
-            const lastBrace = cleaned.lastIndexOf('}');
-            if (firstBrace !== -1 && lastBrace !== -1) {
-                return JSON.parse(cleaned.substring(firstBrace, lastBrace + 1));
-            }
-            return JSON.parse(cleaned);
-        }
-
-        // --- DYNAMIC AI READING LAB (Powered by Groq / Grok + PDF/File Upload) ---
-        let activeReadingTest = {
-            title: "The Rise of Vertical Farming in Urban Centers",
-            passage: `<p><strong>Paragraph A:</strong> As global urbanization accelerates, traditional agriculture faces unprecedented pressure from land scarcity, soil degradation, and climate variability. Vertical farming—the practice of cultivating crops in vertically stacked layers indoors—has emerged as a transformative solution. By utilizing controlled-environment agriculture (CEA) technology, these facilities regulate artificial LED light spectra, humidity, and hydroponic nutrients with pinpoint accuracy.</p>
-            <p><strong>Paragraph B:</strong> Proponents highlight that vertical farms use up to 95% less water than conventional outdoor fields because transpired water is captured, condensed, and recycled continuously. Furthermore, because vertical farms can be established inside repurposed warehouses within metropolitan areas, food miles and refrigerated transport emissions are drastically reduced.</p>
-            <p><strong>Paragraph C:</strong> Nevertheless, agricultural economists point out that the substantial electricity cost required to power full-spectrum LED lighting remains a major barrier to widespread adoption. Consequently, commercial production is currently concentrated on fast-growing, high-margin leafy greens and herbs rather than energy-intensive staple crops such as wheat, maize, or rice.</p>`,
-            questions: [
-                { q: "1. Vertical farming uses up to 95% less water than traditional outdoor farming.", options: ["True", "False", "Not Given"], ans: "True", exp: "Paragraph B explicitly states that vertical farms use up to 95% less water." },
-                { q: "2. Vertical farms are currently more profitable for growing wheat than leafy greens.", options: ["True", "False", "Not Given"], ans: "False", exp: "Paragraph C states production is concentrated on leafy greens rather than staple crops like wheat." },
-                { q: "3. Every major city in Southeast Asia has built a government-funded vertical farm.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "The passage does not mention government-funded vertical farms in Southeast Asia." },
-                { q: "4. Why do urban vertical farms help lower transportation emissions?", options: ["A. They use solar-powered trucks", "B. They are located close to city consumers", "C. They only export by sea"], ans: "B. They are located close to city consumers", exp: "Paragraph B explains that locating farms inside city warehouses drastically reduces food miles." },
-                { q: "5. What is identified as the primary economic obstacle for vertical farming?", options: ["A. High electricity costs for LED lighting", "B. Shortage of warehouse space", "C. Lack of clean water"], ans: "A. High electricity costs for LED lighting", exp: "Paragraph C identifies high energy costs for artificial LED lighting as a major barrier." },
-                { q: "6. Which technology is used to control light, humidity, and nutrients?", options: ["A. Genetic modification", "B. Controlled-environment agriculture (CEA)", "C. Satellite irrigation"], ans: "B. Controlled-environment agriculture (CEA)", exp: "Paragraph A states that CEA technology regulates light, humidity, and nutrients." }
-            ]
-        };
+        // --- 6. DYNAMIC AI READING LAB (100% Groq/Grok Driven, No Pre-filled Test) ---
+        let activeReadingTest = null;
 
         function renderReadingTest(testObj) {
             activeReadingTest = testObj;
@@ -1454,8 +1427,9 @@
             const qBox = document.getElementById('reading-questions-box');
             if (!titleEl || !bodyEl || !qBox) return;
 
-            titleEl.textContent = testObj.title || "Academic Reading Passage";
-            bodyEl.innerHTML = formatAIMarkdown(testObj.passage || "");
+            titleEl.textContent = testObj.title || "AI Generated Reading Passage";
+            const passageRaw = Array.isArray(testObj.passage) ? testObj.passage.join('\n\n') : String(testObj.passage || "");
+            bodyEl.innerHTML = formatAIMarkdown(passageRaw);
             document.getElementById('reading-score-box').textContent = "";
             qBox.innerHTML = "";
             (testObj.questions || []).forEach((item, idx) => {
@@ -1465,7 +1439,7 @@
                         <div class="flex flex-wrap gap-2.5 text-xs">
                             ${(item.options || []).map(opt => `
                                 <label class="flex items-center gap-2 cursor-pointer bg-slate-900/90 hover:bg-slate-900 px-3 py-2 rounded-lg border border-slate-700 transition">
-                                    <input type="radio" name="read-q-${idx}" value="${opt.replace(/"/g, '&quot;')}">
+                                    <input type="radio" name="read-q-${idx}" value="${String(opt).replace(/"/g, '&quot;')}">
                                     <span>${opt}</span>
                                 </label>
                             `).join('')}
@@ -1475,9 +1449,8 @@
                 `;
             });
         }
-        renderReadingTest(activeReadingTest);
 
-        // Handle File Upload in Reading Lab (.PDF, .TXT, .MD)
+        // File Upload in Reading Lab (.PDF, .TXT, .MD)
         document.getElementById('reading-file-upload')?.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -1486,8 +1459,9 @@
             try {
                 if (statusEl) statusEl.innerHTML = `<span class="text-emerald-400 animate-pulse">📄 Extracting text from <strong>${file.name}</strong>...</span>`;
                 const text = await extractTextFromUploadedFile(file);
-                if (sourceBox) sourceBox.value = text.slice(0, 10000);
+                if (sourceBox) sourceBox.value = text.slice(0, 12000);
                 if (statusEl) statusEl.innerHTML = `<span class="text-emerald-400 font-semibold">✓ Loaded "${file.name}" (${text.split(/\s+/).length} words). Click "Generate AI Reading Test"!</span>`;
+                showToast(`✓ Loaded ${file.name}`, "success");
             } catch (err) {
                 if (statusEl) statusEl.innerHTML = `<span class="text-red-400">Error reading file: ${err.message}</span>`;
             }
@@ -1499,51 +1473,41 @@
             const fileInput = document.getElementById('reading-file-upload');
             if (sourceBox) sourceBox.value = "";
             if (fileInput) fileInput.value = "";
-            if (statusEl) statusEl.textContent = "Cleared! Upload a file or click Generate for a random Academic topic.";
+            if (statusEl) statusEl.textContent = "Source cleared! Upload a PDF/TXT file or type a topic below.";
         });
 
-        // Generate Brand-New AI Reading Test via Groq / Grok
+        // Generate AI Reading Test via Groq / Grok
         document.getElementById('btn-ai-reading')?.addEventListener('click', async () => {
             const btn = document.getElementById('btn-ai-reading');
             const customSource = document.getElementById('reading-custom-source')?.value.trim() || "";
-            const qType = document.getElementById('reading-q-type')?.value || "Mixed IELTS Questions (6 Questions)";
             const titleEl = document.getElementById('reading-passage-title');
             const bodyEl = document.getElementById('reading-passage-body');
             const qBox = document.getElementById('reading-questions-box');
 
             const originalBtnHTML = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating via AI...`;
-            if (titleEl) titleEl.innerHTML = `<span class="text-emerald-400 animate-pulse">✨ AI Examiner is writing a new Academic Reading Test...</span>`;
-            if (bodyEl) bodyEl.innerHTML = `<p class="text-slate-400 animate-pulse">Constructing multi-paragraph passage and 6 IELTS questions...</p>`;
-            if (qBox) qBox.innerHTML = "";
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating...`;
+            if (titleEl) titleEl.innerHTML = `<span class="text-emerald-400 animate-pulse">✨ Generating IELTS Reading Test with AI...</span>`;
+            if (bodyEl) bodyEl.innerHTML = `<p class="text-slate-400 animate-pulse py-6 text-center">Building passage and questions from your source/topic...</p>`;
+            if (qBox) qBox.innerHTML = `<div class="py-8 text-center text-xs text-emerald-400 animate-pulse">Preparing interactive questions...</div>`;
 
-            const randomTopics = [
-                "Deep-Sea Hydrothermal Vents and Astrobiology",
-                "The Economic History of the Silk Road Trade Networks",
-                "Biomimicry in Modern Sustainable Architecture",
-                "The Cognitive Impact of Artificial Intelligence in Education",
-                "Ancient Khmer Hydraulic Engineering at Angkor",
-                "Renewable Microgrids and Global Energy Transitions",
-                "Neuroplasticity and Adult Motor Skill Acquisition"
-            ];
-            const chosenTopic = customSource
-                ? `Use this exact uploaded/pasted source text or topic to create the IELTS Reading passage and questions:\n"""${customSource.slice(0, 6000)}"""`
-                : `Create a high-level IELTS Academic Reading passage about: "${randomTopics[Math.floor(Math.random() * randomTopics.length)]}"`;
+            const sourceInstruction = customSource
+                ? `Use the following uploaded document, article, or topic to create an IELTS Academic Reading passage and questions:\n"""${customSource.slice(0, 7000)}"""`
+                : `Choose a fresh, engaging academic topic (science, history, technology, environment, or psychology) and write a full IELTS Academic Reading passage and questions.`;
 
-            const prompt = `${chosenTopic}
+            const prompt = `${sourceInstruction}
 
-Generate a complete, authentic IELTS Academic Reading test with 4 detailed paragraphs (labeled Paragraph A, Paragraph B, Paragraph C, Paragraph D) and exactly 6 questions (${qType}).
-Return ONLY valid JSON matching this exact structure (no extra commentary):
+Create a complete IELTS Reading test with a multi-paragraph passage (Paragraph A, Paragraph B, Paragraph C, Paragraph D) and 6 questions (a mix of True/False/Not Given and Multiple Choice).
+Return a single valid JSON object with this exact structure:
 {
-  "title": "Academic Passage Title",
-  "passage": "<p><strong>Paragraph A:</strong> Full paragraph text...</p><p><strong>Paragraph B:</strong> Full paragraph text...</p><p><strong>Paragraph C:</strong> Full paragraph text...</p><p><strong>Paragraph D:</strong> Full paragraph text...</p>",
+  "title": "Passage Title",
+  "passage": "**Paragraph A**\\n\\nFull text of paragraph A...\\n\\n**Paragraph B**\\n\\nFull text of paragraph B...\\n\\n**Paragraph C**\\n\\nFull text of paragraph C...\\n\\n**Paragraph D**\\n\\nFull text of paragraph D...",
   "questions": [
     {
-      "q": "1. Question text here?",
+      "q": "1. Statement or question text?",
       "options": ["True", "False", "Not Given"],
       "ans": "True",
-      "exp": "Brief 1-sentence explanation citing the paragraph."
+      "exp": "Brief explanation referencing the paragraph."
     }
   ]
 }`;
@@ -1551,18 +1515,20 @@ Return ONLY valid JSON matching this exact structure (no extra commentary):
             try {
                 const rawReply = await askIELTSAI(
                     prompt,
-                    "You are an official IELTS Reading test writer. Output strictly valid JSON only. Do not include markdown code fences around the JSON."
+                    "You are an official IELTS Reading test generator. Always respond with a valid JSON object containing title, passage, and questions.",
+                    true
                 );
                 const parsed = extractJSONFromAI(rawReply);
                 if (parsed && parsed.passage && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
                     renderReadingTest(parsed);
+                    showToast("✓ New AI Reading Test generated!", "success");
                 } else {
-                    throw new Error("Could not parse structured JSON from AI response.");
+                    throw new Error("Invalid test format returned.");
                 }
             } catch (err) {
-                console.warn("Reading AI generation fallback:", err);
-                alert("Please make sure your Groq (gsk_...) or Grok (xai-...) API key is saved in the AI Tutor tab so AI can generate unlimited tests!");
-                renderReadingTest(activeReadingTest);
+                console.error("Reading AI generation error:", err);
+                showToast("Could not generate test. Check your internet or Groq/Grok key in AI Tutor tab.", "error");
+                if (titleEl) titleEl.textContent = "Generation Failed — Please Try Again";
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalBtnHTML;
@@ -1570,7 +1536,11 @@ Return ONLY valid JSON matching this exact structure (no extra commentary):
         });
 
         document.getElementById('btn-submit-reading')?.addEventListener('click', () => {
-            const questions = activeReadingTest.questions || [];
+            if (!activeReadingTest || !Array.isArray(activeReadingTest.questions)) {
+                showToast("Generate a Reading test first before checking answers.", "error");
+                return;
+            }
+            const questions = activeReadingTest.questions;
             let score = 0;
             questions.forEach((item, idx) => {
                 const selected = document.querySelector(`input[name="read-q-${idx}"]:checked`);
@@ -1594,19 +1564,8 @@ Return ONLY valid JSON matching this exact structure (no extra commentary):
             document.getElementById('reading-score-box').textContent = `Score: ${score}/${questions.length} (Est. Band ${bandEst})`;
         });
 
-        // --- DYNAMIC AI LISTENING LAB (Powered by Groq / Grok + File Upload) ---
-        let activeListeningTest = {
-            title: "Section 1: University Central Library & Digital Archives Orientation",
-            script: "Welcome everyone to the University Central Library orientation. From Monday to Friday, the main reading hall opens at 8:00 AM and closes at 10:00 PM. Many students think we close at 8:00 PM on weekdays, but that only applies during the summer break. On weekends, however, we close earlier at 6:00 PM. Undergraduate students may borrow up to 12 books at a time for a period of three weeks, whereas postgraduate researchers can borrow up to 25 volumes. Please note that group discussions and collaborative project meetings are strictly restricted to the third floor Soundproof Commons. Finally, if you wish to access rare historical manuscripts in the Digital Archive Room, you must book a terminal at least 24 hours in advance using your student ID card.",
-            questions: [
-                { q: "1. What time does the library close on regular weekdays?", options: ["6:00 PM", "8:00 PM", "10:00 PM"], ans: "10:00 PM", exp: "The speaker confirms the main reading hall closes at 10:00 PM Monday to Friday (8:00 PM is only during summer)." },
-                { q: "2. What time does the library close on weekends?", options: ["5:00 PM", "6:00 PM", "8:00 PM"], ans: "6:00 PM", exp: "The speaker states that on weekends they close earlier at 6:00 PM." },
-                { q: "3. How many books can an undergraduate student borrow at once?", options: ["6 books", "12 books", "25 books"], ans: "12 books", exp: "Undergraduates may borrow up to 12 books (25 is for postgraduates)." },
-                { q: "4. How long can undergraduate students keep borrowed books?", options: ["One week", "Two weeks", "Three weeks"], ans: "Three weeks", exp: "The speaker mentions a period of three weeks." },
-                { q: "5. Which floor is designated for group discussions?", options: ["First floor", "Second floor", "Third floor"], ans: "Third floor", exp: "Group discussions are restricted to the third floor Soundproof Commons." },
-                { q: "6. How far in advance must students book a Digital Archive terminal?", options: ["12 hours", "24 hours", "48 hours"], ans: "24 hours", exp: "Students must book a terminal at least 24 hours in advance." }
-            ]
-        };
+        // --- 7. DYNAMIC AI LISTENING LAB (100% Groq/Grok Driven, No Sections, No Pre-filled Test) ---
+        let activeListeningTest = null;
 
         function renderListeningTest(testObj) {
             activeListeningTest = testObj;
@@ -1615,7 +1574,7 @@ Return ONLY valid JSON matching this exact structure (no extra commentary):
             const transBox = document.getElementById('listening-transcript-box');
             if (!titleEl || !qBox) return;
 
-            titleEl.textContent = testObj.title || "IELTS Listening Practice Track";
+            titleEl.textContent = testObj.title || "AI Generated Listening Track";
             document.getElementById('listening-score-box').textContent = "";
             if (transBox) {
                 transBox.classList.add('hide');
@@ -1630,7 +1589,7 @@ Return ONLY valid JSON matching this exact structure (no extra commentary):
                         <div class="flex flex-wrap gap-2.5 text-xs">
                             ${(item.options || []).map(opt => `
                                 <label class="flex items-center gap-2 cursor-pointer bg-slate-900/90 hover:bg-slate-900 px-3 py-2 rounded-lg border border-slate-700 transition">
-                                    <input type="radio" name="listen-q-${idx}" value="${opt.replace(/"/g, '&quot;')}">
+                                    <input type="radio" name="listen-q-${idx}" value="${String(opt).replace(/"/g, '&quot;')}">
                                     <span>${opt}</span>
                                 </label>
                             `).join('')}
@@ -1640,33 +1599,45 @@ Return ONLY valid JSON matching this exact structure (no extra commentary):
                 `;
             });
         }
-        renderListeningTest(activeListeningTest);
 
-        // Handle File Upload in Listening Lab (.PDF, .TXT, .MD)
+        // File Upload in Listening Lab (.PDF, .TXT, .MD)
         document.getElementById('listening-file-upload')?.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
             const badgeEl = document.getElementById('listening-file-badge');
             const inputEl = document.getElementById('listening-custom-source');
             try {
-                if (badgeEl) badgeEl.innerHTML = `<span class="text-cyan-400 animate-pulse">Extracting ${file.name}...</span>`;
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-cyan-400 animate-pulse">📄 Extracting text from ${file.name}...</span>`;
                 const text = await extractTextFromUploadedFile(file);
-                if (inputEl) inputEl.value = text.slice(0, 6000);
-                if (badgeEl) badgeEl.innerHTML = `<span class="text-emerald-400 font-semibold">✓ ${file.name} ready! Click Generate.</span>`;
+                if (inputEl) inputEl.value = text.slice(0, 10000);
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-emerald-400 font-semibold">✓ Loaded "${file.name}" (${text.split(/\s+/).length} words). Click "Generate AI Listening Test"!</span>`;
+                showToast(`✓ Loaded ${file.name}`, "success");
             } catch (err) {
-                if (badgeEl) badgeEl.innerHTML = `<span class="text-red-400">Upload failed</span>`;
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-red-400">Error reading file: ${err.message}</span>`;
             }
         });
 
+        document.getElementById('btn-clear-listening-source')?.addEventListener('click', () => {
+            const inputEl = document.getElementById('listening-custom-source');
+            const badgeEl = document.getElementById('listening-file-badge');
+            const fileInput = document.getElementById('listening-file-upload');
+            if (inputEl) inputEl.value = "";
+            if (fileInput) fileInput.value = "";
+            if (badgeEl) badgeEl.textContent = "Cleared! Upload a PDF/TXT document or type your own topic below.";
+        });
+
         document.getElementById('btn-toggle-transcript')?.addEventListener('click', () => {
+            if (!activeListeningTest) {
+                showToast("Generate a Listening test first to view the transcript.", "info");
+                return;
+            }
             document.getElementById('listening-transcript-box')?.classList.toggle('hide');
         });
 
-        // Generate Brand-New AI Listening Test via Groq / Grok
+        // Generate AI Listening Test via Groq / Grok
         document.getElementById('btn-ai-listening')?.addEventListener('click', async () => {
             window.speechSynthesis?.cancel();
             const btn = document.getElementById('btn-ai-listening');
-            const sectionType = document.getElementById('listening-section-type')?.value || "Section 2";
             const customTopic = document.getElementById('listening-custom-source')?.value.trim() || "";
             const titleEl = document.getElementById('listening-title');
             const statusEl = document.getElementById('listening-status');
@@ -1674,37 +1645,28 @@ Return ONLY valid JSON matching this exact structure (no extra commentary):
 
             const originalBtnHTML = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating via AI...`;
-            if (titleEl) titleEl.innerHTML = `<span class="text-cyan-400 animate-pulse">✨ AI Examiner is creating a new ${sectionType} Audio Test...</span>`;
-            if (statusEl) statusEl.textContent = "Writing realistic spoken script with IELTS distractors and 6 questions...";
-            if (qBox) qBox.innerHTML = "";
-
-            const randomListeningTopics = [
-                "Eco-Tourism Wildlife Sanctuary Volunteer Briefing",
-                "University Sports Complex Membership & Swimming Pool Schedule",
-                "Museum of Science & Robotics Exhibition Audio Guide",
-                "International Student Housing & Meal Plan Registration",
-                "Marine Biology Field Trip to Coral Reefs Seminar",
-                "Urban Botanical Garden Renovation Project Lecture"
-            ];
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating...`;
+            if (titleEl) titleEl.innerHTML = `<span class="text-cyan-400 animate-pulse">✨ Generating IELTS Listening Test with AI...</span>`;
+            if (statusEl) statusEl.textContent = "Creating spoken audio script and comprehension questions...";
+            if (qBox) qBox.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-cyan-400 animate-pulse">Building questions from your uploaded file / topic...</div>`;
 
             const sourceInstruction = customTopic
-                ? `Base the spoken audio script and questions on this uploaded text or topic:\n"""${customTopic.slice(0, 4500)}"""`
-                : `Create a realistic IELTS Listening ${sectionType} about: "${randomListeningTopics[Math.floor(Math.random() * randomListeningTopics.length)]}"`;
+                ? `Base the spoken audio script and comprehension questions directly on this uploaded document, article, or topic:\n"""${customTopic.slice(0, 6000)}"""`
+                : `Create a realistic IELTS Listening passage and comprehension test on an interesting academic or everyday topic.`;
 
             const prompt = `${sourceInstruction}
 
-Write a natural, realistic spoken IELTS Listening script (160–220 words) that includes subtle IELTS distractors (such as a speaker stating a time/number/place and then correcting themselves) and 6 multiple-choice questions in chronological order.
-Return ONLY valid JSON with this exact schema:
+Write a realistic spoken IELTS Listening script (180–240 words) with natural IELTS distractors and 6 multiple-choice questions in chronological order.
+Return a single valid JSON object with this exact structure:
 {
-  "title": "Listening Track Title",
+  "title": "Listening Test Title",
   "script": "Full spoken script to be read aloud...",
   "questions": [
     {
       "q": "1. Question text?",
       "options": ["Option A", "Option B", "Option C"],
       "ans": "Option B",
-      "exp": "Brief explanation of why this is the correct answer from the script."
+      "exp": "Brief explanation of why this answer is correct based on the audio script."
     }
   ]
 }`;
@@ -1712,19 +1674,21 @@ Return ONLY valid JSON with this exact schema:
             try {
                 const rawReply = await askIELTSAI(
                     prompt,
-                    "You are an official IELTS Listening test writer. Output strictly valid JSON only. Do not include markdown fences."
+                    "You are an official IELTS Listening test generator. Always respond with a valid JSON object containing title, script, and questions.",
+                    true
                 );
                 const parsed = extractJSONFromAI(rawReply);
                 if (parsed && parsed.script && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
                     renderListeningTest(parsed);
-                    if (statusEl) statusEl.textContent = "New AI Listening Test ready! Click 'Play Audio Track' to listen.";
+                    if (statusEl) statusEl.textContent = "AI Listening Test ready! Click 'Play Audio Track' to listen and answer the questions.";
+                    showToast("✓ New AI Listening Test generated!", "success");
                 } else {
                     throw new Error("Invalid JSON structure.");
                 }
             } catch (err) {
-                console.warn("Listening AI generation error:", err);
-                alert("Please make sure your Groq (gsk_...) or Grok (xai-...) API key is saved in the AI Tutor tab so AI can generate new listening tests!");
-                renderListeningTest(activeListeningTest);
+                console.error("Listening AI generation error:", err);
+                showToast("Could not generate test. Check your internet or Groq/Grok key in AI Tutor tab.", "error");
+                if (titleEl) titleEl.textContent = "Generation Failed — Please Try Again";
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalBtnHTML;
@@ -1732,7 +1696,14 @@ Return ONLY valid JSON with this exact schema:
         });
 
         document.getElementById('btn-play-listening')?.addEventListener('click', () => {
-            if (!('speechSynthesis' in window)) return alert("Audio synthesis not supported on this browser.");
+            if (!activeListeningTest || !activeListeningTest.script) {
+                showToast("Please click 'Generate AI Listening Test' first!", "error");
+                return;
+            }
+            if (!('speechSynthesis' in window)) {
+                showToast("Audio synthesis is not supported on this browser.", "error");
+                return;
+            }
             window.speechSynthesis.cancel();
             const utter = new SpeechSynthesisUtterance(activeListeningTest.script);
             utter.lang = "en-GB";
@@ -1753,7 +1724,11 @@ Return ONLY valid JSON with this exact schema:
         });
 
         document.getElementById('btn-submit-listening')?.addEventListener('click', () => {
-            const questions = activeListeningTest.questions || [];
+            if (!activeListeningTest || !Array.isArray(activeListeningTest.questions)) {
+                showToast("Generate a Listening test first before checking answers.", "error");
+                return;
+            }
+            const questions = activeListeningTest.questions;
             let score = 0;
             questions.forEach((item, idx) => {
                 const selected = document.querySelector(`input[name="listen-q-${idx}"]:checked`);
@@ -1777,22 +1752,44 @@ Return ONLY valid JSON with this exact schema:
             document.getElementById('listening-score-box').textContent = `Score: ${score}/${questions.length} (Est. Band ${bandEst})`;
         });
 
-        // Writing New Prompt & AI Essay Grading (Clean Structured Rendering)
+        // --- 8. AI WRITING STUDIO (File Upload + Custom Topic + Groq/Grok Grading) ---
+        document.getElementById('writing-file-upload')?.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const badgeEl = document.getElementById('writing-file-badge');
+            const inputEl = document.getElementById('writing-custom-source');
+            try {
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-amber-400 animate-pulse">Extracting ${file.name}...</span>`;
+                const text = await extractTextFromUploadedFile(file);
+                if (inputEl) inputEl.value = text.slice(0, 6000);
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-emerald-400 font-semibold">✓ ${file.name} loaded!</span>`;
+                showToast(`✓ Loaded ${file.name}`, "success");
+            } catch (err) {
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-red-400">Upload failed</span>`;
+            }
+        });
+
         document.getElementById('btn-ai-writing-prompt')?.addEventListener('click', async () => {
             const promptBox = document.getElementById('writing-prompt-box');
-            const taskType = document.getElementById('writing-task')?.value || "Task 2";
+            const customTopic = document.getElementById('writing-custom-source')?.value.trim() || "";
             if (!promptBox) return;
-            promptBox.innerHTML = `<span class="text-amber-300 animate-pulse">✨ Generating new official-style ${taskType} prompt...</span>`;
+            promptBox.innerHTML = `<span class="text-amber-300 animate-pulse">✨ Generating IELTS Writing Topic via AI...</span>`;
+            const userRequest = customTopic
+                ? `Create an official IELTS Writing Task 2 prompt based on this topic or uploaded text:\n"""${customTopic.slice(0, 4000)}"""\n\nAlso include 3 brief bullet points of 'Examiner Planning Tips' below the prompt.`
+                : `Generate one official IELTS Academic Writing Task 2 prompt on an important modern issue, plus 3 brief bullet points of 'Examiner Planning Tips' below the prompt.`;
+
             const reply = await askIELTSAI(
-                `Generate one official-style IELTS Academic Writing ${taskType} prompt. Also include 3 brief bullet points of 'Examiner Planning Tips' below the prompt for how to get Band 8.5 on this specific topic.`,
-                "You are an official IELTS Writing Examiner. Format cleanly using Markdown."
+                userRequest,
+                "You are an official IELTS Writing Examiner. Format cleanly using Markdown.",
+                false
             );
             promptBox.innerHTML = `<div class="ai-prose">${formatAIMarkdown(reply)}</div>`;
         });
 
         document.getElementById('btn-ai-grade-essay')?.addEventListener('click', async () => {
             const essay = document.getElementById('writing-area')?.value.trim();
-            const promptContext = document.getElementById('writing-prompt-box')?.innerText || "";
+            const customTopic = document.getElementById('writing-custom-source')?.value.trim() || "";
+            const promptContext = document.getElementById('writing-prompt-box')?.innerText || customTopic || "IELTS Essay";
             const fbBox = document.getElementById('writing-feedback-box');
             if (!fbBox) return;
             if (!essay) {
@@ -1804,32 +1801,57 @@ Return ONLY valid JSON with this exact schema:
             fbBox.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Evaluating your essay across the 4 official IELTS criteria...</span>`;
             const words = essay.split(/\s+/).length;
             const reply = await askIELTSAI(
-                `Evaluate this IELTS essay (${words} words) written for the following prompt:\n${promptContext}\n\nStudent Essay:\n${essay}\n\nProvide a clean, well-organized assessment with:\n### 1. Overall & Criteria Band Scores\n(Use a clean Markdown table showing Score & Key Feedback for Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy)\n### 2. Sentence-by-Sentence Corrections & Band 8.5 Upgrades\n### 3. Top 3 Actionable Improvements`,
-                "You are a senior Band 9.0 IELTS Writing Examiner. Format your feedback cleanly using Markdown headings, bullet points, and a neat summary table."
+                `Evaluate this IELTS essay (${words} words) written for the following topic:\n${promptContext}\n\nStudent Essay:\n${essay}\n\nProvide a clean, well-organized assessment with:\n### 1. Overall & Criteria Band Scores\n(Use a clean Markdown table showing Score & Key Feedback for Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy)\n### 2. Sentence-by-Sentence Corrections & Band 8.5 Upgrades\n### 3. Top 3 Actionable Improvements`,
+                "You are a senior Band 9.0 IELTS Writing Examiner. Format your feedback cleanly using Markdown headings, bullet points, and a neat summary table.",
+                false
             );
             fbBox.innerHTML = formatAIMarkdown(reply);
         });
 
-        // Speaking Cue Card & Model Sample Generators (Clean Structured Rendering)
+        // --- 9. AI SPEAKING ARENA (File Upload + Custom Topic + Groq/Grok Cue Card & Sample) ---
+        document.getElementById('speaking-file-upload')?.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const badgeEl = document.getElementById('speaking-file-badge');
+            const inputEl = document.getElementById('speaking-custom-source');
+            try {
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-rose-400 animate-pulse">Extracting ${file.name}...</span>`;
+                const text = await extractTextFromUploadedFile(file);
+                if (inputEl) inputEl.value = text.slice(0, 6000);
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-emerald-400 font-semibold">✓ ${file.name} loaded!</span>`;
+                showToast(`✓ Loaded ${file.name}`, "success");
+            } catch (err) {
+                if (badgeEl) badgeEl.innerHTML = `<span class="text-red-400">Upload failed</span>`;
+            }
+        });
+
         document.getElementById('btn-ai-speaking-card')?.addEventListener('click', async () => {
             const cardBox = document.getElementById('speaking-cue-card');
+            const customTopic = document.getElementById('speaking-custom-source')?.value.trim() || "";
             if (!cardBox) return;
-            cardBox.innerHTML = `<p class="text-rose-400 animate-pulse">✨ Generating new Part 2 Cue Card...</p>`;
+            cardBox.innerHTML = `<p class="text-rose-400 animate-pulse">✨ Generating Speaking Cue Card via AI...</p>`;
+            const userRequest = customTopic
+                ? `Generate an official IELTS Speaking Part 2 Cue Card based on this topic or uploaded text:\n"""${customTopic.slice(0, 4000)}"""\nInclude a bold topic title, 'You should say:' followed by 4 bullet points, and 1 brief '1-Minute Prep Tip'.`
+                : `Generate one official IELTS Speaking Part 2 Cue Card with a clear bold topic title, 'You should say:' followed by 4 bullet points, and 1 brief '1-Minute Prep Tip' at the bottom.`;
+
             const reply = await askIELTSAI(
-                "Generate one official IELTS Speaking Part 2 Cue Card with a clear bold topic title, 'You should say:' followed by 4 bullet points, and 1 brief '1-Minute Prep Tip' at the bottom.",
-                "You are an official IELTS Speaking Examiner. Format cleanly using Markdown."
+                userRequest,
+                "You are an official IELTS Speaking Examiner. Format cleanly using Markdown.",
+                false
             );
             cardBox.innerHTML = formatAIMarkdown(reply);
         });
 
         document.getElementById('btn-ai-speaking-sample')?.addEventListener('click', async () => {
             const sampleBox = document.getElementById('speaking-sample-box');
-            const currentCard = document.getElementById('speaking-cue-card')?.innerText || "Describe a skill you learned recently.";
+            const customTopic = document.getElementById('speaking-custom-source')?.value.trim() || "";
+            const currentCard = document.getElementById('speaking-cue-card')?.innerText || customTopic;
             if (!sampleBox) return;
             sampleBox.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Crafting Band 8.5 Model Answer, idioms & Part 3 questions...</span>`;
             const reply = await askIELTSAI(
-                `For this IELTS Speaking Part 2 Cue Card:\n${currentCard}\n\nProvide a cleanly organized guide with:\n### 1. Band 8.5 Model Spoken Answer (Natural 2-minute script)\n### 2. High-Scoring Idioms & Collocations Used (Markdown table with Phrase & Meaning)\n### 3. Follow-up Part 3 Discussion Questions & Sample Answers`,
-                "You are a Band 9.0 IELTS Speaking Examiner. Format cleanly with Markdown headings, bullet points, and a vocabulary table."
+                `For this IELTS Speaking Part 2 Cue Card / Topic:\n${currentCard}\n\nProvide a cleanly organized guide with:\n### 1. Band 8.5 Model Spoken Answer (Natural 2-minute script)\n### 2. High-Scoring Idioms & Collocations Used (Markdown table with Phrase & Meaning)\n### 3. Follow-up Part 3 Discussion Questions & Sample Answers`,
+                "You are a Band 9.0 IELTS Speaking Examiner. Format cleanly with Markdown headings, bullet points, and a vocabulary table.",
+                false
             );
             sampleBox.innerHTML = formatAIMarkdown(reply);
         });
