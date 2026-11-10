@@ -18,7 +18,7 @@ const myFirebaseConfig = {
 };
 
 // Your exact API Key is embedded here securely:
-const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6JvpoVHSw0I9eNZ1Cg0LvEVaAcFyfDZfbCfMzTBi8PWqw"; 
+const DEVELOPER_GEMINI_API_KEY = "AQ.Ab8RN6KES1M5wCgSfEChkGyoZbQoqGRe6j0cMsn7KPipFWACqQ"; 
 
 // ==========================================
 
