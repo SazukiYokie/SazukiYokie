@@ -1,181 +1,155 @@
 <!DOCTYPE html>
 <html lang="en" class="antialiased">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IELTS Workspace | 9.0</title>
-  
-  <!-- Premium Typography: Inter (similar to Apple's SF Pro / Vercel's Geist) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            background: '#fafafa', // Vercel-style off-white
-            surface: '#ffffff',
-            primary: '#000000',
-            accent: '#0070f3', // Vercel Blue
-            muted: '#666666',
-            border: '#eaeaea'
-          },
-          boxShadow: {
-            'premium': '0 4px 14px 0 rgba(0, 0, 0, 0.05)',
-            'float': '0 10px 30px -10px rgba(0,0,0,0.1)'
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    /* Custom Scrollbar for a polished feel */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background-color: #e5e7eb; border-radius: 20px; }
-    ::-webkit-scrollbar-thumb:hover { background-color: #d1d5db; }
-
-    /* Glassmorphism Utilities */
-    .glass {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    body { background-color: theme('colors.background'); color: theme('colors.primary'); }
-    
-    /* Smooth page transitions */
-    .fade-enter { opacity: 0; transform: translateY(10px); }
-    .fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity 400ms, transform 400ms cubic-bezier(0.16, 1, 0.3, 1); }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IELTS Workspace | 9.0</title>
+​<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+​<script src="https://cdn.tailwindcss.com"></script>
+​<script>
+tailwind.config = {
+darkMode: 'class',
+theme: {
+extend: {
+fontFamily: { sans: ['Inter', 'sans-serif'] },
+colors: {
+background: '#fafafa',
+surface: '#ffffff',
+primary: '#000000',
+accent: '#0070f3',
+muted: '#666666',
+border: '#eaeaea'
+},
+boxShadow: {
+'premium': '0 4px 14px 0 rgba(0, 0, 0, 0.05)',
+'float': '0 10px 30px -10px rgba(0,0,0,0.1)'
+}
+}
+}
+}
+</script>
+​<style>
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: #e5e7eb; border-radius: 20px; }
+::-webkit-scrollbar-thumb:hover { background-color: #d1d5db; }
+​/* Fixed Glassmorphism backdrop layer */
+.glass {
+background: rgba(250, 250, 250, 0.9);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border-bottom: 1px solid var(--border);
+}
+​body { background-color: theme('colors.background'); color: theme('colors.primary'); }
+</style>
 </head>
-<body class="h-screen flex overflow-hidden selection:bg-accent selection:text-white">
-
-  <!-- Application Shell: Sidebar -->
-  <aside class="w-64 bg-surface border-r border-border hidden md:flex flex-col justify-between z-20 shadow-premium">
-    <div>
-      <!-- Logo Area -->
-      <div class="h-16 flex items-center px-6 border-b border-border">
-        <div class="w-6 h-6 bg-primary text-white rounded-md flex items-center justify-center font-bold text-xs mr-3">9</div>
-        <span class="font-semibold tracking-tight text-sm uppercase">Workspace</span>
-      </div>
-      
-      <!-- Navigation -->
-      <nav class="p-4 space-y-1 mt-2">
-        <p class="px-3 text-[10px] font-bold text-muted uppercase tracking-wider mb-2">Overview</p>
-        <button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md bg-gray-100 text-primary transition-colors">
-          <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-          Dashboard
-        </button>
-        
-        <p class="px-3 text-[10px] font-bold text-muted uppercase tracking-wider mt-6 mb-2">Training Modules</p>
-        <button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-          Reading
-        </button>
-        <button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3zm12-3c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3zM9 10l12-3"></path></svg>
-          Listening
-        </button>
-        <button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-          Writing
-        </button>
-        <button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-          Speaking
-        </button>
-      </nav>
-    </div>
-
-    <!-- User Profile / Settings -->
-    <div class="p-4 border-t border-border">
-      <div class="flex items-center gap-3 px-3 py-2">
-        <div class="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-xs font-bold shadow-sm">P</div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-primary truncate">Punnavadh</p>
-          <p class="text-xs text-muted truncate">Candidate</p>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Main Content Area -->
-  <main class="flex-1 flex flex-col relative h-full">
-    
-    <!-- Glassmorphic Top Nav -->
-    <header class="h-16 glass w-full flex items-center justify-between px-8 z-10 sticky top-0">
-      <div class="flex items-center gap-4">
-        <h1 class="text-lg font-semibold tracking-tight">Dashboard</h1>
-        <span class="px-2 py-0.5 rounded-full bg-blue-50 text-accent text-[10px] font-bold uppercase tracking-wide border border-blue-100">Study Mode</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <!-- Target Exam Date Countdown Widget -->
-        <div class="hidden md:flex flex-col items-end mr-4">
-          <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Exam Date</span>
-          <span class="text-sm font-semibold text-primary">August 2026</span>
-        </div>
-        <button class="text-sm font-medium text-muted hover:text-primary transition-colors">Settings</button>
-      </div>
-    </header>
-
-    <!-- Dashboard Content Area -->
-    <div class="flex-1 overflow-y-auto p-8 fade-enter-active">
-      <div class="max-w-5xl mx-auto space-y-8">
-        
-        <!-- Welcome Hero -->
-        <div class="relative bg-surface border border-border p-8 rounded-2xl shadow-premium overflow-hidden">
-          <div class="absolute top-0 right-0 p-8 opacity-10">
-            <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 7l-10 5 10 5 10-5-10-5zm0 7l-10 5 10 5 10-5-10-5z"/></svg>
-          </div>
-          <div class="relative z-10">
-            <h2 class="text-3xl font-bold tracking-tight mb-2">Welcome back, Punnavadh.</h2>
-            <p class="text-muted max-w-xl">Your target is Band 9.0. Stay consistent. Review your recent mistakes, and complete today's scheduled mock test.</p>
-            <div class="mt-6 flex gap-4">
-              <button class="px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors shadow-sm">Start Mock Exam</button>
-              <button class="px-5 py-2.5 bg-white border border-border text-primary text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm">Upload PDF</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Metrics Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-surface border border-border p-5 rounded-xl shadow-sm">
-            <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Overall Est. Band</span>
-            <div class="text-3xl font-bold mt-2 text-accent">8.0</div>
-          </div>
-          <div class="bg-surface border border-border p-5 rounded-xl shadow-sm">
-            <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Reading Score</span>
-            <div class="text-3xl font-bold mt-2">8.5</div>
-          </div>
-          <div class="bg-surface border border-border p-5 rounded-xl shadow-sm">
-            <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Writing Essays</span>
-            <div class="text-3xl font-bold mt-2">12</div>
-          </div>
-          <div class="bg-surface border border-border p-5 rounded-xl shadow-sm">
-            <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Study Streak</span>
-            <div class="text-3xl font-bold mt-2 flex items-baseline gap-1">5 <span class="text-sm font-medium text-muted">days</span></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </main>
-
-  <!-- Firebase & Initialization -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+<body class="h-screen flex flex-col md:flex-row overflow-hidden selection:bg-accent selection:text-white">
+​<!-- Application Shell: Sidebar (Hidden on mobile top bar, visible on desktop) -->
+<aside class="w-full md:w-64 bg-surface border-r border-border flex flex-col justify-between z-20 shadow-premium shrink-0">
+<div>
+<div class="h-16 flex items-center px-6 border-b border-border">
+<div class="w-6 h-6 bg-primary text-white rounded-md flex items-center justify-center font-bold text-xs mr-3">9</div>
+<span class="font-semibold tracking-tight text-sm uppercase">Workspace</span>
+</div>
+​<nav class="p-4 space-y-1 mt-2 hidden md:block">
+<p class="px-3 text-[10px] font-bold text-muted uppercase tracking-wider mb-2">Overview</p>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md bg-gray-100 text-primary transition-colors">
+<svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+Dashboard
+</button>
+​<p class="px-3 text-[10px] font-bold text-muted uppercase tracking-wider mt-6 mb-2">Training Modules</p>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">Reading</button>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">Listening</button>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">Writing</button>
+<button class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted hover:bg-gray-50 hover:text-primary transition-colors">Speaking</button>
+</nav>
+</div>
+​<div class="p-4 border-t border-border hidden md:block">
+<div class="flex items-center gap-3 px-3 py-2">
+<div class="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-xs font-bold shadow-sm">P</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-primary truncate">Punnavadh</p>
+<p class="text-xs text-muted truncate">Candidate</p>
+</div>
+</div>
+</div>
+</aside>
+​<!-- Main Content Area -->
+<main class="flex-1 flex flex-col relative h-full overflow-hidden">
+​<!-- Sticky Glass Top Nav -->
+<header class="h-16 glass w-full flex items-center justify-between px-6 md:px-8 z-30 shrink-0">
+<div class="flex items-center gap-3">
+<h1 class="text-base md:text-lg font-semibold tracking-tight">Dashboard</h1>
+<span class="px-2 py-0.5 rounded-full bg-blue-50 text-accent text-[10px] font-bold uppercase tracking-wide border border-blue-100">Study Mode</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex flex-col items-end mr-4">
+<span class="text-[10px] font-bold text-muted uppercase tracking-wider">Exam Date</span>
+<span class="text-sm font-semibold text-primary">August 2026</span>
+</div>
+<button class="text-sm font-medium text-muted hover:text-primary transition-colors">Settings</button>
+</div>
+</header>
+​<!-- Scrollable Content Area with proper top padding so it never overlaps the header -->
+<div class="flex-1 overflow-y-auto p-4 md:p-8">
+<div class="max-w-5xl mx-auto space-y-6 md:space-y-8 pb-12">
+​<div class="relative bg-surface border border-border p-6 md:p-8 rounded-2xl shadow-premium overflow-hidden">
+<div class="absolute top-0 right-0 p-8 opacity-10 hidden md:block">
+<svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 7l-10 5 10 5 10-5-10-5zm0 7l-10 5 10 5 10-5-10-5z"/></svg>
+</div>
+<div class="relative z-10">
+<h2 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Welcome back, Punnavadh.</h2>
+<p class="text-muted text-sm md:text-base max-w-xl">Your target is Band 9.0. Stay consistent. Review your recent mistakes, and complete today's scheduled mock test.</p>
+<div class="mt-6 flex flex-col sm:flex-row gap-3">
+<button class="px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors shadow-sm text-center">Start Mock Exam</button>
+<button class="px-5 py-2.5 bg-white border border-border text-primary text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-center">Upload PDF</button>
+</div>
+</div>
+</div>
+​<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="bg-surface border border-border p-4 md:p-5 rounded-xl shadow-sm">
+<span class="text-[10px] font-bold text-muted uppercase tracking-wider">Overall Est. Band</span>
+<div class="text-2xl md:text-3xl font-bold mt-2 text-accent">8.0</div>
+</div>
+<div class="bg-surface border border-border p-4 md:p-5 rounded-xl shadow-sm">
+<span class="text-[10px] font-bold text-muted uppercase tracking-wider">Reading Score</span>
+<div class="text-2xl md:text-3xl font-bold mt-2">8.5</div>
+</div>
+<div class="bg-surface border border-border p-4 md:p-5 rounded-xl shadow-sm">
+<span class="text-[10px] font-bold text-muted uppercase tracking-wider">Writing Essays</span>
+<div class="text-2xl md:text-3xl font-bold mt-2">12</div>
+</div>
+<div class="bg-surface border border-border p-4 md:p-5 rounded-xl shadow-sm">
+<span class="text-[10px] font-bold text-muted uppercase tracking-wider">Study Streak</span>
+<div class="text-2xl md:text-3xl font-bold mt-2 flex items-baseline gap-1">5 <span class="text-sm font-medium text-muted">days</span></div>
+</div>
+</div>
+​</div>
+</div>
+</main>
+​<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+​const firebaseConfig = {
+apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
+authDomain: "ielts-studio-ab42a.firebaseapp.com",
+projectId: "ielts-studio-ab42a",
+storageBucket: "ielts-studio-ab42a.firebasestorage.app",
+messagingSenderId: "235346696121",
+appId: "1:235346696121:web:9065e6003a9b04b5040868"
+};
+​try {
+initializeApp(firebaseConfig);
+console.log("✅ Platform Initialized: Mobile Overlap Fixed");
+} catch (error) {
+console.error("Initialization Error:", error);
+}
+</script>
+</body>
+</html>mport { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
     // Your precise configuration
     const firebaseConfig = {
