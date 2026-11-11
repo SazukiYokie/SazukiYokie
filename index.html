@@ -2,8 +2,14 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IELTS Studio KH — AI Self-Study & English Academy</title>
+    <meta name="description" content="IELTS self-study for Cambodian learners: timed Reading mock tests, AI feedback on Writing and Speaking, Listening practice, band-score progress tracking and a study leaderboard.">
+    <meta name="theme-color" content="#0f172a">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="IELTS Studio KH — AI Self-Study & English Academy">
+    <meta property="og:description" content="Practise all four IELTS skills, take timed Reading mocks and track your band score progress.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Cpath d='M32 14 8 26l24 12 24-12-24-12zm-14 20v10c0 4 6 8 14 8s14-4 14-8V34l-14 7-14-7z' fill='white'/%3E%3C/svg%3E">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hanuman:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -109,14 +115,32 @@
             <h1 class="text-2xl font-extrabold mb-1 bg-gradient-to-r from-white via-blue-200 to-purple-300 bg-clip-text text-transparent">IELTS Studio KH</h1>
             <p class="text-xs text-slate-400 mb-5">ទំនើប • Band 8.0+ AI Self-Study & English Academy</p>
             
+            <div class="flex bg-slate-800/80 rounded-xl p-1 mb-4 text-xs font-semibold">
+                <button type="button" id="auth-tab-login" class="flex-1 py-2 rounded-lg bg-blue-600 text-white transition">Sign In</button>
+                <button type="button" id="auth-tab-signup" class="flex-1 py-2 rounded-lg text-slate-300 transition">Create Account</button>
+            </div>
             <div class="space-y-3.5 text-left">
-                <input type="email" id="login-email" placeholder="Email Address" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
-                <input type="password" id="login-password" placeholder="Password" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
+                <input type="text" id="signup-name" placeholder="Your name (shown on leaderboard)" maxlength="30" autocomplete="name" class="hide w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
+                <input type="email" id="login-email" placeholder="Email Address" autocomplete="email" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
+                <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
                 <button type="button" id="btn-login" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 rounded-xl transition shadow-lg cursor-pointer">
                     Secure Login
                 </button>
+                <button type="button" id="btn-signup" class="hide w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold py-3 rounded-xl transition shadow-lg cursor-pointer">
+                    Create My Account
+                </button>
+                <button type="button" id="btn-forgot" class="w-full text-center text-xs text-blue-300 hover:text-blue-200 underline underline-offset-2">Forgot password?</button>
                 <div id="login-error" class="hide bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl text-center"></div>
+                <div id="login-info" class="hide bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs p-3 rounded-xl text-center"></div>
+                <p class="text-[11px] text-slate-500 text-center leading-relaxed"><i class="fa-solid fa-lock mr-1"></i>Your tests, essays, scores and streak are private to your account.</p>
             </div>
+            <ul class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px] text-slate-300 text-left mt-5 pt-4 border-t border-slate-700/60">
+                <li><i class="fa-solid fa-stopwatch text-amber-400 mr-1.5"></i>Timed Reading mock tests</li>
+                <li><i class="fa-solid fa-pen-nib text-amber-300 mr-1.5"></i>AI Writing &amp; Speaking feedback</li>
+                <li><i class="fa-solid fa-headphones text-cyan-400 mr-1.5"></i>Listening practice</li>
+                <li><i class="fa-solid fa-chart-line text-emerald-400 mr-1.5"></i>Band progress tracking</li>
+            </ul>
+            <p class="text-[10px] text-slate-500 leading-relaxed mt-4">IELTS is a trademark of its respective owners (British Council, IDP IELTS and Cambridge University Press &amp; Assessment). IELTS Studio KH is an independent study tool, not affiliated with or endorsed by them. AI-generated practice material and band scores are estimates, not official results.</p>
         </div>
     </div>
 
@@ -274,17 +298,28 @@
                         </div>
                     </div>
 
+                    <!-- Progress chart -->
+                    <div class="glass-panel rounded-2xl p-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <h3 class="text-sm font-bold text-cyan-300"><i class="fa-solid fa-chart-line mr-1.5"></i>My Band Progress</h3>
+                            <div id="progress-legend" class="flex flex-wrap gap-1.5 text-[11px]"></div>
+                        </div>
+                        <div id="progress-chart" class="w-full"></div>
+                        <p id="progress-hint" class="text-xs text-slate-400 mt-2"></p>
+                    </div>
+
                     <!-- Leaderboard -->
                     <div class="glass-panel rounded-2xl p-4">
-                        <h3 class="text-sm font-bold mb-3 text-yellow-400"><i class="fa-solid fa-trophy mr-1.5"></i>Friends Study Leaderboard</h3>
+                        <h3 class="text-sm font-bold mb-1 text-yellow-400"><i class="fa-solid fa-trophy mr-1.5"></i>Study Leaderboard</h3>
+                        <p class="text-[11px] text-slate-400 mb-3">Every graded test earns <strong>Band &times; 10</strong> points. Only your first attempt at each test counts.</p>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs sm:text-sm border-collapse min-w-[300px]">
                                 <thead>
                                     <tr class="border-b border-slate-700 text-slate-400 text-xs">
                                         <th class="pb-2 pr-2">Student</th>
+                                        <th class="pb-2 px-2">Points</th>
                                         <th class="pb-2 px-2">Streak</th>
-                                        <th class="pb-2 px-2">Target</th>
-                                        <th class="pb-2 pl-2">Status</th>
+                                        <th class="pb-2 pl-2">Avg Band</th>
                                     </tr>
                                 </thead>
                                 <tbody id="leaderboard-body"></tbody>
@@ -482,6 +517,9 @@
                             <button type="button" id="btn-gen-std-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
                                 <i class="fa-solid fa-building-columns mr-1"></i> Generate Standard IELTS Test
                             </button>
+                            <button type="button" id="btn-mock-reading" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
+                                <i class="fa-solid fa-stopwatch mr-1"></i> Full Mock (40 Q &middot; 60 min)
+                            </button>
                             <button type="button" id="btn-save-reading" class="bg-slate-800 hover:bg-emerald-600 border border-emerald-500/40 text-emerald-300 hover:text-white px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
                                 <i class="fa-solid fa-floppy-disk mr-1"></i> Save Test
                             </button>
@@ -668,11 +706,24 @@
 
     <div id="toast-box" class="fixed bottom-4 right-4 z-[200] flex flex-col gap-2 pointer-events-none max-w-xs"></div>
 
+    <!-- ================= FULL READING MOCK (overlay) ================= -->
+    <div id="mock-overlay" class="hide fixed inset-0 z-[90] bg-slate-950 flex flex-col">
+        <div class="flex items-center justify-between gap-2 px-3 py-2 border-b border-slate-700 bg-slate-900 flex-shrink-0">
+            <div class="font-bold text-sm text-emerald-300 truncate"><i class="fa-solid fa-book-open mr-1.5"></i><span id="mock-title">Full Reading Mock</span></div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <div id="mock-timer" class="hide bg-red-500/10 border border-red-500/30 text-red-400 px-2.5 py-1 rounded-lg font-mono font-bold text-xs">60:00</div>
+                <button type="button" id="btn-mock-submit" class="hide bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Submit</button>
+                <button type="button" id="btn-mock-close" class="bg-slate-800 hover:bg-red-600 text-white px-2.5 py-1.5 rounded-lg text-xs" title="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+        <div id="mock-body" class="flex-1 min-h-0 overflow-hidden"></div>
+    </div>
+
     <!-- ================= APPLICATION LOGIC ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection, query, orderBy, limit, increment } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
@@ -1024,18 +1075,124 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         let activeWritingTest = null;
         let activeSpeakingTest = null;
         let activeHistoryFilter = "all";
+        // Per-account session state (cleared on sign-out so accounts never see each other's data)
+        let authMode = 'login';
+        let sessionUid = null;
+        let sessionUnsubs = [];
+        let userResults = [];
+        let currentProfile = null;
+        let lastPublicSig = "";
+        let pendingSignupName = "";
+        let mockState = null;
+        // Demo tests live in shared objects; always work on a private copy
+        function cloneTest(t) { return JSON.parse(JSON.stringify(t)); }
+        function hashStr(str) { let h = 5381; const t = String(str); for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+
+        // --- AUTH SCREEN: sign in / create account / reset password ---
+        function friendlyAuthError(e) {
+            const c = String(e?.code || "");
+            if (c.includes('invalid-email')) return "That email address doesn't look right.";
+            if (c.includes('email-already-in-use')) return "This email already has an account. Tap \"Sign In\" instead.";
+            if (c.includes('weak-password')) return "Password must be at least 6 characters.";
+            if (c.includes('user-not-found') || c.includes('wrong-password') || c.includes('invalid-credential')) return "Wrong email or password.";
+            if (c.includes('too-many-requests')) return "Too many attempts. Please wait a few minutes and try again.";
+            if (c.includes('network')) return "Network problem. Check your internet and try again.";
+            if (c.includes('operation-not-allowed')) return "Account creation is switched off. (Owner: enable Email/Password sign-up in Firebase Authentication.)";
+            return String(e?.message || "Something went wrong. Please try again.").replace('Firebase: ', '');
+        }
+
+        function showAuthMsg(kind, text) {
+            const err = document.getElementById('login-error');
+            const info = document.getElementById('login-info');
+            err?.classList.add('hide');
+            info?.classList.add('hide');
+            const el = kind === 'error' ? err : info;
+            if (!el || !text) return;
+            el.textContent = text;
+            el.classList.remove('hide');
+        }
+
+        function setAuthMode(mode) {
+            authMode = mode;
+            const su = mode === 'signup';
+            document.getElementById('signup-name')?.classList.toggle('hide', !su);
+            document.getElementById('btn-signup')?.classList.toggle('hide', !su);
+            document.getElementById('btn-login')?.classList.toggle('hide', su);
+            document.getElementById('btn-forgot')?.classList.toggle('hide', su);
+            const on = 'flex-1 py-2 rounded-lg bg-blue-600 text-white transition';
+            const off = 'flex-1 py-2 rounded-lg text-slate-300 transition';
+            const tl = document.getElementById('auth-tab-login');
+            const ts = document.getElementById('auth-tab-signup');
+            if (tl) tl.className = su ? off : on;
+            if (ts) ts.className = su ? on : off;
+            const pw = document.getElementById('login-password');
+            if (pw) {
+                pw.setAttribute('autocomplete', su ? 'new-password' : 'current-password');
+                pw.placeholder = su ? 'Create a password (min. 6 characters)' : 'Password';
+            }
+            showAuthMsg('error', '');
+        }
+
+        async function withBusyButton(btnId, busyText, fn) {
+            const btn = document.getElementById(btnId);
+            const orig = btn ? btn.innerHTML : "";
+            if (btn) { btn.disabled = true; btn.innerHTML = busyText; }
+            try { await fn(); }
+            finally { if (btn) { btn.disabled = false; btn.innerHTML = orig; } }
+        }
 
         async function executeLogin() {
             const email = document.getElementById('login-email')?.value.trim() || "";
-            const pass = document.getElementById('login-password')?.value.trim() || "";
-            const errEl = document.getElementById('login-error');
-            if (!email || !pass) { errEl.textContent = "Enter email and password."; errEl.classList.remove('hide'); return; }
-            errEl.classList.add('hide');
-            try { await signInWithEmailAndPassword(auth, email, pass); }
-            catch (e) { errEl.textContent = e.message.replace('Firebase: ', ''); errEl.classList.remove('hide'); }
+            const pass = document.getElementById('login-password')?.value || "";
+            if (!email || !pass) return showAuthMsg('error', "Enter your email and password.");
+            showAuthMsg('error', '');
+            await withBusyButton('btn-login', 'Signing in...', async () => {
+                try { await signInWithEmailAndPassword(auth, email, pass); }
+                catch (e) { showAuthMsg('error', friendlyAuthError(e)); }
+            });
         }
+
+        async function executeSignup() {
+            const name = (document.getElementById('signup-name')?.value || "").trim().replace(/\s+/g, ' ');
+            const email = document.getElementById('login-email')?.value.trim() || "";
+            const pass = document.getElementById('login-password')?.value || "";
+            if (name.length < 2) return showAuthMsg('error', "Please enter your name (at least 2 letters).");
+            if (!email) return showAuthMsg('error', "Please enter your email address.");
+            if (pass.length < 6) return showAuthMsg('error', "Password must be at least 6 characters.");
+            showAuthMsg('error', '');
+            await withBusyButton('btn-signup', 'Creating account...', async () => {
+                pendingSignupName = name.slice(0, 30);
+                try {
+                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                    try { await updateProfile(cred.user, { displayName: pendingSignupName }); } catch (e) {}
+                } catch (e) {
+                    pendingSignupName = "";
+                    showAuthMsg('error', friendlyAuthError(e));
+                }
+            });
+        }
+
+        async function executeForgot() {
+            const email = document.getElementById('login-email')?.value.trim() || "";
+            if (!email) return showAuthMsg('error', "Type your email above first, then tap \"Forgot password?\".");
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showAuthMsg('info', "If an account exists for that email, a reset link is on its way. Check your inbox and spam folder.");
+            } catch (e) { showAuthMsg('error', friendlyAuthError(e)); }
+        }
+
+        document.getElementById('auth-tab-login')?.addEventListener('click', () => setAuthMode('login'));
+        document.getElementById('auth-tab-signup')?.addEventListener('click', () => setAuthMode('signup'));
         document.getElementById('btn-login')?.addEventListener('click', executeLogin);
-        document.getElementById('login-password')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') executeLogin(); });
+        document.getElementById('btn-signup')?.addEventListener('click', executeSignup);
+        document.getElementById('btn-forgot')?.addEventListener('click', executeForgot);
+        ['login-email', 'login-password', 'signup-name'].forEach(id => {
+            document.getElementById(id)?.addEventListener('keydown', (e) => {
+                if (e.key !== 'Enter') return;
+                e.preventDefault();
+                if (authMode === 'signup') executeSignup(); else executeLogin();
+            });
+        });
         document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
 
         async function saveBookForever(title, fullText) {
@@ -1199,6 +1356,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
 
         function refreshSelectorsAndStats() {
             userSavedTests.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            renderProgress();
             ['listening', 'reading', 'writing', 'speaking'].forEach(mod => {
                 const list = userSavedTests.filter(t => t.module === mod);
                 const cEl = document.getElementById(`${mod}-saved-count`);
@@ -1208,7 +1366,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                     const cur = sel.value;
                     sel.innerHTML = list.length === 0
                         ? `<option value="">-- Select a Saved ${mod} Test --</option>`
-                        : list.map((t, i) => `<option value="${t.id}">Test #${list.length - i}: ${t.title || 'Test'} ${t.scoreLabel ? `[${t.scoreLabel}]` : ''}</option>`).join('');
+                        : list.map((t, i) => `<option value="${t.id}">Test #${list.length - i}: ${escapeHTML(t.title || 'Test')} ${t.scoreLabel ? `[${escapeHTML(t.scoreLabel)}]` : ''}</option>`).join('');
                     if (cur && list.some(x => x.id === cur)) sel.value = cur;
                 }
             });
@@ -1234,6 +1392,9 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                 document.getElementById('today-verdict-title').innerHTML = avg >= 7.0
                     ? `<span class="text-emerald-400">🌟 Great Work Today! (Avg Band ${avg})</span>`
                     : `<span class="text-amber-400">👍 Keep Practicing! (Avg Band ${avg})</span>`;
+            } else {
+                document.getElementById('today-avg-band').textContent = '--';
+                document.getElementById('today-verdict-title').innerHTML = '⏳ No Tests Graded Today';
             }
 
             const histBox = document.getElementById('history-list-container');
@@ -1246,7 +1407,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                             <div>
                                 <span class="text-[10px] font-bold uppercase bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded mr-2">${t.module}</span>
                                 <span class="text-xs font-bold text-emerald-400">${t.scoreLabel || 'Saved'}</span>
-                                <p class="text-sm font-bold text-white mt-0.5">${t.title || 'Practice Test'}</p>
+                                <p class="text-sm font-bold text-white mt-0.5">${escapeHTML(t.title || 'Practice Test')}</p>
                             </div>
                             <button type="button" data-open="${t.id}" data-mod="${t.module}" class="btn-open-hist bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Open</button>
                         </div>
@@ -1257,7 +1418,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                         const mod = btn.getAttribute('data-mod');
                         if (!found) return;
                         if (mod === 'listening') renderListeningTest(found);
-                        else if (mod === 'reading') renderReadingTest(found);
+                        else if (mod === 'reading') { if (found.isMock) openMockReview(found); else renderReadingTest(found); }
                         else if (mod === 'writing') renderWritingTest(found);
                         else if (mod === 'speaking') renderSpeakingTest(found);
                         document.querySelector(`[data-target="${mod}"]`)?.click();
@@ -1275,91 +1436,313 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             });
         });
 
-        // --- AUTH STATE & 24H GLOWING DISCIPLINE STREAK ---
+        // --- PER-USER SESSION: every account only ever sees its own data ---
+        const getResultsCacheKey = (uid) => `IELTS_RESULTS_${uid}`;
+
+        const SKILLS = [
+            { k: 'listening', label: 'Listening', color: '#22d3ee' },
+            { k: 'reading', label: 'Reading', color: '#34d399' },
+            { k: 'writing', label: 'Writing', color: '#fbbf24' },
+            { k: 'speaking', label: 'Speaking', color: '#fb7185' }
+        ];
+
+        function resetUserUI() {
+            const txt = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+            const html = (id, h) => { const el = document.getElementById(id); if (el) el.innerHTML = h; };
+            const val = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+            const hide = (id) => document.getElementById(id)?.classList.add('hide');
+
+            txt('topbar-name', 'Student'); txt('dash-name', 'Student');
+            txt('topbar-band', 'Target: Band 7.5'); txt('dash-band', 'Target: Band 7.5');
+            txt('today-test-count', '0'); txt('today-avg-band', '--'); html('today-verdict-title', '⏳ No Tests Graded Today');
+            html('history-list-container', '');
+            html('dash-streak', '0 <span class="text-sm font-normal text-slate-400">Days</span>');
+            html('dash-countdown', '-- <span class="text-sm font-normal text-slate-400">Days Left</span>');
+            document.getElementById('streak-card')?.classList.remove('streak-glow');
+            ['topbar-avatar', 'mobile-avatar', 'settings-avatar-preview'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.src = 'https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff';
+            });
+            ['quick-exam-date', 'set-name', 'set-status', 'set-date', 'writing-area', 'speaking-user-transcript',
+             'listening-custom-source', 'reading-custom-source', 'writing-custom-source', 'speaking-custom-source', 'ai-input']
+                .forEach(id => val(id, ''));
+            val('set-band', '7.5');
+            txt('word-count', '0 words');
+            html('leaderboard-body', '');
+            html('ai-chat-box', '');
+            html('writing-prompt-box', '<span class="text-slate-400 text-xs">Click Generate Topic above or type your own topic and start writing.</span>');
+            html('speaking-cue-card', '<span class="text-slate-400 text-xs">Click Generate Cue Card above.</span>');
+            html('speaking-sample-box', '<span class="text-slate-400 text-xs">Model answer or grading feedback will appear here.</span>');
+            html('writing-feedback-box', ''); hide('writing-feedback-box');
+            html('listening-transcript-box', ''); hide('listening-transcript-box');
+            txt('listening-score-box', ''); txt('reading-score-box', '');
+            ['listening-file-badge', 'reading-file-status', 'book-upload-status'].forEach(id => txt(id, ''));
+            hide('chat-attachment-bar'); hide('rec-status');
+            pendingChatFileText = null; pendingChatFileName = "";
+            const aud = document.getElementById('audio-playback');
+            if (aud) { try { aud.pause(); } catch (e) {} aud.removeAttribute('src'); aud.classList.add('hide'); }
+        }
+
+        function endSession() {
+            sessionUnsubs.forEach(fn => { try { fn(); } catch (e) {} });
+            sessionUnsubs = [];
+            sessionUid = null;
+            lastPublicSig = "";
+            currentProfile = null;
+            userSavedTests = []; userSavedBooks = []; userResults = [];
+            activeListeningTest = null; activeReadingTest = null; activeWritingTest = null; activeSpeakingTest = null;
+            activeListeningBookFull = ""; activeReadingBookFull = ""; listenChunkIdx = 0; readChunkIdx = 0;
+            activeHistoryFilter = "all";
+            try { window.speechSynthesis?.cancel(); } catch (e) {}
+            try { if (mediaRec && mediaRec.state === "recording") mediaRec.stop(); } catch (e) {}
+            try { speechRec?.stop?.(); } catch (e) {}
+            closeMock(true);
+            resetUserUI();
+            refreshSelectorsAndStats();
+            renderBooksAndPickers();
+            document.querySelector('[data-target="dashboard"]')?.click();
+        }
+
+        async function ensureUserProfile(user) {
+            const ref = doc(db, 'users', user.uid);
+            try {
+                const snap = await getDoc(ref);
+                if (!snap.exists()) {
+                    const fallback = user.email ? user.email.split('@')[0] : "Student";
+                    const nm = String(pendingSignupName || user.displayName || fallback).trim().slice(0, 30) || "Student";
+                    await setDoc(ref, {
+                        uid: user.uid, email: user.email || "", displayName: nm, targetBand: "7.5",
+                        status: "IELTS Self-Study", examDate: "", studyStreak: 0,
+                        lastStreakUpdate: Date.now(), createdAt: Date.now()
+                    });
+                }
+            } catch (e) { console.warn("Profile setup:", e); }
+            pendingSignupName = "";
+        }
+
+        // Public leaderboard card: only name, avatar, status, streak, average band and points. Never email, essays or tests.
+        async function syncPublicProfile(extra = {}) {
+            const user = auth.currentUser;
+            if (!user || !currentProfile || user.uid !== sessionUid) return;
+            const rated = userResults.filter(r => typeof r.band === 'number');
+            const avgBand = rated.length ? Math.round(rated.reduce((a, r) => a + r.band, 0) / rated.length * 10) / 10 : 0;
+            const payload = {
+                displayName: String(currentProfile.displayName || "Student").slice(0, 30),
+                photoURL: currentProfile.photoURL || "",
+                status: String(currentProfile.status || "").slice(0, 60),
+                studyStreak: Number(currentProfile.studyStreak) || 0,
+                avgBand
+            };
+            const sig = JSON.stringify(payload);
+            const hasPoints = extra.points !== undefined;
+            if (!hasPoints && sig === lastPublicSig) return;
+            lastPublicSig = sig;
+            try {
+                // increment(0) creates the "points" field for new accounts and never resets an existing total
+                await setDoc(doc(db, 'publicProfiles', user.uid), { ...payload, points: hasPoints ? extra.points : increment(0), updatedAt: Date.now() }, { merge: true });
+            } catch (e) { console.warn("Leaderboard sync:", e?.code || e); }
+        }
+
+        // Save one graded attempt to THIS user's history (drives the progress chart + leaderboard points).
+        // Only the first graded attempt of a given test/essay counts, so repeating a test can't farm points.
+        async function recordResult({ module, band, score = null, total = null, title = "", testId = null, sig = null }) {
+            const user = auth.currentUser;
+            if (!user || typeof band !== 'number' || user.uid !== sessionUid) return;
+            const dupe = sig ? userResults.some(r => r.sig === sig) : (testId ? userResults.some(r => r.testId === testId) : false);
+            if (dupe) return;
+            const id = "res_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
+            const rec = { id, module, band, score, total, title: String(title || "").slice(0, 120), testId: testId || null, sig: sig || null, ts: Date.now(), dateStr: new Date().toISOString().split('T')[0] };
+            userResults.push(rec);
+            try { localStorage.setItem(getResultsCacheKey(user.uid), JSON.stringify(userResults)); } catch (e) {}
+            renderProgress();
+            try { await setDoc(doc(db, 'users', user.uid, 'results', id), rec); } catch (e) { console.warn("Result save:", e?.code || e); }
+            syncPublicProfile({ points: increment(Math.round(band * 10)) });
+        }
+
+        function getProgressPoints() {
+            const counted = new Set(userResults.map(r => r.testId).filter(Boolean));
+            const pts = userResults.filter(r => typeof r.band === 'number').map(r => ({ module: r.module, band: r.band, ts: r.ts || 0 }));
+            // older graded tests (saved before result tracking existed) still show up on the chart
+            userSavedTests.forEach(t => {
+                if (typeof t.band === 'number' && t.module && !counted.has(t.id)) {
+                    const ts = t.gradedDateStr ? Date.parse(t.gradedDateStr + 'T12:00:00') : (t.createdAt || 0);
+                    pts.push({ module: t.module, band: t.band, ts: ts || 0 });
+                }
+            });
+            return pts.sort((a, b) => a.ts - b.ts);
+        }
+
+        function renderProgress() {
+            const box = document.getElementById('progress-chart');
+            if (!box) return;
+            const legend = document.getElementById('progress-legend');
+            const hint = document.getElementById('progress-hint');
+            const pts = getProgressPoints();
+            if (!pts.length) {
+                box.innerHTML = `<div class="text-center text-xs text-slate-400 py-8">No graded tests yet. Finish a Listening, Reading, Writing or Speaking practice and your band progress will appear here.</div>`;
+                if (legend) legend.innerHTML = "";
+                if (hint) hint.textContent = "";
+                return;
+            }
+            const W = 640, H = 230, L = 34, R = 12, T = 12, B = 26, yMin = 4, yMax = 9;
+            const X = (i) => pts.length === 1 ? (L + (W - L - R) / 2) : L + (i * (W - L - R)) / (pts.length - 1);
+            const Y = (b) => T + (yMax - Math.min(yMax, Math.max(yMin, b))) * (H - T - B) / (yMax - yMin);
+            let svg = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Band score progress chart">`;
+            for (let b = yMin; b <= yMax; b++) {
+                svg += `<line x1="${L}" x2="${W - R}" y1="${Y(b)}" y2="${Y(b)}" stroke="#334155" stroke-width="1"/><text x="${L - 6}" y="${Y(b) + 4}" text-anchor="end" font-size="11" fill="#94a3b8">${b}</text>`;
+            }
+            const target = parseFloat(currentProfile?.targetBand);
+            if (target >= yMin && target <= yMax) {
+                svg += `<line x1="${L}" x2="${W - R}" y1="${Y(target)}" y2="${Y(target)}" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="5 4"/><text x="${W - R - 2}" y="${Y(target) - 4}" text-anchor="end" font-size="10" fill="#a78bfa">Target ${target}</text>`;
+            }
+            SKILLS.forEach(sk => {
+                const mine = pts.map((p, i) => ({ ...p, i })).filter(p => p.module === sk.k);
+                if (!mine.length) return;
+                if (mine.length > 1) svg += `<polyline fill="none" stroke="${sk.color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" points="${mine.map(p => `${X(p.i).toFixed(1)},${Y(p.band).toFixed(1)}`).join(' ')}"/>`;
+                mine.forEach(p => { svg += `<circle cx="${X(p.i).toFixed(1)}" cy="${Y(p.band).toFixed(1)}" r="3.6" fill="${sk.color}"><title>${sk.label}: Band ${p.band.toFixed(1)}</title></circle>`; });
+            });
+            svg += `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle" font-size="10" fill="#64748b">Practice attempts, oldest to newest</text></svg>`;
+            box.innerHTML = svg;
+
+            const avgs = SKILLS.map(sk => {
+                const m = pts.filter(p => p.module === sk.k);
+                return m.length ? { ...sk, avg: m.reduce((a, p) => a + p.band, 0) / m.length, n: m.length } : null;
+            }).filter(Boolean);
+            if (legend) legend.innerHTML = avgs.map(a => `<span class="px-2 py-0.5 rounded-full border" style="border-color:${a.color}66;color:${a.color}">${a.label} &middot; avg ${a.avg.toFixed(1)}</span>`).join('');
+            if (hint) {
+                if (avgs.length >= 2) {
+                    const low = avgs.reduce((a, b) => b.avg < a.avg ? b : a);
+                    hint.textContent = `Your lowest skill is ${low.label} (average Band ${low.avg.toFixed(1)}). Spend your next sessions there.`;
+                } else {
+                    hint.textContent = "Practise another skill too, and I'll show you which one needs the most work.";
+                }
+            }
+        }
+
         onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                document.getElementById('login-screen')?.classList.add('hide');
-                document.getElementById('main-app')?.classList.remove('hide');
-
-                renderCourseModule('tenses');
-                renderReadingTest(standardReadingBank[0]);
-                renderListeningTest(standardListeningBank[0]);
-
-                try { userSavedTests = JSON.parse(localStorage.getItem(getTestsCacheKey(user.uid)) || "[]"); } catch (e) { userSavedTests = []; }
-                userSavedBooks = await getAllBooksFromIDB(user.uid);
-                refreshSelectorsAndStats();
-                renderBooksAndPickers();
-
-                try {
-                    onSnapshot(query(collection(db, 'users', user.uid, 'savedTests')), (snap) => {
-                        const map = new Map();
-                        userSavedTests.forEach(t => map.set(t.id, t));
-                        snap.forEach(d => map.set(d.id, d.data()));
-                        userSavedTests = Array.from(map.values());
-                        refreshSelectorsAndStats();
-                    });
-                    onSnapshot(query(collection(db, 'users', user.uid, 'savedBooks')), (snap) => {
-                        const map = new Map();
-                        userSavedBooks.forEach(b => map.set(b.id, b));
-                        snap.forEach(d => { if (!map.has(d.id)) map.set(d.id, d.data()); });
-                        userSavedBooks = Array.from(map.values());
-                        renderBooksAndPickers();
-                    });
-                } catch (e) {}
-
-                const userRef = doc(db, 'users', user.uid);
-                onSnapshot(userRef, async (snap) => {
-                    const data = snap.data();
-                    if (!data) return;
-                    const now = Date.now();
-                    let streak = typeof data.studyStreak === 'number' ? data.studyStreak : 1;
-                    let lastUpdate = data.lastStreakUpdate || now;
-                    const elapsed = now - lastUpdate;
-
-                    if (elapsed >= 86400000) {
-                        streak = elapsed < 172800000 ? streak + 1 : 0;
-                        await setDoc(userRef, { studyStreak: streak, lastStreakUpdate: now }, { merge: true });
-                    }
-                    if (streak > 0) document.getElementById('streak-card')?.classList.add('streak-glow');
-
-                    const name = data.displayName || "Student";
-                    const band = data.targetBand || "7.5";
-                    const av = data.photoURL || `https://ui-avatars.com/api/?name=${name}&background=0D8ABC&color=fff`;
-                    document.getElementById('topbar-name').textContent = name;
-                    document.getElementById('dash-name').textContent = name;
-                    document.getElementById('topbar-band').textContent = `Target: Band ${band}`;
-                    document.getElementById('dash-band').textContent = `Target: Band ${band}`;
-                    document.getElementById('dash-streak').innerHTML = `${streak} <span class="text-sm font-normal text-slate-400">Days</span>`;
-                    document.getElementById('topbar-avatar').src = av;
-                    document.getElementById('mobile-avatar').src = av;
-                    document.getElementById('settings-avatar-preview').src = av;
-
-                    if (data.examDate) {
-                        const days = Math.ceil((new Date(data.examDate + "T00:00:00").getTime() - new Date().setHours(0,0,0,0)) / 86400000);
-                        document.getElementById('dash-countdown').innerHTML = `${days > 0 ? days : 0} <span class="text-sm font-normal text-slate-400">Days Left</span>`;
-                        document.getElementById('quick-exam-date').value = data.examDate;
-                    }
-                    document.getElementById('set-name').value = name;
-                    document.getElementById('set-status').value = data.status || "";
-                    document.getElementById('set-date').value = data.examDate || "";
-                    document.getElementById('set-band').value = band;
-                });
-
-                onSnapshot(query(collection(db, "users"), orderBy("targetBand", "desc")), (snap) => {
-                    const tb = document.getElementById('leaderboard-body');
-                    if (!tb) return;
-                    tb.innerHTML = '';
-                    snap.forEach(d => {
-                        const u = d.data();
-                        const n = escapeHTML(u.displayName || "Student");
-                        const av = escapeHTML(u.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName || "Student")}&background=0D8ABC&color=fff`);
-                        tb.innerHTML += `<tr class="border-b border-slate-700/50"><td class="py-2.5 pr-2"><div class="flex items-center gap-2 max-w-[140px] sm:max-w-[220px]"><img src="${av}" class="w-7 h-7 rounded-full object-cover flex-shrink-0"><span class="truncate">${n}</span></div></td><td class="py-2.5 px-2 font-bold text-orange-400"><i class="fa-solid fa-fire flame-glow mr-1"></i>${escapeHTML(u.studyStreak || 0)}d</td><td class="py-2.5 px-2 font-bold text-blue-400">Band ${escapeHTML(u.targetBand || '7.5')}</td><td class="py-2.5 pl-2 text-xs text-slate-400">${escapeHTML(u.status || 'Studying')}</td></tr>`;
-                    });
-                });
-            } else {
+            // Always tear down the previous account's data before anything else
+            if (sessionUid && (!user || user.uid !== sessionUid)) endSession();
+            if (!user) {
+                setAuthMode('login');
                 document.getElementById('login-screen')?.classList.remove('hide');
                 document.getElementById('main-app')?.classList.add('hide');
+                return;
             }
+            if (sessionUid === user.uid) return;
+
+            const uid = user.uid;
+            sessionUid = uid;
+            document.getElementById('login-screen')?.classList.add('hide');
+            document.getElementById('main-app')?.classList.remove('hide');
+            ['login-email', 'login-password', 'signup-name'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            showAuthMsg('error', '');
+
+            renderCourseModule('tenses');
+            renderReadingTest(cloneTest(standardReadingBank[0]));
+            renderListeningTest(cloneTest(standardListeningBank[0]));
+
+            try { userSavedTests = JSON.parse(localStorage.getItem(getTestsCacheKey(uid)) || "[]"); } catch (e) { userSavedTests = []; }
+            try { userResults = JSON.parse(localStorage.getItem(getResultsCacheKey(uid)) || "[]"); } catch (e) { userResults = []; }
+            try { userSavedBooks = await getAllBooksFromIDB(uid); } catch (e) { userSavedBooks = []; }
+            if (sessionUid !== uid) return;
+            refreshSelectorsAndStats();
+            renderBooksAndPickers();
+
+            await ensureUserProfile(user);
+            if (sessionUid !== uid) return;
+
+            // Every listener below is stored so it can be switched off when this account signs out
+            const guard = (fn) => (...args) => { if (sessionUid === uid) fn(...args); };
+            const warn = (label) => (err) => console.warn(label, err?.code || err);
+
+            sessionUnsubs.push(onSnapshot(query(collection(db, 'users', uid, 'savedTests')), guard((snap) => {
+                const map = new Map();
+                userSavedTests.forEach(t => map.set(t.id, t));
+                snap.forEach(d => map.set(d.id, d.data()));
+                userSavedTests = Array.from(map.values());
+                refreshSelectorsAndStats();
+            }), warn('Saved tests:')));
+
+            sessionUnsubs.push(onSnapshot(query(collection(db, 'users', uid, 'savedBooks')), guard((snap) => {
+                const map = new Map();
+                userSavedBooks.forEach(b => map.set(b.id, b));
+                snap.forEach(d => { if (!map.has(d.id)) map.set(d.id, d.data()); });
+                userSavedBooks = Array.from(map.values());
+                renderBooksAndPickers();
+            }), warn('Saved books:')));
+
+            sessionUnsubs.push(onSnapshot(query(collection(db, 'users', uid, 'results'), orderBy('ts', 'asc')), guard((snap) => {
+                const map = new Map();
+                userResults.forEach(r => map.set(r.id, r));
+                snap.forEach(d => map.set(d.id, { ...d.data(), id: d.id }));
+                userResults = Array.from(map.values()).sort((a, b) => (a.ts || 0) - (b.ts || 0));
+                try { localStorage.setItem(getResultsCacheKey(uid), JSON.stringify(userResults)); } catch (e) {}
+                renderProgress();
+                syncPublicProfile();
+            }), warn('Results:')));
+
+            const userRef = doc(db, 'users', uid);
+            sessionUnsubs.push(onSnapshot(userRef, guard(async (snap) => {
+                const data = snap.data();
+                if (!data) return;
+                const now = Date.now();
+                let streak = typeof data.studyStreak === 'number' ? data.studyStreak : 0;
+                const lastUpdate = data.lastStreakUpdate || now;
+                const elapsed = now - lastUpdate;
+                if (elapsed >= 86400000) {
+                    streak = elapsed < 172800000 ? streak + 1 : 0;
+                    try { await setDoc(userRef, { studyStreak: streak, lastStreakUpdate: now }, { merge: true }); } catch (e) {}
+                }
+                if (sessionUid !== uid) return;
+                document.getElementById('streak-card')?.classList.toggle('streak-glow', streak > 0);
+
+                const name = data.displayName || "Student";
+                const band = data.targetBand || "7.5";
+                const av = data.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D8ABC&color=fff`;
+                currentProfile = { displayName: name, photoURL: data.photoURL || "", status: data.status || "", studyStreak: streak, targetBand: band };
+
+                document.getElementById('topbar-name').textContent = name;
+                document.getElementById('dash-name').textContent = name;
+                document.getElementById('topbar-band').textContent = `Target: Band ${band}`;
+                document.getElementById('dash-band').textContent = `Target: Band ${band}`;
+                document.getElementById('dash-streak').innerHTML = `${streak} <span class="text-sm font-normal text-slate-400">Days</span>`;
+                document.getElementById('topbar-avatar').src = av;
+                document.getElementById('mobile-avatar').src = av;
+                document.getElementById('settings-avatar-preview').src = av;
+
+                if (data.examDate) {
+                    const days = Math.ceil((new Date(data.examDate + "T00:00:00").getTime() - new Date().setHours(0, 0, 0, 0)) / 86400000);
+                    document.getElementById('dash-countdown').innerHTML = `${days > 0 ? days : 0} <span class="text-sm font-normal text-slate-400">Days Left</span>`;
+                    document.getElementById('quick-exam-date').value = data.examDate;
+                }
+                document.getElementById('set-name').value = name;
+                document.getElementById('set-status').value = data.status || "";
+                document.getElementById('set-date').value = data.examDate || "";
+                document.getElementById('set-band').value = band;
+                renderProgress();
+                syncPublicProfile();
+            }), warn('Profile:')));
+
+            const medal = (i) => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
+            sessionUnsubs.push(onSnapshot(query(collection(db, 'publicProfiles'), orderBy('points', 'desc'), limit(20)), guard((snap) => {
+                const tb = document.getElementById('leaderboard-body');
+                if (!tb) return;
+                if (snap.empty) {
+                    tb.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-xs text-slate-400">No rankings yet. Finish a graded test to appear here!</td></tr>`;
+                    return;
+                }
+                let rows = "", i = 0;
+                snap.forEach(d => {
+                    const u = d.data();
+                    const me = d.id === uid;
+                    const n = escapeHTML(u.displayName || "Student");
+                    const av = escapeHTML(u.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName || "Student")}&background=0D8ABC&color=fff`);
+                    const avg = Number(u.avgBand) > 0 ? Number(u.avgBand).toFixed(1) : "--";
+                    rows += `<tr class="border-b border-slate-700/50 ${me ? 'bg-blue-500/10' : ''}"><td class="py-2.5 pr-2"><div class="flex items-center gap-2 max-w-[170px] sm:max-w-[260px]"><span class="w-6 text-center flex-shrink-0 text-xs">${medal(i)}</span><img src="${av}" alt="" class="w-7 h-7 rounded-full object-cover flex-shrink-0"><span class="truncate">${n}${me ? ' <span class="text-[10px] text-blue-300">(you)</span>' : ''}</span></div></td><td class="py-2.5 px-2 font-bold text-yellow-400">${Math.round(Number(u.points) || 0)}</td><td class="py-2.5 px-2 font-bold text-orange-400"><i class="fa-solid fa-fire flame-glow mr-1"></i>${escapeHTML(Number(u.studyStreak) || 0)}d</td><td class="py-2.5 pl-2 font-bold text-blue-400">${avg}</td></tr>`;
+                    i++;
+                });
+                tb.innerHTML = rows;
+            }), warn('Leaderboard:')));
         });
 
         // --- NAVIGATION & PROFILE ---
@@ -1603,12 +1986,12 @@ Return a valid JSON object with this exact schema:
                     showToast("✓ Official-Standard Listening Test Generated!", "success");
                 } else {
                     stdListenIdx = (stdListenIdx + 1) % standardListeningBank.length;
-                    renderListeningTest(standardListeningBank[stdListenIdx]);
+                    renderListeningTest(cloneTest(standardListeningBank[stdListenIdx]));
                     showToast("✓ Loaded Official Cambridge Standard Listening Test!", "success");
                 }
             } catch (e) {
                 stdListenIdx = (stdListenIdx + 1) % standardListeningBank.length;
-                renderListeningTest(standardListeningBank[stdListenIdx]);
+                renderListeningTest(cloneTest(standardListeningBank[stdListenIdx]));
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = orig;
@@ -1666,7 +2049,11 @@ Return a valid JSON object with this exact schema:
             activeListeningTest.userAnswers = ansMap;
             activeListeningTest.gradedDateStr = new Date().toISOString().split('T')[0];
             document.getElementById('listening-score-box').textContent = activeListeningTest.scoreLabel;
-            await saveTestToAccount({ ...activeListeningTest, module: 'listening' });
+            const savedL = await saveTestToAccount({ ...activeListeningTest, module: 'listening' });
+            if (savedL) {
+                activeListeningTest = savedL;
+                await recordResult({ module: 'listening', band, score, total: qs.length, title: savedL.title, testId: savedL.id });
+            }
             showToast(`✓ Score Saved: ${activeListeningTest.scoreLabel}`, "success");
         });
 
@@ -1763,12 +2150,12 @@ Return a valid JSON object matching this exact structure:
                     showToast("✓ Full Cambridge-Standard Reading Test Generated!", "success");
                 } else {
                     stdReadIdx = (stdReadIdx + 1) % standardReadingBank.length;
-                    renderReadingTest(standardReadingBank[stdReadIdx]);
+                    renderReadingTest(cloneTest(standardReadingBank[stdReadIdx]));
                     showToast("✓ Loaded Official Cambridge Standard Reading Test!", "success");
                 }
             } catch (e) {
                 stdReadIdx = (stdReadIdx + 1) % standardReadingBank.length;
-                renderReadingTest(standardReadingBank[stdReadIdx]);
+                renderReadingTest(cloneTest(standardReadingBank[stdReadIdx]));
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = orig;
@@ -1785,7 +2172,8 @@ Return a valid JSON object matching this exact structure:
 
         document.getElementById('reading-test-selector')?.addEventListener('change', (e) => {
             const found = userSavedTests.find(t => t.id === e.target.value);
-            if (found) renderReadingTest(found);
+            if (found?.isMock) openMockReview(found);
+            else if (found) renderReadingTest(found);
         });
         document.getElementById('btn-delete-reading-test')?.addEventListener('click', async () => {
             if (activeReadingTest?.id) { const id = activeReadingTest.id; activeReadingTest = null; await deleteTestFromAccount(id); }
@@ -1810,8 +2198,374 @@ Return a valid JSON object matching this exact structure:
             activeReadingTest.userAnswers = ansMap;
             activeReadingTest.gradedDateStr = new Date().toISOString().split('T')[0];
             document.getElementById('reading-score-box').textContent = activeReadingTest.scoreLabel;
-            await saveTestToAccount({ ...activeReadingTest, module: 'reading' });
+            const savedR = await saveTestToAccount({ ...activeReadingTest, module: 'reading' });
+            if (savedR) {
+                activeReadingTest = savedR;
+                await recordResult({ module: 'reading', band, score, total: qs.length, title: savedR.title, testId: savedR.id });
+            }
             showToast(`✓ Reading Score Saved: ${activeReadingTest.scoreLabel}`, "success");
+        });
+
+        // --- FULL READING MOCK: 3 passages, 40 questions, 60 minutes ---
+        const MOCK_SECONDS = 3600;
+        const MOCK_PLANS = [
+            { tfng: 6, gap: 4, mcq: 3 },
+            { match: 5, gap: 4, mcq: 4 },
+            { tfng: 5, mcq: 5, gap: 4 }
+        ];
+        const MOCK_LEVELS = [
+            "Band 5-6 level: clear, factual, accessible vocabulary",
+            "Band 6-7 level: more abstract ideas, some specialist vocabulary",
+            "Band 7-8.5 level: dense, argumentative, nuanced, requires inference"
+        ];
+        const MOCK_TOPICS = [
+            "urban planning and green spaces", "the history of a scientific instrument", "coral reef ecosystems",
+            "the psychology of memory", "the transition to renewable energy", "ancient trade routes and archaeology",
+            "behavioural economics", "how children acquire language", "architecture and climate adaptation",
+            "the history of cartography", "sleep research", "the rise of urban beekeeping", "deep-sea exploration",
+            "the economics of water scarcity", "bird migration and navigation"
+        ];
+        const MOCK_TYPE_RANK = { tfng: 0, match: 1, mcq: 2, gap: 3 };
+        const MOCK_INSTR = {
+            tfng: "Do the following statements agree with the information in the passage? Choose TRUE if the statement agrees, FALSE if it contradicts the passage, or NOT GIVEN if there is no information about it.",
+            match: "Which paragraph contains the following information? Choose the correct letter.",
+            mcq: "Choose the correct letter, A, B, C or D.",
+            gap: "Complete the sentences. Write NO MORE THAN TWO WORDS from the passage for each answer."
+        };
+
+        // Approximate official Academic Reading raw-score to band conversion (varies slightly between real test versions)
+        function readingRawToBand(raw, total = 40) {
+            const r = total === 40 ? raw : Math.round((raw / total) * 40);
+            const table = [[39, 9], [37, 8.5], [35, 8], [33, 7.5], [30, 7], [27, 6.5], [23, 6], [19, 5.5], [15, 5], [13, 4.5], [10, 4], [8, 3.5], [6, 3], [4, 2.5]];
+            for (const [min, b] of table) if (r >= min) return b;
+            return r >= 2 ? 2 : r >= 1 ? 1 : 0;
+        }
+
+        const mockNorm = (s) => String(s ?? '').toLowerCase().replace(/[.,;:!?"'()]/g, '').replace(/\s+/g, ' ').trim().replace(/^(the|a|an) /, '');
+        const fmtClock = (sec) => `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
+
+        function mockIsCorrect(q, val) {
+            if (val == null || String(val).trim() === '') return false;
+            if (q.type === 'gap') {
+                const n = mockNorm(val);
+                return [q.ans, ...(q.alt || [])].some(a => mockNorm(a) === n);
+            }
+            return String(val).trim().toUpperCase() === String(q.ans).trim().toUpperCase();
+        }
+
+        // Validate/normalise one AI-written question. Returns null if it is unusable.
+        function mockNormQuestion(q) {
+            if (!q || typeof q.q !== 'string' || !q.q.trim()) return null;
+            const type = String(q.type || '').toLowerCase();
+            const out = { type, q: q.q.trim().slice(0, 400), exp: String(q.exp || '').slice(0, 500) };
+            if (type === 'tfng') {
+                const a = String(q.ans || '').trim().toLowerCase();
+                out.ans = /^(true|yes)$/.test(a) ? 'True' : /^(false|no)$/.test(a) ? 'False' : (/not\s*given/.test(a) || a === 'ng') ? 'Not Given' : null;
+                if (!out.ans) return null;
+            } else if (type === 'mcq') {
+                const strip = (o) => String(o).replace(/^\s*[A-D][.)]\s*/i, '').trim();
+                const opts = Array.isArray(q.options) ? q.options.map(strip).filter(Boolean).slice(0, 4) : [];
+                if (opts.length < 3) return null;
+                out.options = opts;
+                const a = String(q.ans || '').trim();
+                const li = /^[A-D]$/i.test(a) ? a.toUpperCase().charCodeAt(0) - 65 : opts.findIndex(o => o.toLowerCase() === strip(a).toLowerCase());
+                if (li < 0 || li >= opts.length) return null;
+                out.ans = String.fromCharCode(65 + li);
+            } else if (type === 'gap') {
+                const a = String(q.ans || '').trim();
+                if (!a || a.split(/\s+/).length > 3) return null;
+                out.ans = a;
+                out.alt = Array.isArray(q.alt) ? q.alt.map(x => String(x).trim()).filter(Boolean).slice(0, 4) : [];
+            } else if (type === 'match') {
+                const a = String(q.ans || '').trim().toUpperCase();
+                if (!/^[A-H]$/.test(a)) return null;
+                out.ans = a;
+            } else return null;
+            return out;
+        }
+
+        function mockBuildPrompt(plan, level, topic) {
+            const parts = Object.entries(plan).map(([t, n]) => `${n} "${t}"`).join(', ');
+            return `Write ONE passage for a Cambridge IELTS Academic Reading test.
+Topic: ${topic}. Difficulty: ${level}.
+Passage: 5 or 6 paragraphs, each 120-150 words, formal academic style, completely original.
+Questions (exactly this many of each type): ${parts}.
+Question formats:
+- "tfng": "q" is a statement about the passage; "ans" is "True", "False" or "Not Given". "Not Given" must genuinely not be stated or contradicted anywhere in the passage.
+- "mcq": "q" is the question stem; "options" is exactly 4 plain strings (no letters); "ans" is the letter A, B, C or D.
+- "gap": "q" is a sentence containing ________ ; "ans" is 1-2 words copied directly from the passage; optional "alt" array of other acceptable answers.
+- "match": "q" describes information found in one paragraph ("Which paragraph mentions ...?"); "ans" is that paragraph's letter (A = first paragraph, B = second, and so on).
+Every question needs "exp": one sentence pointing to the evidence in the passage.
+Return ONLY valid JSON in this shape:
+{"title":"...","paragraphs":["...","..."],"questions":[{"type":"tfng","q":"...","ans":"True","exp":"..."}]}`;
+        }
+
+        async function mockGeneratePassage(i, topic, m) {
+            const plan = MOCK_PLANS[i];
+            const planned = Object.values(plan).reduce((a, b) => a + b, 0);
+            for (let attempt = 0; attempt < 2; attempt++) {
+                if (mockState !== m || m.cancelled) return null;
+                const raw = await askIELTSAI(mockBuildPrompt(plan, MOCK_LEVELS[i], topic), "You are a senior Cambridge IELTS Academic Reading test writer. Output valid JSON only.", true);
+                const parsed = parseJSONSafely(raw);
+                if (!parsed || !Array.isArray(parsed.paragraphs)) continue;
+                const paragraphs = parsed.paragraphs
+                    .map(p => String(p).replace(/^\s*(\*\*)?Paragraph\s+[A-H](\*\*)?[:.\s-]*/i, '').trim())
+                    .filter(p => p.length > 60).slice(0, 8);
+                if (paragraphs.length < 4) continue;
+                const qs = (Array.isArray(parsed.questions) ? parsed.questions : []).map(mockNormQuestion).filter(Boolean)
+                    .filter(q => q.type !== 'match' || (q.ans.charCodeAt(0) - 65) < paragraphs.length);
+                if (qs.length < Math.ceil(planned * 0.75)) continue;
+                qs.sort((a, b) => MOCK_TYPE_RANK[a.type] - MOCK_TYPE_RANK[b.type]);
+                return { title: String(parsed.title || `Passage ${i + 1}`).slice(0, 120), paragraphs, questions: qs };
+            }
+            return null;
+        }
+
+        const mockOffset = (pi) => mockState.passages.slice(0, pi).reduce((a, p) => a + p.questions.length, 0);
+        const mockTotal = () => mockState.passages.reduce((a, p) => a + p.questions.length, 0);
+
+        function mockCompute(passages, answers) {
+            let raw = 0, total = 0, off = 0;
+            const byType = {};
+            passages.forEach(p => {
+                p.questions.forEach((q, k) => {
+                    const ok = mockIsCorrect(q, answers[off + k]);
+                    const b = byType[q.type] || (byType[q.type] = { ok: 0, n: 0 });
+                    b.n++; total++;
+                    if (ok) { b.ok++; raw++; }
+                });
+                off += p.questions.length;
+            });
+            return { raw, total, byType };
+        }
+
+        function mockShell(inner) {
+            document.getElementById('mock-body').innerHTML = inner;
+        }
+
+        function renderMockIntro(errMsg = "") {
+            document.getElementById('mock-title').textContent = "Full Reading Mock";
+            mockShell(`<div class="h-full overflow-y-auto p-4 flex items-start sm:items-center justify-center">
+                <div class="glass-panel rounded-2xl p-5 sm:p-7 max-w-lg w-full space-y-3">
+                    <h2 class="text-xl font-extrabold text-emerald-300"><i class="fa-solid fa-stopwatch mr-2"></i>IELTS Academic Reading Mock</h2>
+                    <ul class="text-sm text-slate-200 space-y-1.5 list-disc ml-5">
+                        <li><strong>3 passages, about 40 questions, 60 minutes.</strong> Difficulty rises from passage 1 to 3.</li>
+                        <li>Mixed question types: True/False/Not Given, matching paragraphs, multiple choice, sentence completion.</li>
+                        <li>The timer starts when the test appears and can't be paused. It submits automatically at 00:00.</li>
+                        <li>Every mock is written fresh by AI, so preparing it takes about a minute.</li>
+                        <li>Your band is an estimate using the standard raw-score table. Real tests vary slightly.</li>
+                    </ul>
+                    ${errMsg ? `<div class="bg-red-500/10 border border-red-500/30 text-red-300 text-xs p-3 rounded-xl">${escapeHTML(errMsg)}</div>` : ''}
+                    <div class="flex gap-2 pt-1">
+                        <button type="button" id="btn-mock-start" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-semibold py-3 rounded-xl shadow-lg">${errMsg ? 'Try again' : 'Prepare &amp; start mock'}</button>
+                        <button type="button" id="btn-mock-cancel" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 rounded-xl text-sm">Cancel</button>
+                    </div>
+                </div></div>`);
+        }
+
+        function renderMockLoading(i) {
+            mockShell(`<div class="h-full flex items-center justify-center p-4"><div class="glass-panel rounded-2xl p-6 max-w-sm w-full text-center space-y-3">
+                <i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-400"></i>
+                <p class="text-sm font-semibold text-white">Writing passage ${i + 1} of 3...</p>
+                <p class="text-xs text-slate-400">The 60 minutes start only after all 3 passages are ready.</p>
+                <button type="button" id="btn-mock-cancel" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs">Cancel</button>
+            </div></div>`);
+        }
+
+        function mockQuestionHTML(q, g, val, review, nParas) {
+            const name = `mq-${g}`, dis = review ? 'disabled' : '';
+            const radio = (v, label) => `<label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-700"><input type="radio" name="${name}" data-g="${g}" value="${escapeHTML(v)}" ${val === v ? 'checked' : ''} ${dis}><span>${label}</span></label>`;
+            let input = '';
+            if (q.type === 'tfng') {
+                input = `<div class="flex flex-wrap gap-2 text-xs">${['True', 'False', 'Not Given'].map(o => radio(o, o)).join('')}</div>`;
+            } else if (q.type === 'mcq') {
+                input = `<div class="flex flex-col gap-1.5 text-xs">${q.options.map((o, i) => radio(String.fromCharCode(65 + i), `<strong>${String.fromCharCode(65 + i)}.</strong> ${escapeHTML(o)}`)).join('')}</div>`;
+            } else if (q.type === 'match') {
+                const letters = Array.from({ length: nParas }, (_, i) => String.fromCharCode(65 + i));
+                input = `<select data-g="${g}" ${dis} class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"><option value="">Paragraph...</option>${letters.map(l => `<option value="${l}" ${val === l ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+            } else {
+                input = `<input type="text" data-g="${g}" ${dis} value="${escapeHTML(val || '')}" maxlength="40" placeholder="Your answer" autocomplete="off" class="w-full sm:w-64 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500">`;
+            }
+            let review_html = '', border = 'border-slate-700';
+            if (review) {
+                const ok = mockIsCorrect(q, val);
+                border = ok ? 'border-emerald-500/60' : 'border-red-500/60';
+                const shown = (val == null || String(val).trim() === '') ? '<em>no answer</em>' : escapeHTML(val);
+                review_html = `<div class="mt-2 pt-2 border-t border-slate-700 text-xs">${ok
+                    ? `<span class="text-emerald-400 font-bold">&#10003; Correct</span>`
+                    : `<span class="text-red-400 font-bold">&#10007; Your answer: ${shown}</span> &middot; <span class="text-emerald-300 font-semibold">Correct: ${escapeHTML(q.ans)}</span>`}
+                    ${q.exp ? `<p class="text-slate-300 mt-1">${escapeHTML(q.exp)}</p>` : ''}</div>`;
+            }
+            return `<div class="bg-slate-800/80 p-3.5 rounded-xl border ${border} space-y-2"><p class="text-xs sm:text-sm font-semibold text-white"><span class="text-emerald-400 mr-1">${g + 1}.</span>${escapeHTML(q.q)}</p>${input}${review_html}</div>`;
+        }
+
+        function mockTabsHTML() {
+            const m = mockState;
+            return m.passages.map((p, i) => {
+                const off = mockOffset(i);
+                let done = 0;
+                p.questions.forEach((_, k) => { if (String(m.answers[off + k] ?? '').trim()) done++; });
+                const on = i === m.tab;
+                return `<button type="button" data-mock-tab="${i}" class="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold ${on ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">Passage ${i + 1} <span class="opacity-75">(${done}/${p.questions.length})</span></button>`;
+            }).join('');
+        }
+
+        function updateMockTabs() {
+            const el = document.getElementById('mock-tabs');
+            if (el && mockState) el.innerHTML = mockTabsHTML();
+        }
+
+        function renderMockExam(review) {
+            const m = mockState;
+            if (!m) return;
+            const p = m.passages[m.tab], off = mockOffset(m.tab);
+            let summary = '';
+            if (review) {
+                const r = mockCompute(m.passages, m.answers);
+                const band = readingRawToBand(r.raw, r.total);
+                const names = { tfng: 'T/F/NG', match: 'Matching', mcq: 'Multiple choice', gap: 'Completion' };
+                summary = `<div class="px-3 py-2 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs flex-shrink-0">
+                    <span class="font-extrabold text-emerald-300 text-base">${r.raw}/${r.total} &middot; Band ${band.toFixed(1)}</span>
+                    <span class="text-slate-400">${Object.entries(r.byType).map(([t, b]) => `${names[t] || t}: ${b.ok}/${b.n}`).join(' &middot; ')}</span>
+                    <span class="text-slate-500">Estimate only, using the standard raw-score table.</span>
+                    <button type="button" id="btn-mock-done" class="ml-auto bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-lg font-semibold">Close</button></div>`;
+            }
+            const passageHTML = `<h3 class="text-base font-bold text-white mb-3">${escapeHTML(p.title)}</h3>` +
+                p.paragraphs.map((t, i) => `<p class="text-sm leading-relaxed text-slate-200 mb-3"><strong class="text-emerald-400 mr-1.5">${String.fromCharCode(65 + i)}</strong>${escapeHTML(t)}</p>`).join('');
+            let qHTML = '', last = '';
+            p.questions.forEach((q, k) => {
+                if (q.type !== last) {
+                    last = q.type;
+                    const same = p.questions.filter(x => x.type === q.type).length;
+                    qHTML += `<div class="pt-2"><p class="text-[11px] font-bold uppercase text-amber-300">Questions ${off + k + 1}&ndash;${off + k + same}</p><p class="text-xs text-slate-400 mb-1.5">${MOCK_INSTR[q.type] || ''}</p></div>`;
+                }
+                qHTML += mockQuestionHTML(q, off + k, m.answers[off + k], review, p.paragraphs.length);
+            });
+            document.getElementById('mock-title').textContent = review ? "Mock Review" : "Full Reading Mock";
+            mockShell(`<div class="h-full flex flex-col">${summary}
+                <div id="mock-tabs" class="flex gap-1.5 p-2 border-b border-slate-800 flex-shrink-0 overflow-x-auto">${mockTabsHTML()}</div>
+                <div class="flex-1 min-h-0 flex flex-col md:flex-row">
+                    <div class="h-2/5 md:h-auto md:w-1/2 overflow-y-auto p-4 border-b md:border-b-0 md:border-r border-slate-800">${passageHTML}</div>
+                    <div class="flex-1 min-h-0 md:w-1/2 overflow-y-auto p-4 space-y-2.5">${qHTML}</div>
+                </div></div>`);
+        }
+
+        function openMockIntro() {
+            if (mockState) return;
+            mockState = { phase: 'intro', passages: [], answers: {}, tab: 0, endAt: 0, timer: null, cancelled: false };
+            document.getElementById('mock-overlay')?.classList.remove('hide');
+            document.getElementById('mock-timer')?.classList.add('hide');
+            document.getElementById('btn-mock-submit')?.classList.add('hide');
+            renderMockIntro();
+        }
+
+        function openMockReview(test) {
+            if (!test?.passages?.length) return showToast("This mock result has no saved questions.", "error");
+            if (mockState) closeMock(true);
+            mockState = { phase: 'result', passages: test.passages, answers: test.userAnswers || {}, tab: 0, endAt: 0, timer: null, cancelled: false };
+            document.getElementById('mock-overlay')?.classList.remove('hide');
+            document.getElementById('mock-timer')?.classList.add('hide');
+            document.getElementById('btn-mock-submit')?.classList.add('hide');
+            renderMockExam(true);
+        }
+
+        function closeMock(force = false) {
+            const m = mockState;
+            if (m && !force && m.phase === 'exam' && !confirm("Leave the exam? Your answers will not be saved.")) return false;
+            if (m) { m.cancelled = true; clearInterval(m.timer); }
+            mockState = null;
+            document.getElementById('mock-overlay')?.classList.add('hide');
+            document.getElementById('mock-timer')?.classList.add('hide');
+            document.getElementById('btn-mock-submit')?.classList.add('hide');
+            const body = document.getElementById('mock-body');
+            if (body) body.innerHTML = '';
+            return true;
+        }
+
+        function startMockTimer(m) {
+            const el = document.getElementById('mock-timer');
+            if (!el) return;
+            el.classList.remove('hide');
+            const tick = () => {
+                if (mockState !== m) return clearInterval(m.timer);
+                const left = Math.max(0, Math.round((m.endAt - Date.now()) / 1000));
+                el.textContent = fmtClock(left);
+                el.classList.toggle('animate-pulse', left <= 300);
+                if (left <= 0) submitMock(true);
+            };
+            tick();
+            m.timer = setInterval(tick, 1000);
+        }
+
+        async function startMock() {
+            const m = mockState;
+            if (!m || m.phase !== 'intro') return;
+            m.phase = 'loading';
+            m.passages = [];
+            const topics = [...MOCK_TOPICS].sort(() => Math.random() - 0.5).slice(0, 3);
+            for (let i = 0; i < 3; i++) {
+                renderMockLoading(i);
+                const p = await mockGeneratePassage(i, topics[i], m);
+                if (mockState !== m || m.cancelled) return;
+                if (!p) {
+                    m.phase = 'intro'; m.passages = [];
+                    return renderMockIntro(`The AI couldn't prepare passage ${i + 1} just now. This is usually a busy moment on the free AI service. Please try again.`);
+                }
+                m.passages.push(p);
+            }
+            m.phase = 'exam';
+            m.tab = 0;
+            m.endAt = Date.now() + MOCK_SECONDS * 1000;
+            document.getElementById('btn-mock-submit')?.classList.remove('hide');
+            renderMockExam(false);
+            startMockTimer(m);
+        }
+
+        async function submitMock(auto = false) {
+            const m = mockState;
+            if (!m || m.phase !== 'exam') return;
+            const total = mockTotal();
+            const answered = Object.values(m.answers).filter(v => String(v ?? '').trim()).length;
+            if (!auto && answered < total && !confirm(`You have answered ${answered} of ${total} questions. Submit now?`)) return;
+            clearInterval(m.timer);
+            m.phase = 'result';
+            document.getElementById('mock-timer')?.classList.add('hide');
+            document.getElementById('btn-mock-submit')?.classList.add('hide');
+            const r = mockCompute(m.passages, m.answers);
+            const band = readingRawToBand(r.raw, r.total);
+            const today = new Date().toISOString().split('T')[0];
+            const result = {
+                module: 'reading', isMock: true, title: `Full Reading Mock (${today})`,
+                passages: m.passages, userAnswers: m.answers, rawScore: r.raw, total: r.total, band,
+                scoreLabel: `${r.raw}/${r.total} (Band ${band.toFixed(1)})`, gradedDateStr: today
+            };
+            renderMockExam(true);
+            if (auto) showToast("Time's up! Your mock was submitted automatically.", "info");
+            const saved = await saveTestToAccount(result);
+            if (saved) {
+                await recordResult({ module: 'reading', band, score: r.raw, total: r.total, title: saved.title, testId: saved.id });
+                showToast(`Mock saved: ${saved.scoreLabel}`, "success");
+            }
+        }
+
+        document.getElementById('btn-mock-reading')?.addEventListener('click', openMockIntro);
+        document.getElementById('btn-mock-close')?.addEventListener('click', () => closeMock(false));
+        document.getElementById('btn-mock-submit')?.addEventListener('click', () => submitMock(false));
+        document.getElementById('mock-body')?.addEventListener('click', (e) => {
+            const tab = e.target.closest('[data-mock-tab]');
+            if (tab && mockState && (mockState.phase === 'exam' || mockState.phase === 'result')) {
+                mockState.tab = Number(tab.dataset.mockTab) || 0;
+                renderMockExam(mockState.phase === 'result');
+                return;
+            }
+            if (e.target.closest('#btn-mock-start')) startMock();
+            else if (e.target.closest('#btn-mock-cancel') || e.target.closest('#btn-mock-done')) closeMock(true);
+        });
+        document.getElementById('mock-body')?.addEventListener('input', (e) => {
+            const el = e.target;
+            if (!mockState || mockState.phase !== 'exam' || el.dataset?.g === undefined) return;
+            mockState.answers[el.dataset.g] = el.value;
+            updateMockTabs();
         });
 
         // --- WRITING & SPEAKING LABS ---
@@ -1869,7 +2623,9 @@ Return a valid JSON object matching this exact structure:
             const match = reply.match(/Band(?:\s+Score)?\s*[:\-]?\s*([4-9](?:\.[05])?)/i);
             const band = match ? parseFloat(match[1]) : 6.5;
             activeWritingTest = { ...(activeWritingTest || { module: 'writing', title: `Essay (${words}w)`, promptText: promptContext }), essayText: essay, feedbackMarkdown: reply, band, scoreLabel: `Band ${band.toFixed(1)}`, gradedDateStr: new Date().toISOString().split('T')[0] };
-            await saveTestToAccount(activeWritingTest);
+            const savedW = await saveTestToAccount(activeWritingTest);
+            if (savedW) activeWritingTest = savedW;
+            await recordResult({ module: 'writing', band, title: activeWritingTest.title, sig: 'w:' + hashStr(essay) });
             renderWritingTest(activeWritingTest);
             showToast(`✓ Graded & Saved: Band ${band.toFixed(1)}`, "success");
         });
@@ -1924,7 +2680,9 @@ Return a valid JSON object matching this exact structure:
             const match = reply.match(/Band\s*[:\-]?\s*([4-9](?:\.[05])?)/i);
             const band = match ? parseFloat(match[1]) : 6.5;
             activeSpeakingTest = { ...(activeSpeakingTest || { module: 'speaking', title: "Speaking Practice", cardMarkdown: card }), userTranscript: speech, feedbackMarkdown: reply, band, scoreLabel: `Band ${band.toFixed(1)}`, gradedDateStr: new Date().toISOString().split('T')[0] };
-            await saveTestToAccount(activeSpeakingTest);
+            const savedS = await saveTestToAccount(activeSpeakingTest);
+            if (savedS) activeSpeakingTest = savedS;
+            await recordResult({ module: 'speaking', band, title: activeSpeakingTest.title, sig: 's:' + hashStr(speech) });
             renderSpeakingTest(activeSpeakingTest);
             showToast(`✓ Speaking Score Saved: Band ${band.toFixed(1)}`, "success");
         });
