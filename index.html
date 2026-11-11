@@ -36,229 +36,6 @@
             -webkit-overflow-scrolling: touch;
         }
         .aurora-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-        .aurora-orb { position: absolute; border-radius: 9999px; filter: blur(85px); opacity: 0.3; animation: floatOrb 12s infinite ease-in-out alternate; }
-        .orb-1 { width: 380px; height: 380px; background: radial-gradient(circle, #3b82f6, #1d4ed8); top: -80px; left: -80px; }
-        .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #8b5cf6, #6d28d9); bottom: -90px; right: -60px; animation-delay: -4s; }
-        .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, #10b981, #0ea5e9); top: 35%; left: 40%; animation-delay: -8s; opacity: 0.18; }
-        @keyframes floatOrb {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(40px, -30px) scale(1.12); }
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .view-section:not(.hide) { animation: fadeUp 0.25s ease-out forwards; }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.78);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(148, 163, 184, 0.16);
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-        .alive-card:hover { transform: translateY(-2px); border-color: rgba(96, 165, 250, 0.45); }
-        .streak-glow {
-            box-shadow: 0 0 25px rgba(249, 115, 22, 0.45), inset 0 0 12px rgba(249, 115, 22, 0.2);
-            border-color: rgba(249, 115, 22, 0.55) !important;
-        }
-        .flame-glow { filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.95)); animation: flamePulse 1.8s infinite ease-in-out; }
-        @keyframes flamePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-        .eq-bar { width: 3px; background: #22d3ee; border-radius: 999px; animation: eqBounce 0.7s infinite ease-in-out alternate; }
-        .eq-bar:nth-child(2) { animation-delay: 0.2s; }
-        .eq-bar:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes eqBounce { 0% { height: 4px; } 100% { height: 15px; } }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.45); border-radius: 9999px; }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
-        .ai-prose { font-size: 0.88rem; line-height: 1.7; color: #e2e8f0; word-break: break-word; }
-        .ai-prose h1, .ai-prose h2, .ai-prose h3 { color: #38bdf8; font-weight: 700; margin: 0.8rem 0 0.4rem; font-size: 1rem; }
-        .ai-prose p { margin-bottom: 0.7rem; }
-        .ai-prose ul, .ai-prose ol { margin-left: 1.2rem; margin-bottom: 0.7rem; }
-        .ai-prose ul { list-style-type: disc; }
-        .ai-prose ol { list-style-type: decimal; }
-        .ai-prose strong { color: #fff; font-weight: 700; }
-        .ai-prose table { width: 100%; border-collapse: collapse; margin: 0.7rem 0; font-size: 0.78rem; background: rgba(15, 23, 42, 0.85); border-radius: 0.5rem; overflow-x: auto; display: block; border: 1px solid rgba(148, 163, 184, 0.22); }
-        .ai-prose th { background: rgba(51, 65, 85, 0.9); color: #38bdf8; text-align: left; padding: 0.5rem 0.7rem; white-space: nowrap; }
-        .ai-prose td { padding: 0.5rem 0.7rem; border-top: 1px solid rgba(148, 163, 184, 0.15); }
-    </style>
-</head>
-<body class="flex flex-col md:flex-row antialiased relative text-slate-100 overflow-hidden">
-
-    <div class="aurora-bg">
-        <div class="aurora-orb orb-1"></div>
-        <div class="aurora-orb orb-2"></div>
-        <div class="aurora-orb orb-3"></div>
-    </div>
-
-    <!-- ================= LOGIN GATE ================= -->
-    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-xl overflow-y-auto">
-        <div class="glass-panel p-7 rounded-3xl w-full max-w-md shadow-2xl text-center my-auto border border-blue-500/30">
-            <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-                <i class="fa-solid fa-graduation-cap text-xl text-white"></i>
-            </div>
-            <h1 class="text-2xl font-extrabold mb-1">IELTS Studio KH</h1>
-            <p class="text-xs text-slate-400 mb-5">Band 8.0+ AI Self-Study & English Academy</p>
-            <div class="space-y-3.5 text-left">
-                <input type="email" id="login-email" placeholder="Email Address" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
-                <input type="password" id="login-password" placeholder="Password" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500">
-                <button type="button" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg cursor-pointer">Secure Login</button>
-                <div id="login-error" class="hide bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl text-center"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= MAIN APP ================= -->
-    <div id="main-app" class="hide flex flex-col md:flex-row w-full h-full overflow-hidden relative z-10">
-        
-        <!-- Mobile Header -->
-        <header class="md:hidden h-14 glass-panel border-b border-slate-700/60 flex items-center justify-between px-4 z-30 flex-shrink-0">
-            <button type="button" id="mobile-menu-btn" class="flex items-center gap-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 px-3 py-1.5 rounded-xl text-xs font-semibold">
-                <i class="fa-solid fa-bars"></i> Menu
-            </button>
-            <div class="font-bold text-sm flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>IELTS Studio KH
-            </div>
-            <img id="mobile-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-8 h-8 rounded-full border border-slate-600 object-cover">
-        </header>
-
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hide md:hidden"></div>
-
-        <!-- Sidebar -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-60 glass-panel border-r border-slate-700/60 flex flex-col justify-between h-full transition-transform duration-300 z-50 flex-shrink-0">
-            <div class="overflow-y-auto">
-                <div class="p-4 flex items-center justify-between border-b border-slate-700/50">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-blue-400 text-lg"></i>
-                        <span class="font-extrabold text-base">IELTS Studio.</span>
-                    </div>
-                    <button type="button" id="close-sidebar" class="md:hidden text-slate-400 text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <nav class="p-2.5 space-y-1">
-                    <button type="button" data-target="dashboard" class="nav-btn bg-blue-600/20 text-blue-400 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-house w-5"></i>Dashboard</button>
-                    <button type="button" data-target="course" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-bolt text-yellow-400 w-5"></i>English Course</button>
-                    <button type="button" data-target="books" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-bookmark text-pink-400 w-5"></i>Book Library</button>
-                    <button type="button" data-target="history" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-chart-line text-indigo-400 w-5"></i>My Scores & Tests</button>
-                    <button type="button" data-target="ai" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-wand-magic-sparkles text-purple-400 w-5"></i>AI Tutor Chat</button>
-                    <button type="button" data-target="listening" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-headphones text-cyan-400 w-5"></i>AI Listening Lab</button>
-                    <button type="button" data-target="reading" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-open text-emerald-400 w-5"></i>AI Reading Lab</button>
-                    <button type="button" data-target="writing" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-pen-nib text-amber-400 w-5"></i>AI Writing Studio</button>
-                    <button type="button" data-target="speaking" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-microphone text-rose-400 w-5"></i>AI Speaking Arena</button>
-                </nav>
-            </div>
-            <div class="p-2.5 border-t border-slate-700/50 space-y-1 flex-shrink-0">
-                <button type="button" data-target="settings" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-gear w-5"></i>Profile</button>
-                <button type="button" id="logout-btn" class="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-red-500/10 text-red-400 font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-right-from-bracket w-5"></i>Sign Out</button>
-            </div>
-        </aside>
-
-        <!-- Main Workspace -->
-        <main class="flex-1 flex flex-col h-full min-h-0 overflow-hidden relative z-10">
-            <header class="hidden md:flex h-14 glass-panel border-b border-slate-700/60 items-center justify-between px-6 flex-shrink-0">
-                <div class="flex items-center gap-2.5 text-xs text-slate-300 font-medium">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Live AI Hub • Book Test & Official IELTS Generators Ready</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="text-right">
-                        <p id="topbar-name" class="text-sm font-semibold">Student</p>
-                        <p id="topbar-band" class="text-xs text-blue-400">Target: Band 7.5</p>
-                    </div>
-                    <img id="topbar-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full border border-blue-500/50 object-cover">
-                </div>
-            </header>
-
-            <div id="main-scroll-area" class="flex-1 overflow-y-auto p-4 md:p-6 pb-28 md:pb-16 space-y-5">
-                
-                <!-- ================= 1. DASHBOARD ================= -->
-                <div id="view-dashboard" class="view-section space-y-4">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl sm:text-2xl font-extrabold">Welcome, <span id="dash-name" class="bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent">Student</span> 👋</h2>
-                        <span id="dash-band" class="px-3.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/40 text-blue-300 text-xs font-bold">Target: Band 7.5</span>
-                    </div>
-
-                    <!-- Daily Band 8.5 Flashcard -->
-                    <div class="glass-panel alive-card p-4 rounded-2xl border border-purple-500/35 bg-gradient-to-r from-purple-900/25 via-slate-900/70 to-blue-900/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-sparkles text-yellow-400 mr-1"></i>Daily Band 8.5 Power Word</span>
-                            <p id="booster-word" class="text-sm sm:text-base font-bold text-white pt-0.5">Mitigate (v.) — To make something less severe, harmful, or painful.</p>
-                            <p id="booster-ex" class="text-xs text-cyan-200 italic">"Governments must invest in renewable energy to mitigate the devastating impacts of climate change."</p>
-                        </div>
-                        <div class="flex gap-2 self-start sm:self-center flex-shrink-0">
-                            <button type="button" id="btn-speak-booster" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-cyan-300 px-3 py-2 rounded-xl text-xs"><i class="fa-solid fa-volume-high"></i></button>
-                            <button type="button" id="btn-next-booster" class="bg-purple-600 hover:bg-purple-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-bolt mr-1"></i>Next Word</button>
-                        </div>
-                    </div>
-
-                    <!-- Today's Verdict -->
-                    <div id="today-verdict-card" class="glass-panel alive-card p-4 rounded-2xl border-l-4 border-l-blue-500 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div>
-                            <p class="text-[11px] font-bold uppercase text-blue-400">Today's Performance Status</p>
-                            <h3 id="today-verdict-title" class="text-base font-bold text-white">⏳ No Tests Graded Today</h3>
-                        </div>
-                        <div class="flex items-center gap-4 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-700/70 self-start sm:self-center">
-                            <div class="text-center">
-                                <p class="text-[10px] text-slate-400 uppercase">Today</p>
-                                <p id="today-test-count" class="text-base font-bold text-white">0</p>
-                            </div>
-                            <div class="h-6 w-[1px] bg-slate-700"></div>
-                            <div class="text-center">
-                                <p class="text-[10px] text-slate-400 uppercase">Avg Band</p>
-                                <p id="today-avg-band" class="text-base font-bold text-emerald-400">--</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Streak & Countdown -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div id="streak-card" class="glass-panel alive-card p-4 rounded-2Two issues caused what you saw in your screenshot[cite: 10], and both are fixed in the complete `index.html` below:
-
-1. **Why Your Book Loaded "Marine Microplastics" Instead of *Grandma's Bag of Stories*[cite: 10]:** In the previous code, when the AI encountered raw PDF formatting characters from your 32,147-word book[cite: 10], the error handler fell back to the built-in Cambridge test (*Marine Microplastics*[cite: 10]). I have now separated the buttons into two dedicated actions in both **AI Listening Lab** and **AI Reading Lab**:
-   * **`📕 Generate by Book / Topic`**: Strictly uses your selected book or typed topic (and skips empty title/dedication pages so it grabs real story chapters[cite: 10]). It will **never** load the standard Cambridge test.
-   * **`🏛️ Standard IELTS Test`**: Generates an official Cambridge-style academic test when you want general IELTS practice without a book.
-   * **`💾 Save Test`**: Saves the test to your dropdown bar.
-2. **All 12 English Tenses Included:** The **English Course** tab now includes all **12 Tenses** (4 Present, 4 Past, 4 Future) with formulas and Band 8.5 examples.
-
-### Replace your `index.html` with this complete code:
-
-```html
-<!DOCTYPE html>
-<html lang="en" class="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IELTS Studio KH — AI Self-Study & English Academy</title>
-    
-    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hanuman:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hanuman:wght@400;700&display=swap)" rel="stylesheet">
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { fontFamily: { sans: ['Inter', 'Hanuman', 'sans-serif'] } } }
-        }
-    </script>
-
-    <script src="[https://cdn.jsdelivr.net/npm/marked/marked.min.js](https://cdn.jsdelivr.net/npm/marked/marked.min.js)"></script>
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js](https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js)"></script>
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js](https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js)"></script>
-    <script>
-        if (window.pdfjsLib) {
-            window.pdfjsLib.GlobalWorkerOptions.workerSrc = '[https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js](https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js)';
-        }
-    </script>
-
-    <style>
-        .hide { display: none !important; }
-        html, body {
-            height: 100%;
-            height: 100dvh;
-            margin: 0;
-            padding: 0;
-            background-color: #050814;
-            color: #f8fafc;
-            -webkit-overflow-scrolling: touch;
-        }
-        .aurora-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
         .aurora-orb { position: absolute; border-radius: 9999px; filter: blur(85px); opacity: 0.32; animation: floatOrb 12s infinite ease-in-out alternate; }
         .orb-1 { width: 400px; height: 400px; background: radial-gradient(circle, #3b82f6, #1d4ed8); top: -80px; left: -80px; }
         .orb-2 { width: 420px; height: 420px; background: radial-gradient(circle, #8b5cf6, #6d28d9); bottom: -90px; right: -60px; animation-delay: -4s; }
@@ -354,7 +131,7 @@
             <div class="font-bold text-sm flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>IELTS Studio KH
             </div>
-            <img id="mobile-avatar" src="[https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff](https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff)" class="w-8 h-8 rounded-full border border-slate-600 object-cover">
+            <img id="mobile-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-8 h-8 rounded-full border border-slate-600 object-cover">
         </header>
 
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hide md:hidden"></div>
@@ -404,7 +181,7 @@
                         <p id="topbar-name" class="text-sm font-semibold">Student</p>
                         <p id="topbar-band" class="text-xs text-blue-400">Target: Band 7.5</p>
                     </div>
-                    <img id="topbar-avatar" src="[https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff](https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff)" class="w-9 h-9 rounded-full border border-blue-500/50 object-cover">
+                    <img id="topbar-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full border border-blue-500/50 object-cover">
                 </div>
             </header>
 
@@ -869,7 +646,7 @@
                     <h2 class="text-xl font-bold text-blue-400">Profile Settings</h2>
                     <div class="glass-panel p-5 rounded-2xl space-y-4">
                         <div class="flex items-center gap-4 pb-3 border-b border-slate-700">
-                            <img id="settings-avatar-preview" src="[https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff](https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff)" class="w-16 h-16 rounded-full border-2 border-blue-500 object-cover">
+                            <img id="settings-avatar-preview" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-16 h-16 rounded-full border-2 border-blue-500 object-cover">
                             <label class="bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer">
                                 <i class="fa-solid fa-camera mr-1"></i> Change Photo
                                 <input type="file" id="avatar-upload" class="hide" accept="image/*">
@@ -893,9 +670,9 @@
 
     <!-- ================= APPLICATION LOGIC ================= -->
     <script type="module">
-        import { initializeApp } from "[https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js](https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js)";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "[https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js](https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js)";
-        import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection, query, orderBy } from "[https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js](https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js)";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC5D9ubr8BfdngM5WJZuFnSnm1Xru0DhoY",
@@ -912,6 +689,11 @@
 
         const _GROQ_CHUNKS = ["gsk", "_Gj", "feo", "AJg", "ekp", "rPK", "V9w", "hbF", "WGd", "yb3", "FYr", "IqR", "tSk", "mhw", "pup", "HNg", "Qfl", "qup", "Hs"];
         const getBuiltInKey = () => _GROQ_CHUNKS.join("");
+
+        // Escape user-controlled text before putting it into innerHTML (prevents script injection)
+        function escapeHTML(v) {
+            return String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+        }
 
         function showToast(msg, type = "info") {
             const box = document.getElementById('toast-box');
@@ -1142,7 +924,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             const ext = file.name.split('.').pop().toLowerCase();
             if (ext === 'pdf') {
                 const ab = await readArrayBuffer(file);
-                window.pdfjsLib.GlobalWorkerOptions.workerSrc = '[https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js](https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js)';
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
                 const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(ab) }).promise;
                 const totalPages = pdf.numPages;
                 let fullTextChunks = [];
@@ -1569,9 +1351,9 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                     tb.innerHTML = '';
                     snap.forEach(d => {
                         const u = d.data();
-                        const n = u.displayName || "Student";
-                        const av = u.photoURL || `https://ui-avatars.com/api/?name=${n}&background=0D8ABC&color=fff`;
-                        tb.innerHTML += `<tr class="border-b border-slate-700/50"><td class="py-2.5 pr-2"><div class="flex items-center gap-2 max-w-[140px] sm:max-w-[220px]"><img src="${av}" class="w-7 h-7 rounded-full object-cover flex-shrink-0"><span class="truncate">${n}</span></div></td><td class="py-2.5 px-2 font-bold text-orange-400"><i class="fa-solid fa-fire flame-glow mr-1"></i>${u.studyStreak || 0}d</td><td class="py-2.5 px-2 font-bold text-blue-400">Band ${u.targetBand || '7.5'}</td><td class="py-2.5 pl-2 text-xs text-slate-400">${u.status || 'Studying'}</td></tr>`;
+                        const n = escapeHTML(u.displayName || "Student");
+                        const av = escapeHTML(u.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName || "Student")}&background=0D8ABC&color=fff`);
+                        tb.innerHTML += `<tr class="border-b border-slate-700/50"><td class="py-2.5 pr-2"><div class="flex items-center gap-2 max-w-[140px] sm:max-w-[220px]"><img src="${av}" class="w-7 h-7 rounded-full object-cover flex-shrink-0"><span class="truncate">${n}</span></div></td><td class="py-2.5 px-2 font-bold text-orange-400"><i class="fa-solid fa-fire flame-glow mr-1"></i>${escapeHTML(u.studyStreak || 0)}d</td><td class="py-2.5 px-2 font-bold text-blue-400">Band ${escapeHTML(u.targetBand || '7.5')}</td><td class="py-2.5 pl-2 text-xs text-slate-400">${escapeHTML(u.status || 'Studying')}</td></tr>`;
                     });
                 });
             } else {
@@ -1725,7 +1507,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             pendingChatFileText = null; pendingChatFileName = "";
             document.getElementById('chat-attachment-bar')?.classList.add('hide');
 
-            chatBox.innerHTML += `<div class="flex justify-end"><div class="bg-blue-600 px-3.5 py-2.5 rounded-2xl rounded-tr-none text-xs sm:text-sm text-white max-w-[85%]">${fileLabel ? `<div class="text-[11px] bg-blue-800 px-2 py-0.5 rounded mb-1">📎 ${fileLabel}</div>` : ''}${msg}</div></div>`;
+            chatBox.innerHTML += `<div class="flex justify-end"><div class="bg-blue-600 px-3.5 py-2.5 rounded-2xl rounded-tr-none text-xs sm:text-sm text-white max-w-[85%]">${fileLabel ? `<div class="text-[11px] bg-blue-800 px-2 py-0.5 rounded mb-1">📎 ${escapeHTML(fileLabel)}</div>` : ''}${escapeHTML(msg)}</div></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
 
             const loadId = "ld-" + Date.now();
@@ -1788,10 +1570,11 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             document.getElementById('listening-file-badge').textContent = "";
         });
 
-        document.getElementById('btn-ai-listening')?.addEventListener('click', async () => {
+        // useSource=true -> "By Book / Topic" button; false -> "Standard IELTS Test" button
+        const generateListening = async (btn, useSource) => {
+            if (!btn) return;
             window.speechSynthesis?.cancel();
-            const btn = document.getElementById('btn-ai-listening');
-            const rawSource = document.getElementById('listening-custom-source')?.value.trim() || "";
+            const rawSource = useSource ? (document.getElementById('listening-custom-source')?.value.trim() || "") : "";
 
             // If user leaves box blank, load an Official IELTS Standard Listening Test immediately or generate a fresh standard one
             const orig = btn.innerHTML;
@@ -1830,7 +1613,9 @@ Return a valid JSON object with this exact schema:
                 btn.disabled = false;
                 btn.innerHTML = orig;
             }
-        });
+        };
+        document.getElementById('btn-gen-book-listening')?.addEventListener('click', (e) => generateListening(e.currentTarget, true));
+        document.getElementById('btn-gen-std-listening')?.addEventListener('click', (e) => generateListening(e.currentTarget, false));
 
         document.getElementById('btn-save-listening')?.addEventListener('click', async () => {
             if (!activeListeningTest) return showToast("Generate a Listening test first!", "error");
@@ -1936,9 +1721,10 @@ Return a valid JSON object with this exact schema:
             document.getElementById('reading-file-status').textContent = "";
         });
 
-        document.getElementById('btn-ai-reading')?.addEventListener('click', async () => {
-            const btn = document.getElementById('btn-ai-reading');
-            const rawSource = document.getElementById('reading-custom-source')?.value.trim() || "";
+        // useSource=true -> "By Book / Topic" button; false -> "Standard IELTS Test" button
+        const generateReading = async (btn, useSource) => {
+            if (!btn) return;
+            const rawSource = useSource ? (document.getElementById('reading-custom-source')?.value.trim() || "") : "";
             const orig = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating IELTS Passage...`;
@@ -1987,7 +1773,9 @@ Return a valid JSON object matching this exact structure:
                 btn.disabled = false;
                 btn.innerHTML = orig;
             }
-        });
+        };
+        document.getElementById('btn-gen-book-reading')?.addEventListener('click', (e) => generateReading(e.currentTarget, true));
+        document.getElementById('btn-gen-std-reading')?.addEventListener('click', (e) => generateReading(e.currentTarget, false));
 
         document.getElementById('btn-save-reading')?.addEventListener('click', async () => {
             if (!activeReadingTest) return showToast("Generate a Reading test first!", "error");
