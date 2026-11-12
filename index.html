@@ -95,7 +95,37 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.45); border-radius: 9999px; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
-        .ai-prose { font-size: 0.9rem; line-height: 1.72; color: #e2e8f0; word-break: break-word; }
+        /* App shell. Permanent sidebar only when the screen is wide AND tall; phones (portrait or landscape) get a slide-in menu. */
+        #main-app { display: flex; flex-direction: column; }
+        .app-mobile-header { display: flex; height: 3.5rem; }
+        .app-topbar { display: none; }
+        .app-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 40; }
+        .app-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: 15rem; max-width: 82vw; transform: translateX(-100%); transition: transform 0.3s; z-index: 50; display: flex; flex-direction: column; justify-content: space-between; height: 100%; flex-shrink: 0; }
+        .app-sidebar.open { transform: translateX(0); }
+        .app-sidebar > .app-sidebar-scroll { overflow-y: auto; min-height: 0; }
+        .app-close-sidebar { display: block; }
+        #main-scroll-area { padding: 1rem; padding-bottom: 7rem; }
+        @media (min-width: 768px) and (min-height: 521px) {
+            #main-app { flex-direction: row; }
+            .app-mobile-header { display: none; }
+            .app-overlay { display: none !important; }
+            .app-close-sidebar { display: none; }
+            .app-topbar { display: flex; }
+            .app-sidebar { position: relative; transform: none; max-width: none; }
+            #main-scroll-area { padding: 1.5rem; padding-bottom: 4rem; }
+        }
+        @media (max-height: 520px) {
+            .app-mobile-header { height: 2.75rem; }
+            #main-scroll-area { padding: 0.75rem; padding-bottom: 3rem; }
+        }
+        /* Safe-area padding so notches / rounded corners never clip content in landscape */
+        #main-scroll-area { padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
+
+        .ai-prose { font-size: 0.9rem; line-height: 1.72; color: #e2e8f0; overflow-wrap: break-word; word-break: normal; }
+        .ai-prose .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.75rem 0; border: 1px solid rgba(148, 163, 184, 0.22); border-radius: 0.6rem; background: rgba(15, 23, 42, 0.85); }
+        .ai-prose .table-scroll table { margin: 0; border: 0; display: table; width: max-content; min-width: 100%; }
+        .ai-prose th, .ai-prose td { min-width: 5.5rem; vertical-align: top; }
+        .ai-prose td:first-child, .ai-prose th:first-child { min-width: 2.5rem; }
         .ai-prose h1, .ai-prose h2, .ai-prose h3, .ai-prose h4 { color: #38bdf8; font-weight: 700; margin: 0.85rem 0 0.4rem; font-size: 1.02rem; }
         .ai-prose p { margin-bottom: 0.75rem; }
         .ai-prose ul, .ai-prose ol { margin-left: 1.25rem; margin-bottom: 0.75rem; }
@@ -108,7 +138,7 @@
         .ai-prose td { padding: 0.5rem 0.75rem; border-top: 1px solid rgba(148, 163, 184, 0.15); }
     </style>
 </head>
-<body class="flex flex-col md:flex-row antialiased relative text-slate-100 overflow-hidden">
+<body class="flex flex-col antialiased relative text-slate-100 overflow-hidden">
 
     <div class="aurora-bg">
         <div class="aurora-orb orb-1"></div>
@@ -155,10 +185,10 @@
     </div>
 
     <!-- ================= MAIN APP ================= -->
-    <div id="main-app" class="hide flex flex-col md:flex-row w-full h-full overflow-hidden relative z-10">
+    <div id="main-app" class="hide w-full h-full overflow-hidden relative z-10">
         
         <!-- Mobile Header -->
-        <header class="md:hidden h-14 glass-panel border-b border-slate-700/60 flex items-center justify-between px-4 z-30 flex-shrink-0">
+        <header class="app-mobile-header glass-panel border-b border-slate-700/60 items-center justify-between px-4 z-30 flex-shrink-0">
             <button type="button" id="mobile-menu-btn" class="flex items-center gap-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 px-3 py-1.5 rounded-xl text-xs font-semibold">
                 <i class="fa-solid fa-bars"></i> Menu
             </button>
@@ -168,11 +198,11 @@
             <img id="mobile-avatar" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-8 h-8 rounded-full border border-slate-600 object-cover">
         </header>
 
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hide md:hidden"></div>
+        <div id="sidebar-overlay" class="app-overlay hide"></div>
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-60 glass-panel border-r border-slate-700/60 flex flex-col justify-between h-full transition-transform duration-300 z-50 flex-shrink-0">
-            <div class="overflow-y-auto">
+        <aside id="sidebar" class="app-sidebar glass-panel border-r border-slate-700/60">
+            <div class="app-sidebar-scroll">
                 <div class="p-4 flex items-center justify-between border-b border-slate-700/50">
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow">
@@ -180,18 +210,18 @@
                         </div>
                         <span class="font-extrabold text-base tracking-tight">IELTS Studio<span class="text-blue-400">.</span></span>
                     </div>
-                    <button type="button" id="close-sidebar" class="md:hidden text-slate-400 text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" id="close-sidebar" class="app-close-sidebar text-slate-400 text-lg px-2" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <nav class="p-2.5 space-y-1">
                     <button type="button" data-target="dashboard" class="nav-btn bg-blue-600/20 text-blue-400 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-house w-5"></i>Dashboard</button>
                     <button type="button" data-target="course" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-bolt text-yellow-400 w-5"></i>English Course</button>
-                    <button type="button" data-target="books" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-bookmark text-pink-400 w-5"></i>Book Library</button>
+                    <button type="button" data-target="guide" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-circle-info text-pink-400 w-5"></i>IELTS Guide</button>
                     <button type="button" data-target="history" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-chart-line text-indigo-400 w-5"></i>My Scores & Tests</button>
                     <button type="button" data-target="ai" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-wand-magic-sparkles text-purple-400 w-5"></i>AI Tutor Chat</button>
-                    <button type="button" data-target="listening" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-headphones text-cyan-400 w-5"></i>AI Listening Lab</button>
-                    <button type="button" data-target="reading" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-open text-emerald-400 w-5"></i>AI Reading Lab</button>
-                    <button type="button" data-target="writing" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-pen-nib text-amber-400 w-5"></i>AI Writing Studio</button>
-                    <button type="button" data-target="speaking" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-microphone text-rose-400 w-5"></i>AI Speaking Arena</button>
+                    <button type="button" data-target="listening" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-headphones text-cyan-400 w-5"></i>Listening</button>
+                    <button type="button" data-target="reading" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-open text-emerald-400 w-5"></i>Reading</button>
+                    <button type="button" data-target="writing" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-pen-nib text-amber-400 w-5"></i>Writing</button>
+                    <button type="button" data-target="speaking" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-microphone text-rose-400 w-5"></i>Speaking</button>
                 </nav>
             </div>
             <div class="p-2.5 border-t border-slate-700/50 space-y-1 flex-shrink-0">
@@ -202,13 +232,13 @@
 
         <!-- Main Workspace -->
         <main class="flex-1 flex flex-col h-full min-h-0 overflow-hidden relative z-10">
-            <header class="hidden md:flex h-14 glass-panel border-b border-slate-700/60 items-center justify-between px-6 flex-shrink-0">
+            <header class="app-topbar h-14 glass-panel border-b border-slate-700/60 items-center justify-between px-6 flex-shrink-0">
                 <div class="flex items-center gap-2.5 text-xs text-slate-300 font-medium">
                     <span class="relative flex h-2.5 w-2.5">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
-                    <span>Live AI Hub • Book Test Engine & Official IELTS Standard Active</span>
+                    <span>IELTS Studio KH · Official-format practice for all four skills</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
@@ -219,7 +249,7 @@
                 </div>
             </header>
 
-            <div id="main-scroll-area" class="flex-1 overflow-y-auto p-4 md:p-6 pb-28 md:pb-16 space-y-5">
+            <div id="main-scroll-area" class="flex-1 overflow-y-auto space-y-5">
                 
                 <!-- ================= 1. DASHBOARD ================= -->
                 <div id="view-dashboard" class="view-section space-y-4">
@@ -364,17 +394,55 @@
                     <div id="course-content-box" class="glass-panel p-5 rounded-2xl ai-prose space-y-4"></div>
                 </div>
 
-                <!-- ================= 3. BOOK LIBRARY (Full PDF Scan & Saved Forever) ================= -->
-                <div id="view-books" class="view-section hide space-y-4">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="text-xl font-bold text-pink-400"><i class="fa-solid fa-book-bookmark mr-2"></i>Permanent Book Library (100% Full PDF Scan)</h2>
-                        <label class="bg-pink-600 hover:bg-pink-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg cursor-pointer transition">
-                            <i class="fa-solid fa-file-pdf mr-1"></i> Upload Full PDF / TXT / DOCX Book
-                            <input type="file" id="book-library-upload" accept=".pdf,.txt,.md,.csv,.docx,.html" class="hide">
-                        </label>
+                <!-- ================= 3. IELTS GUIDE ================= -->
+                <div id="view-guide" class="view-section hide space-y-4">
+                    <h2 class="text-xl font-bold text-pink-400"><i class="fa-solid fa-circle-info mr-2"></i>IELTS Guide: how the real test works</h2>
+                    <p class="text-xs text-slate-400">Practise exactly like the exam day. Timings and question counts below follow the official IELTS format (Academic).</p>
+
+                    <div class="glass-panel rounded-2xl p-4 overflow-x-auto">
+                        <table class="w-full text-xs sm:text-sm min-w-[480px]">
+                            <thead><tr class="text-left text-slate-400 border-b border-slate-700"><th class="py-2 pr-3">Paper</th><th class="py-2 pr-3">Time</th><th class="py-2 pr-3">Content</th></tr></thead>
+                            <tbody class="text-slate-200">
+                                <tr class="border-b border-slate-800"><td class="py-2 pr-3 font-semibold text-cyan-400">Listening</td><td class="py-2 pr-3">30 min + 10 min to transfer answers</td><td class="py-2 pr-3">4 sections, 40 questions. Audio is played once.</td></tr>
+                                <tr class="border-b border-slate-800"><td class="py-2 pr-3 font-semibold text-emerald-400">Reading</td><td class="py-2 pr-3">60 min</td><td class="py-2 pr-3">3 passages, 40 questions. No extra time to transfer answers.</td></tr>
+                                <tr class="border-b border-slate-800"><td class="py-2 pr-3 font-semibold text-amber-400">Writing</td><td class="py-2 pr-3">60 min</td><td class="py-2 pr-3">Task 1: 150+ words (about 20 min). Task 2: 250+ words (about 40 min). Task 2 counts double.</td></tr>
+                                <tr><td class="py-2 pr-3 font-semibold text-rose-400">Speaking</td><td class="py-2 pr-3">11 to 14 min</td><td class="py-2 pr-3">Part 1 interview (4-5 min), Part 2 cue card (1 min prep + 1-2 min talk), Part 3 discussion (4-5 min).</td></tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div id="book-upload-status" class="text-xs text-pink-300 font-semibold"></div>
-                    <div id="books-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="glass-panel rounded-2xl p-4">
+                            <h3 class="font-bold text-sm text-emerald-400 mb-2">Reading: raw score to band (approx.)</h3>
+                            <div id="guide-reading-bands" class="flex flex-wrap gap-1.5 text-[11px]"></div>
+                        </div>
+                        <div class="glass-panel rounded-2xl p-4">
+                            <h3 class="font-bold text-sm text-cyan-400 mb-2">Listening: raw score to band (approx.)</h3>
+                            <div id="guide-listening-bands" class="flex flex-wrap gap-1.5 text-[11px]"></div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500">Conversion tables differ slightly between test versions, so treat these as estimates. Your overall band is the average of the four skills, rounded to the nearest 0.5.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="glass-panel rounded-2xl p-4 text-xs sm:text-sm text-slate-300">
+                            <h3 class="font-bold text-amber-400 mb-2">Writing is marked on 4 criteria</h3>
+                            <ul class="list-disc ml-5 space-y-1"><li><b>Task Achievement / Response</b>: answer every part of the question</li><li><b>Coherence &amp; Cohesion</b>: clear paragraphs and linking</li><li><b>Lexical Resource</b>: range and accuracy of vocabulary</li><li><b>Grammatical Range &amp; Accuracy</b>: variety of structures, few errors</li></ul>
+                        </div>
+                        <div class="glass-panel rounded-2xl p-4 text-xs sm:text-sm text-slate-300">
+                            <h3 class="font-bold text-rose-400 mb-2">Speaking is marked on 4 criteria</h3>
+                            <ul class="list-disc ml-5 space-y-1"><li><b>Fluency &amp; Coherence</b>: speak at length without long pauses</li><li><b>Lexical Resource</b>: flexible, precise vocabulary</li><li><b>Grammatical Range &amp; Accuracy</b></li><li><b>Pronunciation</b>: clear, natural stress and intonation</li></ul>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-4 text-xs sm:text-sm text-slate-300">
+                        <h3 class="font-bold text-blue-400 mb-2">How to use this site</h3>
+                        <ol class="list-decimal ml-5 space-y-1">
+                            <li>Start with a <b>single section / passage</b> to learn the question types, then move to a <b>full test</b> under timed conditions.</li>
+                            <li>In <b>Writing</b> and <b>Speaking</b>, press <b>Generate</b> to get an exam-style task, then ask the AI examiner to grade it. Read the feedback and rewrite.</li>
+                            <li>Check <b>My Scores &amp; Tests</b> weekly: aim for steady progress toward your target band.</li>
+                        </ol>
+                        <p class="text-[11px] text-slate-500 mt-3">IELTS is a trademark of its respective owners. This is an independent study tool. AI-generated tasks and band scores are practice estimates, not official results.</p>
+                    </div>
                 </div>
 
                 <!-- ================= 4. MY SCORES & SAVED TESTS ================= -->
@@ -434,9 +502,6 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>AI Listening Lab</h2>
                         <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" id="btn-gen-book-listening" class="bg-pink-600 hover:bg-pink-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
-                                <i class="fa-solid fa-book-open mr-1"></i> Generate Test by Book / Topic
-                            </button>
                             <button type="button" id="btn-gen-std-listening" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
                                 <i class="fa-solid fa-building-columns mr-1"></i> Generate Standard IELTS Test
                             </button>
@@ -461,26 +526,6 @@
                             <option value="">-- Select a Saved Listening Test --</option>
                         </select>
                         <button type="button" id="btn-delete-listening-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-
-                    <div class="glass-panel p-3.5 rounded-xl space-y-2 border border-pink-500/30">
-                        <div class="flex flex-wrap gap-2 items-center justify-between">
-                            <div class="flex items-center gap-2 flex-wrap flex-1 min-w-0">
-                                <select id="listening-book-picker" class="min-w-0 max-w-full w-full sm:w-auto bg-pink-600/20 border border-pink-500/40 text-pink-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold">
-                                    <option value="">📚 Pick Saved Book...</option>
-                                </select>
-                                <label class="bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/40 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer">
-                                    <i class="fa-solid fa-file-arrow-up mr-1"></i> Upload Full PDF / TXT
-                                    <input type="file" id="listening-file-upload" accept=".pdf,.txt,.md,.csv,.docx,.html" class="hide">
-                                </label>
-                                <button type="button" id="btn-next-listening-chunk" class="max-w-full hide bg-purple-600/30 hover:bg-purple-600 border border-purple-400/40 text-purple-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold">
-                                    <i class="fa-solid fa-forward-step mr-1"></i> Next Chapter / Story in Book
-                                </button>
-                                <span id="listening-file-badge" class="text-xs text-emerald-400 font-semibold"></span>
-                            </div>
-                            <button type="button" id="btn-clear-listening-source" class="text-xs text-slate-400 hover:text-red-400">Clear</button>
-                        </div>
-                        <textarea id="listening-custom-source" rows="2" placeholder="Pick a saved book above or type/paste your own story/topic here, then click '📕 Generate Test by Book / Topic'..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-pink-500"></textarea>
                     </div>
 
                     <div class="glass-panel p-4 rounded-2xl space-y-3.5">
@@ -521,9 +566,6 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>AI Reading Lab</h2>
                         <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" id="btn-gen-book-reading" class="bg-pink-600 hover:bg-pink-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
-                                <i class="fa-solid fa-book-open mr-1"></i> Generate Test by Book / Topic
-                            </button>
                             <button type="button" id="btn-gen-std-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
                                 <i class="fa-solid fa-building-columns mr-1"></i> Generate Standard IELTS Test
                             </button>
@@ -555,26 +597,6 @@
                         <button type="button" id="btn-delete-reading-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
 
-                    <div class="glass-panel p-3.5 rounded-xl space-y-2 border border-pink-500/30">
-                        <div class="flex flex-wrap gap-2 items-center justify-between">
-                            <div class="flex items-center gap-2 flex-wrap flex-1 min-w-0">
-                                <select id="reading-book-picker" class="min-w-0 max-w-full w-full sm:w-auto bg-pink-600/20 border border-pink-500/40 text-pink-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold">
-                                    <option value="">📚 Pick Saved Book...</option>
-                                </select>
-                                <label class="bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer">
-                                    <i class="fa-solid fa-file-pdf mr-1"></i> Upload Full PDF / TXT
-                                    <input type="file" id="reading-file-upload" accept=".pdf,.txt,.md,.csv,.docx,.html" class="hide">
-                                </label>
-                                <button type="button" id="btn-next-reading-chunk" class="max-w-full hide bg-purple-600/30 hover:bg-purple-600 border border-purple-400/40 text-purple-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold">
-                                    <i class="fa-solid fa-forward-step mr-1"></i> Next Chapter / Story in Book
-                                </button>
-                                <span id="reading-file-status" class="text-xs text-emerald-400 font-semibold"></span>
-                            </div>
-                            <button type="button" id="btn-clear-reading-source" class="text-xs text-slate-400 hover:text-red-400">Clear</button>
-                        </div>
-                        <textarea id="reading-custom-source" rows="2" placeholder="Pick a saved book above or type/paste your own topic/article here, then click '📕 Generate Test by Book / Topic'..." class="w-full bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-pink-500"></textarea>
-                    </div>
-
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div class="glass-panel p-4 sm:p-5 rounded-2xl lg:max-h-[68vh] lg:overflow-y-auto space-y-2">
                             <h3 id="reading-passage-title" class="font-bold text-base text-emerald-400 border-b border-slate-700 pb-2">Reading Passage</h3>
@@ -595,9 +617,10 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-pen-nib mr-2"></i>AI Writing Studio</h2>
                         <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" id="btn-ai-writing-prompt" class="bg-amber-600 hover:bg-amber-500 px-3.5 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Generate Topic</button>
+                            <button type="button" id="btn-writing-task1" class="bg-amber-600 hover:bg-amber-500 px-3.5 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-chart-column mr-1"></i>Task 1 · Chart</button>
+                            <button type="button" id="btn-writing-task2" class="bg-orange-600 hover:bg-orange-500 px-3.5 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-file-pen mr-1"></i>Task 2 · Essay</button>
                             <button type="button" id="btn-save-writing" class="bg-slate-800 hover:bg-amber-600 border border-amber-500/40 text-amber-300 hover:text-white px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-floppy-disk mr-1"></i>Save Test</button>
-                            <div id="writing-timer" class="bg-blue-500/10 text-blue-400 px-2.5 py-1.5 rounded-lg font-mono font-bold text-xs">40:00</div>
+                            <div id="writing-timer" class="bg-blue-500/10 text-blue-400 px-2.5 py-1.5 rounded-lg font-mono font-bold text-xs" title="Task 1: 20 min · Task 2: 40 min">40:00</div>
                             <button type="button" id="btn-start-write" class="bg-slate-700 px-2.5 py-1.5 rounded-lg text-xs text-white"><i class="fa-solid fa-play"></i></button>
                         </div>
                     </div>
@@ -620,18 +643,16 @@
                         <button type="button" id="btn-delete-writing-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
 
-                    <input type="text" id="writing-custom-source" placeholder="Optional: Type your own essay topic idea here, or leave blank and click 'Generate Topic'..." class="w-full glass-panel rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
-
                     <div id="writing-prompt-box" class="glass-panel p-3.5 rounded-xl text-xs sm:text-sm text-amber-100 border-l-4 border-l-amber-500">
-                        Click <strong>Generate Topic</strong> above or type your own topic and start writing.
+                        Choose <strong>Task 1 · Chart</strong> (150+ words, 20 min) or <strong>Task 2 · Essay</strong> (250+ words, 40 min) to get an exam-style question.
                     </div>
 
-                    <textarea id="writing-area" rows="8" class="w-full glass-panel p-3.5 rounded-2xl text-sm text-white focus:outline-none focus:border-amber-500 leading-relaxed" placeholder="Write your essay here..."></textarea>
+                    <textarea id="writing-area" rows="8" class="w-full glass-panel p-3.5 rounded-2xl text-sm text-white focus:outline-none focus:border-amber-500 leading-relaxed" placeholder="Type your answer here. Plan first: introduction, 2-3 body paragraphs, conclusion."></textarea>
 
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <span id="word-count" class="text-xs font-bold text-blue-400">0 words</span>
+                        <span id="word-count" class="text-xs font-bold text-amber-300">0 words · minimum 250</span>
                         <button type="button" id="btn-ai-grade-essay" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-lg">
-                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> AI Grade Essay & Save Score
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Mark My Writing &amp; Save Score
                         </button>
                     </div>
 
@@ -643,8 +664,8 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-rose-400"><i class="fa-solid fa-microphone mr-2"></i>AI Speaking Arena</h2>
                         <div class="flex gap-2">
-                            <button type="button" id="btn-ai-speaking-card" class="bg-rose-600 hover:bg-rose-500 px-3.5 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Generate Cue Card</button>
-                            <button type="button" id="btn-save-speaking" class="bg-slate-800 hover:bg-rose-600 border border-rose-500/40 text-rose-300 hover:text-white px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-floppy-disk mr-1"></i>Save Card</button>
+                            <button type="button" id="btn-ai-speaking-card" class="bg-rose-600 hover:bg-rose-500 px-3.5 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>New Speaking Test</button>
+                            <button type="button" id="btn-save-speaking" class="bg-slate-800 hover:bg-rose-600 border border-rose-500/40 text-rose-300 hover:text-white px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-floppy-disk mr-1"></i>Save Test</button>
                         </div>
                     </div>
 
@@ -660,26 +681,34 @@
                     <div class="glass-panel p-3 rounded-xl flex items-center gap-2 border border-rose-500/30">
                         <span class="text-xs font-bold text-rose-300 whitespace-nowrap">Saved (<span id="speaking-saved-count">0</span>):</span>
                         <select id="speaking-test-selector" class="flex-1 min-w-0 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                            <option value="">-- Select a Saved Speaking Card --</option>
+                            <option value="">-- Select a Saved Speaking Test --</option>
                         </select>
                         <button type="button" id="btn-delete-speaking-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
 
-                    <input type="text" id="speaking-custom-source" placeholder="Optional: Type a speaking topic idea here, or leave blank and click 'Generate Cue Card'..." class="w-full glass-panel rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
-
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div class="glass-panel p-4 rounded-2xl space-y-3">
+                            <div id="speaking-part-tabs" class="hide flex gap-1.5 text-xs font-semibold">
+                                <button type="button" data-part="1" class="speak-part-btn flex-1 py-2 rounded-lg bg-rose-600 text-white">Part 1</button>
+                                <button type="button" data-part="2" class="speak-part-btn flex-1 py-2 rounded-lg bg-slate-800 text-slate-300">Part 2</button>
+                                <button type="button" data-part="3" class="speak-part-btn flex-1 py-2 rounded-lg bg-slate-800 text-slate-300">Part 3</button>
+                            </div>
                             <div id="speaking-cue-card" class="bg-slate-800/90 border border-slate-700 p-3.5 rounded-xl ai-prose text-sm">
-                                Click <strong>Generate Cue Card</strong> above.
+                                Press <strong>New Speaking Test</strong> above to get a full IELTS Speaking test: Part 1 interview, Part 2 cue card and Part 3 discussion.
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button type="button" id="btn-speak-aloud" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold"><i class="fa-solid fa-volume-high mr-1"></i>Hear examiner</button>
+                                <button type="button" id="btn-speak-prep" class="hide bg-amber-600/80 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold"><i class="fa-solid fa-stopwatch mr-1"></i>Start 1-min prep</button>
+                                <span id="speaking-timer" class="font-mono font-bold text-xs text-rose-300 ml-auto">00:00</span>
                             </div>
                             <div class="flex gap-2">
                                 <button type="button" id="btn-record" class="flex-1 bg-rose-600 hover:bg-rose-500 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-microphone mr-1"></i>Record Voice</button>
-                                <button type="button" id="btn-ai-speaking-sample" class="flex-1 bg-purple-600 hover:bg-purple-500 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Band 8.5 Sample</button>
+                                <button type="button" id="btn-ai-speaking-sample" class="flex-1 bg-purple-600 hover:bg-purple-500 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Model Answer</button>
                             </div>
                             <p id="rec-status" class="text-rose-400 text-xs font-bold text-center animate-pulse hide">🔴 Recording... Click Stop when done.</p>
                             <audio id="audio-playback" controls class="w-full hide rounded-xl"></audio>
-                            <textarea id="speaking-user-transcript" rows="3" placeholder="Speak with microphone or type your spoken answer here..." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-2.5 text-xs text-white"></textarea>
-                            <button type="button" id="btn-grade-speaking" class="w-full bg-emerald-600 hover:bg-emerald-500 py-2 rounded-xl text-xs font-semibold text-white">AI Grade Speaking & Save Score</button>
+                            <textarea id="speaking-user-transcript" rows="3" placeholder="Press Record and speak, or type what you would say. Each part keeps its own answer." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-2.5 text-xs text-white"></textarea>
+                            <button type="button" id="btn-grade-speaking" class="w-full bg-emerald-600 hover:bg-emerald-500 py-2 rounded-xl text-xs font-semibold text-white">Mark My Speaking &amp; Save Score</button>
                         </div>
 
                         <div class="glass-panel p-4 rounded-2xl lg:max-h-[65vh] lg:overflow-y-auto">
@@ -942,34 +971,6 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         let stdListenIdx = 0;
 
         // --- 3. INDEXED-DB & FULL PDF SCANNER ---
-        function openBookDB() {
-            return new Promise((resolve, reject) => {
-                const req = indexedDB.open("IELTS_FULL_BOOKS_DB", 1);
-                req.onupgradeneeded = (e) => {
-                    const idb = e.target.result;
-                    if (!idb.objectStoreNames.contains("books")) idb.createObjectStore("books", { keyPath: "id" });
-                };
-                req.onsuccess = () => resolve(req.result);
-                req.onerror = () => reject(req.error);
-            });
-        }
-        async function saveFullBookToIDB(bookObj) {
-            try { const idb = await openBookDB(); idb.transaction("books", "readwrite").objectStore("books").put(bookObj); } catch (e) {}
-        }
-        async function getAllBooksFromIDB(uid) {
-            try {
-                const idb = await openBookDB();
-                return new Promise((resolve) => {
-                    const req = idb.transaction("books", "readonly").objectStore("books").getAll();
-                    req.onsuccess = () => resolve((req.result || []).filter(b => b.uid === uid));
-                    req.onerror = () => resolve([]);
-                });
-            } catch (e) { return []; }
-        }
-        async function deleteBookFromIDB(bookId) {
-            try { const idb = await openBookDB(); idb.transaction("books", "readwrite").objectStore("books").delete(bookId); } catch (e) {}
-        }
-
         const readArrayBuffer = (file) => new Promise((res, rej) => {
             const r = new FileReader();
             r.onload = () => res(r.result);
@@ -1008,80 +1009,17 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         }
 
         // Smart Book Story/Chapter Extractor (Skips Copyright/Dedication Front-Matter Automatically!)
-        let activeListeningBookFull = "";
-        let activeReadingBookFull = "";
-        let listenChunkIdx = 0;
-        let readChunkIdx = 0;
-
-        function extractCleanBookChapter(fullBookText, chunkIndex = 0, chunkSize = 4800) {
-            if (!fullBookText) return "";
-            const cleaned = fullBookText.replace(/\s+/g, ' ').trim();
-            if (cleaned.length <= chunkSize) return cleaned;
-
-            // Skip front-matter copyright/dedication pages (~first 6% of a long book) on chunk 0
-            const bodyStart = cleaned.length > 15000 ? Math.min(2500, Math.floor(cleaned.length * 0.05)) : 0;
-            const usableText = cleaned.slice(bodyStart);
-            const totalChunks = Math.max(1, Math.floor(usableText.length / chunkSize));
-            const idx = chunkIndex % totalChunks;
-            const slice = usableText.slice(idx * chunkSize, (idx + 1) * chunkSize);
-            return slice;
-        }
-
-        // Guaranteed Book-Based Fallback Builder (If AI is rate-limited, builds test directly from the user's Book!)
-        function buildGuaranteedTestFromBook(bookSlice, bookTitle, mode = "listening") {
-            const sentences = bookSlice
-                .split(/(?<=[.!?])\s+/)
-                .map(s => s.trim())
-                .filter(s => s.length > 45 && s.length < 260 && !/copyright|isbn|published by/i.test(s));
-
-            const usable = sentences.length >= 8 ? sentences : bookSlice.match(/.{1,160}(\s|$)/g) || [bookSlice];
-            const pA = usable.slice(0, 4).join(' ');
-            const pB = usable.slice(4, 8).join(' ');
-            const pC = usable.slice(8, 12).join(' ');
-            const pD = usable.slice(12, 16).join(' ');
-
-            const questions = [];
-            for (let i = 0; i < Math.min(6, usable.length); i++) {
-                const targetSent = usable[i * 2] || usable[i];
-                const words = targetSent.split(/\s+/);
-                const keyPhrase = words.slice(Math.max(0, words.length - 5)).join(' ').replace(/[.,!?"']/g, '');
-                if (mode === "reading") {
-                    questions.push({
-                        q: `${i + 1}. Based on the passage, does the text confirm the following detail: "${targetSent.slice(0, 110)}..."?`,
-                        options: ["True", "False", "Not Given"],
-                        ans: "True",
-                        exp: `Directly stated in the book text: "${targetSent}"`
-                    });
-                } else {
-                    questions.push({
-                        q: `${i + 1}. According to the spoken passage from "${bookTitle}", what is mentioned regarding "${ words.slice(0, 6).join(' ').replace(/[.,!?"']/g, '') }..."?`,
-                        options: [
-                            `It involves ${keyPhrase}`,
-                            `It was completely prohibited by local authorities`,
-                            `It never occurred during the story`
-                        ],
-                        ans: `It involves ${keyPhrase}`,
-                        exp: `Directly stated in the audio script: "${targetSent}"`
-                    });
-                }
-            }
-
-            return {
-                title: `${bookTitle || "Book Study"} — IELTS ${mode === "reading" ? "Reading" : "Listening"} Test`,
-                script: [pA, pB, pC].filter(Boolean).join(' '),
-                passage: [
-                    `**Paragraph A**\n\n${pA}`,
-                    pB ? `**Paragraph B**\n\n${pB}` : "",
-                    pC ? `**Paragraph C**\n\n${pC}` : "",
-                    pD ? `**Paragraph D**\n\n${pD}` : ""
-                ].filter(Boolean).join('\n\n'),
-                questions
-            };
+        // Keeps a long pasted/attached document within the AI's size limit (used by the AI Tutor file attach)
+        function getSmartPassageFromFullText(fullText, maxChars = 6000) {
+            const t = String(fullText || '').replace(/\s+/g, ' ').trim();
+            if (t.length <= maxChars) return t;
+            const cut = t.slice(0, maxChars);
+            const end = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('? '), cut.lastIndexOf('! '));
+            return end > maxChars * 0.6 ? cut.slice(0, end + 1) : cut;
         }
 
         // --- 4. STATE & FIREBASE SYNC ---
         let userSavedTests = [];
-        let userSavedBooks = [];
         let activeListeningTest = null;
         let activeReadingTest = null;
         let activeWritingTest = null;
@@ -1207,140 +1145,6 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             });
         });
         document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
-
-        async function saveBookForever(title, fullText) {
-            const user = auth.currentUser;
-            if (!user || !fullText) return null;
-            const bookId = "book_" + Date.now();
-            const totalWords = fullText.split(/\s+/).length;
-            const fullBookObj = { id: bookId, uid: user.uid, title: title.trim() || "Uploaded Book", content: fullText, wordCount: totalWords, createdAt: Date.now() };
-            await saveFullBookToIDB(fullBookObj);
-            userSavedBooks.unshift(fullBookObj);
-            renderBooksAndPickers();
-            try { await setDoc(doc(db, 'users', user.uid, 'savedBooks', bookId), { ...fullBookObj, content: fullText.slice(0, 150000) }, { merge: true }); } catch (e) {}
-            return fullBookObj;
-        }
-
-        function loadBookIntoListeningLab(book) {
-            if (!book) return;
-            activeListeningBookFull = book.content;
-            listenChunkIdx = 0;
-            const firstChapter = extractCleanBookChapter(book.content, 0, 4800);
-            document.getElementById('listening-custom-source').value = firstChapter;
-            document.getElementById('listening-book-picker').value = book.id;
-            document.getElementById('listening-file-badge').textContent = `✓ Loaded "${book.title}" (Part 1)`;
-            document.getElementById('btn-next-listening-chunk')?.classList.remove('hide');
-        }
-
-        function loadBookIntoReadingLab(book) {
-            if (!book) return;
-            activeReadingBookFull = book.content;
-            readChunkIdx = 0;
-            const firstChapter = extractCleanBookChapter(book.content, 0, 5500);
-            document.getElementById('reading-custom-source').value = firstChapter;
-            document.getElementById('reading-book-picker').value = book.id;
-            document.getElementById('reading-file-status').textContent = `✓ Loaded "${book.title}" (Part 1)`;
-            document.getElementById('btn-next-reading-chunk')?.classList.remove('hide');
-        }
-
-        document.getElementById('btn-next-listening-chunk')?.addEventListener('click', () => {
-            if (!activeListeningBookFull) return;
-            listenChunkIdx++;
-            document.getElementById('listening-custom-source').value = extractCleanBookChapter(activeListeningBookFull, listenChunkIdx, 4800);
-            document.getElementById('listening-file-badge').textContent = `✓ Loaded Part ${listenChunkIdx + 1} of Book`;
-            showToast(`Loaded Part ${listenChunkIdx + 1}! Click 'Generate Test by Book / Topic'.`, "info");
-        });
-
-        document.getElementById('btn-next-reading-chunk')?.addEventListener('click', () => {
-            if (!activeReadingBookFull) return;
-            readChunkIdx++;
-            document.getElementById('reading-custom-source').value = extractCleanBookChapter(activeReadingBookFull, readChunkIdx, 5500);
-            document.getElementById('reading-file-status').textContent = `✓ Loaded Part ${readChunkIdx + 1} of Book`;
-            showToast(`Loaded Part ${readChunkIdx + 1}! Click 'Generate Test by Book / Topic'.`, "info");
-        });
-
-        function renderBooksAndPickers() {
-            userSavedBooks.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            ['listening-book-picker', 'reading-book-picker'].forEach(id => {
-                const sel = document.getElementById(id);
-                if (!sel) return;
-                sel.innerHTML = `<option value="">📚 Pick Saved Book (${userSavedBooks.length})...</option>` +
-                    userSavedBooks.map(b => `<option value="${b.id}">📕 ${escapeHTML(shortText(b.title, 32))} (${(b.wordCount || 0).toLocaleString()} words)</option>`).join('');
-            });
-
-            const grid = document.getElementById('books-grid-container');
-            if (!grid) return;
-            if (userSavedBooks.length === 0) {
-                grid.innerHTML = `<div class="col-span-full glass-panel p-6 rounded-2xl text-center text-xs text-slate-400">No books uploaded yet. Upload a PDF/TXT/DOCX book above to save it forever!</div>`;
-                return;
-            }
-            grid.innerHTML = userSavedBooks.map((b, i) => `
-                <div class="glass-panel alive-card p-4 rounded-2xl flex flex-col justify-between gap-3 border border-pink-500/25">
-                    <div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold text-pink-400">Book #${userSavedBooks.length - i} • ${(b.wordCount || 0).toLocaleString()} words</span>
-                            <button type="button" data-del-book="${b.id}" class="btn-del-book text-slate-400 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                        <h4 class="font-bold text-sm text-white mt-1">${b.title}</h4>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-700/60">
-                        <button type="button" data-use-book="${b.id}" data-lab="listening" class="btn-use-book bg-cyan-600/25 hover:bg-cyan-600 text-cyan-200 hover:text-white py-1.5 rounded-xl text-xs font-semibold">🎧 Send to Listening</button>
-                        <button type="button" data-use-book="${b.id}" data-lab="reading" class="btn-use-book bg-emerald-600/25 hover:bg-emerald-600 text-emerald-200 hover:text-white py-1.5 rounded-xl text-xs font-semibold">📖 Send to Reading</button>
-                    </div>
-                </div>
-            `).join('');
-
-            grid.querySelectorAll('.btn-del-book').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    const id = btn.getAttribute('data-del-book');
-                    userSavedBooks = userSavedBooks.filter(x => x.id !== id);
-                    await deleteBookFromIDB(id);
-                    if (auth.currentUser) { try { await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'savedBooks', id)); } catch (e) {} }
-                    renderBooksAndPickers();
-                    showToast("Book removed.", "info");
-                });
-            });
-
-            grid.querySelectorAll('.btn-use-book').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const book = userSavedBooks.find(x => x.id === btn.getAttribute('data-use-book'));
-                    const lab = btn.getAttribute('data-lab');
-                    if (!book) return;
-                    if (lab === 'listening') {
-                        loadBookIntoListeningLab(book);
-                        document.querySelector('[data-target="listening"]')?.click();
-                    } else {
-                        loadBookIntoReadingLab(book);
-                        document.querySelector('[data-target="reading"]')?.click();
-                    }
-                    showToast(`Loaded "${book.title}"! Click '📕 Generate Test by Book / Topic'.`, "success");
-                });
-            });
-        }
-
-        document.getElementById('listening-book-picker')?.addEventListener('change', (e) => {
-            const b = userSavedBooks.find(x => x.id === e.target.value);
-            if (b) loadBookIntoListeningLab(b);
-        });
-        document.getElementById('reading-book-picker')?.addEventListener('change', (e) => {
-            const b = userSavedBooks.find(x => x.id === e.target.value);
-            if (b) loadBookIntoReadingLab(b);
-        });
-
-        document.getElementById('book-library-upload')?.addEventListener('change', async (e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            const statusEl = document.getElementById('book-upload-status');
-            try {
-                const fullText = await extractFullTextFromFile(file, (p, tot) => { if (statusEl) statusEl.textContent = `📄 Scanning Page ${p} of ${tot}...`; });
-                const words = fullText.split(/\s+/).length;
-                const cleanTitle = file.name.replace(/\.[^/.]+$/, "");
-                await saveBookForever(cleanTitle, fullText);
-                if (statusEl) statusEl.textContent = `✓ Scanned 100% of "${cleanTitle}" (${words.toLocaleString()} words) & saved forever!`;
-                showToast(`✓ Scanned all ${words.toLocaleString()} words!`, "success");
-            } catch (err) { if (statusEl) statusEl.textContent = err.message; showToast(err.message, "error"); }
-            e.target.value = "";
-        });
 
         const getTestsCacheKey = (uid) => `IELTS_TESTS_${uid}`;
         async function saveTestToAccount(testData) {
@@ -1477,20 +1281,19 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                 if (el) el.src = 'https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff';
             });
             ['quick-exam-date', 'set-name', 'set-status', 'set-date', 'writing-area', 'speaking-user-transcript',
-             'listening-custom-source', 'reading-custom-source', 'writing-custom-source', 'speaking-custom-source', 'ai-input']
+             'ai-input']
                 .forEach(id => val(id, ''));
             val('set-band', '7.5');
-            txt('word-count', '0 words');
+            txt('word-count', '0 words · minimum 250'); txt('speaking-timer', '00:00'); txt('writing-timer', '40:00');
             html('leaderboard-body', '');
             html('ai-chat-box', '');
-            html('writing-prompt-box', '<span class="text-slate-400 text-xs">Click Generate Topic above or type your own topic and start writing.</span>');
-            html('speaking-cue-card', '<span class="text-slate-400 text-xs">Click Generate Cue Card above.</span>');
+            html('writing-prompt-box', '<span class="text-slate-400 text-xs">Choose Task 1 or Task 2 to get an exam-style question.</span>');
+            html('speaking-cue-card', '<span class="text-slate-400 text-xs">Press New Speaking Test above.</span>'); hide('speaking-part-tabs');
             html('speaking-sample-box', '<span class="text-slate-400 text-xs">Model answer or grading feedback will appear here.</span>');
             html('writing-feedback-box', ''); hide('writing-feedback-box');
             html('listening-transcript-box', ''); hide('listening-transcript-box');
             txt('listening-score-box', ''); txt('reading-score-box', '');
-            ['listening-file-badge', 'reading-file-status', 'book-upload-status'].forEach(id => txt(id, ''));
-            hide('chat-attachment-bar'); hide('rec-status');
+                        hide('chat-attachment-bar'); hide('rec-status');
             pendingChatFileText = null; pendingChatFileName = "";
             const aud = document.getElementById('audio-playback');
             if (aud) { try { aud.pause(); } catch (e) {} aud.removeAttribute('src'); aud.classList.add('hide'); }
@@ -1502,9 +1305,8 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             sessionUid = null;
             lastPublicSig = "";
             currentProfile = null;
-            userSavedTests = []; userSavedBooks = []; userResults = [];
+            userSavedTests = []; userResults = [];
             activeListeningTest = null; activeReadingTest = null; activeWritingTest = null; activeSpeakingTest = null;
-            activeListeningBookFull = ""; activeReadingBookFull = ""; listenChunkIdx = 0; readChunkIdx = 0;
             activeHistoryFilter = "all";
             try { window.speechSynthesis?.cancel(); } catch (e) {}
             try { if (mediaRec && mediaRec.state === "recording") mediaRec.stop(); } catch (e) {}
@@ -1512,7 +1314,6 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             closeMock(true);
             resetUserUI();
             refreshSelectorsAndStats();
-            renderBooksAndPickers();
             document.querySelector('[data-target="dashboard"]')?.click();
         }
 
@@ -1656,10 +1457,8 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
 
             try { userSavedTests = JSON.parse(localStorage.getItem(getTestsCacheKey(uid)) || "[]"); } catch (e) { userSavedTests = []; }
             try { userResults = JSON.parse(localStorage.getItem(getResultsCacheKey(uid)) || "[]"); } catch (e) { userResults = []; }
-            try { userSavedBooks = await getAllBooksFromIDB(uid); } catch (e) { userSavedBooks = []; }
             if (sessionUid !== uid) return;
             refreshSelectorsAndStats();
-            renderBooksAndPickers();
 
             await ensureUserProfile(user);
             if (sessionUid !== uid) return;
@@ -1675,14 +1474,6 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                 userSavedTests = Array.from(map.values());
                 refreshSelectorsAndStats();
             }), warn('Saved tests:')));
-
-            sessionUnsubs.push(onSnapshot(query(collection(db, 'users', uid, 'savedBooks')), guard((snap) => {
-                const map = new Map();
-                userSavedBooks.forEach(b => map.set(b.id, b));
-                snap.forEach(d => { if (!map.has(d.id)) map.set(d.id, d.data()); });
-                userSavedBooks = Array.from(map.values());
-                renderBooksAndPickers();
-            }), warn('Saved books:')));
 
             sessionUnsubs.push(onSnapshot(query(collection(db, 'users', uid, 'results'), orderBy('ts', 'asc')), guard((snap) => {
                 const map = new Map();
@@ -1761,8 +1552,10 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         // --- NAVIGATION & PROFILE ---
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
-        const closeMenu = () => { sidebar?.classList.add('-translate-x-full'); overlay?.classList.add('hide'); };
-        document.getElementById('mobile-menu-btn')?.addEventListener('click', () => { sidebar?.classList.remove('-translate-x-full'); overlay?.classList.remove('hide'); });
+        const closeMenu = () => { sidebar?.classList.remove('open'); overlay?.classList.add('hide'); };
+        const wideLayout = window.matchMedia('(min-width: 768px) and (min-height: 521px)');
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', () => { sidebar?.classList.add('open'); overlay?.classList.remove('hide'); });
+        wideLayout.addEventListener?.('change', closeMenu);
         document.getElementById('close-sidebar')?.addEventListener('click', closeMenu);
         overlay?.addEventListener('click', closeMenu);
 
@@ -1774,7 +1567,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                 document.querySelectorAll('.view-section').forEach(v => v.classList.add('hide'));
                 document.getElementById(`view-${btn.getAttribute('data-target')}`)?.classList.remove('hide');
                 document.getElementById('main-scroll-area')?.scrollTo({ top: 0, behavior: 'smooth' });
-                if (window.innerWidth < 768) closeMenu();
+                if (!wideLayout.matches) closeMenu();
             });
         });
 
@@ -1912,7 +1705,9 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         function formatAIMarkdown(raw) {
             if (!raw) return "";
             const c = String(raw).replace(/^```(?:markdown|html)?\s*/i, '').replace(/```$/i, '').trim();
-            return window.marked?.parse ? window.marked.parse(c) : c.replace(/\n/g, '<br>');
+            const html = window.marked?.parse ? window.marked.parse(c) : c.replace(/\n/g, '<br>');
+            // wide tables scroll sideways inside their own box instead of squashing every column
+            return html.replace(/<table/g, '<div class="table-scroll"><table').replace(/<\/table>/g, '</table></div>');
         }
 
         function parseJSONSafely(raw) {
@@ -1984,95 +1779,145 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         document.querySelectorAll('.ai-quick-btn').forEach(b => b.addEventListener('click', () => sendChat(b.getAttribute('data-prompt'))));
         document.getElementById('btn-clear-chat')?.addEventListener('click', () => { document.getElementById('ai-chat-box').innerHTML = ''; });
 
-        // --- LISTENING LAB (Standard Test When Blank, AI Test When Topic Given) ---
-        function renderListeningTest(testObj) {
-            if (!testObj) return;
-            activeListeningTest = testObj;
-            document.getElementById('listening-title').textContent = testObj.title || "IELTS Standard Listening Test";
-            document.getElementById('listening-status').textContent = "Click 'Play Audio' to listen and answer all 6 questions below.";
-            document.getElementById('listening-score-box').textContent = testObj.scoreLabel || "";
-            const tBox = document.getElementById('listening-transcript-box');
-            if (tBox) { tBox.classList.add('hide'); tBox.innerHTML = `<strong class="text-cyan-400">Official Audio Transcript:</strong><br><br>${testObj.script || ""}`; }
+        // --- LISTENING: official-style sections, multi-voice playback ---
+        const LISTEN_SECTIONS = [
+            { label: "Section 1 · Everyday conversation", speakers: 2, brief: "a telephone or face-to-face conversation between two people in an everyday situation (for example booking a course, renting a flat, joining a gym, planning a trip). Include at least one spelled name or number and one realistic self-correction such as 'No, sorry, I meant...'." },
+            { label: "Section 2 · Talk on a social topic", speakers: 1, brief: "a monologue by one speaker (a guide or organiser) about a local facility, event or service, for example a tour of a community centre or a new library. Include directions, times and prices." },
+            { label: "Section 3 · Academic discussion", speakers: 2, brief: "a discussion between a university student and a tutor about an assignment or research project. The speakers should disagree slightly and change their minds at least once." },
+            { label: "Section 4 · University lecture", speakers: 1, brief: "a lecture by one speaker on an academic subject (for example geology, marine biology, urban history, psychology) with a clear structure and a few signposting phrases." }
+        ];
+        let listenSecIdx = Math.floor(Math.random() * 4);
+        let listenPlayToken = 0;
 
-            const savedAns = testObj.userAnswers || {};
-            document.getElementById('listening-questions-box').innerHTML = (testObj.questions || []).map((item, idx) => `
-                <div id="listen-card-${idx}" class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700">
-                    <p class="text-xs sm:text-sm font-semibold text-white mb-2">${item.q}</p>
-                    <div class="flex flex-wrap gap-2 text-xs">
-                        ${(item.options || []).map(opt => `<label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-700"><input type="radio" name="listen-q-${idx}" value="${String(opt).replace(/"/g, '&quot;')}" ${savedAns[idx] === opt ? 'checked' : ''}><span>${opt}</span></label>`).join('')}
-                    </div>
-                    <div id="listen-exp-${idx}" class="hide mt-2 pt-2 border-t border-slate-700 text-xs"></div>
-                </div>
-            `).join('');
+        // Keeps only well-formed multiple-choice questions whose answer is really one of the options
+        function normalizeMCQ(list, minOpts = 2) {
+            const out = [];
+            (Array.isArray(list) ? list : []).forEach(q => {
+                if (!q || !q.q || !Array.isArray(q.options)) return;
+                const options = [...new Set(q.options.map(o => String(o).trim()).filter(Boolean))];
+                if (options.length < minOpts) return;
+                let ans = String(q.ans ?? '').trim();
+                let hit = options.find(o => o === ans) || options.find(o => o.toLowerCase() === ans.toLowerCase());
+                if (!hit) { const m = ans.match(/^([A-D])\b/i); if (m && options[m[1].toUpperCase().charCodeAt(0) - 65]) hit = options[m[1].toUpperCase().charCodeAt(0) - 65]; }
+                if (!hit) return;
+                out.push({ q: String(q.q).replace(/^\s*\d+\s*[.)]\s*/, ''), options, ans: hit, exp: String(q.exp || '') });
+            });
+            return out.map((q, i) => ({ ...q, q: `${i + 1}. ${q.q}` }));
         }
 
-        document.getElementById('listening-file-upload')?.addEventListener('change', async (e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            const badge = document.getElementById('listening-file-badge');
-            try {
-                const fullText = await extractFullTextFromFile(file, (p, tot) => { if (badge) badge.textContent = `Scanning page ${p}/${tot}...`; });
-                const words = fullText.split(/\s+/).length;
-                document.getElementById('listening-custom-source').value = fullText;
-                const title = file.name.replace(/\.[^/.]+$/, "");
-                await saveBookForever(title, fullText);
-                if (badge) badge.textContent = `✓ Scanned all ${words.toLocaleString()} words!`;
-                showToast(`✓ Scanned ${words.toLocaleString()} words!`, "success");
-            } catch (err) { showToast(err.message, "error"); }
-            e.target.value = "";
-        });
+        function renderMCQCards(prefix, questions, savedAns) {
+            return (questions || []).map((item, idx) => `
+                <div id="${prefix}-card-${idx}" class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700">
+                    <p class="text-xs sm:text-sm font-semibold text-white mb-2">${escapeHTML(item.q)}</p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        ${(item.options || []).map(opt => `<label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 px-2.5 py-2 rounded-lg border border-slate-700"><input type="radio" name="${prefix}-q-${idx}" value="${escapeHTML(opt)}" ${savedAns[idx] === opt ? 'checked' : ''}><span>${escapeHTML(opt)}</span></label>`).join('')}
+                    </div>
+                    <div id="${prefix}-exp-${idx}" class="hide mt-2 pt-2 border-t border-slate-700 text-xs"></div>
+                </div>`).join('');
+        }
 
-        document.getElementById('btn-clear-listening-source')?.addEventListener('click', () => {
-            document.getElementById('listening-custom-source').value = "";
-            document.getElementById('listening-file-badge').textContent = "";
-        });
+        function renderListeningTest(testObj) {
+            if (!testObj) return;
+            stopListening();
+            activeListeningTest = testObj;
+            const n = (testObj.questions || []).length;
+            document.getElementById('listening-title').textContent = testObj.title || "IELTS Listening Test";
+            document.getElementById('listening-status').textContent = `${testObj.sectionLabel ? testObj.sectionLabel + ' · ' : ''}Press Play and answer all ${n} questions while you listen.`;
+            document.getElementById('listening-score-box').textContent = testObj.scoreLabel || "";
+            const tBox = document.getElementById('listening-transcript-box');
+            if (tBox) { tBox.classList.add('hide'); tBox.innerHTML = `<strong class="text-cyan-400">Audio script:</strong><br><br>${escapeHTML(testObj.script || "").replace(/\n/g, '<br>')}`; }
+            document.getElementById('listening-questions-box').innerHTML = renderMCQCards('listen', testObj.questions, testObj.userAnswers || {});
+        }
 
-        // useSource=true -> "By Book / Topic" button; false -> "Standard IELTS Test" button
-        const generateListening = async (btn, useSource) => {
+        function parseScriptTurns(script) {
+            const turns = [];
+            String(script || '').split(/\n+/).forEach(line => {
+                const m = line.match(/^\s*([A-Za-z][A-Za-z .'-]{0,22}):\s*(.+)$/);
+                if (m) turns.push({ who: m[1].trim().toLowerCase(), text: m[2].trim() });
+                else if (line.trim()) turns.push({ who: turns.length ? turns[turns.length - 1].who : 'narrator', text: line.trim() });
+            });
+            return turns;
+        }
+        function speechChunks(text) {
+            const parts = String(text).match(/[^.!?]+[.!?]+["')]*\s*|[^.!?]+$/g) || [String(text)];
+            const out = []; let cur = '';
+            parts.forEach(p => { if ((cur + p).length > 200 && cur) { out.push(cur.trim()); cur = p; } else cur += p; });
+            if (cur.trim()) out.push(cur.trim());
+            return out;
+        }
+        function stopListening() {
+            listenPlayToken++;
+            try { window.speechSynthesis?.cancel(); } catch (e) {}
+            document.getElementById('listening-eq')?.classList.add('hide');
+        }
+        // Reads the script aloud: one voice per speaker, in short chunks (long utterances get cut off on Android Chrome)
+        function playListening(script, rate) {
+            const synth = window.speechSynthesis;
+            if (!synth) return showToast("This browser can't play spoken audio. Read the script instead.", "error");
+            stopListening();
+            const token = listenPlayToken;
+            const voices = (synth.getVoices() || []).filter(v => /^en/i.test(v.lang));
+            const turns = parseScriptTurns(script);
+            const speakers = [...new Set(turns.map(t => t.who))];
+            const queue = [];
+            turns.forEach(t => {
+                const idx = Math.max(0, speakers.indexOf(t.who));
+                speechChunks(t.text).forEach(c => queue.push({ text: c, idx }));
+            });
+            const eq = document.getElementById('listening-eq');
+            eq?.classList.remove('hide');
+            const next = (i) => {
+                if (token !== listenPlayToken) return;
+                if (i >= queue.length) { eq?.classList.add('hide'); return; }
+                const u = new SpeechSynthesisUtterance(queue[i].text);
+                const v = voices.length ? voices[queue[i].idx % voices.length] : null;
+                if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+                u.rate = rate;
+                u.pitch = queue[i].idx % 2 === 0 ? 1 : 0.82;
+                u.onend = () => next(i + 1);
+                u.onerror = () => next(i + 1);
+                synth.speak(u);
+            };
+            next(0);
+        }
+
+        const generateListening = async (btn) => {
             if (!btn || aiBusyGuard()) return;
-            window.speechSynthesis?.cancel();
-            const rawSource = useSource ? (document.getElementById('listening-custom-source')?.value.trim() || "") : "";
-
-            // If user leaves box blank, load an Official IELTS Standard Listening Test immediately or generate a fresh standard one
+            stopListening();
+            const sec = LISTEN_SECTIONS[listenSecIdx % LISTEN_SECTIONS.length];
+            listenSecIdx++;
             const orig = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating IELTS Listening...`;
-
-            const topicPrompt = rawSource
-                ? `Create a full, official-standard IELTS Listening test (250-word spoken script with realistic IELTS distractors and 6 multiple-choice questions) strictly based on this topic or text:\n"""${getSmartPassageFromFullText(rawSource, 7000)}"""`
-                : `Create a brand-new, official Cambridge IELTS Standard Listening lecture (250-word spoken script with realistic IELTS distractors and 6 multiple-choice questions) on an academic university, marine biology, archaeology, or environmental science topic.`;
-
-            const prompt = `${topicPrompt}
-Return a valid JSON object with this exact schema:
-{
-  "title": "IELTS Listening Title",
-  "script": "Full 250-word spoken script...",
-  "questions": [
-    {"q": "1. Question text?", "options": ["Option A", "Option B", "Option C"], "ans": "Option B", "exp": "Detailed explanation."}
-  ]
-}`;
-
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Preparing ${sec.label.split(' · ')[0]}...`;
+            const topic = MOCK_TOPICS[Math.floor(Math.random() * MOCK_TOPICS.length)];
+            const format = sec.speakers === 2
+                ? `Write the script as a dialogue. Every line must start with the speaker's first name and a colon, for example "Sarah: ..." then "Tom: ...". Use exactly two speakers.`
+                : `Write the script as one continuous talk with no speaker labels.`;
+            const prompt = `Write an original IELTS Listening ${sec.label} for the Academic test. It is ${sec.brief}
+Theme to build it around: ${topic}.
+${format}
+The script must be 330 to 400 words, natural spoken English, with realistic distractors (details that are mentioned but turn out not to be the answer).
+Then write 6 multiple-choice questions (3 options each) in the same order as the information appears in the script. The correct answer must be stated or clearly implied in the script, and the wrong options must be plausible. Mix the position of the correct answer.
+Return JSON only:
+{"title":"short title","script":"the full script","questions":[{"q":"question text","options":["A text","B text","C text"],"ans":"exact text of the correct option","exp":"one sentence quoting the script"}]}`;
+            let used = null;
             try {
-                const raw = await askIELTSAI(prompt, "You are an official Cambridge IELTS Listening test writer. Output valid JSON only.", true);
+                const raw = await askIELTSAI(prompt, "You are a Cambridge IELTS Listening test writer. Output valid JSON only.", true, { maxTokens: 2600, budgetMs: 45000 });
                 const parsed = parseJSONSafely(raw);
-                if (parsed && parsed.script && Array.isArray(parsed.questions) && parsed.questions.length >= 4) {
-                    renderListeningTest(parsed);
-                    showToast("✓ Official-Standard Listening Test Generated!", "success");
+                const qs = normalizeMCQ(parsed?.questions, 3);
+                if (parsed && typeof parsed.script === 'string' && parsed.script.split(/\s+/).length >= 150 && qs.length >= 5) {
+                    used = { title: `IELTS Listening · ${parsed.title || sec.label}`, script: parsed.script, questions: qs, sectionLabel: sec.label };
+                    showToast("✓ New IELTS Listening test ready. Press Play when you are ready.", "success");
                 } else {
-                    stdListenIdx = (stdListenIdx + 1) % standardListeningBank.length;
-                    renderListeningTest(cloneTest(standardListeningBank[stdListenIdx]));
-                    showToast(`⚠ ${raw ? "The AI's reply wasn't in the right format." : aiProblemText()} Loaded a built-in practice test instead.`, "info");
+                    showToast(`⚠ ${raw ? "The AI's reply wasn't usable." : aiProblemText()} Loaded a built-in test instead.`, "info");
                 }
-            } catch (e) {
-                stdListenIdx = (stdListenIdx + 1) % standardListeningBank.length;
-                renderListeningTest(cloneTest(standardListeningBank[stdListenIdx]));
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = orig;
-            }
+            } catch (e) { /* fall through to the built-in test */ }
+            if (!used) { stdListenIdx = (stdListenIdx + 1) % standardListeningBank.length; used = cloneTest(standardListeningBank[stdListenIdx]); }
+            renderListeningTest(used);
+            btn.disabled = false;
+            btn.innerHTML = orig;
         };
-        document.getElementById('btn-gen-book-listening')?.addEventListener('click', (e) => generateListening(e.currentTarget, true));
-        document.getElementById('btn-gen-std-listening')?.addEventListener('click', (e) => generateListening(e.currentTarget, false));
+        document.getElementById('btn-gen-std-listening')?.addEventListener('click', (e) => generateListening(e.currentTarget));
 
         document.getElementById('btn-save-listening')?.addEventListener('click', async () => {
             if (!activeListeningTest) return showToast("Generate a Listening test first!", "error");
@@ -2082,7 +1927,7 @@ Return a valid JSON object with this exact schema:
 
         document.getElementById('listening-test-selector')?.addEventListener('change', (e) => {
             const found = userSavedTests.find(t => t.id === e.target.value);
-            if (found) { window.speechSynthesis?.cancel(); renderListeningTest(found); }
+            if (found) renderListeningTest(found);
         });
         document.getElementById('btn-delete-listening-test')?.addEventListener('click', async () => {
             if (activeListeningTest?.id) { const id = activeListeningTest.id; activeListeningTest = null; await deleteTestFromAccount(id); }
@@ -2090,19 +1935,9 @@ Return a valid JSON object with this exact schema:
         document.getElementById('btn-toggle-transcript')?.addEventListener('click', () => document.getElementById('listening-transcript-box')?.classList.toggle('hide'));
         document.getElementById('btn-play-listening')?.addEventListener('click', () => {
             if (!activeListeningTest?.script) return showToast("Generate a Listening test first!", "error");
-            window.speechSynthesis?.cancel();
-            const u = new SpeechSynthesisUtterance(activeListeningTest.script);
-            u.lang = "en-GB";
-            u.rate = parseFloat(document.getElementById('listening-speed')?.value || "0.95");
-            const eq = document.getElementById('listening-eq');
-            eq?.classList.remove('hide');
-            u.onend = () => eq?.classList.add('hide');
-            window.speechSynthesis.speak(u);
+            playListening(activeListeningTest.script, parseFloat(document.getElementById('listening-speed')?.value || "0.95"));
         });
-        document.getElementById('btn-stop-listening')?.addEventListener('click', () => {
-            window.speechSynthesis?.cancel();
-            document.getElementById('listening-eq')?.classList.add('hide');
-        });
+        document.getElementById('btn-stop-listening')?.addEventListener('click', stopListening);
 
         document.getElementById('btn-submit-listening')?.addEventListener('click', async () => {
             if (!activeListeningTest?.questions) return;
@@ -2114,10 +1949,9 @@ Return a valid JSON object with this exact schema:
                 const ok = sel && sel.value.trim().toLowerCase() === String(item.ans).trim().toLowerCase();
                 if (ok) score++;
                 const expEl = document.getElementById(`listen-exp-${idx}`);
-                if (expEl) { expEl.classList.remove('hide'); expEl.innerHTML = ok ? `<span class="text-emerald-400 font-bold">✓ Correct (${item.ans})</span> — ${item.exp || ''}` : `<span class="text-red-400 font-bold">✗ Answer: ${item.ans}</span> — ${item.exp || ''}`; }
+                if (expEl) { expEl.classList.remove('hide'); expEl.innerHTML = ok ? `<span class="text-emerald-400 font-bold">✓ Correct (${escapeHTML(item.ans)})</span> — ${escapeHTML(item.exp || '')}` : `<span class="text-red-400 font-bold">✗ Answer: ${escapeHTML(item.ans)}</span> — ${escapeHTML(item.exp || '')}`; }
             });
-            const ratio = score / qs.length;
-            const band = ratio >= 0.9 ? 8.5 : ratio >= 0.8 ? 8.0 : ratio >= 0.65 ? 7.0 : ratio >= 0.5 ? 6.0 : 5.0;
+            const band = listeningRawToBand(score, qs.length);
             activeListeningTest.band = band;
             activeListeningTest.scoreLabel = `${score}/${qs.length} (Band ${band.toFixed(1)})`;
             activeListeningTest.userAnswers = ansMap;
@@ -2131,112 +1965,58 @@ Return a valid JSON object with this exact schema:
             showToast(`✓ Score Saved: ${activeListeningTest.scoreLabel}`, "success");
         });
 
-        // --- READING LAB (Full Cambridge 4-Paragraph Standard When Blank, Custom Topic via JSON) ---
+        // --- READING: single standard IELTS passage ---
         function renderReadingTest(testObj) {
             if (!testObj) return;
             activeReadingTest = testObj;
             document.getElementById('reading-passage-title').textContent = testObj.title || "IELTS Academic Reading Passage";
-
             let passageText = "";
             if (Array.isArray(testObj.paragraphs)) {
-                passageText = testObj.paragraphs.map((p, i) => p.startsWith("**Paragraph") ? p : `**Paragraph ${String.fromCharCode(65 + i)}**\n\n${p}`).join('\n\n');
+                passageText = testObj.paragraphs.map((p, i) => String(p).startsWith("**Paragraph") ? p : `**Paragraph ${String.fromCharCode(65 + i)}**\n\n${p}`).join('\n\n');
             } else if (Array.isArray(testObj.passage)) {
                 passageText = testObj.passage.join('\n\n');
             } else {
                 passageText = String(testObj.passage || "");
             }
-
             document.getElementById('reading-passage-body').innerHTML = formatAIMarkdown(passageText);
             document.getElementById('reading-score-box').textContent = testObj.scoreLabel || "";
-
-            const savedAns = testObj.userAnswers || {};
-            document.getElementById('reading-questions-box').innerHTML = (testObj.questions || []).map((item, idx) => `
-                <div id="read-card-${idx}" class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700">
-                    <p class="text-xs sm:text-sm font-semibold text-white mb-2">${item.q}</p>
-                    <div class="flex flex-wrap gap-2 text-xs">
-                        ${(item.options || []).map(opt => `<label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-700"><input type="radio" name="read-q-${idx}" value="${String(opt).replace(/"/g, '&quot;')}" ${savedAns[idx] === opt ? 'checked' : ''}><span>${opt}</span></label>`).join('')}
-                    </div>
-                    <div id="read-exp-${idx}" class="hide mt-2 pt-2 border-t border-slate-700 text-xs"></div>
-                </div>
-            `).join('');
+            document.getElementById('reading-questions-box').innerHTML = renderMCQCards('read', testObj.questions, testObj.userAnswers || {});
         }
 
-        document.getElementById('reading-file-upload')?.addEventListener('change', async (e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            const status = document.getElementById('reading-file-status');
-            try {
-                const fullText = await extractFullTextFromFile(file, (p, tot) => { if (status) status.textContent = `Scanning page ${p}/${tot}...`; });
-                const words = fullText.split(/\s+/).length;
-                document.getElementById('reading-custom-source').value = fullText;
-                const title = file.name.replace(/\.[^/.]+$/, "");
-                await saveBookForever(title, fullText);
-                if (status) status.textContent = `✓ Scanned all ${words.toLocaleString()} words!`;
-                showToast(`✓ Scanned ${words.toLocaleString()} words!`, "success");
-            } catch (err) { showToast(err.message, "error"); }
-            e.target.value = "";
-        });
-
-        document.getElementById('btn-clear-reading-source')?.addEventListener('click', () => {
-            document.getElementById('reading-custom-source').value = "";
-            document.getElementById('reading-file-status').textContent = "";
-        });
-
-        // useSource=true -> "By Book / Topic" button; false -> "Standard IELTS Test" button
-        const generateReading = async (btn, useSource) => {
+        const generateReading = async (btn) => {
             if (!btn || aiBusyGuard()) return;
-            const rawSource = useSource ? (document.getElementById('reading-custom-source')?.value.trim() || "") : "";
             const orig = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Generating IELTS Passage...`;
-
-            const topicInstruction = rawSource
-                ? `Write a high-level Cambridge IELTS Academic Reading test strictly about this topic or source text:\n"""${getSmartPassageFromFullText(rawSource, 8000)}"""`
-                : `Write a brand-new, high-level Cambridge IELTS Academic Reading test on a fascinating university-level science, archaeology, neuroscience, or economics topic.`;
-
-            const prompt = `${topicInstruction}
-
-Requirements:
-1. Write 4 long, detailed academic paragraphs (Paragraph A, Paragraph B, Paragraph C, Paragraph D), each 100-130 words long using Band 8.5 vocabulary.
-2. Create 6 official IELTS Reading questions (3 True/False/Not Given + 3 Multiple Choice) with detailed explanations.
-Return a valid JSON object matching this exact structure:
-{
-  "title": "Academic Passage Title",
-  "paragraphs": [
-    "**Paragraph A**\\n\\nFull 110-word academic paragraph A...",
-    "**Paragraph B**\\n\\nFull 110-word academic paragraph B...",
-    "**Paragraph C**\\n\\nFull 110-word academic paragraph C...",
-    "**Paragraph D**\\n\\nFull 110-word academic paragraph D..."
-  ],
-  "questions": [
-    {"q": "1. Statement?", "options": ["True", "False", "Not Given"], "ans": "True", "exp": "Detailed explanation citing the paragraph."}
-  ]
-}`;
-
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Writing a new passage...`;
+            const topic = MOCK_TOPICS[Math.floor(Math.random() * MOCK_TOPICS.length)];
+            const level = MOCK_LEVELS[Math.floor(Math.random() * MOCK_LEVELS.length)];
+            const prompt = `Write an original IELTS Academic Reading passage in the style of Cambridge IELTS on this subject: ${topic}. Difficulty: ${level}.
+The passage must have 5 paragraphs (A to E), each 100 to 130 words, in formal academic prose with a clear title. Do not use real people's quotes.
+Then write 8 questions in the order the information appears in the passage:
+- Questions 1 to 4: True / False / Not Given. Use exactly these three options: "True", "False", "Not Given". Include at least one of each answer.
+- Questions 5 to 8: multiple choice with 3 options.
+Every answer must be certain from the passage. "Not Given" statements must be plausible but not mentioned.
+Return JSON only:
+{"title":"passage title","paragraphs":["text of paragraph A","text of paragraph B","text of C","text of D","text of E"],"questions":[{"q":"statement or question","options":["True","False","Not Given"],"ans":"True","exp":"one sentence pointing to the paragraph"}]}`;
+            let used = null;
             try {
-                const raw = await askIELTSAI(prompt, "You are a senior Cambridge IELTS Academic Reading test writer. Output valid JSON only.", true);
+                const raw = await askIELTSAI(prompt, "You are a senior Cambridge IELTS Academic Reading test writer. Output valid JSON only.", true, { maxTokens: 3000, budgetMs: 45000 });
                 const parsed = parseJSONSafely(raw);
-                if (parsed && (Array.isArray(parsed.paragraphs) || parsed.passage) && Array.isArray(parsed.questions) && parsed.questions.length >= 4) {
-                    if (Array.isArray(parsed.paragraphs)) {
-                        parsed.passage = parsed.paragraphs.join('\n\n');
-                    }
-                    renderReadingTest(parsed);
-                    showToast("✓ Full Cambridge-Standard Reading Test Generated!", "success");
+                const qs = normalizeMCQ(parsed?.questions, 3);
+                const paras = Array.isArray(parsed?.paragraphs) ? parsed.paragraphs.map(String).filter(p => p.split(/\s+/).length >= 40) : [];
+                if (paras.length >= 4 && qs.length >= 6) {
+                    used = { title: `IELTS Reading · ${parsed.title || topic}`, paragraphs: paras, passage: paras.join('\n\n'), questions: qs };
+                    showToast("✓ New IELTS Reading passage ready.", "success");
                 } else {
-                    stdReadIdx = (stdReadIdx + 1) % standardReadingBank.length;
-                    renderReadingTest(cloneTest(standardReadingBank[stdReadIdx]));
-                    showToast(`⚠ ${raw ? "The AI's reply wasn't in the right format." : aiProblemText()} Loaded a built-in practice test instead.`, "info");
+                    showToast(`⚠ ${raw ? "The AI's reply wasn't usable." : aiProblemText()} Loaded a built-in passage instead.`, "info");
                 }
-            } catch (e) {
-                stdReadIdx = (stdReadIdx + 1) % standardReadingBank.length;
-                renderReadingTest(cloneTest(standardReadingBank[stdReadIdx]));
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = orig;
-            }
+            } catch (e) { /* fall through to the built-in passage */ }
+            if (!used) { stdReadIdx = (stdReadIdx + 1) % standardReadingBank.length; used = cloneTest(standardReadingBank[stdReadIdx]); }
+            renderReadingTest(used);
+            btn.disabled = false;
+            btn.innerHTML = orig;
         };
-        document.getElementById('btn-gen-book-reading')?.addEventListener('click', (e) => generateReading(e.currentTarget, true));
-        document.getElementById('btn-gen-std-reading')?.addEventListener('click', (e) => generateReading(e.currentTarget, false));
+        document.getElementById('btn-gen-std-reading')?.addEventListener('click', (e) => generateReading(e.currentTarget));
 
         document.getElementById('btn-save-reading')?.addEventListener('click', async () => {
             if (!activeReadingTest) return showToast("Generate a Reading test first!", "error");
@@ -2263,10 +2043,9 @@ Return a valid JSON object matching this exact structure:
                 const ok = sel && sel.value.trim().toLowerCase() === String(item.ans).trim().toLowerCase();
                 if (ok) score++;
                 const expEl = document.getElementById(`read-exp-${idx}`);
-                if (expEl) { expEl.classList.remove('hide'); expEl.innerHTML = ok ? `<span class="text-emerald-400 font-bold">✓ Correct (${item.ans})</span> — ${item.exp || ''}` : `<span class="text-red-400 font-bold">✗ Answer: ${item.ans}</span> — ${item.exp || ''}`; }
+                if (expEl) { expEl.classList.remove('hide'); expEl.innerHTML = ok ? `<span class="text-emerald-400 font-bold">✓ Correct (${escapeHTML(item.ans)})</span> — ${escapeHTML(item.exp || '')}` : `<span class="text-red-400 font-bold">✗ Answer: ${escapeHTML(item.ans)}</span> — ${escapeHTML(item.exp || '')}`; }
             });
-            const ratio = score / qs.length;
-            const band = ratio >= 0.9 ? 8.5 : ratio >= 0.8 ? 8.0 : ratio >= 0.65 ? 7.0 : ratio >= 0.5 ? 6.0 : 5.0;
+            const band = readingRawToBand(score, qs.length);
             activeReadingTest.band = band;
             activeReadingTest.scoreLabel = `${score}/${qs.length} (Band ${band.toFixed(1)})`;
             activeReadingTest.userAnswers = ansMap;
@@ -2314,6 +2093,28 @@ Return a valid JSON object matching this exact structure:
             for (const [min, b] of table) if (r >= min) return b;
             return r >= 2 ? 2 : r >= 1 ? 1 : 0;
         }
+
+        // Approximate official Listening raw-score to band conversion (varies slightly between real test versions)
+        function listeningRawToBand(raw, total = 40) {
+            const r = total === 40 ? raw : Math.round((raw / total) * 40);
+            const table = [[39, 9], [37, 8.5], [35, 8], [32, 7.5], [30, 7], [26, 6.5], [23, 6], [18, 5.5], [16, 5], [13, 4.5], [10, 4], [8, 3.5], [6, 3], [4, 2.5]];
+            for (const [min, b] of table) if (r >= min) return b;
+            return r >= 2 ? 2 : r >= 1 ? 1 : 0;
+        }
+
+        function renderGuideBands() {
+            [['guide-reading-bands', readingRawToBand], ['guide-listening-bands', listeningRawToBand]].forEach(([id, fn]) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const groups = [];
+                for (let r = 40; r >= 4; r--) {
+                    const b = fn(r), g = groups[groups.length - 1];
+                    if (g && g.b === b) g.lo = r; else groups.push({ b, hi: r, lo: r });
+                }
+                el.innerHTML = groups.map(g => `<span class="px-2 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-200"><b class="text-white">Band ${g.b}</b> &middot; ${g.lo === g.hi ? g.hi : g.lo + '-' + g.hi}/40</span>`).join('');
+            });
+        }
+        renderGuideBands();
 
         const mockNorm = (s) => String(s ?? '').toLowerCase().replace(/[.,;:!?"'()]/g, '').replace(/\s+/g, ' ').trim().replace(/^(the|a|an) /, '');
         const fmtClock = (sec) => `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
@@ -2644,42 +2445,191 @@ Return ONLY valid JSON in this shape:
             updateMockTabs();
         });
 
-        // --- WRITING & SPEAKING LABS ---
-        const writingArea = document.getElementById('writing-area');
-        writingArea?.addEventListener('input', () => {
+        // --- WRITING STUDIO: standard IELTS Academic Task 1 (chart) and Task 2 (essay) ---
+        const WRITING_T2_BANK = [
+            { type: "Opinion (agree / disagree)", topic: "Some people believe that university education should be free for all students, while others think students should pay for it.", q: "To what extent do you agree or disagree?" },
+            { type: "Opinion (agree / disagree)", topic: "Many people think that children should start learning a foreign language as soon as they begin primary school.", q: "To what extent do you agree or disagree?" },
+            { type: "Opinion (agree / disagree)", topic: "Governments should spend money on public transport rather than on building new roads.", q: "To what extent do you agree or disagree?" },
+            { type: "Discuss both views", topic: "Some people think the best way to reduce crime is to give longer prison sentences. Others believe there are better ways to reduce crime.", q: "Discuss both these views and give your own opinion." },
+            { type: "Discuss both views", topic: "Some people prefer to work for a large company, while others would rather work for a small business.", q: "Discuss both these views and give your own opinion." },
+            { type: "Discuss both views", topic: "Some people say that museums and historical sites should be free, while others believe visitors should pay an entrance fee.", q: "Discuss both these views and give your own opinion." },
+            { type: "Advantages and disadvantages", topic: "More and more people are choosing to work from home instead of travelling to an office.", q: "Do the advantages of this development outweigh the disadvantages?" },
+            { type: "Advantages and disadvantages", topic: "In many countries, a growing number of young people are choosing to study abroad.", q: "What are the advantages and disadvantages of this trend?" },
+            { type: "Problem and solution", topic: "In many cities, traffic congestion and air pollution are getting worse every year.", q: "What are the causes of these problems, and what measures could be taken to solve them?" },
+            { type: "Problem and solution", topic: "Many people spend most of their free time looking at screens, such as phones, tablets and televisions.", q: "What problems does this cause, and how can they be solved?" },
+            { type: "Two-part question", topic: "Some people say that the main purpose of schools should be to prepare students for work, while others believe schools should also teach other skills.", q: "What skills do you think schools should teach? Who is responsible for a child's education: schools or parents?" },
+            { type: "Two-part question", topic: "In some countries, people are living much longer than in the past.", q: "Why is this happening? Is it a positive or negative development for society?" }
+        ];
+        const WRITING_T1_TEMPLATES = [
+            { type: 'line', title: "Percentage of households with internet access", unit: "%", labels: ["2000", "2005", "2010", "2015", "2020"], series: [["Country A", 8, 'up'], ["Country B", 15, 'up'], ["Country C", 5, 'up']], hi: 98, noun: "the percentage of households with internet access in three countries" },
+            { type: 'line', title: "Average monthly electricity use per household", unit: "kWh", labels: ["1990", "1995", "2000", "2005", "2010", "2015"], series: [["Residential", 200, 'up'], ["Commercial", 320, 'flat']], hi: 520, noun: "average monthly electricity use in two sectors" },
+            { type: 'bar', title: "Students enrolled in four subject areas", unit: "thousands", labels: ["2005", "2015"], series: [["Business", 60, 'up'], ["Engineering", 45, 'up'], ["Arts", 50, 'down'], ["Medicine", 25, 'up']], hi: 120, noun: "the number of students enrolled in four subject areas at one university in 2005 and 2015" },
+            { type: 'bar', title: "Methods of travel to work", unit: "%", labels: ["City X", "City Y", "City Z"], series: [["Car", 52, 'flat'], ["Public transport", 28, 'flat'], ["Bicycle", 10, 'flat'], ["On foot", 10, 'flat']], hi: 70, noun: "the main methods of travel to work in three cities", share: true },
+            { type: 'table', title: "Visitors to five tourist attractions", unit: "thousand visitors per year", labels: ["2008", "2018"], series: [["Museum", 320, 'up'], ["Castle", 410, 'down'], ["Botanic garden", 180, 'up'], ["Zoo", 540, 'flat'], ["Beach park", 260, 'up']], hi: 700, noun: "the number of visitors to five tourist attractions in 2008 and 2018" }
+        ];
+        let writingTaskNo = 2;
+        let writingT2Idx = Math.floor(Math.random() * WRITING_T2_BANK.length);
+        let writingT1Idx = Math.floor(Math.random() * WRITING_T1_TEMPLATES.length);
+        let aiDownUntil = 0;   // after an AI failure, skip the AI for a while so topic generation stays instant
+
+        function buildChartData(tpl) {
+            const rnd = (a, b) => a + Math.random() * (b - a);
+            const n = tpl.labels.length;
+            let series;
+            if (tpl.share) {   // each category is a share of 100 for every city
+                series = tpl.series.map(([name, base]) => ({ name, values: tpl.labels.map(() => Math.max(3, Math.round(base + rnd(-10, 10)))) }));
+                tpl.labels.forEach((_, c) => {
+                    const sum = series.reduce((a, s) => a + s.values[c], 0);
+                    series.forEach(s => { s.values[c] = Math.round(s.values[c] * 100 / sum); });
+                    const diff = 100 - series.reduce((a, s) => a + s.values[c], 0);
+                    series[0].values[c] += diff;
+                });
+            } else if (tpl.type === 'line') {
+                series = tpl.series.map(([name, base, dir]) => {
+                    const start = Math.round(base * rnd(0.8, 1.25));
+                    const end = dir === 'up' ? Math.round(Math.min(tpl.hi, start + (tpl.hi - start) * rnd(0.45, 0.9))) : dir === 'down' ? Math.round(start * rnd(0.4, 0.7)) : Math.round(start * rnd(0.9, 1.15));
+                    return { name, values: Array.from({ length: n }, (_, i) => Math.round(start + (end - start) * (i / (n - 1)) + rnd(-0.04, 0.04) * (tpl.hi))) };
+                });
+            } else {
+                series = tpl.series.map(([name, base, dir]) => {
+                    const a = Math.round(base * rnd(0.85, 1.15));
+                    const b = dir === 'up' ? Math.round(a * rnd(1.25, 1.8)) : dir === 'down' ? Math.round(a * rnd(0.5, 0.8)) : Math.round(a * rnd(0.92, 1.08));
+                    return { name, values: n === 2 ? [a, b] : [a, b, Math.round((a + b) / 2)].slice(0, n) };
+                });
+            }
+            series.forEach(s => { s.values = s.values.map(v => Math.max(0, v)); });
+            return { type: tpl.type, title: tpl.title, unit: tpl.unit, labels: tpl.labels, series, noun: tpl.noun };
+        }
+
+        function chartDataTableMarkdown(ch) {
+            const head = `| | ${ch.labels.join(' | ')} |\n|---|${ch.labels.map(() => '---').join('|')}|\n`;
+            return head + ch.series.map(s => `| ${s.name} | ${s.values.join(' | ')} |`).join('\n');
+        }
+
+        function chartHTML(ch) {
+            if (!ch) return "";
+            const colors = ['#38bdf8', '#f59e0b', '#34d399', '#f472b6', '#a78bfa'];
+            const title = `<div class="text-center text-xs font-bold text-slate-100 mb-1">${escapeHTML(ch.title)} <span class="font-normal text-slate-400">(${escapeHTML(ch.unit)})</span></div>`;
+            if (ch.type === 'table') {
+                return title + `<div class="overflow-x-auto"><table class="w-full text-xs border-collapse"><thead><tr><th class="text-left p-2 border border-slate-600 bg-slate-700/60"></th>${ch.labels.map(l => `<th class="p-2 border border-slate-600 bg-slate-700/60">${escapeHTML(l)}</th>`).join('')}</tr></thead><tbody>${ch.series.map(s => `<tr><td class="p-2 border border-slate-600 font-semibold">${escapeHTML(s.name)}</td>${s.values.map(v => `<td class="p-2 border border-slate-600 text-center">${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+            }
+            const W = 520, H = 250, L = 42, R = 10, T = 12, B = 34;
+            const max = Math.max(10, ...ch.series.flatMap(s => s.values));
+            const step = max <= 20 ? 5 : max <= 60 ? 10 : max <= 150 ? 20 : max <= 400 ? 50 : 100;
+            const top = Math.ceil(max / step) * step;
+            const Y = v => T + (top - v) * (H - T - B) / top;
+            let svg = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="${escapeHTML(ch.title)}">`;
+            for (let v = 0; v <= top; v += step) svg += `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#475569" stroke-width="1"/><text x="${L - 5}" y="${Y(v) + 4}" text-anchor="end" font-size="10" fill="#cbd5e1">${v}</text>`;
+            const n = ch.labels.length, plotW = W - L - R;
+            if (ch.type === 'line') {
+                const X = i => L + (n === 1 ? plotW / 2 : (i * plotW) / (n - 1));
+                ch.labels.forEach((l, i) => { svg += `<text x="${X(i)}" y="${H - 14}" text-anchor="middle" font-size="10" fill="#cbd5e1">${escapeHTML(l)}</text>`; });
+                ch.series.forEach((s, k) => {
+                    svg += `<polyline fill="none" stroke="${colors[k % 5]}" stroke-width="2.4" stroke-linejoin="round" points="${s.values.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ')}"/>`;
+                    s.values.forEach((v, i) => { svg += `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3" fill="${colors[k % 5]}"/>`; });
+                });
+            } else {
+                const groupW = plotW / n, bw = Math.min(36, (groupW * 0.8) / ch.series.length);
+                ch.labels.forEach((l, i) => {
+                    const gx = L + i * groupW + (groupW - bw * ch.series.length) / 2;
+                    svg += `<text x="${L + i * groupW + groupW / 2}" y="${H - 14}" text-anchor="middle" font-size="10" fill="#cbd5e1">${escapeHTML(l)}</text>`;
+                    ch.series.forEach((s, k) => { svg += `<rect x="${(gx + k * bw).toFixed(1)}" y="${Y(s.values[i]).toFixed(1)}" width="${(bw - 2).toFixed(1)}" height="${(H - B - Y(s.values[i])).toFixed(1)}" fill="${colors[k % 5]}"/>`; });
+                });
+            }
+            svg += `<line x1="${L}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}" stroke="#94a3b8"/></svg>`;
+            const legend = `<div class="flex flex-wrap justify-center gap-x-3 gap-y-1 mt-1 text-[11px] text-slate-200">${ch.series.map((s, k) => `<span><span class="inline-block w-2.5 h-2.5 rounded-sm mr-1" style="background:${colors[k % 5]}"></span>${escapeHTML(s.name)}</span>`).join('')}</div>`;
+            return title + svg + legend;
+        }
+
+        function writingWordTarget(t) { return (t?.task === 1) ? 150 : 250; }
+        function updateWordCount() {
+            const el = document.getElementById('word-count');
+            if (!el || !writingArea) return;
             const words = writingArea.value.trim() ? writingArea.value.trim().split(/\s+/).length : 0;
-            document.getElementById('word-count').textContent = `${words} words`;
-        });
+            const min = writingWordTarget(activeWritingTest);
+            el.textContent = `${words} words · minimum ${min}`;
+            el.className = 'text-xs font-bold ' + (words >= min ? 'text-emerald-400' : 'text-amber-300');
+        }
+        const writingArea = document.getElementById('writing-area');
+        writingArea?.addEventListener('input', updateWordCount);
+
+        function setWritingTimer(task) {
+            const el = document.getElementById('writing-timer');
+            stopCountdown('writing-timer');
+            if (el) el.textContent = task === 1 ? '20:00' : '40:00';
+        }
 
         function renderWritingTest(testObj) {
             if (!testObj) return;
             activeWritingTest = testObj;
-            document.getElementById('writing-prompt-box').innerHTML = `<div class="ai-prose">${formatAIMarkdown(testObj.promptText || testObj.title || "")}</div>`;
-            if (writingArea) {
-                writingArea.value = testObj.essayText || "";
-                document.getElementById('word-count').textContent = `${writingArea.value.trim() ? writingArea.value.trim().split(/\s+/).length : 0} words`;
+            const task = testObj.task || 2;
+            const box = document.getElementById('writing-prompt-box');
+            if (testObj.chart) {
+                box.innerHTML = `<div class="text-[11px] font-bold uppercase tracking-wide text-amber-400 mb-1">Writing Task 1</div><p class="text-sm mb-2">You should spend about 20 minutes on this task.</p><p class="text-sm mb-3">${escapeHTML(testObj.instructionText || '')}</p><div class="bg-slate-900/70 border border-slate-600 rounded-xl p-3 mb-3">${chartHTML(testObj.chart)}</div><p class="text-sm">Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p><p class="text-sm font-semibold mt-2">Write at least 150 words.</p>`;
+            } else if (testObj.task === 2 && testObj.topicText) {
+                box.innerHTML = `<div class="text-[11px] font-bold uppercase tracking-wide text-amber-400 mb-1">Writing Task 2 · ${escapeHTML(testObj.essayType || '')}</div><p class="text-sm mb-2">You should spend about 40 minutes on this task.</p><p class="text-sm font-semibold mb-1">Write about the following topic:</p><div class="bg-slate-900/70 border border-slate-600 rounded-xl p-3 mb-2 text-sm">${escapeHTML(testObj.topicText)}<br><br><b>${escapeHTML(testObj.questionText || '')}</b></div><p class="text-sm">Give reasons for your answer and include any relevant examples from your own knowledge or experience.</p><p class="text-sm font-semibold mt-2">Write at least 250 words.</p>`;
+            } else {
+                box.innerHTML = `<div class="ai-prose">${formatAIMarkdown(testObj.promptText || testObj.title || "")}</div>`;
             }
+            if (writingArea) writingArea.value = testObj.essayText || "";
+            updateWordCount();
+            setWritingTimer(task);
             const fb = document.getElementById('writing-feedback-box');
             if (testObj.feedbackMarkdown) { fb.classList.remove('hide'); fb.innerHTML = formatAIMarkdown(testObj.feedbackMarkdown); }
             else { fb.classList.add('hide'); }
         }
 
-        document.getElementById('btn-ai-writing-prompt')?.addEventListener('click', async () => {
-            if (aiBusyGuard()) return;
-            const custom = document.getElementById('writing-custom-source')?.value.trim() || "";
-            const box = document.getElementById('writing-prompt-box');
-            box.innerHTML = `<span class="text-amber-300 animate-pulse">✨ Generating Official IELTS Writing Task 2 Prompt...</span>`;
-            const reply = await askIELTSAI(custom ? `Create an official Cambridge IELTS Writing Task 2 prompt about "${custom}". Start line 1 with ### [Short Topic Name], followed by the prompt and 3 Band 8.5 planning ideas.` : `Generate an official Cambridge IELTS Academic Writing Task 2 prompt. Start line 1 with ### [Short Topic Name], followed by the prompt and 3 Band 8.5 planning ideas.`);
-            if (!reply) { box.innerHTML = aiFailHTML(); return; }
-            const title = (reply.split('\n')[0] || "Writing Task 2").replace(/[#*]/g, '').trim().slice(0, 50);
-            activeWritingTest = { module: 'writing', title, promptText: reply, essayText: writingArea?.value || "" };
-            renderWritingTest(activeWritingTest);
-        });
+        function newTask1() {
+            const tpl = WRITING_T1_TEMPLATES[writingT1Idx % WRITING_T1_TEMPLATES.length];
+            writingT1Idx++;
+            const chart = buildChartData(tpl);
+            const kind = chart.type === 'line' ? 'line graph' : chart.type === 'bar' ? 'bar chart' : 'table';
+            const instructionText = `The ${kind} below shows ${chart.noun}.`;
+            return { module: 'writing', task: 1, title: `Task 1: ${chart.title}`, chart, instructionText,
+                promptText: `IELTS Academic Writing Task 1. ${instructionText} (${chart.unit})\n\n${chartDataTableMarkdown(chart)}\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.`, essayText: "" };
+        }
+        function newTask2FromBank() {
+            const t = WRITING_T2_BANK[writingT2Idx % WRITING_T2_BANK.length];
+            writingT2Idx++;
+            return { module: 'writing', task: 2, title: `Task 2: ${t.type}`, essayType: t.type, topicText: t.topic, questionText: t.q,
+                promptText: `IELTS Academic Writing Task 2 (${t.type}). Write about the following topic: ${t.topic} ${t.q} Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words.`, essayText: "" };
+        }
+        async function newTask2FromAI() {
+            if (Date.now() < aiDownUntil) return null;
+            const types = ["Opinion (agree / disagree)", "Discuss both views", "Advantages and disadvantages", "Problem and solution", "Two-part question"];
+            const type = types[Math.floor(Math.random() * types.length)];
+            const subjects = ["education", "technology", "environment", "health", "work and careers", "society and family", "transport and cities", "media and advertising", "tourism", "science and the economy"];
+            const subject = subjects[Math.floor(Math.random() * subjects.length)];
+            const raw = await askIELTSAI(`Write one original IELTS Academic Writing Task 2 question. Essay type: ${type}. Subject area: ${subject}.
+Use the official style: one or two sentences introducing a general-interest topic, then the instruction line (for example "To what extent do you agree or disagree?" or "Discuss both these views and give your own opinion."). Do not mention IELTS inside the question.
+Return JSON only: {"topic":"the introductory statement","question":"the instruction line"}`, "You write official-style IELTS Writing Task 2 questions. Output valid JSON only.", true, { maxTokens: 300, budgetMs: 12000 });
+            const p = parseJSONSafely(raw);
+            if (!p || typeof p.topic !== 'string' || typeof p.question !== 'string' || p.topic.length < 30 || p.topic.length > 400 || p.question.length < 10 || p.question.length > 200) { aiDownUntil = Date.now() + 90000; return null; }
+            return { module: 'writing', task: 2, title: `Task 2: ${type}`, essayType: type, topicText: p.topic.trim(), questionText: p.question.trim(),
+                promptText: `IELTS Academic Writing Task 2 (${type}). Write about the following topic: ${p.topic.trim()} ${p.question.trim()} Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words.`, essayText: "" };
+        }
+
+        async function generateWriting(task, btn) {
+            if (!btn) return;
+            if (writingArea?.value.trim() && !activeWritingTest?.feedbackMarkdown && !activeWritingTest?.id && !confirm("Your current essay isn't saved or graded. Start a new task anyway?")) return;
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Preparing...`;
+            try {
+                let t = null;
+                if (task === 1) t = newTask1();
+                else { t = (!aiBusyGuard() ? await newTask2FromAI() : null) || newTask2FromBank(); }
+                writingTaskNo = task;
+                renderWritingTest(t);
+            } finally { btn.disabled = false; btn.innerHTML = orig; }
+        }
+        document.getElementById('btn-writing-task1')?.addEventListener('click', (e) => generateWriting(1, e.currentTarget));
+        document.getElementById('btn-writing-task2')?.addEventListener('click', (e) => generateWriting(2, e.currentTarget));
 
         document.getElementById('btn-save-writing')?.addEventListener('click', async () => {
-            const promptText = activeWritingTest?.promptText || document.getElementById('writing-prompt-box')?.innerText || "Writing Task 2";
-            const saved = await saveTestToAccount({ ...(activeWritingTest || {}), module: 'writing', title: activeWritingTest?.title || "Writing Task 2", promptText, essayText: writingArea?.value || "" });
-            if (saved) { activeWritingTest = saved; showToast("💾 Writing Test saved!", "success"); }
+            if (!activeWritingTest) return showToast("Generate a Task 1 or Task 2 first!", "error");
+            const saved = await saveTestToAccount({ ...activeWritingTest, module: 'writing', essayText: writingArea?.value || "" });
+            if (saved) { activeWritingTest = saved; showToast("💾 Writing test saved!", "success"); }
         });
 
         document.getElementById('writing-test-selector')?.addEventListener('change', (e) => {
@@ -2692,52 +2642,184 @@ Return ONLY valid JSON in this shape:
 
         document.getElementById('btn-ai-grade-essay')?.addEventListener('click', async () => {
             const essay = writingArea?.value.trim();
-            if (!essay) return showToast("Write your essay first!", "error");
+            if (!essay) return showToast("Write your response first!", "error");
+            if (!activeWritingTest) activeWritingTest = { module: 'writing', task: 2, title: 'Writing Task 2', promptText: 'IELTS Writing Task 2 (topic not recorded)' };
             if (aiBusyGuard()) return;
+            const task = activeWritingTest.task || 2;
+            const min = writingWordTarget(activeWritingTest);
             const fb = document.getElementById('writing-feedback-box');
-            fb.classList.remove('hide'); fb.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Grading essay across all 4 IELTS criteria...</span>`;
+            fb.classList.remove('hide'); fb.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Marking against the 4 official IELTS Writing criteria...</span>`;
             const words = essay.split(/\s+/).length;
-            const promptContext = activeWritingTest?.promptText || "IELTS Writing Task 2";
-            const reply = await askIELTSAI(`Grade this IELTS essay (${words} words) for topic:\n${promptContext}\n\nEssay:\n${essay}\n\nStart line 1 with: **Overall Band Score: X.X** followed by a Criteria Table, Sentence Corrections, and Band 8.5 Model Paragraph Upgrade.`);
+            const criteria = task === 1 ? "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy" : "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy";
+            const reply = await askIELTSAI(`You are a strict, fair IELTS Writing examiner. Mark this Academic Writing Task ${task} response. The candidate wrote ${words} words (minimum ${min}${words < min ? ", so the response is UNDER LENGTH and Task " + (task === 1 ? "Achievement" : "Response") + " must be penalised" : ""}).
+
+Task:
+${activeWritingTest.promptText}
+
+Candidate response:
+${essay}
+
+Mark each criterion (${criteria}) from 1 to 9 in half-bands, then the overall band (the average, rounded to the nearest 0.5). Do not inflate scores.
+Format exactly:
+**Overall Band Score: X.X**
+Then a markdown table with columns Criterion | Band | Comment, then "Main problems" (3 bullet points with quoted examples from the response), "Corrections" (3 sentences rewritten), and "How to reach the next band" (3 bullets).`, "You are a certified IELTS Writing examiner.", false, { maxTokens: 1800, budgetMs: 45000 });
             if (!reply) { fb.innerHTML = aiFailHTML(); return; }
-            const match = reply.match(/Band(?:\s+Score)?\s*[:\-]?\s*([4-9](?:\.[05])?)/i);
+            const match = reply.match(/Overall\s+Band(?:\s+Score)?\s*[:\-]?\s*\**\s*([1-9](?:\.[05])?)/i) || reply.match(/Band(?:\s+Score)?\s*[:\-]?\s*\**\s*([4-9](?:\.[05])?)/i);
             if (!match) {
                 fb.innerHTML = formatAIMarkdown(reply) + `<p class="text-xs text-amber-300 mt-3">⚠ The AI didn't include a band score, so nothing was saved. Tap Grade again.</p>`;
                 return;
             }
             const band = parseFloat(match[1]);
-            activeWritingTest = { ...(activeWritingTest || { module: 'writing', title: `Essay (${words}w)`, promptText: promptContext }), essayText: essay, feedbackMarkdown: reply, band, scoreLabel: `Band ${band.toFixed(1)}`, gradedDateStr: new Date().toISOString().split('T')[0] };
+            activeWritingTest = { ...activeWritingTest, essayText: essay, feedbackMarkdown: reply, band, scoreLabel: `Band ${band.toFixed(1)}`, gradedDateStr: new Date().toISOString().split('T')[0] };
             const savedW = await saveTestToAccount(activeWritingTest);
             if (savedW) activeWritingTest = savedW;
             await recordResult({ module: 'writing', band, title: activeWritingTest.title, sig: 'w:' + hashStr(essay) });
             renderWritingTest(activeWritingTest);
-            showToast(`✓ Graded & Saved: Band ${band.toFixed(1)}`, "success");
+            showToast(`✓ Marked & saved: Band ${band.toFixed(1)} (AI estimate)`, "success");
         });
+
+        // --- SPEAKING ARENA: full IELTS Speaking test (Part 1 interview, Part 2 cue card, Part 3 discussion) ---
+        const SPEAKING_BANK = [
+            { p1: { topic: "Your hometown", qs: ["Where is your hometown, and what is it famous for?", "What do you like most about living there?", "Has your hometown changed much since you were a child?", "Would you like to live there in the future? Why or why not?"] },
+              p2: { prompt: "Describe a place you have visited that you would like to go back to.", points: ["where it is", "when you went there and who you went with", "what you did there"], end: "and explain why you would like to return." },
+              p3: ["Why do so many people like to travel to other countries?", "How has tourism changed the places people visit?", "Do you think travelling is the best way to learn about other cultures?", "What problems can too many tourists cause in a popular place?"] },
+            { p1: { topic: "Studies", qs: ["What are you studying, or what did you study?", "Why did you choose that subject?", "Do you prefer studying alone or with other people?", "What would you change about the way you study?"] },
+              p2: { prompt: "Describe a teacher who has influenced you.", points: ["who the teacher was", "what subject they taught you", "what they were like as a teacher"], end: "and explain how they influenced you." },
+              p3: ["What qualities make a good teacher?", "How is learning at school different from learning at university?", "Do you think technology will replace teachers in the future?", "Should students be allowed to choose what they study?"] },
+            { p1: { topic: "Free time", qs: ["What do you usually do in your free time?", "Do you prefer spending free time indoors or outdoors?", "Has the way you spend your free time changed in recent years?", "Is there a hobby you would like to try in the future?"] },
+              p2: { prompt: "Describe a hobby or activity that you enjoy doing in your free time.", points: ["what the activity is", "when and where you do it", "who you do it with"], end: "and explain why you enjoy it." },
+              p3: ["Why do some people have very little free time today?", "Do you think hobbies are important for adults? Why?", "How do leisure activities differ between older and younger people?", "Should employers give workers more time for hobbies?"] },
+            { p1: { topic: "Food and cooking", qs: ["What kind of food do you enjoy eating most?", "Do you like cooking? Why or why not?", "Do you usually eat at home or in restaurants?", "Has your diet changed in the last few years?"] },
+              p2: { prompt: "Describe a meal that someone cooked for you and that you remember well.", points: ["who cooked it", "what the meal was", "where and when you ate it"], end: "and explain why it was memorable." },
+              p3: ["Why are family meals important in many cultures?", "Do people today eat more healthily than in the past?", "How has fast food changed the way people live?", "Should schools teach children how to cook?"] },
+            { p1: { topic: "Technology and phones", qs: ["How often do you use your mobile phone?", "What do you mainly use it for?", "Do you think people spend too much time on their phones?", "How do you think phones will change in the future?"] },
+              p2: { prompt: "Describe a piece of technology that you use often.", points: ["what it is", "how long you have had it", "what you use it for"], end: "and explain why it is important to you." },
+              p3: ["How has technology changed the way people communicate?", "Is technology making young people less social?", "What are the dangers of relying too much on technology?", "Will technology make jobs better or worse in the future?"] },
+            { p1: { topic: "Work and ambitions", qs: ["Do you work, or are you a student?", "What do you like most about your work or studies?", "What job did you want to do when you were a child?", "Where do you see yourself in five years?"] },
+              p2: { prompt: "Describe a job that you would like to do in the future.", points: ["what the job is", "what skills you would need", "how you could prepare for it"], end: "and explain why you find it attractive." },
+              p3: ["What makes a job satisfying for most people?", "Is salary the most important factor when choosing a career?", "How will jobs change over the next twenty years?", "Should people stay in one career for their whole life?"] },
+            { p1: { topic: "Friends", qs: ["Do you have many friends?", "How often do you see your friends?", "What do you like doing together?", "Do you think it is easy to make new friends as an adult?"] },
+              p2: { prompt: "Describe a friend you have known for a long time.", points: ["how you met", "how long you have known each other", "what you do together"], end: "and explain why the friendship is important to you." },
+              p3: ["What qualities do people look for in a good friend?", "Do online friendships have the same value as real-life ones?", "How do friendships change as people get older?", "Is it better to have a few close friends or many casual ones?"] },
+            { p1: { topic: "Festivals and celebrations", qs: ["What are the most popular festivals in your country?", "How do you usually celebrate them?", "Which festival is your favourite? Why?", "Do young people celebrate festivals differently from older people?"] },
+              p2: { prompt: "Describe a festival or celebration that you enjoyed.", points: ["what the celebration was", "where and when it took place", "what people did"], end: "and explain why you enjoyed it." },
+              p3: ["Why do traditional festivals matter to a country's culture?", "Are festivals becoming too commercial?", "How can festivals bring communities together?", "Do you think traditional celebrations will survive in the future?"] }
+        ];
+        let speakingBankIdx = Math.floor(Math.random() * SPEAKING_BANK.length);
+        let speakPart = 1;
+
+        function speakingPartText(t, part) {
+            if (!t?.parts) return t?.cardMarkdown || "";
+            if (part === 1) return `Part 1 (Interview). Topic: ${t.parts.p1.topic}\n` + t.parts.p1.qs.map((q, i) => `${i + 1}. ${q}`).join('\n');
+            if (part === 2) return `Part 2 (Cue card). ${t.parts.p2.prompt}\nYou should say: ${t.parts.p2.points.join('; ')}; ${t.parts.p2.end}`;
+            return `Part 3 (Discussion).\n` + t.parts.p3.map((q, i) => `${i + 1}. ${q}`).join('\n');
+        }
+        function speakingPartHTML(t, part) {
+            if (!t?.parts) return formatAIMarkdown(t?.cardMarkdown || t?.title || "");
+            if (part === 1) return `<div class="text-[11px] font-bold uppercase tracking-wide text-rose-400 mb-1">Part 1 · Interview (4-5 min)</div><p class="font-semibold mb-2">Let's talk about: ${escapeHTML(t.parts.p1.topic)}</p><ol class="list-decimal ml-5 space-y-1.5">${t.parts.p1.qs.map(q => `<li>${escapeHTML(q)}</li>`).join('')}</ol>`;
+            if (part === 2) return `<div class="text-[11px] font-bold uppercase tracking-wide text-rose-400 mb-1">Part 2 · Cue card (1 min preparation + 1-2 min talk)</div><div class="bg-slate-900/70 border border-slate-600 rounded-xl p-3"><p class="font-bold mb-2">${escapeHTML(t.parts.p2.prompt)}</p><p class="text-slate-300 mb-1">You should say:</p><ul class="list-disc ml-5 space-y-1">${t.parts.p2.points.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ul><p class="mt-2">${escapeHTML(t.parts.p2.end)}</p></div>`;
+            return `<div class="text-[11px] font-bold uppercase tracking-wide text-rose-400 mb-1">Part 3 · Discussion (4-5 min)</div><p class="mb-2 text-slate-300">Let's consider the topic in a more general way.</p><ol class="list-decimal ml-5 space-y-1.5">${t.parts.p3.map(q => `<li>${escapeHTML(q)}</li>`).join('')}</ol>`;
+        }
+        function speakingFullText(t) { return [1, 2, 3].map(p => speakingPartText(t, p)).join('\n\n'); }
+
+        function syncSpeakingAnswer() {
+            const ta = document.getElementById('speaking-user-transcript');
+            if (!activeSpeakingTest || !ta) return;
+            if (activeSpeakingTest.parts) { activeSpeakingTest.answers = { ...(activeSpeakingTest.answers || {}), [speakPart]: ta.value }; }
+            else activeSpeakingTest.userTranscript = ta.value;
+        }
+        function setSpeakingPart(part, loadAnswer = true) {
+            speakPart = part;
+            try { window.speechSynthesis?.cancel(); } catch (e) {}
+            const t = activeSpeakingTest;
+            document.querySelectorAll('.speak-part-btn').forEach(b => {
+                const on = Number(b.dataset.part) === part;
+                b.classList.toggle('bg-rose-600', on); b.classList.toggle('text-white', on);
+                b.classList.toggle('bg-slate-800', !on); b.classList.toggle('text-slate-300', !on);
+            });
+            document.getElementById('speaking-cue-card').innerHTML = speakingPartHTML(t, part);
+            document.getElementById('btn-speak-prep')?.classList.toggle('hide', !(t?.parts && part === 2));
+            if (loadAnswer) {
+                const ta = document.getElementById('speaking-user-transcript');
+                if (ta) ta.value = t?.parts ? (t.answers?.[part] || "") : (t?.userTranscript || "");
+                const aud = document.getElementById('audio-playback');
+                if (aud) { try { aud.pause(); } catch (e) {} aud.removeAttribute('src'); aud.classList.add('hide'); }
+            }
+        }
 
         function renderSpeakingTest(testObj) {
             if (!testObj) return;
             activeSpeakingTest = testObj;
-            document.getElementById('speaking-cue-card').innerHTML = formatAIMarkdown(testObj.cardMarkdown || testObj.title || "");
-            document.getElementById('speaking-user-transcript').value = testObj.userTranscript || "";
-            if (testObj.feedbackMarkdown) document.getElementById('speaking-sample-box').innerHTML = formatAIMarkdown(testObj.feedbackMarkdown);
+            if (testObj.parts && !testObj.answers) testObj.answers = {};
+            document.getElementById('speaking-part-tabs')?.classList.toggle('hide', !testObj.parts);
+            stopCountdown('speaking-timer');
+            const tm = document.getElementById('speaking-timer'); if (tm) tm.textContent = '00:00';
+            setSpeakingPart(testObj.parts ? 1 : 1, true);
+            document.getElementById('speaking-sample-box').innerHTML = testObj.feedbackMarkdown ? formatAIMarkdown(testObj.feedbackMarkdown) : `<span class="text-slate-400 text-xs">Your examiner feedback will appear here after you press Grade.</span>`;
         }
 
-        document.getElementById('btn-ai-speaking-card')?.addEventListener('click', async () => {
-            if (aiBusyGuard()) return;
-            const custom = document.getElementById('speaking-custom-source')?.value.trim() || "";
-            const box = document.getElementById('speaking-cue-card');
-            box.innerHTML = `<span class="text-rose-400 animate-pulse">✨ Generating Official Speaking Cue Card...</span>`;
-            const reply = await askIELTSAI(custom ? `Generate an official IELTS Speaking Part 2 Cue Card about "${custom}". Start line 1 with ### Describe [Topic].` : `Generate an official IELTS Speaking Part 2 Cue Card. Start line 1 with ### Describe [Topic].`);
-            if (!reply) { box.innerHTML = aiFailHTML(); return; }
-            const title = (reply.split('\n')[0] || "Speaking Cue Card").replace(/[#*]/g, '').trim().slice(0, 50);
-            activeSpeakingTest = { module: 'speaking', title, cardMarkdown: reply, userTranscript: "" };
-            renderSpeakingTest(activeSpeakingTest);
+        function speakingTestFromParts(parts) {
+            const t = { module: 'speaking', title: `Speaking: ${parts.p2.prompt.replace(/^Describe\s+/i, '').replace(/\.$/, '').slice(0, 60)}`, parts, answers: {}, userTranscript: "" };
+            t.cardMarkdown = speakingFullText(t);
+            return t;
+        }
+        async function newSpeakingFromAI() {
+            if (Date.now() < aiDownUntil) return null;
+            const subjects = ["travel", "education", "technology", "food", "work", "friends and family", "culture and traditions", "health and sport", "nature and weather", "shopping and money"];
+            const subject = subjects[Math.floor(Math.random() * subjects.length)];
+            const raw = await askIELTSAI(`Write one original, complete IELTS Speaking test in the official format, with a theme linked to: ${subject}.
+Part 1: a familiar topic with exactly 4 short interview questions. Part 2: a cue card whose prompt starts with "Describe", exactly 3 "You should say" points, and a final line starting with "and explain". Part 3: exactly 4 abstract discussion questions linked to the Part 2 topic.
+Return JSON only: {"p1":{"topic":"...","qs":["","","",""]},"p2":{"prompt":"Describe ...","points":["","",""],"end":"and explain ..."},"p3":["","","",""]}`, "You write official-style IELTS Speaking tests. Output valid JSON only.", true, { maxTokens: 700, budgetMs: 15000 });
+            const p = parseJSONSafely(raw);
+            const okArr = (a, n) => Array.isArray(a) && a.length === n && a.every(x => typeof x === 'string' && x.trim().length > 5);
+            if (!p || !p.p1 || !p.p2 || typeof p.p1.topic !== 'string' || !okArr(p.p1.qs, 4) || typeof p.p2.prompt !== 'string' || !/^describe/i.test(p.p2.prompt.trim()) || !okArr(p.p2.points, 3) || typeof p.p2.end !== 'string' || !okArr(p.p3, 4)) { aiDownUntil = Date.now() + 90000; return null; }
+            return speakingTestFromParts({ p1: { topic: p.p1.topic.trim(), qs: p.p1.qs.map(s => s.trim()) }, p2: { prompt: p.p2.prompt.trim(), points: p.p2.points.map(s => s.trim()), end: p.p2.end.trim() }, p3: p.p3.map(s => s.trim()) });
+        }
+
+        document.getElementById('btn-ai-speaking-card')?.addEventListener('click', async (e) => {
+            const btn = e.currentTarget;
+            const hasWork = activeSpeakingTest && !activeSpeakingTest.id && !activeSpeakingTest.feedbackMarkdown && Object.values(activeSpeakingTest.answers || {}).some(v => String(v).trim());
+            syncSpeakingAnswer();
+            if (hasWork && !confirm("Your current answers aren't saved or graded. Start a new test anyway?")) return;
+            const orig = btn.innerHTML;
+            btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Preparing...`;
+            try {
+                let t = !aiBusyGuard() ? await newSpeakingFromAI() : null;
+                if (!t) { t = speakingTestFromParts(cloneTest(SPEAKING_BANK[speakingBankIdx % SPEAKING_BANK.length])); speakingBankIdx++; }
+                renderSpeakingTest(t);
+            } finally { btn.disabled = false; btn.innerHTML = orig; }
+        });
+        document.querySelectorAll('.speak-part-btn').forEach(b => b.addEventListener('click', () => {
+            if (!activeSpeakingTest?.parts) return;
+            syncSpeakingAnswer();
+            setSpeakingPart(Number(b.dataset.part), true);
+        }));
+        document.getElementById('speaking-user-transcript')?.addEventListener('input', syncSpeakingAnswer);
+
+        document.getElementById('btn-speak-aloud')?.addEventListener('click', () => {
+            const synth = window.speechSynthesis;
+            if (!synth) return showToast("This browser can't read aloud.", "error");
+            if (!activeSpeakingTest?.parts) return showToast("Start a new Speaking test first!", "error");
+            synth.cancel();
+            const t = activeSpeakingTest;
+            const intro = speakPart === 1 ? `Part 1. Now I'd like to ask you some questions about ${t.parts.p1.topic}.` : speakPart === 2 ? `Part 2. Now I'm going to give you a topic, and I'd like you to talk about it for one to two minutes. You will have one minute to think. ` : `Part 3. We've been talking about ${t.parts.p2.prompt.replace(/^Describe\s+/i, '').replace(/\.$/, '')}, and now I'd like to discuss some more general questions.`;
+            const body = speakPart === 1 ? t.parts.p1.qs : speakPart === 3 ? t.parts.p3 : [t.parts.p2.prompt + " You should say: " + t.parts.p2.points.join(", ") + ", " + t.parts.p2.end];
+            const voice = (synth.getVoices() || []).find(v => /^en-GB/i.test(v.lang)) || (synth.getVoices() || []).find(v => /^en/i.test(v.lang));
+            [intro, ...body].forEach(txt => speechChunks(txt).forEach(c => { const u = new SpeechSynthesisUtterance(c); if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = 'en-GB'; u.rate = 0.92; synth.speak(u); }));
+        });
+        document.getElementById('btn-speak-prep')?.addEventListener('click', () => {
+            startCountdown('speaking-timer', 60, () => {
+                showToast("⏱ Preparation over. Start speaking now (1-2 minutes).", "info");
+                startCountdown('speaking-timer', 120, () => showToast("⏱ Time! Finish your sentence and stop.", "info"));
+            });
+            showToast("1 minute to prepare. Make brief notes, then speak.", "info");
         });
 
         document.getElementById('btn-save-speaking')?.addEventListener('click', async () => {
-            if (!activeSpeakingTest) return showToast("Generate a Cue Card first!", "error");
+            if (!activeSpeakingTest) return showToast("Start a Speaking test first!", "error");
+            syncSpeakingAnswer();
             const saved = await saveTestToAccount({ ...activeSpeakingTest, module: 'speaking' });
-            if (saved) { activeSpeakingTest = saved; showToast("💾 Speaking Cue Card saved!", "success"); }
+            if (saved) { activeSpeakingTest = saved; showToast("💾 Speaking test saved!", "success"); }
         });
 
         document.getElementById('speaking-test-selector')?.addEventListener('change', (e) => {
@@ -2750,35 +2832,47 @@ Return ONLY valid JSON in this shape:
 
         document.getElementById('btn-ai-speaking-sample')?.addEventListener('click', async () => {
             const box = document.getElementById('speaking-sample-box');
+            if (!activeSpeakingTest) return showToast("Start a Speaking test first!", "error");
             if (aiBusyGuard()) return;
-            const card = activeSpeakingTest?.cardMarkdown || document.getElementById('speaking-cue-card')?.innerText || "Speaking Part 2";
-            box.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Generating Band 8.5 Sample...</span>`;
-            const reply = await askIELTSAI(`Provide a Band 8.5 Spoken Model Answer and 5 idioms for this Cue Card:\n${card}`);
+            box.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Writing a Band 8 model answer...</span>`;
+            const reply = await askIELTSAI(`Give a Band 8 model spoken answer for the part of the IELTS Speaking test below, in natural spoken English (not essay style). For Part 1 answer each question in 2-3 sentences; for Part 2 give a 2-minute answer (about 250 words); for Part 3 answer each question in 4-5 sentences. After the answer, list 5 useful natural expressions used and why they work.\n\n${speakingPartText(activeSpeakingTest, speakPart)}`, "You are an expert IELTS Speaking coach.", false, { maxTokens: 1500, budgetMs: 40000 });
             if (!reply) { box.innerHTML = aiFailHTML(); return; }
             box.innerHTML = formatAIMarkdown(reply);
         });
 
         document.getElementById('btn-grade-speaking')?.addEventListener('click', async () => {
-            const speech = document.getElementById('speaking-user-transcript')?.value.trim();
-            if (!speech) return showToast("Record or type your spoken answer first!", "error");
+            if (!activeSpeakingTest) return showToast("Start a Speaking test first!", "error");
+            syncSpeakingAnswer();
+            const t = activeSpeakingTest;
+            const answered = t.parts ? [1, 2, 3].filter(p => String(t.answers?.[p] || '').trim().length > 0) : (String(t.userTranscript || '').trim() ? [0] : []);
+            if (!answered.length) return showToast("Record or type your spoken answer first!", "error");
             if (aiBusyGuard()) return;
             const box = document.getElementById('speaking-sample-box');
-            box.innerHTML = `<span class="text-emerald-400 animate-pulse">✨ Grading Speaking response...</span>`;
-            const card = activeSpeakingTest?.cardMarkdown || "Speaking Part 2";
-            const reply = await askIELTSAI(`Grade this spoken IELTS answer for Cue Card:\n${card}\n\nResponse:\n"${speech}"\n\nStart line 1 with: **Overall Speaking Band: X.X** followed by feedback and an upgraded Band 8.5 version.`);
+            box.innerHTML = `<span class="text-emerald-400 animate-pulse">✨ Marking your Speaking answers...</span>`;
+            const body = t.parts ? answered.map(p => `### Part ${p}\nQuestions:\n${speakingPartText(t, p)}\n\nCandidate answer:\n"${t.answers[p].trim()}"`).join('\n\n') : `Cue card:\n${t.cardMarkdown || "Speaking Part 2"}\n\nCandidate answer:\n"${t.userTranscript.trim()}"`;
+            const missing = t.parts && answered.length < 3 ? `Only Part${answered.length > 1 ? 's' : ''} ${answered.join(', ')} of 3 were answered; mention this and mark only what was said.` : "";
+            const reply = await askIELTSAI(`You are a strict, fair IELTS Speaking examiner. Mark the candidate's answers below. The answers are transcripts typed or produced by speech recognition, so judge Pronunciation only from word choice and any clear signs in the text, and say that pronunciation cannot be assessed accurately from text. ${missing}
+
+${body}
+
+Score Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy and Pronunciation from 1 to 9 in half-bands; overall = average rounded to the nearest 0.5. Do not inflate scores.
+Format exactly:
+**Overall Speaking Band: X.X**
+Then a markdown table (Criterion | Band | Comment), "Strengths" (2 bullets), "Main problems" (3 bullets quoting the candidate), and "Upgraded version" of one weak answer.`, "You are a certified IELTS Speaking examiner.", false, { maxTokens: 1700, budgetMs: 45000 });
             if (!reply) { box.innerHTML = aiFailHTML(); return; }
-            const match = reply.match(/Band\s*[:\-]?\s*([4-9](?:\.[05])?)/i);
+            const match = reply.match(/Overall\s+Speaking\s+Band\s*[:\-]?\s*\**\s*([1-9](?:\.[05])?)/i) || reply.match(/Band\s*[:\-]?\s*\**\s*([4-9](?:\.[05])?)/i);
             if (!match) {
                 box.innerHTML = formatAIMarkdown(reply) + `<p class="text-xs text-amber-300 mt-3">⚠ The AI didn't include a band score, so nothing was saved. Tap Grade again.</p>`;
                 return;
             }
             const band = parseFloat(match[1]);
-            activeSpeakingTest = { ...(activeSpeakingTest || { module: 'speaking', title: "Speaking Practice", cardMarkdown: card }), userTranscript: speech, feedbackMarkdown: reply, band, scoreLabel: `Band ${band.toFixed(1)}`, gradedDateStr: new Date().toISOString().split('T')[0] };
+            const combined = t.parts ? answered.map(p => t.answers[p].trim()).join(' || ') : t.userTranscript.trim();
+            activeSpeakingTest = { ...t, userTranscript: combined, feedbackMarkdown: reply, band, scoreLabel: `Band ${band.toFixed(1)}`, gradedDateStr: new Date().toISOString().split('T')[0] };
             const savedS = await saveTestToAccount(activeSpeakingTest);
             if (savedS) activeSpeakingTest = savedS;
-            await recordResult({ module: 'speaking', band, title: activeSpeakingTest.title, sig: 's:' + hashStr(speech) });
-            renderSpeakingTest(activeSpeakingTest);
-            showToast(`✓ Speaking Score Saved: Band ${band.toFixed(1)}`, "success");
+            await recordResult({ module: 'speaking', band, title: activeSpeakingTest.title, sig: 's:' + hashStr(combined) });
+            box.innerHTML = formatAIMarkdown(reply);
+            showToast(`✓ Speaking marked & saved: Band ${band.toFixed(1)} (AI estimate)`, "success");
         });
 
         // --- MICROPHONE & TIMERS ---
@@ -2828,19 +2922,23 @@ Return ONLY valid JSON in this shape:
             } catch (e) { showToast("Allow microphone access.", "error"); }
         });
 
-        function startCountdown(elId, seconds) {
+        const countdownTimers = {};
+        function stopCountdown(elId) { if (countdownTimers[elId]) { clearInterval(countdownTimers[elId]); delete countdownTimers[elId]; } }
+        // Starts (or restarts) a visible mm:ss countdown; calls onDone when it reaches zero
+        function startCountdown(elId, seconds, onDone) {
             const el = document.getElementById(elId);
-            if (!el || el.dataset.active === "true") return;
-            el.dataset.active = "true";
+            if (!el) return;
+            stopCountdown(elId);
             let rem = seconds;
-            const t = setInterval(() => {
-                rem--;
-                el.textContent = `${String(Math.floor(rem / 60)).padStart(2, '0')}:${String(rem % 60).padStart(2, '0')}`;
-                if (rem <= 0) { clearInterval(t); el.dataset.active = "false"; }
+            const paint = () => { el.textContent = `${String(Math.floor(rem / 60)).padStart(2, '0')}:${String(rem % 60).padStart(2, '0')}`; };
+            paint();
+            countdownTimers[elId] = setInterval(() => {
+                rem--; paint();
+                if (rem <= 0) { stopCountdown(elId); if (onDone) onDone(); }
             }, 1000);
         }
-        document.getElementById('btn-start-read')?.addEventListener('click', () => startCountdown('reading-timer', 1200));
-        document.getElementById('btn-start-write')?.addEventListener('click', () => startCountdown('writing-timer', 2400));
+        document.getElementById('btn-start-read')?.addEventListener('click', () => startCountdown('reading-timer', 1200, () => showToast("⏱ Time is up for this passage (20 minutes).", "info")));
+        document.getElementById('btn-start-write')?.addEventListener('click', () => { const t = activeWritingTest?.task === 1 ? 1200 : 2400; startCountdown('writing-timer', t, () => showToast(`⏱ Time is up (${t / 60} minutes). Finish your sentence and submit.`, "info")); });
     </script>
 </body>
 </html>
