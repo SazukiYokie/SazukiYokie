@@ -497,10 +497,10 @@
                     </div>
                 </div>
 
-                <!-- ================= 6. AI LISTENING LAB (2 Separate Generation Buttons: By Book/Topic vs Standard IELTS) ================= -->
+                <!-- ================= 6. LISTENING ================= -->
                 <div id="view-listening" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>AI Listening Lab</h2>
+                        <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>Listening</h2>
                         <div class="flex flex-wrap items-center gap-2">
                             <button type="button" id="btn-gen-std-listening" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
                                 <i class="fa-solid fa-building-columns mr-1"></i> Generate Standard IELTS Test
@@ -561,10 +561,10 @@
                     </div>
                 </div>
 
-                <!-- ================= 7. AI READING LAB (2 Separate Generation Buttons: By Book/Topic vs Standard IELTS) ================= -->
+                <!-- ================= 7. READING ================= -->
                 <div id="view-reading" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>AI Reading Lab</h2>
+                        <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>Reading</h2>
                         <div class="flex flex-wrap items-center gap-2">
                             <button type="button" id="btn-gen-std-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
                                 <i class="fa-solid fa-building-columns mr-1"></i> Generate Standard IELTS Test
@@ -615,7 +615,7 @@
                 <!-- ================= 8. AI WRITING STUDIO ================= -->
                 <div id="view-writing" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-pen-nib mr-2"></i>AI Writing Studio</h2>
+                        <h2 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-pen-nib mr-2"></i>Writing</h2>
                         <div class="flex flex-wrap items-center gap-2">
                             <button type="button" id="btn-writing-task1" class="bg-amber-600 hover:bg-amber-500 px-3.5 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-chart-column mr-1"></i>Task 1 · Chart</button>
                             <button type="button" id="btn-writing-task2" class="bg-orange-600 hover:bg-orange-500 px-3.5 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-file-pen mr-1"></i>Task 2 · Essay</button>
@@ -662,7 +662,7 @@
                 <!-- ================= 9. AI SPEAKING ARENA ================= -->
                 <div id="view-speaking" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl font-bold text-rose-400"><i class="fa-solid fa-microphone mr-2"></i>AI Speaking Arena</h2>
+                        <h2 class="text-xl font-bold text-rose-400"><i class="fa-solid fa-microphone mr-2"></i>Speaking</h2>
                         <div class="flex gap-2">
                             <button type="button" id="btn-ai-speaking-card" class="bg-rose-600 hover:bg-rose-500 px-3.5 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>New Speaking Test</button>
                             <button type="button" id="btn-save-speaking" class="bg-slate-800 hover:bg-rose-600 border border-rose-500/40 text-rose-300 hover:text-white px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-floppy-disk mr-1"></i>Save Test</button>
@@ -736,6 +736,13 @@
                             <option value="6.5">Band 6.5</option><option value="7.0">Band 7.0</option><option value="7.5">Band 7.5</option><option value="8.0">Band 8.0</option><option value="8.5">Band 8.5</option><option value="9.0">Band 9.0</option>
                         </select>
                         <button type="button" id="btn-save-settings" class="w-full bg-blue-600 hover:bg-blue-500 py-2.5 rounded-xl font-semibold text-sm text-white">Save Changes</button>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl space-y-3">
+                        <h3 class="font-bold text-sm text-cyan-300"><i class="fa-solid fa-plug-circle-check mr-2"></i>AI connection check</h3>
+                        <p class="text-xs text-slate-400">If a test or feedback won't generate, run this. It tests each AI model and shows which one works.</p>
+                        <button type="button" id="btn-ai-check" class="w-full bg-slate-800 hover:bg-slate-700 border border-cyan-500/40 text-cyan-300 py-2.5 rounded-xl font-semibold text-sm">Test AI now</button>
+                        <div id="ai-check-result" class="text-xs space-y-1.5"></div>
                     </div>
                 </div>
 
@@ -1701,6 +1708,34 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             try { return await askIELTSAIInner(userPrompt, systemPrompt, forceJSON, opts); }
             finally { aiInFlight--; }
         }
+
+        document.getElementById('btn-ai-check')?.addEventListener('click', async (e) => {
+            const btn = e.currentTarget, out = document.getElementById('ai-check-result');
+            btn.disabled = true; out.innerHTML = '<span class="text-slate-400">Testing...</span>';
+            const rows = [];
+            for (const m of AI_MODELS) {
+                const t0 = Date.now();
+                let line;
+                try {
+                    const r = await aiRequest("https://api.groq.com/openai/v1/chat/completions", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getBuiltInKey()}` },
+                        body: JSON.stringify({ model: m.id, messages: [{ role: "user", content: "Reply with the single word OK." }], max_completion_tokens: 20, ...(m.extra || {}) })
+                    }, 12000);
+                    const secs = ((Date.now() - t0) / 1000).toFixed(1);
+                    if (r.ok) line = `<span class="text-emerald-400">✓ ${escapeHTML(m.id)}</span> <span class="text-slate-500">${secs}s</span>`;
+                    else {
+                        let msg = ""; try { msg = JSON.parse(r.body)?.error?.message || ""; } catch (x) {}
+                        line = `<span class="text-red-400">✗ ${escapeHTML(m.id)}</span> <span class="text-slate-400">HTTP ${r.status}${msg ? ': ' + escapeHTML(msg.slice(0, 120)) : ''}</span>`;
+                    }
+                } catch (err) {
+                    line = `<span class="text-red-400">✗ ${escapeHTML(m.id)}</span> <span class="text-slate-400">${err && err.name === 'AbortError' ? 'timed out' : 'network error (check your internet)'}</span>`;
+                }
+                rows.push(line);
+                out.innerHTML = rows.join('<br>');
+            }
+            btn.disabled = false;
+        });
 
         function formatAIMarkdown(raw) {
             if (!raw) return "";
