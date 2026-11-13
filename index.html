@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IELTS Studio KH — AI Self-Study & English Academy</title>
-    <meta name="description" content="IELTS self-study for Cambodian learners: timed Reading mock tests, AI feedback on Writing and Speaking, Listening practice, band-score progress tracking and a study leaderboard.">
+    <meta name="description" content="IELTS self-study for Cambodian learners: full Reading and Listening tests written fresh by AI, AI feedback on Writing and Speaking, Listening practice, band-score progress tracking and a study leaderboard.">
     <meta name="theme-color" content="#0f172a">
     <meta property="og:type" content="website">
     <meta property="og:title" content="IELTS Studio KH — AI Self-Study & English Academy">
-    <meta property="og:description" content="Practise all four IELTS skills, take timed Reading mocks and track your band score progress.">
+    <meta property="og:description" content="Practise all four IELTS skills, take full AI-written Reading and Listening tests and track your band score progress.">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Cpath d='M32 14 8 26l24 12 24-12-24-12zm-14 20v10c0 4 6 8 14 8s14-4 14-8V34l-14 7-14-7z' fill='white'/%3E%3C/svg%3E">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hanuman:wght@400;700&display=swap" rel="stylesheet">
@@ -95,6 +95,94 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.45); border-radius: 9999px; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+        /* ===== Exam screen (Reading / Listening): light, paper-like, modelled on the computer-delivered IELTS test ===== */
+        #exam-overlay { position: fixed; inset: 0; z-index: 90; background: #e8ecf1; color: #1e293b; display: flex; flex-direction: column; font-family: inherit; }
+        #exam-overlay.hide { display: none !important; }
+        #exam-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+        .ex-header { background: #12203a; color: #fff; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; flex-shrink: 0; }
+        .ex-brand { flex: 1; min-width: 0; font-weight: 800; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ex-timer { font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 800; font-size: 0.85rem; background: #fff; color: #12203a; padding: 0.25rem 0.6rem; border-radius: 0.4rem; }
+        .ex-timer.warn { background: #dc2626; color: #fff; animation: pulse 1s infinite; }
+        .ex-timer.hide, .ex-btn.hide { display: none !important; }
+        .ex-btn { border: 0; border-radius: 0.45rem; padding: 0.45rem 0.8rem; font-weight: 700; font-size: 0.78rem; cursor: pointer; line-height: 1.2; }
+        .ex-btn:disabled { opacity: 0.55; cursor: default; }
+        .ex-btn-green { background: #16a34a; color: #fff; }
+        .ex-btn-green:hover:not(:disabled) { background: #15803d; }
+        .ex-btn-light { background: #e2e8f0; color: #1e293b; }
+        .ex-btn-ghost { background: rgba(255,255,255,0.14); color: #fff; }
+        .ex-tabs { display: flex; gap: 0.4rem; padding: 0.45rem 0.75rem; background: #fff; border-bottom: 1px solid #cbd5e1; overflow-x: auto; flex-shrink: 0; }
+        .ex-tabs.hide { display: none; }
+        .ex-tab { flex-shrink: 0; padding: 0.35rem 0.8rem; border-radius: 0.45rem; border: 1px solid #cbd5e1; background: #f8fafc; font-size: 0.78rem; font-weight: 700; color: #334155; cursor: pointer; }
+        .ex-tab span { font-weight: 500; opacity: 0.75; margin-left: 0.25rem; }
+        .ex-tab.on { background: #12203a; border-color: #12203a; color: #fff; }
+        .ex-switch { display: none; gap: 0.4rem; padding: 0.4rem 0.75rem; background: #fff; border-bottom: 1px solid #cbd5e1; flex-shrink: 0; }
+        .ex-switch .ex-tab { flex: 1; }
+        .ex-main { flex: 1; min-height: 0; display: flex; }
+        .ex-pane { overflow-y: auto; padding: 1rem 1.25rem; min-width: 0; -webkit-overflow-scrolling: touch; }
+        .ex-pane-text { flex: 1 1 50%; background: #fff; border-right: 1px solid #cbd5e1; }
+        .ex-pane-q { flex: 1 1 50%; background: #f1f5f9; }
+        .ex-h3 { font-size: 1.05rem; font-weight: 800; color: #0f172a; margin: 0 0 0.6rem; }
+        .ex-h2 { font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 0 0 0.6rem; }
+        .ex-p { font-size: 0.92rem; line-height: 1.7; color: #1e293b; margin: 0 0 0.75rem; }
+        .ex-para { display: inline-block; min-width: 1.4rem; margin-right: 0.35rem; color: #fff; background: #12203a; border-radius: 0.3rem; text-align: center; font-size: 0.75rem; padding: 0 0.25rem; }
+        .ex-eyebrow { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #b45309; }
+        .ex-muted { font-size: 0.75rem; color: #64748b; margin: 0.2rem 0 0.4rem; }
+        .ex-strong { font-weight: 700; color: #0f172a; margin: 0.5rem 0; }
+        .ex-ghead { padding-top: 0.6rem; }
+        .ex-q { display: flex; gap: 0.65rem; background: #fff; border: 1px solid #cbd5e1; border-radius: 0.6rem; padding: 0.7rem; margin: 0 0 0.6rem; scroll-margin: 0.5rem; }
+        .ex-q.ex-ok { border-color: #16a34a; background: #f0fdf4; }
+        .ex-q.ex-bad { border-color: #dc2626; background: #fef2f2; }
+        .ex-qnum { flex-shrink: 0; width: 1.7rem; height: 1.7rem; border-radius: 0.4rem; background: #12203a; color: #fff; font-weight: 800; font-size: 0.78rem; display: flex; align-items: center; justify-content: center; }
+        .ex-qbody { flex: 1; min-width: 0; }
+        .ex-stem { font-size: 0.9rem; line-height: 1.9; color: #0f172a; margin-bottom: 0.4rem; }
+        .ex-gap { display: inline-block; width: 8.5rem; max-width: 100%; margin: 0 0.25rem; border: 0; border-bottom: 2px solid #12203a; background: #eef2ff; padding: 0.15rem 0.4rem; font-size: 0.9rem; color: #0f172a; border-radius: 0.2rem 0.2rem 0 0; }
+        .ex-gap:focus { outline: 0; background: #dbeafe; border-color: #2563eb; }
+        .ex-opts { display: flex; flex-direction: column; gap: 0.35rem; }
+        .ex-opts-row { flex-direction: row; flex-wrap: wrap; }
+        .ex-opt { display: flex; align-items: flex-start; gap: 0.45rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 0.45rem; padding: 0.45rem 0.6rem; font-size: 0.85rem; cursor: pointer; color: #0f172a; }
+        .ex-opt input { margin-top: 0.2rem; }
+        .ex-opt b { margin-right: 0.2rem; }
+        .ex-select { background: #fff; border: 1px solid #94a3b8; border-radius: 0.4rem; padding: 0.35rem 0.5rem; font-size: 0.85rem; color: #0f172a; }
+        .ex-fb { margin-top: 0.5rem; padding-top: 0.45rem; border-top: 1px dashed #cbd5e1; font-size: 0.8rem; color: #334155; }
+        .ex-fb p { margin: 0.25rem 0 0; }
+        .ex-green { color: #15803d; } .ex-red { color: #b91c1c; }
+        .ex-nav { display: flex; flex-wrap: nowrap; gap: 0.3rem; align-items: center; padding: 0.45rem 0.75rem; background: #fff; border-top: 1px solid #cbd5e1; overflow-x: auto; flex-shrink: 0; }
+        .ex-chip { flex-shrink: 0; width: 1.9rem; height: 1.9rem; border-radius: 0.35rem; border: 1px solid #94a3b8; background: #fff; color: #334155; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+        .ex-chip.cur { border-width: 2px; border-color: #12203a; }
+        .ex-chip.done { background: #12203a; color: #fff; border-color: #12203a; }
+        .ex-chip.ok { background: #16a34a; color: #fff; border-color: #16a34a; }
+        .ex-chip.bad { background: #dc2626; color: #fff; border-color: #dc2626; }
+        .ex-chip-gap { flex-shrink: 0; width: 0.6rem; }
+        .ex-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem; padding: 0.55rem 0.75rem; background: #fff; border-bottom: 1px solid #cbd5e1; flex-shrink: 0; }
+        .ex-score { font-size: 1.3rem; font-weight: 900; color: #0f172a; }
+        .ex-bandpill { background: #12203a; color: #fff; font-weight: 800; border-radius: 999px; padding: 0.2rem 0.7rem; font-size: 0.85rem; }
+        .ex-grow { flex: 1; }
+        .ex-center { flex: 1; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; padding: 1rem; }
+        .ex-card { background: #fff; border: 1px solid #cbd5e1; border-radius: 0.9rem; padding: 1.25rem; max-width: 34rem; width: 100%; margin: auto; box-shadow: 0 8px 30px rgba(15,23,42,0.12); }
+        .ex-tc { text-align: center; }
+        .ex-list { margin: 0 0 0.8rem 1.1rem; padding: 0; list-style: disc; font-size: 0.88rem; line-height: 1.7; color: #1e293b; }
+        .ex-check { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.8rem; color: #0f172a; }
+        .ex-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin: 0.6rem 0; }
+        .ex-error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; font-size: 0.8rem; padding: 0.6rem; border-radius: 0.5rem; margin-bottom: 0.7rem; }
+        .ex-audio { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 0.8rem; padding: 1rem; }
+        .ex-spin { width: 2rem; height: 2rem; border: 3px solid #cbd5e1; border-top-color: #12203a; border-radius: 50%; margin: 0 auto 0.6rem; animation: exspin 0.9s linear infinite; }
+        @keyframes exspin { to { transform: rotate(360deg); } }
+        /* Portrait phones: one pane at a time, switched by the Passage/Audio and Questions buttons */
+        @media (max-width: 767px) {
+            .ex-switch { display: flex; }
+            .ex-main { flex-direction: column; }
+            .ex-pane { flex: 1 1 auto; padding: 0.85rem; }
+            #exam-overlay[data-pane="text"] .ex-pane-q { display: none; }
+            #exam-overlay[data-pane="q"] .ex-pane-text { display: none; }
+            .ex-gap { width: 7rem; }
+        }
+        @media (max-height: 520px) {
+            .ex-header { padding: 0.3rem 0.6rem; }
+            .ex-pane { padding: 0.6rem 0.9rem; }
+            .ex-tabs, .ex-nav, .ex-switch { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+            .ex-chip { width: 1.7rem; height: 1.7rem; }
+        }
+
         /* App shell. Permanent sidebar only when the screen is wide AND tall; phones (portrait or landscape) get a slide-in menu. */
         #main-app { display: flex; flex-direction: column; }
         .app-mobile-header { display: flex; height: 3.5rem; }
@@ -175,7 +263,7 @@
                 <p class="text-[11px] text-slate-500 text-center leading-relaxed"><i class="fa-solid fa-lock mr-1"></i>Your tests, essays, scores and streak are private to your account.</p>
             </div>
             <ul class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px] text-slate-300 text-left mt-5 pt-4 border-t border-slate-700/60">
-                <li><i class="fa-solid fa-stopwatch text-amber-400 mr-1.5"></i>Timed Reading mock tests</li>
+                <li><i class="fa-solid fa-stopwatch text-amber-400 mr-1.5"></i>Full Reading and Listening tests, written live by AI</li>
                 <li><i class="fa-solid fa-pen-nib text-amber-300 mr-1.5"></i>AI Writing &amp; Speaking feedback</li>
                 <li><i class="fa-solid fa-headphones text-cyan-400 mr-1.5"></i>Listening practice</li>
                 <li><i class="fa-solid fa-chart-line text-emerald-400 mr-1.5"></i>Band progress tracking</li>
@@ -501,115 +589,59 @@
                 <div id="view-listening" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-cyan-400"><i class="fa-solid fa-headphones mr-2"></i>Listening</h2>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" id="btn-gen-std-listening" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
-                                <i class="fa-solid fa-building-columns mr-1"></i> Generate Standard IELTS Test
-                            </button>
-                            <button type="button" id="btn-save-listening" class="bg-slate-800 hover:bg-blue-600 border border-cyan-500/40 text-cyan-300 hover:text-white px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
-                                <i class="fa-solid fa-floppy-disk mr-1"></i> Save Test
-                            </button>
+                        <span class="text-xs text-slate-400">Every test is written fresh by AI</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="glass-panel rounded-2xl p-4 space-y-2 border border-amber-500/30">
+                            <h3 class="font-bold text-amber-300">Full Listening Test</h3>
+                            <p class="text-xs text-slate-300">4 sections, 40 questions, 40 minutes. Notes, forms and multiple choice, with a different AI voice for each speaker.</p>
+                            <button type="button" data-exam="listening:full" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-semibold py-2.5 rounded-xl text-sm">Start full test</button>
+                        </div>
+                        <div class="glass-panel rounded-2xl p-4 space-y-2 border border-cyan-500/30">
+                            <h3 class="font-bold text-cyan-300">Practise one section</h3>
+                            <p class="text-xs text-slate-300">About 10 questions. Choose the section you want to improve.</p>
+                            <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
+                                <button type="button" data-exam="listening:part:0" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white py-2 rounded-xl">1 · Conversation</button>
+                                <button type="button" data-exam="listening:part:1" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white py-2 rounded-xl">2 · Social talk</button>
+                                <button type="button" data-exam="listening:part:2" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white py-2 rounded-xl">3 · Discussion</button>
+                                <button type="button" data-exam="listening:part:3" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white py-2 rounded-xl">4 · Lecture</button>
+                            </div>
                         </div>
                     </div>
-
-                    <details class="glass-panel rounded-xl p-3 border-l-4 border-l-cyan-400 text-xs">
-                        <summary class="cursor-pointer font-bold text-cyan-300">💡 Examiner Listening Tips (Click to view)</summary>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-700/60 text-slate-300">
-                            <div><strong>1. Distractors:</strong> Watch for self-corrections like <em>"Actually, wait..."</em> or <em>"No, sorry..."</em>.</div>
-                            <div><strong>2. Paraphrasing:</strong> Audio uses synonyms instead of exact words in the options.</div>
-                            <div><strong>3. Order:</strong> All questions follow the exact chronological order of the recording.</div>
-                        </div>
+                    <details class="glass-panel rounded-2xl p-3.5 text-xs text-slate-300">
+                        <summary class="cursor-pointer font-semibold text-cyan-300">Examiner tips for Listening</summary>
+                        <ul class="list-disc ml-5 mt-2 space-y-1"><li>Read the questions before the recording starts and underline key words.</li><li>Answers follow the order of the recording. If you lose one, move on.</li><li>Listen for corrections ("No, sorry, I meant..."): the final version is the answer.</li><li>Check spelling, singular/plural and the word limit. Write numbers as digits.</li></ul>
                     </details>
-
-                    <div class="glass-panel p-3 rounded-xl flex items-center gap-2 border border-cyan-500/30">
-                        <span class="text-xs font-bold text-cyan-300 whitespace-nowrap">Saved (<span id="listening-saved-count">0</span>):</span>
-                        <select id="listening-test-selector" class="flex-1 min-w-0 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                            <option value="">-- Select a Saved Listening Test --</option>
-                        </select>
-                        <button type="button" id="btn-delete-listening-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-
-                    <div class="glass-panel p-4 rounded-2xl space-y-3.5">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                            <div class="flex items-center gap-3">
-                                <div id="listening-eq" class="hide flex items-end gap-1 h-4">
-                                    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
-                                </div>
-                                <div>
-                                    <h3 id="listening-title" class="font-bold text-sm sm:text-base text-cyan-300">IELTS Listening Test</h3>
-                                    <p id="listening-status" class="text-xs text-slate-400">Click "Play Audio" to listen and answer all 6 questions below.</p>
-                                </div>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-1.5">
-                                <select id="listening-speed" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white">
-                                    <option value="0.85">0.85x</option>
-                                    <option value="0.95" selected>1.0x</option>
-                                    <option value="1.1">1.1x</option>
-                                </select>
-                                <button type="button" id="btn-play-listening" class="bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-lg text-xs font-semibold text-white"><i class="fa-solid fa-play mr-1"></i>Play Audio</button>
-                                <button type="button" id="btn-stop-listening" class="bg-slate-700 px-2.5 py-1.5 rounded-lg text-xs text-white"><i class="fa-solid fa-stop"></i></button>
-                                <button type="button" id="btn-toggle-transcript" class="bg-slate-800 border border-slate-600 px-2.5 py-1.5 rounded-lg text-xs text-slate-300">Script</button>
-                            </div>
-                        </div>
-
-                        <div id="listening-transcript-box" class="hide bg-slate-900/90 border border-slate-700 p-3.5 rounded-xl text-xs text-slate-300 leading-relaxed"></div>
-                        <div id="listening-questions-box" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-slate-700/60"></div>
-
-                        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-700/50">
-                            <button type="button" id="btn-submit-listening" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white">Check Answers & Save Score</button>
-                            <div id="listening-score-box" class="text-sm font-bold text-cyan-400"></div>
-                        </div>
-                    </div>
+                    <div class="glass-panel rounded-2xl p-4 space-y-2"><h3 class="font-bold text-sm text-white">Recent attempts</h3><div id="listening-attempts" class="space-y-2"></div></div>
                 </div>
 
                 <!-- ================= 7. READING ================= -->
                 <div id="view-reading" class="view-section hide space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h2 class="text-xl font-bold text-emerald-400"><i class="fa-solid fa-book-open mr-2"></i>Reading</h2>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" id="btn-gen-std-reading" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
-                                <i class="fa-solid fa-building-columns mr-1"></i> Generate Standard IELTS Test
-                            </button>
-                            <button type="button" id="btn-mock-reading" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition">
-                                <i class="fa-solid fa-stopwatch mr-1"></i> Full Mock (40 Q &middot; 60 min)
-                            </button>
-                            <button type="button" id="btn-save-reading" class="bg-slate-800 hover:bg-emerald-600 border border-emerald-500/40 text-emerald-300 hover:text-white px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition">
-                                <i class="fa-solid fa-floppy-disk mr-1"></i> Save Test
-                            </button>
-                            <div id="reading-timer" class="bg-red-500/10 border border-red-500/30 text-red-400 px-2.5 py-1.5 rounded-lg font-mono font-bold text-xs">20:00</div>
-                            <button type="button" id="btn-start-read" class="bg-slate-700 px-2.5 py-1.5 rounded-lg text-xs text-white"><i class="fa-solid fa-play"></i></button>
-                        </div>
+                        <span class="text-xs text-slate-400">Academic &middot; every test is written fresh by AI</span>
                     </div>
-
-                    <details class="glass-panel rounded-xl p-3 border-l-4 border-l-emerald-400 text-xs">
-                        <summary class="cursor-pointer font-bold text-emerald-300">💡 Examiner Reading Tips (Click to view)</summary>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-700/60 text-slate-300">
-                            <div><strong>1. T/F/NG:</strong> True = matches meaning; False = directly contradicts; Not Given = not stated in text.</div>
-                            <div><strong>2. Anchor Words:</strong> Scan for names, dates, and technical terms to locate paragraphs quickly.</div>
-                            <div><strong>3. Extreme Qualifiers:</strong> Watch out for trap words like <em>always, never, exclusively, all</em>.</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="glass-panel rounded-2xl p-4 space-y-2 border border-amber-500/30">
+                            <h3 class="font-bold text-amber-300">Full Reading Test</h3>
+                            <p class="text-xs text-slate-300">3 passages, 40 questions, 60 minutes. True/False/Not Given, matching, multiple choice and completion. Difficulty rises each passage.</p>
+                            <button type="button" id="btn-mock-reading" data-exam="reading:full" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-semibold py-2.5 rounded-xl text-sm">Start full test</button>
                         </div>
-                    </details>
-
-                    <div class="glass-panel p-3 rounded-xl flex items-center gap-2 border border-emerald-500/30">
-                        <span class="text-xs font-bold text-emerald-300 whitespace-nowrap">Saved (<span id="reading-saved-count">0</span>):</span>
-                        <select id="reading-test-selector" class="flex-1 min-w-0 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                            <option value="">-- Select a Saved Reading Test --</option>
-                        </select>
-                        <button type="button" id="btn-delete-reading-test" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-2.5 py-1.5 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div class="glass-panel p-4 sm:p-5 rounded-2xl lg:max-h-[68vh] lg:overflow-y-auto space-y-2">
-                            <h3 id="reading-passage-title" class="font-bold text-base text-emerald-400 border-b border-slate-700 pb-2">Reading Passage</h3>
-                            <div id="reading-passage-body" class="ai-prose text-sm text-slate-200 leading-relaxed"></div>
-                        </div>
-                        <div class="glass-panel p-4 sm:p-5 rounded-2xl lg:max-h-[68vh] lg:overflow-y-auto flex flex-col justify-between space-y-4">
-                            <div id="reading-questions-box" class="space-y-3"></div>
-                            <div class="pt-3 border-t border-slate-700 flex flex-wrap items-center justify-between gap-2">
-                                <button type="button" id="btn-submit-reading" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white">Check Answers & Save Score</button>
-                                <div id="reading-score-box" class="text-sm font-bold text-emerald-400"></div>
+                        <div class="glass-panel rounded-2xl p-4 space-y-2 border border-emerald-500/30">
+                            <h3 class="font-bold text-emerald-300">Practise one passage</h3>
+                            <p class="text-xs text-slate-300">About 13 questions in 20 minutes. Choose a difficulty.</p>
+                            <div class="grid grid-cols-3 gap-2 text-xs font-semibold">
+                                <button type="button" data-exam="reading:part:0" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white py-2 rounded-xl">Band 5-6</button>
+                                <button type="button" data-exam="reading:part:1" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white py-2 rounded-xl">Band 6-7</button>
+                                <button type="button" data-exam="reading:part:2" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white py-2 rounded-xl">Band 7-8.5</button>
                             </div>
                         </div>
                     </div>
+                    <details class="glass-panel rounded-2xl p-3.5 text-xs text-slate-300">
+                        <summary class="cursor-pointer font-semibold text-emerald-300">Examiner tips for Reading</summary>
+                        <ul class="list-disc ml-5 mt-2 space-y-1"><li>Skim the passage for the main idea first, then scan for key words from each question.</li><li>True/False/Not Given: False means the passage says the opposite; Not Given means it says nothing about it.</li><li>For completion questions use words exactly as written in the passage and respect the word limit.</li><li>Spend about 20 minutes per passage. Never leave an answer blank.</li></ul>
+                    </details>
+                    <div class="glass-panel rounded-2xl p-4 space-y-2"><h3 class="font-bold text-sm text-white">Recent attempts</h3><div id="reading-attempts" class="space-y-2"></div></div>
                 </div>
 
                 <!-- ================= 8. AI WRITING STUDIO ================= -->
@@ -752,17 +784,15 @@
 
     <div id="toast-box" class="fixed bottom-4 right-4 z-[200] flex flex-col gap-2 pointer-events-none max-w-xs"></div>
 
-    <!-- ================= FULL READING MOCK (overlay) ================= -->
-    <div id="mock-overlay" class="hide fixed inset-0 z-[90] bg-slate-950 flex flex-col">
-        <div class="flex items-center justify-between gap-2 px-3 py-2 border-b border-slate-700 bg-slate-900 flex-shrink-0">
-            <div class="font-bold text-sm text-emerald-300 truncate"><i class="fa-solid fa-book-open mr-1.5"></i><span id="mock-title">Full Reading Mock</span></div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-                <div id="mock-timer" class="hide bg-red-500/10 border border-red-500/30 text-red-400 px-2.5 py-1 rounded-lg font-mono font-bold text-xs">60:00</div>
-                <button type="button" id="btn-mock-submit" class="hide bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Submit</button>
-                <button type="button" id="btn-mock-close" class="bg-slate-800 hover:bg-red-600 text-white px-2.5 py-1.5 rounded-lg text-xs" title="Close"><i class="fa-solid fa-xmark"></i></button>
-            </div>
+    <!-- ================= EXAM SCREEN (Reading / Listening tests) ================= -->
+    <div id="exam-overlay" class="hide" data-pane="text">
+        <div class="ex-header">
+            <div class="ex-brand"><span id="exam-title">IELTS Test</span></div>
+            <div id="exam-timer" class="ex-timer hide">60:00</div>
+            <button type="button" id="btn-exam-submit" class="ex-btn ex-btn-green hide">Submit</button>
+            <button type="button" id="btn-exam-close" class="ex-btn ex-btn-ghost" aria-label="Close" title="Close">&times;</button>
         </div>
-        <div id="mock-body" class="flex-1 min-h-0 overflow-hidden"></div>
+        <div id="exam-body"></div>
     </div>
 
     <!-- ================= APPLICATION LOGIC ================= -->
@@ -920,63 +950,6 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             box.innerHTML = formatAIMarkdown(reply);
         });
 
-        // --- 2. OFFICIAL CAMBRIDGE STANDARD TEST BANKS (For the 'Generate Standard IELTS Test' Button) ---
-        const standardReadingBank = [
-            {
-                title: "The Evolutionary Significance of Play in Animal Behavior",
-                passage: `**Paragraph A**\n\nFor much of the twentieth century, ethologists and evolutionary biologists viewed animal play as a puzzling evolutionary paradox. Play behavior—whether observed in juvenile wolves wrestling in the snow, dolphins leaping through boat wakes, or ravens sliding down icy rooftops—consumes substantial amounts of metabolic energy while exposing young animals to heightened risks of predation and physical injury. From a strictly Darwinian perspective, any behavior that carries such immediate survival costs without yielding obvious reproductive or foraging rewards should have been eliminated by natural selection. Yet play is pervasive across mammals and several avian species.\n\n**Paragraph B**\n\nThe earliest systematic explanation, formulated by the nineteenth-century philosopher Karl Groos, proposed that play serves as a biological rehearsal for adult survival skills. According to this 'motor-training hypothesis,' predatory kittens pouncing on moving leaves are calibrating the neuromuscular coordination required for stalking prey later in life, while young gazelles engaging in erratic leaps are practicing evasive maneuvers to escape predators. However, subsequent longitudinal field studies challenged this straightforward view. Researchers monitoring meerkat colonies and domestic cats discovered that individuals deprived of juvenile play opportunities nevertheless developed normal adult hunting and fighting competencies.\n\n**Paragraph C**\n\nContemporary neurobiological research has shifted focus from physical muscle training to synaptic plasticity within the prefrontal cortex. Experiments conducted by neuroscientist Sergio Pellis demonstrate that social rough-and-tumble play stimulates the release of brain-derived neurotrophic factor (BDNF), a protein that promotes the growth and pruning of neural pathways responsible for executive functioning, emotional regulation, and impulse control. Animals raised in isolation without playmates exhibit normal physical coordination but struggle profoundly when confronted with novel social hierarchies or unexpected environmental stressors.\n\n**Paragraph D**\n\nConsequently, modern ethologists increasingly champion the 'training for the unexpected' hypothesis. During play, animals deliberately place themselves in disadvantaged, unbalanced, or vulnerable positions—a phenomenon known as self-handicapping, where a dominant pup allows a smaller sibling to pin it down. By experiencing controlled loss of control in a safe context, the developing brain constructs flexible behavioral repertoires that enable the adult animal to improvise rapidly when real-world environments become unpredictable.`,
-                questions: [
-                    { q: "1. Early evolutionary biologists struggled to explain why natural selection had not eliminated animal play.", options: ["True", "False", "Not Given"], ans: "True", exp: "Paragraph A states play was viewed as a puzzling paradox that should have been eliminated by natural selection." },
-                    { q: "2. Field studies on meerkats and cats proved that juvenile play is strictly required to hunt successfully as an adult.", options: ["True", "False", "Not Given"], ans: "False", exp: "Paragraph B states that individuals deprived of juvenile play still developed normal adult hunting and fighting competencies." },
-                    { q: "3. Dolphins engage in social play for longer durations than land mammals.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "Dolphins are mentioned in Paragraph A, but no comparison of play duration is given." },
-                    { q: "4. According to Sergio Pellis, what is the primary benefit of rough-and-tumble play?", options: ["Increasing skeletal muscle mass", "Stimulating prefrontal cortex neural development", "Establishing permanent dominance hierarchies"], ans: "Stimulating prefrontal cortex neural development", exp: "Paragraph C explains that play releases BDNF, promoting neural pathways in the prefrontal cortex." },
-                    { q: "5. What happens to animals raised without playmates when they encounter unfamiliar situations?", options: ["They lose physical coordination", "They fail to regulate stress and adapt socially", "They become more aggressive hunters"], ans: "They fail to regulate stress and adapt socially", exp: "Paragraph C notes they struggle profoundly with novel social hierarchies or unexpected stressors." },
-                    { q: "6. In Paragraph D, 'self-handicapping' refers to an animal:", options: ["Injuring itself during solitary play", "Intentionally adopting a weaker position during play", "Refusing to play with smaller siblings"], ans: "Intentionally adopting a weaker position during play", exp: "Paragraph D defines self-handicapping as deliberately placing oneself in disadvantaged positions." }
-                ]
-            },
-            {
-                title: "The Archaeological Mystery of Roman Concrete Longevity",
-                passage: `**Paragraph A**\n\nMore than two millennia after the height of the Roman Empire, unreinforced marine structures such as the harbor piers of Portus Cosanus and the massive dome of the Pantheon remain structurally intact, defying the relentless assault of seawater and seismic activity. By contrast, modern Portland cement concrete—the ubiquitous foundation of twentieth- and twenty-first-century infrastructure—typically begins to deteriorate within fifty to one hundred years, particularly when exposed to chloride-rich marine environments that corrode internal steel reinforcement bars.\n\n**Paragraph B**\n\nFor decades, materials scientists attributed the durability of ancient Roman maritime concrete (*opus caementicium*) primarily to the inclusion of *pozzolana*, a volcanic ash quarried near the Bay of Naples. As documented by the Roman architect Vitruvius in the first century BCE, mixing volcanic ash with lime and seawater triggered a chemical reaction that produced a dense, water-resistant binder. Yet until recently, the precise mineralogical mechanisms that allowed Roman piers to actually grow stronger over centuries of wave impact remained poorly understood.\n\n**Paragraph C**\n\nUsing advanced synchrotron X-ray microdiffraction at Lawrence Berkeley National Laboratory, geologists Marie Jackson and Admir Masic uncovered two critical secrets inside ancient Roman cores. First, when seawater percolates through microscopic fissures in the volcanic ash matrix, it dissolves volcanic glasses and crystallizes a rare, interlocking plate-like mineral called aluminous tobermorite. Second, the Romans utilized a 'hot-mixing' technique using quicklime rather than slaked lime, leaving behind tiny white millimeter-scale lime clasts that were previously dismissed by modern engineers as evidence of sloppy mixing.\n\n**Paragraph D**\n\nFar from being an accidental defect, these lime clasts act as a self-healing reservoir. Whenever new micro-cracks form inside the concrete over centuries, infiltrating water reacts with the calcium-rich clasts, recrystallizing as calcium carbonate and automatically sealing the fissure before it can propagate. Modern civil engineers are now adapting these ancient chemical pathways to formulate low-carbon, self-healing concretes that could slash global construction emissions while tripling the lifespan of coastal infrastructure.`,
-                questions: [
-                    { q: "1. Modern Portland cement concrete generally lasts longer than Roman concrete in marine environments.", options: ["True", "False", "Not Given"], ans: "False", exp: "Paragraph A states Roman structures have lasted over two millennia, whereas modern concrete deteriorates within 50 to 100 years." },
-                    { q: "2. The Roman architect Vitruvius wrote about the use of volcanic ash in concrete during the first century BCE.", options: ["True", "False", "Not Given"], ans: "True", exp: "Paragraph B explicitly states that Vitruvius documented mixing volcanic ash with lime and seawater in the first century BCE." },
-                    { q: "3. The Pantheon's dome required more volcanic ash than the harbor piers of Portus Cosanus.", options: ["True", "False", "Not Given"], ans: "Not Given", exp: "Both structures are mentioned in Paragraph A, but the quantities of volcanic ash used are never compared." },
-                    { q: "4. What happens when seawater filters through tiny cracks in Roman marine concrete?", options: ["It corrodes the internal iron bars", "It forms interlocking crystals of aluminous tobermorite", "It washes away the volcanic ash"], ans: "It forms interlocking crystals of aluminous tobermorite", exp: "Paragraph C explains that seawater dissolves volcanic glasses and crystallizes aluminous tobermorite." },
-                    { q: "5. Why did modern engineers previously misunderstand the white lime clasts found in Roman concrete?", options: ["They thought the clasts were caused by poor mixing", "They believed the clasts were decorative", "They assumed the clasts came from modern repairs"], ans: "They thought the clasts were caused by poor mixing", exp: "Paragraph C notes that the tiny white lime clasts were previously dismissed as evidence of sloppy mixing." },
-                    { q: "6. What is the main function of the lime clasts described in Paragraph D?", options: ["To make the concrete dry faster during construction", "To provide a chemical source that automatically seals new cracks", "To reduce the weight of large domes"], ans: "To provide a chemical source that automatically seals new cracks", exp: "Paragraph D explains that water reacts with the clasts to recrystallize and automatically seal micro-cracks." }
-                ]
-            }
-        ];
-
-        const standardListeningBank = [
-            {
-                title: "IELTS Section 3 & 4 Standard: Marine Microplastics & Coastal Ecosystems",
-                script: `Good morning everyone. In today's environmental science lecture, we're examining the long-term ecological impact of microplastics on coastal marine ecosystems. Now, many students initially assume that industrial shipping spills are the primary source of microplastic fibers in estuaries. Actually, recent coastal audits have disproved that assumption: over sixty-five percent of synthetic microfibers entering coastal waters originate from domestic laundry effluent and urban tire wear washed into storm drains. Once these microscopic particles enter the water column, they don't simply float harmlessly on the surface. Because their hydrophobic surfaces attract persistent organic pollutants, they act as toxic vectors. In our university's three-year study of Pacific oysters, we initially expected to find the highest concentration of microplastics in the digestive tract. However, upon histological analysis, we discovered that particles smaller than ten micrometers had translocated primarily into the gill tissues, reducing the oysters' filtration efficiency by nearly forty percent. Furthermore, when we tested juvenile reef fish exposed to these concentrations, their predator-avoidance reflexes slowed significantly, making them three times more vulnerable to predation. Moving forward, our department is piloting a bio-filtration project using native seagrass meadows, which have been shown to trap up to seventy percent of suspended sediment particles before they reach coral reefs.`,
-                questions: [
-                    { q: "1. According to the lecturer, what is the main source of synthetic microfibers in coastal waters?", options: ["Industrial shipping spills", "Household laundry and urban tire wear", "Commercial fishing nets"], ans: "Household laundry and urban tire wear", exp: "Over 65% comes from domestic laundry effluent and urban tire wear." },
-                    { q: "2. Why do microplastics act as dangerous 'toxic vectors' in the ocean?", options: ["They release heat into the water", "Their surfaces attract organic pollutants", "They block sunlight from reaching algae"], ans: "Their surfaces attract organic pollutants", exp: "Their hydrophobic surfaces attract persistent organic pollutants." },
-                    { q: "3. Where did the university study find the highest concentration of tiny particles (<10 micrometers) in Pacific oysters?", options: ["In the outer shell", "In the digestive tract", "In the gill tissues"], ans: "In the gill tissues", exp: "Histological analysis showed they translocated primarily into the gill tissues." },
-                    { q: "4. By how much did microplastic exposure reduce the oysters' filtration efficiency?", options: ["Nearly 10%", "Nearly 40%", "Over 65%"], ans: "Nearly 40%", exp: "The speaker explicitly states it reduced filtration efficiency by nearly forty percent." },
-                    { q: "5. How did microplastic exposure affect juvenile reef fish?", options: ["It slowed their predator-avoidance reflexes", "It prevented them from swimming in groups", "It reduced their body size by half"], ans: "It slowed their predator-avoidance reflexes", exp: "Their predator-avoidance reflexes slowed significantly." },
-                    { q: "6. What natural solution is the department testing to trap microplastic sediment?", options: ["Artificial concrete barriers", "Native seagrass meadows", "Deep-sea sponge colonies"], ans: "Native seagrass meadows", exp: "The department is piloting a bio-filtration project using native seagrass meadows." }
-                ]
-            },
-            {
-                title: "IELTS Standard Section 1 & 2: University Research Grant & Fieldwork Briefing",
-                script: `Welcome to the Undergraduate Research Symposium orientation. If you are applying for the Summer Fieldwork Grant, please pay close attention to the updated submission guidelines. In previous years, the application deadline was the thirty-first of March, but this year the committee has brought it forward to the fifteenth of March at 5:00 PM sharp. Each research proposal must be co-signed by a faculty supervisor. Now, regarding the budget allocation: the maximum grant per student is two thousand five hundred dollars. Please note that while travel and laboratory consumables are fully covered, the grant cannot be used to purchase personal laptops or cameras; instead, recording equipment can be borrowed free of charge from the Media Loan Office on the second floor of the Science Annex. Before departing for fieldwork, all successful applicants must complete a mandatory half-day Risk Assessment Workshop. There are two sessions available: one on Saturday the tenth of April, and a repeat session on Wednesday the fourteenth of April. Finally, upon returning in September, you will be required to present a ten-minute summary of your findings alongside an academic poster.`,
-                questions: [
-                    { q: "1. What is the new deadline for the Summer Fieldwork Grant application this year?", options: ["March 15th", "March 31st", "April 10th"], ans: "March 15th", exp: "This year it was brought forward to March 15th." },
-                    { q: "2. What is the maximum funding amount a student can receive?", options: ["$1,500", "$2,000", "$2,500"], ans: "$2,500", exp: "The maximum grant per student is two thousand five hundred dollars." },
-                    { q: "3. Which expense is NOT permitted under the grant rules?", options: ["Travel tickets", "Laboratory consumables", "Personal laptops and cameras"], ans: "Personal laptops and cameras", exp: "The grant cannot be used to purchase personal laptops or cameras." },
-                    { q: "4. Where can students borrow recording equipment free of charge?", options: ["The Main Library basement", "The Media Loan Office in the Science Annex", "The Student Union desk"], ans: "The Media Loan Office in the Science Annex", exp: "Equipment can be borrowed from the Media Loan Office on the second floor of the Science Annex." },
-                    { q: "5. What must all successful applicants complete before starting their fieldwork?", options: ["A language proficiency test", "A Risk Assessment Workshop", "A medical examination"], ans: "A Risk Assessment Workshop", exp: "Applicants must complete a mandatory half-day Risk Assessment Workshop." },
-                    { q: "6. What are students required to deliver when they return in September?", options: ["A 5,000-word dissertation", "A 10-minute presentation and an academic poster", "A video documentary"], ans: "A 10-minute presentation and an academic poster", exp: "They must present a ten-minute summary alongside an academic poster." }
-                ]
-            }
-        ];
-        let stdReadIdx = 0;
-        let stdListenIdx = 0;
-
         // --- 3. INDEXED-DB & FULL PDF SCANNER ---
         const readArrayBuffer = (file) => new Promise((res, rej) => {
             const r = new FileReader();
@@ -1027,8 +1000,6 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
 
         // --- 4. STATE & FIREBASE SYNC ---
         let userSavedTests = [];
-        let activeListeningTest = null;
-        let activeReadingTest = null;
         let activeWritingTest = null;
         let activeSpeakingTest = null;
         let activeHistoryFilter = "all";
@@ -1040,7 +1011,6 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         let currentProfile = null;
         let lastPublicSig = "";
         let pendingSignupName = "";
-        let mockState = null;
         // Demo tests live in shared objects; always work on a private copy
         function shortText(v, n = 34) { const t = String(v ?? ""); return t.length > n ? t.slice(0, n - 1) + "…" : t; }
         function cloneTest(t) { return JSON.parse(JSON.stringify(t)); }
@@ -1181,6 +1151,8 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         function refreshSelectorsAndStats() {
             userSavedTests.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             renderProgress();
+            renderAttempts('reading', 'reading-attempts');
+            renderAttempts('listening', 'listening-attempts');
             ['listening', 'reading', 'writing', 'speaking'].forEach(mod => {
                 const list = userSavedTests.filter(t => t.module === mod);
                 const cEl = document.getElementById(`${mod}-saved-count`);
@@ -1241,9 +1213,8 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                         const found = userSavedTests.find(x => x.id === btn.getAttribute('data-open'));
                         const mod = btn.getAttribute('data-mod');
                         if (!found) return;
-                        if (mod === 'listening') renderListeningTest(found);
-                        else if (mod === 'reading') { if (found.isMock) openMockReview(found); else renderReadingTest(found); }
-                        else if (mod === 'writing') renderWritingTest(found);
+                        if (mod === 'listening' || mod === 'reading') { openExamReview(found); return; }
+                        if (mod === 'writing') renderWritingTest(found);
                         else if (mod === 'speaking') renderSpeakingTest(found);
                         document.querySelector(`[data-target="${mod}"]`)?.click();
                     });
@@ -1313,12 +1284,12 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             lastPublicSig = "";
             currentProfile = null;
             userSavedTests = []; userResults = [];
-            activeListeningTest = null; activeReadingTest = null; activeWritingTest = null; activeSpeakingTest = null;
+            activeWritingTest = null; activeSpeakingTest = null;
             activeHistoryFilter = "all";
             try { window.speechSynthesis?.cancel(); } catch (e) {}
             try { if (mediaRec && mediaRec.state === "recording") mediaRec.stop(); } catch (e) {}
             try { speechRec?.stop?.(); } catch (e) {}
-            closeMock(true);
+            closeExam(true);
             resetUserUI();
             refreshSelectorsAndStats();
             document.querySelector('[data-target="dashboard"]')?.click();
@@ -1459,8 +1430,6 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             showAuthMsg('error', '');
 
             renderCourseModule('tenses');
-            renderReadingTest(cloneTest(standardReadingBank[0]));
-            renderListeningTest(cloneTest(standardListeningBank[0]));
 
             try { userSavedTests = JSON.parse(localStorage.getItem(getTestsCacheKey(uid)) || "[]"); } catch (e) { userSavedTests = []; }
             try { userResults = JSON.parse(localStorage.getItem(getResultsCacheKey(uid)) || "[]"); } catch (e) { userResults = []; }
@@ -1814,293 +1783,9 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         document.querySelectorAll('.ai-quick-btn').forEach(b => b.addEventListener('click', () => sendChat(b.getAttribute('data-prompt'))));
         document.getElementById('btn-clear-chat')?.addEventListener('click', () => { document.getElementById('ai-chat-box').innerHTML = ''; });
 
-        // --- LISTENING: official-style sections, multi-voice playback ---
-        const LISTEN_SECTIONS = [
-            { label: "Section 1 · Everyday conversation", speakers: 2, brief: "a telephone or face-to-face conversation between two people in an everyday situation (for example booking a course, renting a flat, joining a gym, planning a trip). Include at least one spelled name or number and one realistic self-correction such as 'No, sorry, I meant...'." },
-            { label: "Section 2 · Talk on a social topic", speakers: 1, brief: "a monologue by one speaker (a guide or organiser) about a local facility, event or service, for example a tour of a community centre or a new library. Include directions, times and prices." },
-            { label: "Section 3 · Academic discussion", speakers: 2, brief: "a discussion between a university student and a tutor about an assignment or research project. The speakers should disagree slightly and change their minds at least once." },
-            { label: "Section 4 · University lecture", speakers: 1, brief: "a lecture by one speaker on an academic subject (for example geology, marine biology, urban history, psychology) with a clear structure and a few signposting phrases." }
-        ];
-        let listenSecIdx = Math.floor(Math.random() * 4);
-        let listenPlayToken = 0;
-
-        // Keeps only well-formed multiple-choice questions whose answer is really one of the options
-        function normalizeMCQ(list, minOpts = 2) {
-            const out = [];
-            (Array.isArray(list) ? list : []).forEach(q => {
-                if (!q || !q.q || !Array.isArray(q.options)) return;
-                const options = [...new Set(q.options.map(o => String(o).trim()).filter(Boolean))];
-                if (options.length < minOpts) return;
-                let ans = String(q.ans ?? '').trim();
-                let hit = options.find(o => o === ans) || options.find(o => o.toLowerCase() === ans.toLowerCase());
-                if (!hit) { const m = ans.match(/^([A-D])\b/i); if (m && options[m[1].toUpperCase().charCodeAt(0) - 65]) hit = options[m[1].toUpperCase().charCodeAt(0) - 65]; }
-                if (!hit) return;
-                out.push({ q: String(q.q).replace(/^\s*\d+\s*[.)]\s*/, ''), options, ans: hit, exp: String(q.exp || '') });
-            });
-            return out.map((q, i) => ({ ...q, q: `${i + 1}. ${q.q}` }));
-        }
-
-        function renderMCQCards(prefix, questions, savedAns) {
-            return (questions || []).map((item, idx) => `
-                <div id="${prefix}-card-${idx}" class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700">
-                    <p class="text-xs sm:text-sm font-semibold text-white mb-2">${escapeHTML(item.q)}</p>
-                    <div class="flex flex-wrap gap-2 text-xs">
-                        ${(item.options || []).map(opt => `<label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 px-2.5 py-2 rounded-lg border border-slate-700"><input type="radio" name="${prefix}-q-${idx}" value="${escapeHTML(opt)}" ${savedAns[idx] === opt ? 'checked' : ''}><span>${escapeHTML(opt)}</span></label>`).join('')}
-                    </div>
-                    <div id="${prefix}-exp-${idx}" class="hide mt-2 pt-2 border-t border-slate-700 text-xs"></div>
-                </div>`).join('');
-        }
-
-        function renderListeningTest(testObj) {
-            if (!testObj) return;
-            stopListening();
-            activeListeningTest = testObj;
-            const n = (testObj.questions || []).length;
-            document.getElementById('listening-title').textContent = testObj.title || "IELTS Listening Test";
-            document.getElementById('listening-status').textContent = `${testObj.sectionLabel ? testObj.sectionLabel + ' · ' : ''}Press Play and answer all ${n} questions while you listen.`;
-            document.getElementById('listening-score-box').textContent = testObj.scoreLabel || "";
-            const tBox = document.getElementById('listening-transcript-box');
-            if (tBox) { tBox.classList.add('hide'); tBox.innerHTML = `<strong class="text-cyan-400">Audio script:</strong><br><br>${escapeHTML(testObj.script || "").replace(/\n/g, '<br>')}`; }
-            document.getElementById('listening-questions-box').innerHTML = renderMCQCards('listen', testObj.questions, testObj.userAnswers || {});
-        }
-
-        function parseScriptTurns(script) {
-            const turns = [];
-            String(script || '').split(/\n+/).forEach(line => {
-                const m = line.match(/^\s*([A-Za-z][A-Za-z .'-]{0,22}):\s*(.+)$/);
-                if (m) turns.push({ who: m[1].trim().toLowerCase(), text: m[2].trim() });
-                else if (line.trim()) turns.push({ who: turns.length ? turns[turns.length - 1].who : 'narrator', text: line.trim() });
-            });
-            return turns;
-        }
-        function speechChunks(text) {
-            const parts = String(text).match(/[^.!?]+[.!?]+["')]*\s*|[^.!?]+$/g) || [String(text)];
-            const out = []; let cur = '';
-            parts.forEach(p => { if ((cur + p).length > 200 && cur) { out.push(cur.trim()); cur = p; } else cur += p; });
-            if (cur.trim()) out.push(cur.trim());
-            return out;
-        }
-        function stopListening() {
-            listenPlayToken++;
-            try { window.speechSynthesis?.cancel(); } catch (e) {}
-            document.getElementById('listening-eq')?.classList.add('hide');
-        }
-        // Reads the script aloud: one voice per speaker, in short chunks (long utterances get cut off on Android Chrome)
-        function playListening(script, rate) {
-            const synth = window.speechSynthesis;
-            if (!synth) return showToast("This browser can't play spoken audio. Read the script instead.", "error");
-            stopListening();
-            const token = listenPlayToken;
-            const voices = (synth.getVoices() || []).filter(v => /^en/i.test(v.lang));
-            const turns = parseScriptTurns(script);
-            const speakers = [...new Set(turns.map(t => t.who))];
-            const queue = [];
-            turns.forEach(t => {
-                const idx = Math.max(0, speakers.indexOf(t.who));
-                speechChunks(t.text).forEach(c => queue.push({ text: c, idx }));
-            });
-            const eq = document.getElementById('listening-eq');
-            eq?.classList.remove('hide');
-            const next = (i) => {
-                if (token !== listenPlayToken) return;
-                if (i >= queue.length) { eq?.classList.add('hide'); return; }
-                const u = new SpeechSynthesisUtterance(queue[i].text);
-                const v = voices.length ? voices[queue[i].idx % voices.length] : null;
-                if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
-                u.rate = rate;
-                u.pitch = queue[i].idx % 2 === 0 ? 1 : 0.82;
-                u.onend = () => next(i + 1);
-                u.onerror = () => next(i + 1);
-                synth.speak(u);
-            };
-            next(0);
-        }
-
-        const generateListening = async (btn) => {
-            if (!btn || aiBusyGuard()) return;
-            stopListening();
-            const sec = LISTEN_SECTIONS[listenSecIdx % LISTEN_SECTIONS.length];
-            listenSecIdx++;
-            const orig = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Preparing ${sec.label.split(' · ')[0]}...`;
-            const topic = MOCK_TOPICS[Math.floor(Math.random() * MOCK_TOPICS.length)];
-            const format = sec.speakers === 2
-                ? `Write the script as a dialogue. Every line must start with the speaker's first name and a colon, for example "Sarah: ..." then "Tom: ...". Use exactly two speakers.`
-                : `Write the script as one continuous talk with no speaker labels.`;
-            const prompt = `Write an original IELTS Listening ${sec.label} for the Academic test. It is ${sec.brief}
-Theme to build it around: ${topic}.
-${format}
-The script must be 330 to 400 words, natural spoken English, with realistic distractors (details that are mentioned but turn out not to be the answer).
-Then write 6 multiple-choice questions (3 options each) in the same order as the information appears in the script. The correct answer must be stated or clearly implied in the script, and the wrong options must be plausible. Mix the position of the correct answer.
-Return JSON only:
-{"title":"short title","script":"the full script","questions":[{"q":"question text","options":["A text","B text","C text"],"ans":"exact text of the correct option","exp":"one sentence quoting the script"}]}`;
-            let used = null;
-            try {
-                const raw = await askIELTSAI(prompt, "You are a Cambridge IELTS Listening test writer. Output valid JSON only.", true, { maxTokens: 2600, budgetMs: 45000 });
-                const parsed = parseJSONSafely(raw);
-                const qs = normalizeMCQ(parsed?.questions, 3);
-                if (parsed && typeof parsed.script === 'string' && parsed.script.split(/\s+/).length >= 150 && qs.length >= 5) {
-                    used = { title: `IELTS Listening · ${parsed.title || sec.label}`, script: parsed.script, questions: qs, sectionLabel: sec.label };
-                    showToast("✓ New IELTS Listening test ready. Press Play when you are ready.", "success");
-                } else {
-                    showToast(`⚠ ${raw ? "The AI's reply wasn't usable." : aiProblemText()} Loaded a built-in test instead.`, "info");
-                }
-            } catch (e) { /* fall through to the built-in test */ }
-            if (!used) { stdListenIdx = (stdListenIdx + 1) % standardListeningBank.length; used = cloneTest(standardListeningBank[stdListenIdx]); }
-            renderListeningTest(used);
-            btn.disabled = false;
-            btn.innerHTML = orig;
-        };
-        document.getElementById('btn-gen-std-listening')?.addEventListener('click', (e) => generateListening(e.currentTarget));
-
-        document.getElementById('btn-save-listening')?.addEventListener('click', async () => {
-            if (!activeListeningTest) return showToast("Generate a Listening test first!", "error");
-            const saved = await saveTestToAccount({ ...activeListeningTest, module: 'listening' });
-            if (saved) { activeListeningTest = saved; showToast("💾 Listening Test saved to your bar!", "success"); }
-        });
-
-        document.getElementById('listening-test-selector')?.addEventListener('change', (e) => {
-            const found = userSavedTests.find(t => t.id === e.target.value);
-            if (found) renderListeningTest(found);
-        });
-        document.getElementById('btn-delete-listening-test')?.addEventListener('click', async () => {
-            if (activeListeningTest?.id) { const id = activeListeningTest.id; activeListeningTest = null; await deleteTestFromAccount(id); }
-        });
-        document.getElementById('btn-toggle-transcript')?.addEventListener('click', () => document.getElementById('listening-transcript-box')?.classList.toggle('hide'));
-        document.getElementById('btn-play-listening')?.addEventListener('click', () => {
-            if (!activeListeningTest?.script) return showToast("Generate a Listening test first!", "error");
-            playListening(activeListeningTest.script, parseFloat(document.getElementById('listening-speed')?.value || "0.95"));
-        });
-        document.getElementById('btn-stop-listening')?.addEventListener('click', stopListening);
-
-        document.getElementById('btn-submit-listening')?.addEventListener('click', async () => {
-            if (!activeListeningTest?.questions) return;
-            const qs = activeListeningTest.questions;
-            let score = 0; const ansMap = {};
-            qs.forEach((item, idx) => {
-                const sel = document.querySelector(`input[name="listen-q-${idx}"]:checked`);
-                if (sel) ansMap[idx] = sel.value;
-                const ok = sel && sel.value.trim().toLowerCase() === String(item.ans).trim().toLowerCase();
-                if (ok) score++;
-                const expEl = document.getElementById(`listen-exp-${idx}`);
-                if (expEl) { expEl.classList.remove('hide'); expEl.innerHTML = ok ? `<span class="text-emerald-400 font-bold">✓ Correct (${escapeHTML(item.ans)})</span> — ${escapeHTML(item.exp || '')}` : `<span class="text-red-400 font-bold">✗ Answer: ${escapeHTML(item.ans)}</span> — ${escapeHTML(item.exp || '')}`; }
-            });
-            const band = listeningRawToBand(score, qs.length);
-            activeListeningTest.band = band;
-            activeListeningTest.scoreLabel = `${score}/${qs.length} (Band ${band.toFixed(1)})`;
-            activeListeningTest.userAnswers = ansMap;
-            activeListeningTest.gradedDateStr = new Date().toISOString().split('T')[0];
-            document.getElementById('listening-score-box').textContent = activeListeningTest.scoreLabel;
-            const savedL = await saveTestToAccount({ ...activeListeningTest, module: 'listening' });
-            if (savedL) {
-                activeListeningTest = savedL;
-                await recordResult({ module: 'listening', band, score, total: qs.length, title: savedL.title, testId: savedL.id });
-            }
-            showToast(`✓ Score Saved: ${activeListeningTest.scoreLabel}`, "success");
-        });
-
-        // --- READING: single standard IELTS passage ---
-        function renderReadingTest(testObj) {
-            if (!testObj) return;
-            activeReadingTest = testObj;
-            document.getElementById('reading-passage-title').textContent = testObj.title || "IELTS Academic Reading Passage";
-            let passageText = "";
-            if (Array.isArray(testObj.paragraphs)) {
-                passageText = testObj.paragraphs.map((p, i) => String(p).startsWith("**Paragraph") ? p : `**Paragraph ${String.fromCharCode(65 + i)}**\n\n${p}`).join('\n\n');
-            } else if (Array.isArray(testObj.passage)) {
-                passageText = testObj.passage.join('\n\n');
-            } else {
-                passageText = String(testObj.passage || "");
-            }
-            document.getElementById('reading-passage-body').innerHTML = formatAIMarkdown(passageText);
-            document.getElementById('reading-score-box').textContent = testObj.scoreLabel || "";
-            document.getElementById('reading-questions-box').innerHTML = renderMCQCards('read', testObj.questions, testObj.userAnswers || {});
-        }
-
-        const generateReading = async (btn) => {
-            if (!btn || aiBusyGuard()) return;
-            const orig = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Writing a new passage...`;
-            const topic = MOCK_TOPICS[Math.floor(Math.random() * MOCK_TOPICS.length)];
-            const level = MOCK_LEVELS[Math.floor(Math.random() * MOCK_LEVELS.length)];
-            const prompt = `Write an original IELTS Academic Reading passage in the style of Cambridge IELTS on this subject: ${topic}. Difficulty: ${level}.
-The passage must have 5 paragraphs (A to E), each 100 to 130 words, in formal academic prose with a clear title. Do not use real people's quotes.
-Then write 8 questions in the order the information appears in the passage:
-- Questions 1 to 4: True / False / Not Given. Use exactly these three options: "True", "False", "Not Given". Include at least one of each answer.
-- Questions 5 to 8: multiple choice with 3 options.
-Every answer must be certain from the passage. "Not Given" statements must be plausible but not mentioned.
-Return JSON only:
-{"title":"passage title","paragraphs":["text of paragraph A","text of paragraph B","text of C","text of D","text of E"],"questions":[{"q":"statement or question","options":["True","False","Not Given"],"ans":"True","exp":"one sentence pointing to the paragraph"}]}`;
-            let used = null;
-            try {
-                const raw = await askIELTSAI(prompt, "You are a senior Cambridge IELTS Academic Reading test writer. Output valid JSON only.", true, { maxTokens: 3000, budgetMs: 45000 });
-                const parsed = parseJSONSafely(raw);
-                const qs = normalizeMCQ(parsed?.questions, 3);
-                const paras = Array.isArray(parsed?.paragraphs) ? parsed.paragraphs.map(String).filter(p => p.split(/\s+/).length >= 40) : [];
-                if (paras.length >= 4 && qs.length >= 6) {
-                    used = { title: `IELTS Reading · ${parsed.title || topic}`, paragraphs: paras, passage: paras.join('\n\n'), questions: qs };
-                    showToast("✓ New IELTS Reading passage ready.", "success");
-                } else {
-                    showToast(`⚠ ${raw ? "The AI's reply wasn't usable." : aiProblemText()} Loaded a built-in passage instead.`, "info");
-                }
-            } catch (e) { /* fall through to the built-in passage */ }
-            if (!used) { stdReadIdx = (stdReadIdx + 1) % standardReadingBank.length; used = cloneTest(standardReadingBank[stdReadIdx]); }
-            renderReadingTest(used);
-            btn.disabled = false;
-            btn.innerHTML = orig;
-        };
-        document.getElementById('btn-gen-std-reading')?.addEventListener('click', (e) => generateReading(e.currentTarget));
-
-        document.getElementById('btn-save-reading')?.addEventListener('click', async () => {
-            if (!activeReadingTest) return showToast("Generate a Reading test first!", "error");
-            const saved = await saveTestToAccount({ ...activeReadingTest, module: 'reading' });
-            if (saved) { activeReadingTest = saved; showToast("💾 Reading Test saved to your bar!", "success"); }
-        });
-
-        document.getElementById('reading-test-selector')?.addEventListener('change', (e) => {
-            const found = userSavedTests.find(t => t.id === e.target.value);
-            if (found?.isMock) openMockReview(found);
-            else if (found) renderReadingTest(found);
-        });
-        document.getElementById('btn-delete-reading-test')?.addEventListener('click', async () => {
-            if (activeReadingTest?.id) { const id = activeReadingTest.id; activeReadingTest = null; await deleteTestFromAccount(id); }
-        });
-
-        document.getElementById('btn-submit-reading')?.addEventListener('click', async () => {
-            if (!activeReadingTest?.questions) return;
-            const qs = activeReadingTest.questions;
-            let score = 0; const ansMap = {};
-            qs.forEach((item, idx) => {
-                const sel = document.querySelector(`input[name="read-q-${idx}"]:checked`);
-                if (sel) ansMap[idx] = sel.value;
-                const ok = sel && sel.value.trim().toLowerCase() === String(item.ans).trim().toLowerCase();
-                if (ok) score++;
-                const expEl = document.getElementById(`read-exp-${idx}`);
-                if (expEl) { expEl.classList.remove('hide'); expEl.innerHTML = ok ? `<span class="text-emerald-400 font-bold">✓ Correct (${escapeHTML(item.ans)})</span> — ${escapeHTML(item.exp || '')}` : `<span class="text-red-400 font-bold">✗ Answer: ${escapeHTML(item.ans)}</span> — ${escapeHTML(item.exp || '')}`; }
-            });
-            const band = readingRawToBand(score, qs.length);
-            activeReadingTest.band = band;
-            activeReadingTest.scoreLabel = `${score}/${qs.length} (Band ${band.toFixed(1)})`;
-            activeReadingTest.userAnswers = ansMap;
-            activeReadingTest.gradedDateStr = new Date().toISOString().split('T')[0];
-            document.getElementById('reading-score-box').textContent = activeReadingTest.scoreLabel;
-            const savedR = await saveTestToAccount({ ...activeReadingTest, module: 'reading' });
-            if (savedR) {
-                activeReadingTest = savedR;
-                await recordResult({ module: 'reading', band, score, total: qs.length, title: savedR.title, testId: savedR.id });
-            }
-            showToast(`✓ Reading Score Saved: ${activeReadingTest.scoreLabel}`, "success");
-        });
-
-        // --- FULL READING MOCK: 3 passages, 40 questions, 60 minutes ---
-        const MOCK_SECONDS = 3600;
-        const MOCK_PLANS = [
-            { tfng: 6, gap: 4, mcq: 3 },
-            { match: 5, gap: 4, mcq: 4 },
-            { tfng: 5, mcq: 5, gap: 4 }
-        ];
+        // =====================================================================
+        // EXAM ENGINE: Reading and Listening tests written live by the AI (no stored papers)
+        // =====================================================================
         const MOCK_LEVELS = [
             "Band 5-6 level: clear, factual, accessible vocabulary",
             "Band 6-7 level: more abstract ideas, some specialist vocabulary",
@@ -2111,15 +1796,38 @@ Return JSON only:
             "the psychology of memory", "the transition to renewable energy", "ancient trade routes and archaeology",
             "behavioural economics", "how children acquire language", "architecture and climate adaptation",
             "the history of cartography", "sleep research", "the rise of urban beekeeping", "deep-sea exploration",
-            "the economics of water scarcity", "bird migration and navigation"
+            "the economics of water scarcity", "bird migration and navigation", "the science of taste and smell",
+            "the history of public libraries", "volcanoes and early-warning systems", "wildlife corridors and roads",
+            "the origins of the bicycle"
         ];
-        const MOCK_TYPE_RANK = { tfng: 0, match: 1, mcq: 2, gap: 3 };
-        const MOCK_INSTR = {
-            tfng: "Do the following statements agree with the information in the passage? Choose TRUE if the statement agrees, FALSE if it contradicts the passage, or NOT GIVEN if there is no information about it.",
-            match: "Which paragraph contains the following information? Choose the correct letter.",
-            mcq: "Choose the correct letter, A, B, C or D.",
-            gap: "Complete the sentences. Write NO MORE THAN TWO WORDS from the passage for each answer."
+        const LISTEN_TOPICS = [
+            "a community sports centre", "a university library induction", "a student accommodation enquiry", "a local museum's new exhibition",
+            "a hiking and camping trip", "a part-time job at a cafe", "a research project on bees", "a group presentation on renewable energy",
+            "a lecture on the history of glass", "a lecture on animal communication", "a lecture on urban farming", "a geography field trip report",
+            "a booking for a language course", "an orientation talk for international students", "a lecture on how cities manage waste", "a tutorial about a psychology experiment"
+        ];
+        const READING_PLANS = [{ tfng: 6, gap: 4, mcq: 3 }, { match: 5, gap: 4, mcq: 4 }, { tfng: 5, mcq: 5, gap: 4 }];
+        const LISTENING_PLANS = [{ gap: 10 }, { mcq: 5, gap: 5 }, { mcq: 6, gap: 4 }, { gap: 10 }];
+        const LISTEN_SECTIONS = [
+            { n: 1, label: "Section 1 · Everyday conversation", speakers: 2, brief: "a conversation between two people in an everyday situation (booking, renting, joining, enquiring). Include at least one spelled name or number and one realistic self-correction such as 'No, sorry, I meant...'." },
+            { n: 2, label: "Section 2 · Talk on a social topic", speakers: 1, brief: "a monologue by one speaker (a guide or organiser) about a local facility, event or service. Include directions, times and prices." },
+            { n: 3, label: "Section 3 · Academic discussion", speakers: 2, brief: "a discussion between a university student and a tutor about an assignment or research project. The speakers disagree slightly and change their minds at least once." },
+            { n: 4, label: "Section 4 · University lecture", speakers: 1, brief: "an academic lecture by one speaker with a clear structure and signposting phrases." }
+        ];
+        const EX_RANK = { reading: { tfng: 0, match: 1, mcq: 2, gap: 3 }, listening: { mcq: 0, gap: 1 } };
+        const EX_INSTR = {
+            reading: {
+                tfng: "Do the following statements agree with the information in the passage? Choose TRUE if the statement agrees, FALSE if it contradicts the passage, or NOT GIVEN if there is no information about it.",
+                match: "Which paragraph contains the following information? Choose the correct letter.",
+                mcq: "Choose the correct letter, A, B, C or D.",
+                gap: "Complete the sentences. Write NO MORE THAN TWO WORDS from the passage for each answer."
+            },
+            listening: {
+                mcq: "Choose the correct letter, A, B or C.",
+                gap: "Complete the notes. Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer."
+            }
         };
+        const EX_NAMES = { tfng: 'True/False/Not Given', match: 'Matching', mcq: 'Multiple choice', gap: 'Completion' };
 
         // Approximate official Academic Reading raw-score to band conversion (varies slightly between real test versions)
         function readingRawToBand(raw, total = 40) {
@@ -2128,7 +1836,6 @@ Return JSON only:
             for (const [min, b] of table) if (r >= min) return b;
             return r >= 2 ? 2 : r >= 1 ? 1 : 0;
         }
-
         // Approximate official Listening raw-score to band conversion (varies slightly between real test versions)
         function listeningRawToBand(raw, total = 40) {
             const r = total === 40 ? raw : Math.round((raw / total) * 40);
@@ -2136,6 +1843,7 @@ Return JSON only:
             for (const [min, b] of table) if (r >= min) return b;
             return r >= 2 ? 2 : r >= 1 ? 1 : 0;
         }
+        const examBand = (kind, raw, total) => kind === 'listening' ? listeningRawToBand(raw, total) : readingRawToBand(raw, total);
 
         function renderGuideBands() {
             [['guide-reading-bands', readingRawToBand], ['guide-listening-bands', listeningRawToBand]].forEach(([id, fn]) => {
@@ -2151,10 +1859,16 @@ Return JSON only:
         }
         renderGuideBands();
 
-        const mockNorm = (s) => String(s ?? '').toLowerCase().replace(/[.,;:!?"'()]/g, '').replace(/\s+/g, ' ').trim().replace(/^(the|a|an) /, '');
+        const mockNorm = (s) => String(s ?? '').toLowerCase().replace(/[£$€%]/g, '').replace(/[.,;:!?"'()]/g, '').replace(/\s+/g, ' ').trim().replace(/^(the|a|an) /, '');
         const fmtClock = (sec) => `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
+        const compactAlnum = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        // A completion answer must really occur in the text/script (numbers can't be verified, so they pass)
+        function gapInText(ans, text) {
+            if (/^[\d\s.,£$€%:\/-]+$/.test(String(ans))) return true;
+            return compactAlnum(text).includes(compactAlnum(ans));
+        }
 
-        function mockIsCorrect(q, val) {
+        function examIsCorrect(q, val) {
             if (val == null || String(val).trim() === '') return false;
             if (q.type === 'gap') {
                 const n = mockNorm(val);
@@ -2164,9 +1878,10 @@ Return JSON only:
         }
 
         // Validate/normalise one AI-written question. Returns null if it is unusable.
-        function mockNormQuestion(q) {
+        function examNormQuestion(q, kind) {
             if (!q || typeof q.q !== 'string' || !q.q.trim()) return null;
             const type = String(q.type || '').toLowerCase();
+            if (EX_RANK[kind][type] === undefined) return null;
             const out = { type, q: q.q.trim().slice(0, 400), exp: String(q.exp || '').slice(0, 500) };
             if (type === 'tfng') {
                 const a = String(q.ans || '').trim().toLowerCase();
@@ -2183,21 +1898,35 @@ Return JSON only:
                 out.ans = String.fromCharCode(65 + li);
             } else if (type === 'gap') {
                 const a = String(q.ans || '').trim();
-                if (!a || a.split(/\s+/).length > 3) return null;
+                if (!a || a.split(/\s+/).length > (kind === 'listening' ? 3 : 2)) return null;
                 out.ans = a;
                 out.alt = Array.isArray(q.alt) ? q.alt.map(x => String(x).trim()).filter(Boolean).slice(0, 4) : [];
             } else if (type === 'match') {
                 const a = String(q.ans || '').trim().toUpperCase();
                 if (!/^[A-H]$/.test(a)) return null;
                 out.ans = a;
-            } else return null;
+            }
             return out;
         }
 
-        function mockBuildPrompt(plan, level, topic) {
-            const parts = Object.entries(plan).map(([t, n]) => `${n} "${t}"`).join(', ');
+        function examBuildPrompt(kind, slot, topic) {
+            const parts = Object.entries(slot.plan).map(([t, n]) => `${n} "${t}"`).join(', ');
+            if (kind === 'listening') {
+                const fmt = slot.sec.speakers === 2
+                    ? `a dialogue: every line starts with a speaker's first name and a colon (for example "Sarah: ..."), exactly two speakers, no stage directions`
+                    : `one continuous talk by a single speaker, no speaker labels, no stage directions`;
+                return `Write ONE section of a Cambridge IELTS Listening test.
+${slot.sec.label}. Content: ${slot.sec.brief}
+Theme: ${topic}.
+Script: ${fmt}. 450 to 550 words of natural spoken English with realistic distractors (details that are mentioned and then corrected or rejected). Completely original.
+Questions (exactly this many of each type): ${parts}. Put the "mcq" questions first, then the "gap" questions; inside each type follow the order of the script.
+- "gap": note, form or sentence completion. "q" is a short line containing ________ ; "ans" is 1-3 words or a number copied EXACTLY as said in the script (write numbers as digits); optional "alt" array of other accepted answers.
+- "mcq": "q" is the question stem; "options" is exactly 3 plain strings (no letters); "ans" is A, B or C.
+Every question needs "exp": one sentence quoting the part of the script that gives the answer.
+Return ONLY valid JSON: {"title":"...","script":"...","questions":[{"type":"gap","q":"...","ans":"...","exp":"..."}]}`;
+            }
             return `Write ONE passage for a Cambridge IELTS Academic Reading test.
-Topic: ${topic}. Difficulty: ${level}.
+Topic: ${topic}. Difficulty: ${slot.level}.
 Passage: 5 or 6 paragraphs, each 120-150 words, formal academic style, completely original.
 Questions (exactly this many of each type): ${parts}.
 Question formats:
@@ -2210,38 +1939,61 @@ Return ONLY valid JSON in this shape:
 {"title":"...","paragraphs":["...","..."],"questions":[{"type":"tfng","q":"...","ans":"True","exp":"..."}]}`;
         }
 
-        async function mockGeneratePassage(i, topic, m) {
-            const plan = MOCK_PLANS[i];
-            const planned = Object.values(plan).reduce((a, b) => a + b, 0);
+        async function examGeneratePart(m, slot, topic) {
+            const L = m.kind === 'listening';
+            const planned = Object.values(slot.plan).reduce((a, b) => a + b, 0);
             for (let attempt = 0; attempt < 2; attempt++) {
-                if (mockState !== m || m.cancelled) return null;
-                const raw = await askIELTSAI(mockBuildPrompt(plan, MOCK_LEVELS[i], topic), "You are a senior Cambridge IELTS Academic Reading test writer. Output valid JSON only.", true, { maxTokens: 4500, budgetMs: 80000 });
+                if (exam !== m || m.cancelled) return null;
+                const raw = await askIELTSAI(examBuildPrompt(m.kind, slot, topic),
+                    L ? "You are a senior Cambridge IELTS Listening test writer. Output valid JSON only." : "You are a senior Cambridge IELTS Academic Reading test writer. Output valid JSON only.",
+                    true, { maxTokens: 4500, budgetMs: 80000 });
                 if (raw) m.sawReply = true;
                 const parsed = parseJSONSafely(raw);
-                if (!parsed || !Array.isArray(parsed.paragraphs)) continue;
-                const paragraphs = parsed.paragraphs
-                    .map(p => String(p).replace(/^\s*(\*\*)?Paragraph\s+[A-H](\*\*)?[:.\s-]*/i, '').trim())
-                    .filter(p => p.length > 60).slice(0, 8);
-                if (paragraphs.length < 4) continue;
-                const qs = (Array.isArray(parsed.questions) ? parsed.questions : []).map(mockNormQuestion).filter(Boolean)
-                    .filter(q => q.type !== 'match' || (q.ans.charCodeAt(0) - 65) < paragraphs.length);
+                if (!parsed) continue;
+                let content, text;
+                if (L) {
+                    const script = typeof parsed.script === 'string' ? parsed.script.trim() : '';
+                    if (script.split(/\s+/).length < 220) continue;
+                    content = { script }; text = script;
+                } else {
+                    if (!Array.isArray(parsed.paragraphs)) continue;
+                    const paragraphs = parsed.paragraphs.map(p => String(p).replace(/^\s*(\*\*)?Paragraph\s+[A-H](\*\*)?[:.\s-]*/i, '').trim()).filter(p => p.length > 60).slice(0, 8);
+                    if (paragraphs.length < 4) continue;
+                    content = { paragraphs }; text = paragraphs.join(' ');
+                }
+                const nParas = content.paragraphs ? content.paragraphs.length : 0;
+                const qs = (Array.isArray(parsed.questions) ? parsed.questions : []).map(q => examNormQuestion(q, m.kind)).filter(Boolean)
+                    .filter(q => q.type !== 'match' || (q.ans.charCodeAt(0) - 65) < nParas)
+                    .filter(q => q.type !== 'gap' || gapInText(q.ans, text));
                 if (qs.length < Math.ceil(planned * 0.75)) continue;
-                qs.sort((a, b) => MOCK_TYPE_RANK[a.type] - MOCK_TYPE_RANK[b.type]);
-                return { title: String(parsed.title || `Passage ${i + 1}`).slice(0, 120), paragraphs, questions: qs };
+                qs.sort((a, b) => EX_RANK[m.kind][a.type] - EX_RANK[m.kind][b.type]);
+                return { title: String(parsed.title || slot.title).slice(0, 120), ...content, questions: qs };
             }
             m.failReason = m.sawReply ? "its reply wasn't in a usable format" : aiProblemText();
             return null;
         }
 
-        const mockOffset = (pi) => mockState.passages.slice(0, pi).reduce((a, p) => a + p.questions.length, 0);
-        const mockTotal = () => mockState.passages.reduce((a, p) => a + p.questions.length, 0);
+        function examConfig(kind, mode, idx) {
+            if (kind === 'reading') {
+                const ids = mode === 'full' ? [0, 1, 2] : [idx];
+                return { slots: ids.map(i => ({ plan: READING_PLANS[i], level: MOCK_LEVELS[i], title: `Passage ${i + 1}`, n: i + 1 })), seconds: mode === 'full' ? 3600 : 1200 };
+            }
+            const ids = mode === 'full' ? [0, 1, 2, 3] : [idx];
+            return { slots: ids.map(i => ({ plan: LISTENING_PLANS[i], sec: LISTEN_SECTIONS[i], title: `Section ${i + 1}`, n: i + 1 })), seconds: mode === 'full' ? 2400 : 600 };
+        }
 
-        function mockCompute(passages, answers) {
+        // ---------------- exam state + screens ----------------
+        let exam = null;
+        const exEl = (id) => document.getElementById(id);
+        const examTotal = () => exam.parts.reduce((a, p) => a + p.questions.length, 0);
+        const examOffset = (pi) => exam.parts.slice(0, pi).reduce((a, p) => a + p.questions.length, 0);
+
+        function examCompute(parts, answers) {
             let raw = 0, total = 0, off = 0;
             const byType = {};
-            passages.forEach(p => {
+            parts.forEach(p => {
                 p.questions.forEach((q, k) => {
-                    const ok = mockIsCorrect(q, answers[off + k]);
+                    const ok = examIsCorrect(q, answers[off + k]);
                     const b = byType[q.type] || (byType[q.type] = { ok: 0, n: 0 });
                     b.n++; total++;
                     if (ok) { b.ok++; raw++; }
@@ -2251,234 +2003,394 @@ Return ONLY valid JSON in this shape:
             return { raw, total, byType };
         }
 
-        function mockShell(inner) {
-            document.getElementById('mock-body').innerHTML = inner;
+        const examBody = (inner) => { exEl('exam-body').innerHTML = inner; };
+        function examChrome(phase) {
+            exEl('exam-timer')?.classList.toggle('hide', phase !== 'exam');
+            exEl('btn-exam-submit')?.classList.toggle('hide', phase !== 'exam');
         }
 
-        function renderMockIntro(errMsg = "") {
-            document.getElementById('mock-title').textContent = "Full Reading Mock";
-            mockShell(`<div class="h-full overflow-y-auto p-4 flex items-start sm:items-center justify-center">
-                <div class="glass-panel rounded-2xl p-5 sm:p-7 max-w-lg w-full space-y-3">
-                    <h2 class="text-xl font-extrabold text-emerald-300"><i class="fa-solid fa-stopwatch mr-2"></i>IELTS Academic Reading Mock</h2>
-                    <ul class="text-sm text-slate-200 space-y-1.5 list-disc ml-5">
-                        <li><strong>3 passages, about 40 questions, 60 minutes.</strong> Difficulty rises from passage 1 to 3.</li>
-                        <li>Mixed question types: True/False/Not Given, matching paragraphs, multiple choice, sentence completion.</li>
-                        <li>The timer starts when the test appears and can't be paused. It submits automatically at 00:00.</li>
-                        <li>Every mock is written fresh by AI, so preparing it takes about a minute.</li>
-                        <li>Your band is an estimate using the standard raw-score table. Real tests vary slightly.</li>
-                    </ul>
-                    ${errMsg ? `<div class="bg-red-500/10 border border-red-500/30 text-red-300 text-xs p-3 rounded-xl">${escapeHTML(errMsg)}</div>` : ''}
-                    <div class="flex gap-2 pt-1">
-                        <button type="button" id="btn-mock-start" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-semibold py-3 rounded-xl shadow-lg">${errMsg ? 'Try again' : 'Prepare &amp; start mock'}</button>
-                        <button type="button" id="btn-mock-cancel" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 rounded-xl text-sm">Cancel</button>
-                    </div>
-                </div></div>`);
-        }
-
-        function renderMockLoading(i) {
-            mockShell(`<div class="h-full flex items-center justify-center p-4"><div class="glass-panel rounded-2xl p-6 max-w-sm w-full text-center space-y-3">
-                <i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-400"></i>
-                <p class="text-sm font-semibold text-white">Writing passage ${i + 1} of 3...</p>
-                <p class="text-xs text-slate-400">The 60 minutes start only after all 3 passages are ready.</p>
-                <button type="button" id="btn-mock-cancel" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs">Cancel</button>
+        function renderExamIntro(errMsg = "") {
+            const m = exam, L = m.kind === 'listening', full = m.mode === 'full';
+            exEl('exam-title').textContent = `${full ? 'Full ' : ''}${L ? 'Listening' : 'Reading'} ${full ? 'Test' : 'Practice'}`;
+            const mins = m.seconds / 60;
+            const facts = L
+                ? (full ? ['4 sections, 40 questions: forms, notes and multiple choice', `${mins} minutes in total (30 for the recording and 10 to check your answers)`, 'Each section is a new script read by AI voices']
+                        : [`Section ${m.cfg.slots[0].n}: about 10 questions`, `${mins} minutes`, 'The script is written fresh and read by AI voices'])
+                : (full ? ['3 passages, 40 questions, 60 minutes', 'Difficulty rises from passage 1 to passage 3', 'True/False/Not Given, matching, multiple choice and completion']
+                        : [`1 passage with about 13 questions`, `${mins} minutes`, 'Mixed question types, as in the real test']);
+            examBody(`<div class="ex-center"><div class="ex-card">
+                <h2 class="ex-h2">${L ? 'IELTS Listening' : 'IELTS Academic Reading'} &middot; ${full ? 'full test' : 'practice'}</h2>
+                <ul class="ex-list">${facts.map(f => `<li>${escapeHTML(f)}</li>`).join('')}<li>Written live by AI, so preparing it takes about ${full ? 'a minute' : '20 seconds'}. The timer starts only when the test is ready and cannot be paused.</li></ul>
+                ${L ? `<label class="ex-check"><input type="checkbox" id="ex-strict" ${full ? 'checked' : ''}> Exam conditions: each recording plays once only</label>` : ''}
+                ${errMsg ? `<div class="ex-error">${escapeHTML(errMsg)}</div>` : ''}
+                <div class="ex-row"><button type="button" id="btn-exam-start" class="ex-btn ex-btn-green ex-grow">${errMsg ? 'Try again' : 'Prepare &amp; start'}</button><button type="button" id="btn-exam-cancel" class="ex-btn ex-btn-light">Cancel</button></div>
+                <p class="ex-muted">Your band is an estimate from the standard raw-score table. Real tests vary slightly.</p>
             </div></div>`);
         }
 
-        function mockQuestionHTML(q, g, val, review, nParas) {
-            const name = `mq-${g}`, dis = review ? 'disabled' : '';
-            const radio = (v, label) => `<label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-700"><input type="radio" name="${name}" data-g="${g}" value="${escapeHTML(v)}" ${val === v ? 'checked' : ''} ${dis}><span>${label}</span></label>`;
-            let input = '';
-            if (q.type === 'tfng') {
-                input = `<div class="flex flex-wrap gap-2 text-xs">${['True', 'False', 'Not Given'].map(o => radio(o, o)).join('')}</div>`;
-            } else if (q.type === 'mcq') {
-                input = `<div class="flex flex-col gap-1.5 text-xs">${q.options.map((o, i) => radio(String.fromCharCode(65 + i), `<strong>${String.fromCharCode(65 + i)}.</strong> ${escapeHTML(o)}`)).join('')}</div>`;
-            } else if (q.type === 'match') {
-                const letters = Array.from({ length: nParas }, (_, i) => String.fromCharCode(65 + i));
-                input = `<select data-g="${g}" ${dis} class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"><option value="">Paragraph...</option>${letters.map(l => `<option value="${l}" ${val === l ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
-            } else {
-                input = `<input type="text" data-g="${g}" ${dis} value="${escapeHTML(val || '')}" maxlength="40" placeholder="Your answer" autocomplete="off" class="w-full sm:w-64 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500">`;
-            }
-            let review_html = '', border = 'border-slate-700';
-            if (review) {
-                const ok = mockIsCorrect(q, val);
-                border = ok ? 'border-emerald-500/60' : 'border-red-500/60';
-                const shown = (val == null || String(val).trim() === '') ? '<em>no answer</em>' : escapeHTML(val);
-                review_html = `<div class="mt-2 pt-2 border-t border-slate-700 text-xs">${ok
-                    ? `<span class="text-emerald-400 font-bold">&#10003; Correct</span>`
-                    : `<span class="text-red-400 font-bold">&#10007; Your answer: ${shown}</span> &middot; <span class="text-emerald-300 font-semibold">Correct: ${escapeHTML(q.ans)}</span>`}
-                    ${q.exp ? `<p class="text-slate-300 mt-1">${escapeHTML(q.exp)}</p>` : ''}</div>`;
-            }
-            return `<div class="bg-slate-800/80 p-3.5 rounded-xl border ${border} space-y-2"><p class="text-xs sm:text-sm font-semibold text-white"><span class="text-emerald-400 mr-1">${g + 1}.</span>${escapeHTML(q.q)}</p>${input}${review_html}</div>`;
+        function renderExamLoading(i, n) {
+            examBody(`<div class="ex-center"><div class="ex-card ex-tc">
+                <div class="ex-spin"></div>
+                <p class="ex-strong">Writing ${exam.kind === 'listening' ? 'section' : 'passage'} ${i + 1} of ${n}...</p>
+                <p class="ex-muted">The clock starts only after everything is ready.</p>
+                <button type="button" id="btn-exam-cancel" class="ex-btn ex-btn-light">Cancel</button>
+            </div></div>`);
         }
 
-        function mockTabsHTML() {
-            const m = mockState;
-            return m.passages.map((p, i) => {
-                const off = mockOffset(i);
+        function examQuestionHTML(q, g, val, review, nParas) {
+            const dis = review ? 'disabled' : '';
+            const radio = (v, label) => `<label class="ex-opt"><input type="radio" name="exq-r-${g}" data-g="${g}" value="${escapeHTML(v)}" ${val === v ? 'checked' : ''} ${dis}><span>${label}</span></label>`;
+            let stem = escapeHTML(q.q), input = '';
+            if (q.type === 'tfng') input = `<div class="ex-opts ex-opts-row">${['True', 'False', 'Not Given'].map(o => radio(o, o)).join('')}</div>`;
+            else if (q.type === 'mcq') input = `<div class="ex-opts">${q.options.map((o, i) => radio(String.fromCharCode(65 + i), `<b>${String.fromCharCode(65 + i)}</b> ${escapeHTML(o)}`)).join('')}</div>`;
+            else if (q.type === 'match') {
+                const letters = Array.from({ length: nParas }, (_, i) => String.fromCharCode(65 + i));
+                input = `<select data-g="${g}" ${dis} class="ex-select"><option value="">Paragraph...</option>${letters.map(l => `<option value="${l}" ${val === l ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+            } else {
+                const field = `<input type="text" class="ex-gap" data-g="${g}" ${dis} value="${escapeHTML(val || '')}" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Answer ${g + 1}">`;
+                const parts = String(q.q).split(/_{3,}/);
+                if (parts.length > 1) { stem = parts.map(escapeHTML).join(field); } else { stem = escapeHTML(q.q) + ' ' + field; }
+            }
+            let fb = '', cls = '';
+            if (review) {
+                const ok = examIsCorrect(q, val);
+                cls = ok ? 'ex-ok' : 'ex-bad';
+                const shown = (val == null || String(val).trim() === '') ? '<em>no answer</em>' : escapeHTML(val);
+                fb = `<div class="ex-fb">${ok ? `<b class="ex-green">&#10003; Correct</b>` : `<b class="ex-red">&#10007; Your answer: ${shown}</b> &middot; <b class="ex-green">Correct: ${escapeHTML(q.ans)}</b>`}${q.exp ? `<p>${escapeHTML(q.exp)}</p>` : ''}</div>`;
+            }
+            return `<div class="ex-q ${cls}" id="exq-${g}"><div class="ex-qnum">${g + 1}</div><div class="ex-qbody"><div class="ex-stem">${stem}</div>${input}${fb}</div></div>`;
+        }
+
+        function examTabsHTML() {
+            const m = exam;
+            if (m.parts.length < 2) return '';
+            return m.parts.map((p, i) => {
+                const off = examOffset(i);
                 let done = 0;
                 p.questions.forEach((_, k) => { if (String(m.answers[off + k] ?? '').trim()) done++; });
-                const on = i === m.tab;
-                return `<button type="button" data-mock-tab="${i}" class="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold ${on ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">Passage ${i + 1} <span class="opacity-75">(${done}/${p.questions.length})</span></button>`;
+                return `<button type="button" data-ex-tab="${i}" class="ex-tab ${i === m.tab ? 'on' : ''}">${m.kind === 'listening' ? 'Section' : 'Passage'} ${i + 1} <span>${m.phase === 'result' ? '' : `${done}/${p.questions.length}`}</span></button>`;
             }).join('');
         }
 
-        function updateMockTabs() {
-            const el = document.getElementById('mock-tabs');
-            if (el && mockState) el.innerHTML = mockTabsHTML();
+        function examNavHTML() {
+            const m = exam, review = m.phase === 'result';
+            let html = '';
+            m.parts.forEach((p, pi) => {
+                const off = examOffset(pi);
+                html += p.questions.map((q, k) => {
+                    const g = off + k, has = String(m.answers[g] ?? '').trim() !== '';
+                    const st = review ? (examIsCorrect(q, m.answers[g]) ? 'ok' : 'bad') : (has ? 'done' : '');
+                    return `<button type="button" data-ex-go="${g}" class="ex-chip ${st} ${pi === m.tab ? 'cur' : ''}" aria-label="Question ${g + 1}">${g + 1}</button>`;
+                }).join('') + (pi < m.parts.length - 1 ? '<span class="ex-chip-gap"></span>' : '');
+            });
+            return html;
+        }
+        function updateExamNav() {
+            if (!exam) return;
+            const n = exEl('ex-nav'); if (n) n.innerHTML = examNavHTML();
+            const t = exEl('ex-tabs'); if (t) t.innerHTML = examTabsHTML();
         }
 
-        function renderMockExam(review) {
-            const m = mockState;
+        function scriptReviewHTML(script) {
+            return parseScriptTurns(script).map(t => `<p class="ex-p">${t.name ? `<b>${escapeHTML(t.name)}:</b> ` : ''}${escapeHTML(t.text)}</p>`).join('');
+        }
+
+        function examAudioHTML(p) {
+            const m = exam, strict = m.strict, done = !!m.played[m.tab];
+            return `<div class="ex-audio">
+                <div class="ex-eyebrow">${escapeHTML(m.cfg.slots[m.tab]?.sec?.label || `Section ${m.tab + 1}`)}</div>
+                <h3 class="ex-h3">${escapeHTML(p.title)}</h3>
+                <p class="ex-muted">Read the questions first, then press Play and answer while you listen. ${strict ? 'In exam conditions the recording plays only once.' : 'You may replay the recording in practice mode.'}</p>
+                <div class="ex-row">
+                    <button type="button" id="ex-play" class="ex-btn ex-btn-green" ${strict && done ? 'disabled' : ''}>${strict && done ? 'Played' : '&#9654; Play recording'}</button>
+                    ${strict ? '' : `<button type="button" id="ex-stop" class="ex-btn ex-btn-light">&#9632; Stop</button><select id="ex-speed" class="ex-select"><option value="0.85">0.85x</option><option value="0.95" selected>1.0x</option><option value="1.1">1.1x</option></select>`}
+                </div>
+                <div id="ex-audio-status" class="ex-muted">${done ? 'You have started this recording.' : ''}</div>
+            </div>`;
+        }
+
+        function renderExam(review) {
+            const m = exam;
             if (!m) return;
-            const p = m.passages[m.tab], off = mockOffset(m.tab);
+            const L = m.kind === 'listening';
+            const p = m.parts[m.tab], off = examOffset(m.tab);
+            exEl('exam-overlay').dataset.pane = m.pane || 'text';
             let summary = '';
             if (review) {
-                const r = mockCompute(m.passages, m.answers);
-                const band = readingRawToBand(r.raw, r.total);
-                const names = { tfng: 'T/F/NG', match: 'Matching', mcq: 'Multiple choice', gap: 'Completion' };
-                summary = `<div class="px-3 py-2 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs flex-shrink-0">
-                    <span class="font-extrabold text-emerald-300 text-base">${r.raw}/${r.total} &middot; Band ${band.toFixed(1)}</span>
-                    <span class="text-slate-400">${Object.entries(r.byType).map(([t, b]) => `${names[t] || t}: ${b.ok}/${b.n}`).join(' &middot; ')}</span>
-                    <span class="text-slate-500">Estimate only, using the standard raw-score table.</span>
-                    <button type="button" id="btn-mock-done" class="ml-auto bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-lg font-semibold">Close</button></div>`;
+                const r = examCompute(m.parts, m.answers);
+                const band = examBand(m.kind, r.raw, r.total);
+                summary = `<div class="ex-summary"><span class="ex-score">${r.raw}/${r.total}</span><span class="ex-bandpill">Band ${band.toFixed(1)}</span>
+                    <span class="ex-muted ex-grow">${Object.entries(r.byType).map(([t, b]) => `${EX_NAMES[t] || t}: ${b.ok}/${b.n}`).join(' &middot; ')} &middot; estimate only</span>
+                    <button type="button" id="ex-again" class="ex-btn ex-btn-green">New test</button><button type="button" id="ex-done" class="ex-btn ex-btn-light">Close</button></div>`;
             }
-            const passageHTML = `<h3 class="text-base font-bold text-white mb-3">${escapeHTML(p.title)}</h3>` +
-                p.paragraphs.map((t, i) => `<p class="text-sm leading-relaxed text-slate-200 mb-3"><strong class="text-emerald-400 mr-1.5">${String.fromCharCode(65 + i)}</strong>${escapeHTML(t)}</p>`).join('');
+            let textPane;
+            if (L) textPane = review ? `<div class="ex-eyebrow">Recording script</div><h3 class="ex-h3">${escapeHTML(p.title)}</h3>${scriptReviewHTML(p.script || '')}` : examAudioHTML(p);
+            else textPane = `<h3 class="ex-h3">${escapeHTML(p.title)}</h3>` + (p.paragraphs || []).map((t, i) => `<p class="ex-p"><b class="ex-para">${String.fromCharCode(65 + i)}</b>${escapeHTML(t)}</p>`).join('');
             let qHTML = '', last = '';
             p.questions.forEach((q, k) => {
                 if (q.type !== last) {
                     last = q.type;
                     const same = p.questions.filter(x => x.type === q.type).length;
-                    qHTML += `<div class="pt-2"><p class="text-[11px] font-bold uppercase text-amber-300">Questions ${off + k + 1}&ndash;${off + k + same}</p><p class="text-xs text-slate-400 mb-1.5">${MOCK_INSTR[q.type] || ''}</p></div>`;
+                    qHTML += `<div class="ex-ghead"><div class="ex-eyebrow">Questions ${off + k + 1}&ndash;${off + k + same}</div><p class="ex-muted">${(EX_INSTR[m.kind] || EX_INSTR.reading)[q.type] || ''}</p></div>`;
                 }
-                qHTML += mockQuestionHTML(q, off + k, m.answers[off + k], review, p.paragraphs.length);
+                qHTML += examQuestionHTML(q, off + k, m.answers[off + k], review, (p.paragraphs || []).length);
             });
-            document.getElementById('mock-title').textContent = review ? "Mock Review" : "Full Reading Mock";
-            mockShell(`<div class="h-full flex flex-col">${summary}
-                <div id="mock-tabs" class="flex gap-1.5 p-2 border-b border-slate-800 flex-shrink-0 overflow-x-auto">${mockTabsHTML()}</div>
-                <div class="flex-1 min-h-0 flex flex-col md:flex-row">
-                    <div class="h-2/5 md:h-auto md:w-1/2 overflow-y-auto p-4 border-b md:border-b-0 md:border-r border-slate-800">${passageHTML}</div>
-                    <div class="flex-1 min-h-0 md:w-1/2 overflow-y-auto p-4 space-y-2.5">${qHTML}</div>
-                </div></div>`);
+            exEl('exam-title').textContent = (review ? 'Review: ' : '') + (m.mode === 'full' ? `Full ${L ? 'Listening' : 'Reading'} Test` : `${L ? 'Listening' : 'Reading'} Practice`);
+            examBody(`${summary}
+                <div id="ex-tabs" class="ex-tabs ${m.parts.length < 2 ? 'hide' : ''}">${examTabsHTML()}</div>
+                <div class="ex-switch"><button type="button" data-ex-pane="text" class="ex-tab ${m.pane !== 'q' ? 'on' : ''}">${L ? (review ? 'Script' : 'Audio') : 'Passage'}</button><button type="button" data-ex-pane="q" class="ex-tab ${m.pane === 'q' ? 'on' : ''}">Questions</button></div>
+                <div class="ex-main"><div class="ex-pane ex-pane-text">${textPane}</div><div class="ex-pane ex-pane-q">${qHTML}</div></div>
+                <div id="ex-nav" class="ex-nav">${examNavHTML()}</div>`);
         }
 
-        function openMockIntro() {
-            if (mockState) return;
-            mockState = { phase: 'intro', passages: [], answers: {}, tab: 0, endAt: 0, timer: null, cancelled: false };
-            document.getElementById('mock-overlay')?.classList.remove('hide');
-            document.getElementById('mock-timer')?.classList.add('hide');
-            document.getElementById('btn-mock-submit')?.classList.add('hide');
-            renderMockIntro();
+        function openExam(kind, mode, idx = 0) {
+            if (exam) closeExam(true);
+            const cfg = examConfig(kind, mode, idx);
+            exam = { kind, mode, cfg, seconds: cfg.seconds, phase: 'intro', parts: [], answers: {}, tab: 0, pane: 'text', endAt: 0, timer: null, cancelled: false, strict: false, played: {} };
+            exEl('exam-overlay')?.classList.remove('hide');
+            examChrome('intro');
+            renderExamIntro();
         }
 
-        function openMockReview(test) {
-            if (!test?.passages?.length) return showToast("This mock result has no saved questions.", "error");
-            if (mockState) closeMock(true);
-            mockState = { phase: 'result', passages: test.passages, answers: test.userAnswers || {}, tab: 0, endAt: 0, timer: null, cancelled: false };
-            document.getElementById('mock-overlay')?.classList.remove('hide');
-            document.getElementById('mock-timer')?.classList.add('hide');
-            document.getElementById('btn-mock-submit')?.classList.add('hide');
-            renderMockExam(true);
+        function legacyToExam(t) {
+            const kind = t.module === 'listening' ? 'listening' : 'reading';
+            const strip = (s) => String(s || '').replace(/^\s*\d+\s*[.)]\s*/, '');
+            const qs = [], answers = {};
+            (t.questions || []).forEach((q, i) => {
+                const opts = (q.options || []).map(String);
+                const isTF = opts.length === 3 && opts.every(o => /^(true|false|not given)$/i.test(o));
+                const cap = (v) => /not given/i.test(v) ? 'Not Given' : /^true$/i.test(v) ? 'True' : /^false$/i.test(v) ? 'False' : '';
+                let item = null, mapped = '';
+                if (isTF && kind === 'reading') { item = { type: 'tfng', q: strip(q.q), ans: cap(q.ans), exp: q.exp || '' }; mapped = cap((t.userAnswers || {})[i] || ''); if (!item.ans) item = null; }
+                else {
+                    const li = opts.findIndex(o => o === q.ans);
+                    if (opts.length >= 3 && li >= 0) { item = { type: 'mcq', q: strip(q.q), options: opts, ans: String.fromCharCode(65 + li), exp: q.exp || '' }; const ui = opts.findIndex(o => o === (t.userAnswers || {})[i]); mapped = ui >= 0 ? String.fromCharCode(65 + ui) : ''; }
+                }
+                if (item) { answers[qs.length] = mapped; qs.push(item); }
+            });
+            const part = { title: t.title || 'Saved test', questions: qs };
+            if (kind === 'listening') part.script = t.script || ''; else {
+                const raw = Array.isArray(t.paragraphs) ? t.paragraphs.join('\n\n') : Array.isArray(t.passage) ? t.passage.join('\n\n') : String(t.passage || '');
+                part.paragraphs = raw.split(/\n{2,}/).map(x => x.replace(/^\s*\*{0,2}Paragraph\s+[A-H]\*{0,2}\s*/i, '').trim()).filter(Boolean);
+            }
+            return { kind, mode: 'part', passages: [part], userAnswers: answers };
         }
 
-        function closeMock(force = false) {
-            const m = mockState;
-            if (m && !force && m.phase === 'exam' && !confirm("Leave the exam? Your answers will not be saved.")) return false;
+        function openExamReview(test) {
+            const t = test?.passages?.length ? test : (test?.questions?.length ? legacyToExam(test) : null);
+            if (!t || !t.passages[0].questions.length) return showToast("This attempt has no saved questions.", "error");
+            if (exam) closeExam(true);
+            const kind = t.kind || t.module || 'reading';
+            exam = { kind, mode: t.mode || (t.passages.length > 1 ? 'full' : 'part'), cfg: { slots: t.passages.map((_, i) => ({ n: i + 1, sec: LISTEN_SECTIONS[Math.min(i, 3)] })) }, seconds: 0, phase: 'result', parts: t.passages, answers: t.userAnswers || {}, tab: 0, pane: 'text', endAt: 0, timer: null, cancelled: false, strict: false, played: {} };
+            exEl('exam-overlay')?.classList.remove('hide');
+            examChrome('result');
+            renderExam(true);
+        }
+
+        function closeExam(force = false) {
+            const m = exam;
+            if (m && !force && m.phase === 'exam' && !confirm("Leave the test? Your answers will not be saved.")) return false;
             if (m) { m.cancelled = true; clearInterval(m.timer); }
-            mockState = null;
-            document.getElementById('mock-overlay')?.classList.add('hide');
-            document.getElementById('mock-timer')?.classList.add('hide');
-            document.getElementById('btn-mock-submit')?.classList.add('hide');
-            const body = document.getElementById('mock-body');
-            if (body) body.innerHTML = '';
+            exam = null;
+            stopListening();
+            exEl('exam-overlay')?.classList.add('hide');
+            examChrome('closed');
+            const body = exEl('exam-body'); if (body) body.innerHTML = '';
             return true;
         }
 
-        function startMockTimer(m) {
-            const el = document.getElementById('mock-timer');
+        function startExamTimer(m) {
+            const el = exEl('exam-timer');
             if (!el) return;
-            el.classList.remove('hide');
             const tick = () => {
-                if (mockState !== m) return clearInterval(m.timer);
+                if (exam !== m) return clearInterval(m.timer);
                 const left = Math.max(0, Math.round((m.endAt - Date.now()) / 1000));
                 el.textContent = fmtClock(left);
-                el.classList.toggle('animate-pulse', left <= 300);
-                if (left <= 0) submitMock(true);
+                el.classList.toggle('warn', left <= 300);
+                if (left <= 0) submitExam(true);
             };
             tick();
             m.timer = setInterval(tick, 1000);
         }
 
-        async function startMock() {
-            const m = mockState;
+        async function startExam() {
+            const m = exam;
             if (!m || m.phase !== 'intro' || aiBusyGuard()) return;
+            m.strict = !!exEl('ex-strict')?.checked;
             m.phase = 'loading';
-            m.passages = [];
-            const topics = [...MOCK_TOPICS].sort(() => Math.random() - 0.5).slice(0, 3);
-            for (let i = 0; i < 3; i++) {
-                renderMockLoading(i);
-                const p = await mockGeneratePassage(i, topics[i], m);
-                if (mockState !== m || m.cancelled) return;
+            m.parts = [];
+            const pool = [...(m.kind === 'listening' ? LISTEN_TOPICS : MOCK_TOPICS)].sort(() => Math.random() - 0.5);
+            const slots = m.cfg.slots;
+            for (let i = 0; i < slots.length; i++) {
+                renderExamLoading(i, slots.length);
+                const p = await examGeneratePart(m, slots[i], pool[i % pool.length]);
+                if (exam !== m || m.cancelled) return;
                 if (!p) {
-                    m.phase = 'intro'; m.passages = [];
-                    return renderMockIntro(`The AI couldn't prepare passage ${i + 1}: ${m.failReason || 'unknown problem'} Please try again in a minute.`);
+                    m.phase = 'intro'; m.parts = [];
+                    return renderExamIntro(`The AI couldn't prepare part ${i + 1}: ${m.failReason || 'unknown problem'} Please try again in a minute, or run "Test AI now" in Profile.`);
                 }
-                m.passages.push(p);
+                m.parts.push(p);
             }
             m.phase = 'exam';
-            m.tab = 0;
-            m.endAt = Date.now() + MOCK_SECONDS * 1000;
-            document.getElementById('btn-mock-submit')?.classList.remove('hide');
-            renderMockExam(false);
-            startMockTimer(m);
+            m.tab = 0; m.pane = 'text';
+            m.endAt = Date.now() + m.seconds * 1000;
+            examChrome('exam');
+            renderExam(false);
+            startExamTimer(m);
         }
 
-        async function submitMock(auto = false) {
-            const m = mockState;
+        async function submitExam(auto = false) {
+            const m = exam;
             if (!m || m.phase !== 'exam') return;
-            const total = mockTotal();
+            const total = examTotal();
             const answered = Object.values(m.answers).filter(v => String(v ?? '').trim()).length;
             if (!auto && answered < total && !confirm(`You have answered ${answered} of ${total} questions. Submit now?`)) return;
             clearInterval(m.timer);
+            stopListening();
             m.phase = 'result';
-            document.getElementById('mock-timer')?.classList.add('hide');
-            document.getElementById('btn-mock-submit')?.classList.add('hide');
-            const r = mockCompute(m.passages, m.answers);
-            const band = readingRawToBand(r.raw, r.total);
+            examChrome('result');
+            const r = examCompute(m.parts, m.answers);
+            const band = examBand(m.kind, r.raw, r.total);
             const today = new Date().toISOString().split('T')[0];
+            const nm = m.kind === 'listening' ? 'Listening' : 'Reading';
             const result = {
-                module: 'reading', isMock: true, title: `Full Reading Mock (${today})`,
-                passages: m.passages, userAnswers: m.answers, rawScore: r.raw, total: r.total, band,
+                module: m.kind, kind: m.kind, mode: m.mode, isMock: true,
+                title: m.mode === 'full' ? `Full ${nm} Test (${today})` : `${nm} practice: ${m.parts[0].title}`.slice(0, 100),
+                passages: m.parts, userAnswers: m.answers, rawScore: r.raw, total: r.total, band,
                 scoreLabel: `${r.raw}/${r.total} (Band ${band.toFixed(1)})`, gradedDateStr: today
             };
-            renderMockExam(true);
-            if (auto) showToast("Time's up! Your mock was submitted automatically.", "info");
+            renderExam(true);
+            if (auto) showToast("Time's up! Your test was submitted automatically.", "info");
             const saved = await saveTestToAccount(result);
             if (saved) {
-                await recordResult({ module: 'reading', band, score: r.raw, total: r.total, title: saved.title, testId: saved.id });
-                showToast(`Mock saved: ${saved.scoreLabel}`, "success");
+                await recordResult({ module: m.kind, band, score: r.raw, total: r.total, title: saved.title, testId: saved.id });
+                showToast(`Result saved: ${saved.scoreLabel}`, "success");
             }
         }
 
-        document.getElementById('btn-mock-reading')?.addEventListener('click', openMockIntro);
-        document.getElementById('btn-mock-close')?.addEventListener('click', () => closeMock(false));
-        document.getElementById('btn-mock-submit')?.addEventListener('click', () => submitMock(false));
-        document.getElementById('mock-body')?.addEventListener('click', (e) => {
-            const tab = e.target.closest('[data-mock-tab]');
-            if (tab && mockState && (mockState.phase === 'exam' || mockState.phase === 'result')) {
-                mockState.tab = Number(tab.dataset.mockTab) || 0;
-                renderMockExam(mockState.phase === 'result');
+        function examPlay() {
+            const m = exam;
+            if (!m || m.phase !== 'exam' || m.kind !== 'listening') return;
+            if (m.strict && m.played[m.tab]) return showToast("In exam conditions each recording plays once.", "info");
+            const p = m.parts[m.tab];
+            m.played[m.tab] = true;
+            const st = exEl('ex-audio-status');
+            if (st) st.textContent = 'Playing... answer as you listen.';
+            const btn = exEl('ex-play');
+            if (btn && m.strict) { btn.disabled = true; btn.textContent = 'Playing...'; }
+            const tabAtStart = m.tab;
+            playListening(p.script, parseFloat(exEl('ex-speed')?.value || "0.95"), () => {
+                if (exam === m && m.tab === tabAtStart) { const s = exEl('ex-audio-status'); if (s) s.textContent = 'Recording finished.'; const b = exEl('ex-play'); if (b && m.strict) b.textContent = 'Played'; }
+            });
+        }
+
+        // one set of listeners for the whole exam screen
+        exEl('btn-exam-close')?.addEventListener('click', () => closeExam(false));
+        exEl('btn-exam-submit')?.addEventListener('click', () => submitExam(false));
+        exEl('exam-body')?.addEventListener('click', (e) => {
+            const t = e.target;
+            const tab = t.closest('[data-ex-tab]');
+            if (tab && exam && (exam.phase === 'exam' || exam.phase === 'result')) { exam.tab = Number(tab.dataset.exTab) || 0; renderExam(exam.phase === 'result'); return; }
+            const pane = t.closest('[data-ex-pane]');
+            if (pane && exam) { exam.pane = pane.dataset.exPane; exEl('exam-overlay').dataset.pane = exam.pane; exEl('exam-body').querySelectorAll('.ex-switch .ex-tab').forEach(b => b.classList.toggle('on', b.dataset.exPane === exam.pane)); return; }
+            const go = t.closest('[data-ex-go]');
+            if (go && exam) {
+                const g = Number(go.dataset.exGo); let pi = 0, off = 0;
+                while (pi < exam.parts.length - 1 && g >= off + exam.parts[pi].questions.length) { off += exam.parts[pi].questions.length; pi++; }
+                exam.pane = 'q';
+                if (pi !== exam.tab) { exam.tab = pi; renderExam(exam.phase === 'result'); } else exEl('exam-overlay').dataset.pane = 'q';
+                exEl('exam-body').querySelectorAll('.ex-switch .ex-tab').forEach(b => b.classList.toggle('on', b.dataset.exPane === 'q'));
+                const target = exEl(`exq-${g}`);
+                target?.scrollIntoView({ block: 'center' });
+                target?.querySelector('input:not([type=radio]),select')?.focus({ preventScroll: true });
                 return;
             }
-            if (e.target.closest('#btn-mock-start')) startMock();
-            else if (e.target.closest('#btn-mock-cancel') || e.target.closest('#btn-mock-done')) closeMock(true);
+            if (t.closest('#btn-exam-start')) startExam();
+            else if (t.closest('#btn-exam-cancel') || t.closest('#ex-done')) closeExam(true);
+            else if (t.closest('#ex-again')) { const k = exam.kind, md = exam.mode, id = exam.cfg?.slots?.[0] ? exam.cfg.slots[0].n - 1 : 0; openExam(k, md, md === 'full' ? 0 : Math.max(0, Math.min(id, 3))); }
+            else if (t.closest('#ex-play')) examPlay();
+            else if (t.closest('#ex-stop')) { stopListening(); const s = exEl('ex-audio-status'); if (s) s.textContent = 'Stopped.'; }
         });
-        document.getElementById('mock-body')?.addEventListener('input', (e) => {
+        exEl('exam-body')?.addEventListener('input', (e) => {
             const el = e.target;
-            if (!mockState || mockState.phase !== 'exam' || el.dataset?.g === undefined) return;
-            mockState.answers[el.dataset.g] = el.value;
-            updateMockTabs();
+            if (!exam || exam.phase !== 'exam' || el.dataset?.g === undefined) return;
+            exam.answers[el.dataset.g] = el.value;
+            updateExamNav();
         });
+
+        // Reading / Listening hub buttons + recent attempts
+        document.getElementById('main-scroll-area')?.addEventListener('click', (e) => {
+            const b = e.target.closest('[data-exam]');
+            if (b) { const [kind, mode, idx] = b.dataset.exam.split(':'); openExam(kind, mode, Number(idx) || 0); return; }
+            const rv = e.target.closest('[data-attempt]');
+            if (rv) { const t = userSavedTests.find(x => x.id === rv.dataset.attempt); if (t) openExamReview(t); return; }
+            const del = e.target.closest('[data-del-attempt]');
+            if (del && confirm("Delete this attempt?")) deleteTestFromAccount(del.dataset.delAttempt);
+        });
+
+        function renderAttempts(mod, elId) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            const list = userSavedTests.filter(t => t.module === mod).slice(0, 6);
+            el.innerHTML = list.length ? list.map(t => `<div class="flex items-center justify-between gap-2 bg-slate-800/70 border border-slate-700 rounded-xl px-3 py-2">
+                <div class="min-w-0"><p class="text-xs font-semibold text-white truncate">${escapeHTML(t.title || 'Practice')}</p><p class="text-[11px] text-emerald-400">${escapeHTML(t.scoreLabel || 'Saved')} <span class="text-slate-500">&middot; ${escapeHTML(t.gradedDateStr || t.dateStr || '')}</span></p></div>
+                <div class="flex gap-1.5 flex-shrink-0"><button type="button" data-attempt="${t.id}" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1 rounded-lg text-xs font-semibold">Review</button><button type="button" data-del-attempt="${t.id}" class="bg-slate-700 hover:bg-red-600 text-slate-200 px-2 py-1 rounded-lg text-xs" aria-label="Delete"><i class="fa-solid fa-trash"></i></button></div></div>`).join('')
+                : `<p class="text-xs text-slate-400">No attempts yet. Start a test above and your results will appear here.</p>`;
+        }
+
+        // --- Listening audio: AI script read aloud, one voice per speaker, in short chunks ---
+        function parseScriptTurns(script) {
+            let src = String(script || '');
+            if (!/\n/.test(src.trim())) {   // some replies lose their line breaks: re-split a two-person dialogue
+                const counts = {};
+                (src.match(/(?:^|\s)([A-Z][a-z]{1,14}):\s/g) || []).forEach(x => { const n = x.trim().slice(0, -1); counts[n] = (counts[n] || 0) + 1; });
+                const names = Object.entries(counts).filter(([, c]) => c >= 3).map(([n]) => n);
+                if (names.length === 2) src = src.replace(new RegExp(`\\s+(?=(?:${names.join('|')}):\\s)`, 'g'), '\n');
+            }
+            const turns = [];
+            src.split(/\n+/).forEach(line => {
+                const m = line.match(/^\s*([A-Za-z][A-Za-z .'-]{0,22}):\s*(.+)$/);
+                if (m) turns.push({ who: m[1].trim().toLowerCase(), name: m[1].trim(), text: m[2].trim() });
+                else if (line.trim()) turns.push({ who: turns.length ? turns[turns.length - 1].who : 'narrator', name: turns.length ? turns[turns.length - 1].name : '', text: line.trim() });
+            });
+            return turns;
+        }
+        function speechChunks(text) {
+            const parts = String(text).match(/[^.!?]+[.!?]+["')]*\s*|[^.!?]+$/g) || [String(text)];
+            const out = []; let cur = '';
+            parts.forEach(p => { if ((cur + p).length > 200 && cur) { out.push(cur.trim()); cur = p; } else cur += p; });
+            if (cur.trim()) out.push(cur.trim());
+            return out;
+        }
+        let listenPlayToken = 0;
+        function stopListening() {
+            listenPlayToken++;
+            try { window.speechSynthesis?.cancel(); } catch (e) {}
+        }
+        function playListening(script, rate, onEnd) {
+            const synth = window.speechSynthesis;
+            if (!synth) return showToast("This browser can't play spoken audio. Try Chrome, or read the script in the review.", "error");
+            stopListening();
+            const token = listenPlayToken;
+            const voices = (synth.getVoices() || []).filter(v => /^en/i.test(v.lang));
+            const turns = parseScriptTurns(script);
+            const speakers = [...new Set(turns.map(t => t.who))];
+            const queue = [];
+            turns.forEach(t => { const idx = Math.max(0, speakers.indexOf(t.who)); speechChunks(t.text).forEach(c => queue.push({ text: c, idx })); });
+            const next = (i) => {
+                if (token !== listenPlayToken) return;
+                if (i >= queue.length) { if (onEnd) onEnd(); return; }
+                const u = new SpeechSynthesisUtterance(queue[i].text);
+                const v = voices.length ? voices[queue[i].idx % voices.length] : null;
+                if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+                u.rate = rate;
+                u.pitch = queue[i].idx % 2 === 0 ? 1 : 0.82;
+                u.onend = () => next(i + 1);
+                u.onerror = () => next(i + 1);
+                synth.speak(u);
+            };
+            next(0);
+        }
 
         // --- WRITING STUDIO: standard IELTS Academic Task 1 (chart) and Task 2 (essay) ---
         const WRITING_T2_BANK = [
