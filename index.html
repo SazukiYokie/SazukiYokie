@@ -101,7 +101,7 @@
         ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.45); border-radius: 9999px; }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
         /* ===== Exam screen (Reading / Listening): light, paper-like, modelled on the computer-delivered IELTS test ===== */
-        #exam-overlay { position: fixed; inset: 0; z-index: 90; background: #e8ecf1; color: #1e293b; display: flex; flex-direction: column; font-family: inherit; }
+        #exam-overlay { position: fixed; inset: 0; z-index: 90; background: #e8ecf1; color: #1e293b; display: flex; flex-direction: column; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
         #exam-overlay.hide { display: none !important; }
         #exam-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
         .ex-header { background: #12203a; color: #fff; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; flex-shrink: 0; }
@@ -165,6 +165,40 @@
         .ex-center { flex: 1; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; padding: 1rem; }
         .ex-card { background: #fff; border: 1px solid #cbd5e1; border-radius: 0.9rem; padding: 1.25rem; max-width: 34rem; width: 100%; margin: auto; box-shadow: 0 8px 30px rgba(15,23,42,0.12); }
         .ex-tc { text-align: center; }
+        .ex-hero { margin: -1.25rem -1.25rem 1rem; padding: 1.1rem 1.25rem; background: linear-gradient(135deg, #12203a, #1e40af); color: #fff; border-radius: 0.9rem 0.9rem 0 0; display: flex; gap: 0.85rem; align-items: center; }
+        .ex-hero-ic { width: 2.9rem; height: 2.9rem; border-radius: 0.85rem; background: rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex: none; }
+        .ex-hero-eyebrow { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.8; font-weight: 700; color: #fff; }
+        .ex-hero-t { font-size: 1.25rem; font-weight: 800; line-height: 1.2; }
+        .ex-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+        .ex-stat { background: #f1f5f9; border-radius: 0.7rem; padding: 0.6rem 0.3rem; text-align: center; }
+        .ex-stat b { display: block; font-size: 1.45rem; color: #12203a; line-height: 1.1; }
+        .ex-stat span { font-size: 0.7rem; color: #64748b; font-weight: 600; }
+        .ex-points { list-style: none; margin: 0 0 1rem; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+        .ex-points li { display: flex; gap: 0.65rem; align-items: flex-start; font-size: 0.9rem; line-height: 1.45; color: #1e293b; }
+        .ex-points i { color: #2563eb; width: 1.2rem; text-align: center; margin-top: 0.15rem; }
+        .ex-toggle { display: flex; align-items: center; gap: 0.75rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 0.7rem; padding: 0.7rem 0.8rem; margin-bottom: 0.9rem; cursor: pointer; position: relative; }
+        .ex-toggle input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+        .ex-toggle .trk { width: 2.6rem; height: 1.5rem; border-radius: 1rem; background: #cbd5e1; position: relative; flex: none; transition: background 0.15s; }
+        .ex-toggle .trk::after { content: ''; position: absolute; top: 0.17rem; left: 0.17rem; width: 1.16rem; height: 1.16rem; border-radius: 50%; background: #fff; transition: transform 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .ex-toggle input:checked + .trk { background: #16a34a; }
+        .ex-toggle input:checked + .trk::after { transform: translateX(1.1rem); }
+        .ex-toggle input:focus-visible + .trk { outline: 2px solid #2563eb; outline-offset: 2px; }
+        .ex-toggle .tt { font-size: 0.88rem; font-weight: 700; color: #0f172a; }
+        .ex-toggle .ts { font-size: 0.76rem; color: #64748b; }
+        .ex-prep { font-size: 0.78rem; color: #475569; background: #eff6ff; border-radius: 0.6rem; padding: 0.6rem 0.7rem; margin: 0 0 0.9rem; line-height: 1.45; }
+        .ex-prep i { color: #2563eb; margin-right: 0.3rem; }
+        .ex-btn-big { width: 100%; padding: 0.9rem 1rem; font-size: 1.02rem; border-radius: 0.75rem; }
+        .ex-link { background: none; border: 0; color: #475569; font-size: 0.82rem; text-decoration: underline; cursor: pointer; margin: 0.7rem auto 0.3rem; display: block; padding: 0.3rem 0.6rem; }
+        .ex-bar { height: 0.5rem; background: #e2e8f0; border-radius: 1rem; overflow: hidden; margin: 0.6rem 0 0.8rem; }
+        .ex-bar > i { display: block; height: 100%; background: #16a34a; border-radius: 1rem; transition: width 0.5s; }
+        .ex-steps { list-style: none; margin: 0 0 0.6rem; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; text-align: left; }
+        .ex-step { display: flex; align-items: center; gap: 0.6rem; font-size: 0.88rem; padding: 0.55rem 0.7rem; border-radius: 0.6rem; background: #f8fafc; color: #64748b; }
+        .ex-step em { margin-left: auto; font-style: normal; font-size: 0.74rem; font-weight: 700; }
+        .ex-step i { width: 1.1rem; text-align: center; }
+        .ex-step.on { background: #eff6ff; color: #1e3a8a; font-weight: 700; }
+        .ex-step.done { background: #f0fdf4; color: #166534; }
+        .ex-tip { font-size: 0.8rem; color: #475569; background: #fffbeb; border-radius: 0.6rem; padding: 0.6rem 0.7rem; margin: 0.6rem 0 0; text-align: left; }
+        .ex-tip i { color: #d97706; margin-right: 0.3rem; }
         .ex-list { margin: 0 0 0.8rem 1.1rem; padding: 0; list-style: disc; font-size: 0.88rem; line-height: 1.7; color: #1e293b; }
         .ex-check { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.8rem; color: #0f172a; }
         .ex-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin: 0.6rem 0; }
@@ -757,9 +791,10 @@
                                 <button type="button" id="btn-record" class="flex-1 bg-rose-600 hover:bg-rose-500 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-microphone mr-1"></i>Record Voice</button>
                                 <button type="button" id="btn-ai-speaking-sample" class="flex-1 bg-purple-600 hover:bg-purple-500 py-2 rounded-xl text-xs font-semibold text-white"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Model Answer</button>
                             </div>
-                            <p id="rec-status" class="text-rose-400 text-xs font-bold text-center animate-pulse hide">🔴 Recording... Click Stop when done.</p>
+                            <p id="rec-status" class="text-rose-400 text-xs font-bold text-center hide" aria-live="polite"></p>
+                            <button type="button" id="btn-dictate" class="text-[11px] text-slate-400 hover:text-white underline text-center">Or use live dictation</button>
                             <audio id="audio-playback" controls class="w-full hide rounded-xl"></audio>
-                            <textarea id="speaking-user-transcript" rows="3" placeholder="Press Record and speak, or type what you would say. Each part keeps its own answer." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-2.5 text-xs text-white"></textarea>
+                            <textarea id="speaking-user-transcript" rows="3" placeholder="Tap Record Voice and speak: your words are typed here for you to check. Or type your answer. Each part keeps its own answer." class="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-2.5 text-xs text-white"></textarea>
                             <button type="button" id="btn-grade-speaking" class="w-full bg-emerald-600 hover:bg-emerald-500 py-2 rounded-xl text-xs font-semibold text-white">Mark My Speaking &amp; Save Score</button>
                         </div>
 
@@ -788,6 +823,16 @@
                             <option value="6.5">Band 6.5</option><option value="7.0">Band 7.0</option><option value="7.5">Band 7.5</option><option value="8.0">Band 8.0</option><option value="8.5">Band 8.5</option><option value="9.0">Band 9.0</option>
                         </select>
                         <button type="button" id="btn-save-settings" class="w-full bg-blue-600 hover:bg-blue-500 py-2.5 rounded-xl font-semibold text-sm text-white">Save Changes</button>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl space-y-3">
+                        <h3 class="font-bold text-sm text-cyan-300"><i class="fa-solid fa-volume-high mr-2"></i>Listening voice</h3>
+                        <p class="text-xs text-slate-400">Choose the English voice that reads the Listening audio. Only English voices are used, so it never sounds like Khmer text-to-speech.</p>
+                        <select id="voice-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white"><option value="">Loading voices...</option></select>
+                        <p id="voice-note" class="text-xs text-amber-300"></p>
+                        <label class="flex items-center gap-2 text-xs text-slate-200"><input type="checkbox" id="hd-toggle" class="accent-cyan-500"> Use natural AI voice when available</label>
+                        <p id="hd-note" class="text-[11px] text-slate-400"></p>
+                        <button type="button" id="btn-voice-test" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 py-2.5 rounded-xl font-semibold text-sm"><i class="fa-solid fa-play mr-1"></i>Test voice</button>
                     </div>
 
                     <div class="glass-panel p-5 rounded-2xl space-y-3">
@@ -1340,9 +1385,9 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             userSavedTests = []; userResults = [];
             activeWritingTest = null; activeSpeakingTest = null;
             activeHistoryFilter = "all";
-            try { window.speechSynthesis?.cancel(); } catch (e) {}
-            try { if (mediaRec && mediaRec.state === "recording") mediaRec.stop(); } catch (e) {}
-            try { speechRec?.stop?.(); } catch (e) {}
+            stopListening();
+            try { dictActive = false; dictRec?.stop?.(); } catch (e) {}
+            try { stopRecording(); recStream?.getTracks().forEach(t => t.stop()); } catch (e) {}
             closeExam(true);
             resetUserUI();
             refreshSelectorsAndStats();
@@ -1636,12 +1681,37 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         // --- AI ENGINE: Groq models with automatic fallback, hard timeouts and readable errors ---
         // Every Groq model has its own rate-limit bucket, so falling through this list multiplies the daily quota
         // and keeps the tools working when one model is busy. Order = best quality first.
-        const AI_MODELS = [
+        const AI_PREFERRED = [
+            { id: "openai/gpt-oss-120b", extra: { reasoning_effort: "low" }, reasoning: true },
             { id: "llama-3.3-70b-versatile" },
-            { id: "openai/gpt-oss-120b", extra: { reasoning_effort: "low" } },
-            { id: "openai/gpt-oss-20b", extra: { reasoning_effort: "low" } },
+            { id: "meta-llama/llama-4-scout-17b-16e-instruct" },
+            { id: "openai/gpt-oss-20b", extra: { reasoning_effort: "low" }, reasoning: true },
             { id: "llama-3.1-8b-instant" }
         ];
+        let AI_MODELS = [...AI_PREFERRED];
+        const deadModels = new Set();          // models this key can't use (404): skipped for the rest of the session
+        let groqModelIds = null;               // every model this key can see, once discovered
+        let aiModelsPromise = null;
+        let whisperModels = ["whisper-large-v3-turbo", "whisper-large-v3"];
+        let ttsModel = "";
+        // Asks Groq which models this key can really use, so we never waste time on 404s
+        function ensureAIModels() {
+            if (!aiModelsPromise) aiModelsPromise = (async () => {
+                try {
+                    const r = await aiRequest("https://api.groq.com/openai/v1/models", { headers: { "Authorization": `Bearer ${getBuiltInKey()}` } }, 8000);
+                    const ids = r.ok ? (r.body?.data || []).map(x => x.id).filter(Boolean) : [];
+                    if (!ids.length) return;
+                    groqModelIds = ids;
+                    const usable = AI_PREFERRED.filter(m => ids.includes(m.id));
+                    if (usable.length) AI_MODELS = usable;
+                    const w = ids.filter(id => /whisper/i.test(id) && !/distil/i.test(id)).sort((a, b) => (/turbo/.test(b) ? 1 : 0) - (/turbo/.test(a) ? 1 : 0));
+                    if (w.length) whisperModels = w;
+                    else whisperModels = [];
+                    ttsModel = ids.find(id => /orpheus.*english|playai-tts$/i.test(id)) || ids.find(id => /orpheus|playai-tts/i.test(id) && !/arabic/i.test(id)) || "";
+                } catch (e) { /* keep the built-in list */ }
+            })();
+            return aiModelsPromise;
+        }
         let lastAIError = null;   // { kind: 'auth' | 'quota' | 'timeout' | 'network' | 'server' | 'request' | 'empty', status, model }
         let aiInFlight = 0;
 
@@ -1649,8 +1719,9 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             const e = lastAIError;
             if (!e) return "The AI didn't answer.";
             if (e.kind === 'auth') return "The AI key was rejected (it may have expired or been revoked).";
-            if (e.kind === 'quota') return "The AI is very busy right now (daily limit reached).";
+            if (e.kind === 'quota') return "The free AI is busy right now (rate limit). Wait a minute and try again.";
             if (e.kind === 'timeout') return "The AI took too long to answer.";
+            if (e.kind === 'length') return "The AI's answer was too long and got cut off.";
             if (e.kind === 'network') return "Can't reach the AI. Check your internet connection.";
             if (e.kind === 'server') return "The AI service is having problems.";
             return "The AI had a problem with this request.";
@@ -1671,7 +1742,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             try {
                 const res = await fetch(url, { ...init, signal: ctl.signal });
                 let body;
-                if (res.ok) body = readAs === 'text' ? await res.text() : await res.json();
+                if (res.ok) body = readAs === 'text' ? await res.text() : readAs === 'blob' ? await res.blob() : await res.json();
                 else body = await res.text().catch(() => "");
                 return { ok: res.ok, status: res.status, body };
             } finally { clearTimeout(timer); }
@@ -1686,24 +1757,30 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             const apiKey = getBuiltInKey();
             lastAIError = null;
             let authFailed = false;
+            await ensureAIModels();
 
             for (const m of AI_MODELS) {
+                if (deadModels.has(m.id)) continue;
                 if (authFailed || left() < 4000) break;
                 try {
-                    const payload = { model: m.id, messages, temperature: 0.55, max_completion_tokens: maxTokens, ...(m.extra || {}) };
+                    // reasoning models spend part of the budget "thinking", so give them extra room
+                    const payload = { model: m.id, messages, temperature: 0.55, max_completion_tokens: Math.min(7000, m.reasoning ? maxTokens + 1200 : maxTokens), ...(m.extra || {}) };
                     if (forceJSON) payload.response_format = { type: "json_object" };
                     const r = await aiRequest("https://api.groq.com/openai/v1/chat/completions", {
                         method: "POST",
                         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
                         body: JSON.stringify(payload)
-                    }, Math.min(22000, left()));
+                    }, Math.min(opts.requestMs || 22000, left()));
                     if (r.ok) {
-                        const txt = r.body?.choices?.[0]?.message?.content;
+                        const choice = r.body?.choices?.[0];
+                        const txt = choice?.message?.content;
+                        if (forceJSON && choice?.finish_reason === 'length') { lastAIError = { kind: 'length', model: m.id }; continue; }
                         if (txt && String(txt).trim()) return txt;
                         lastAIError = { kind: 'empty', model: m.id };
                         continue;
                     }
                     const st = r.status;
+                    if (st === 404) deadModels.add(m.id);
                     lastAIError = { kind: (st === 401 || st === 403) ? 'auth' : st === 429 ? 'quota' : st >= 500 ? 'server' : 'request', status: st, model: m.id };
                     if (st === 401 || st === 403) authFailed = true;   // a bad key fails on every model
                 } catch (e) {
@@ -1712,7 +1789,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             }
 
             // Last resort: free public endpoint (slower, lower quality), only if there is time left
-            if (left() > 8000) {
+            if (!opts.noFallback && left() > 8000) {
                 try {
                     const r = await aiRequest("https://text.pollinations.ai/", {
                         method: "POST",
@@ -1736,27 +1813,46 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             const btn = e.currentTarget, out = document.getElementById('ai-check-result');
             btn.disabled = true; out.innerHTML = '<span class="text-slate-400">Testing...</span>';
             const rows = [];
-            for (const m of AI_MODELS) {
+            const show = () => { out.innerHTML = rows.join('<br>'); };
+            const ok = (name, extra = '') => rows.push(`<span class="text-emerald-400">✓ ${escapeHTML(name)}</span> <span class="text-slate-500">${extra}</span>`);
+            const bad = (name, extra = '') => rows.push(`<span class="text-red-400">✗ ${escapeHTML(name)}</span> <span class="text-slate-400">${extra}</span>`);
+            const why = (r) => { let msg = ""; try { msg = JSON.parse(r.body)?.error?.message || ""; } catch (x) {} return `HTTP ${r.status}${msg ? ': ' + escapeHTML(msg.slice(0, 140)) : ''}`; };
+            deadModels.clear(); aiModelsPromise = null;
+            await ensureAIModels(); 
+            rows.push(groqModelIds ? `<span class="text-slate-400">Your key can see ${groqModelIds.length} models.</span>` : `<span class="text-amber-300">Couldn't list models (continuing with defaults).</span>`); show();
+            for (const m of AI_PREFERRED) {
+                if (groqModelIds && !groqModelIds.includes(m.id)) { bad(m.id, 'not available on your Groq account (skipped automatically)'); show(); continue; }
                 const t0 = Date.now();
-                let line;
                 try {
                     const r = await aiRequest("https://api.groq.com/openai/v1/chat/completions", {
                         method: "POST",
                         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getBuiltInKey()}` },
-                        body: JSON.stringify({ model: m.id, messages: [{ role: "user", content: "Reply with the single word OK." }], max_completion_tokens: 20, ...(m.extra || {}) })
+                        body: JSON.stringify({ model: m.id, messages: [{ role: "user", content: "Reply with the single word OK." }], max_completion_tokens: m.reasoning ? 300 : 20, ...(m.extra || {}) })
                     }, 12000);
-                    const secs = ((Date.now() - t0) / 1000).toFixed(1);
-                    if (r.ok) line = `<span class="text-emerald-400">✓ ${escapeHTML(m.id)}</span> <span class="text-slate-500">${secs}s</span>`;
-                    else {
-                        let msg = ""; try { msg = JSON.parse(r.body)?.error?.message || ""; } catch (x) {}
-                        line = `<span class="text-red-400">✗ ${escapeHTML(m.id)}</span> <span class="text-slate-400">HTTP ${r.status}${msg ? ': ' + escapeHTML(msg.slice(0, 120)) : ''}</span>`;
-                    }
-                } catch (err) {
-                    line = `<span class="text-red-400">✗ ${escapeHTML(m.id)}</span> <span class="text-slate-400">${err && err.name === 'AbortError' ? 'timed out' : 'network error (check your internet)'}</span>`;
-                }
-                rows.push(line);
-                out.innerHTML = rows.join('<br>');
+                    if (r.ok) ok(m.id, `${((Date.now() - t0) / 1000).toFixed(1)}s`); else bad(m.id, why(r));
+                } catch (err) { bad(m.id, err && err.name === 'AbortError' ? 'timed out' : 'network error (check your internet)'); }
+                show();
             }
+            // voice-to-text for Speaking (0.4 s of silence just proves the model answers)
+            if (!whisperModels.length) { bad('Voice-to-text (Whisper)', 'not available on your account: Speaking will use typing or live dictation'); }
+            else {
+                try {
+                    const wav = makeSilentWav(0.4);
+                    const fd = new FormData(); fd.append('file', wav, 'test.wav'); fd.append('model', whisperModels[0]); fd.append('language', 'en');
+                    const r = await aiRequest("https://api.groq.com/openai/v1/audio/transcriptions", { method: "POST", headers: { "Authorization": `Bearer ${getBuiltInKey()}` }, body: fd }, 15000);
+                    if (r.ok) ok(`Voice-to-text: ${whisperModels[0]}`); else bad(`Voice-to-text: ${whisperModels[0]}`, why(r));
+                } catch (err) { bad('Voice-to-text (Whisper)', 'network error'); }
+            }
+            show();
+            // natural AI voice for Listening
+            if (!ttsModel) { bad('HD voice', 'no text-to-speech model on your account: the phone\'s own voice is used (change it in Profile → Voice)'); }
+            else {
+                try {
+                    const r = await aiRequest("https://api.groq.com/openai/v1/audio/speech", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getBuiltInKey()}` }, body: JSON.stringify({ model: ttsModel, input: "Hello.", voice: ttsVoiceFor(0), response_format: "wav" }) }, 15000, 'blob');
+                    if (r.ok) ok(`HD voice: ${ttsModel}`); else bad(`HD voice: ${ttsModel}`, why(r) + ' (if it says terms, accept them once in the Groq console for this model)');
+                } catch (err) { bad('HD voice', 'network error'); }
+            }
+            show();
             btn.disabled = false;
         });
 
@@ -1992,54 +2088,74 @@ Script: ${fmt}. 450 to 550 words of natural spoken English with realistic distra
 Questions (exactly this many of each type): ${parts}. Put the "mcq" questions first, then the "gap" questions; inside each type follow the order of the script.
 - "gap": note, form or sentence completion. "q" is a short line containing ________ ; "ans" is 1-3 words or a number copied EXACTLY as said in the script (write numbers as digits); optional "alt" array of other accepted answers.
 - "mcq": "q" is the question stem; "options" is exactly 3 plain strings (no letters); "ans" is A, B or C.
-Every question needs "exp": one sentence quoting the part of the script that gives the answer.
+Every question needs "exp": at most 15 words, quoting the part of the script that gives the answer.
 Return ONLY valid JSON: {"title":"...","script":"...","questions":[{"type":"gap","q":"...","ans":"...","exp":"..."}]}`;
             }
             return `Write ONE passage for a Cambridge IELTS Academic Reading test.
 Topic: ${topic}. Difficulty: ${slot.level}.
-Passage: 5 or 6 paragraphs, each 120-150 words, formal academic style, completely original.
+Passage: 5 paragraphs, each 110-140 words, formal academic style, completely original.
 Questions (exactly this many of each type): ${parts}.
 Question formats:
 - "tfng": "q" is a statement about the passage; "ans" is "True", "False" or "Not Given". "Not Given" must genuinely not be stated or contradicted anywhere in the passage.
 - "mcq": "q" is the question stem; "options" is exactly 4 plain strings (no letters); "ans" is the letter A, B, C or D.
 - "gap": "q" is a sentence containing ________ ; "ans" is 1-2 words copied directly from the passage; optional "alt" array of other acceptable answers.
 - "match": "q" describes information found in one paragraph ("Which paragraph mentions ...?"); "ans" is that paragraph's letter (A = first paragraph, B = second, and so on).
-Every question needs "exp": one sentence pointing to the evidence in the passage.
+Every question needs "exp": at most 15 words, pointing to the evidence in the passage.
 Return ONLY valid JSON in this shape:
 {"title":"...","paragraphs":["...","..."],"questions":[{"type":"tfng","q":"...","ans":"True","exp":"..."}]}`;
+        }
+
+        const examSleep = (ms) => new Promise(r => setTimeout(r, ms));
+        // waits while the loading screen counts down (used when the free AI quota needs a moment)
+        async function examWait(m, ms, why) {
+            const end = Date.now() + ms;
+            while (Date.now() < end) {
+                if (exam !== m || m.cancelled) return;
+                const el = exEl('ex-load-note');
+                if (el) el.textContent = `${why} Trying again in ${Math.ceil((end - Date.now()) / 1000)} s...`;
+                await examSleep(500);
+            }
         }
 
         async function examGeneratePart(m, slot, topic) {
             const L = m.kind === 'listening';
             const planned = Object.values(slot.plan).reduce((a, b) => a + b, 0);
-            for (let attempt = 0; attempt < 2; attempt++) {
+            let reason = '';
+            for (let attempt = 0; attempt < 3; attempt++) {
                 if (exam !== m || m.cancelled) return null;
                 const raw = await askIELTSAI(examBuildPrompt(m.kind, slot, topic),
                     L ? "You are a senior Cambridge IELTS Listening test writer. Output valid JSON only." : "You are a senior Cambridge IELTS Academic Reading test writer. Output valid JSON only.",
-                    true, { maxTokens: 3400, budgetMs: 80000 });
-                if (raw) m.sawReply = true;
+                    true, { maxTokens: 4200, budgetMs: 100000, requestMs: 40000, noFallback: attempt < 2 });
+                if (exam !== m || m.cancelled) return null;
+                const kindNow = lastAIError && lastAIError.kind;
+                if (!raw) {
+                    reason = aiProblemText();
+                    if (kindNow === 'auth') break;
+                    if (attempt < 2) await examWait(m, kindNow === 'quota' ? 15000 : 4000, kindNow === 'quota' ? 'The free AI needs a short rest.' : 'The AI did not answer.');
+                    continue;
+                }
                 const parsed = parseJSONSafely(raw);
-                if (!parsed) continue;
+                if (!parsed) { reason = kindNow === 'quota' ? aiProblemText() : "the AI's reply wasn't in a usable format"; continue; }
                 let content, text;
                 if (L) {
                     const script = typeof parsed.script === 'string' ? parsed.script.trim() : '';
-                    if (script.split(/\s+/).length < 220) continue;
+                    if (script.split(/\s+/).length < 220) { reason = "the recording script came out too short"; continue; }
                     content = { script }; text = script;
                 } else {
-                    if (!Array.isArray(parsed.paragraphs)) continue;
+                    if (!Array.isArray(parsed.paragraphs)) { reason = "the passage was missing"; continue; }
                     const paragraphs = parsed.paragraphs.map(p => String(p).replace(/^\s*(\*\*)?Paragraph\s+[A-H](\*\*)?[:.\s-]*/i, '').trim()).filter(p => p.length > 60).slice(0, 8);
-                    if (paragraphs.length < 4) continue;
+                    if (paragraphs.length < 4) { reason = "the passage came out too short"; continue; }
                     content = { paragraphs }; text = paragraphs.join(' ');
                 }
                 const nParas = content.paragraphs ? content.paragraphs.length : 0;
                 const qs = (Array.isArray(parsed.questions) ? parsed.questions : []).map(q => examNormQuestion(q, m.kind)).filter(Boolean)
                     .filter(q => q.type !== 'match' || (q.ans.charCodeAt(0) - 65) < nParas)
                     .filter(q => q.type !== 'gap' || gapInText(q.ans, text));
-                if (qs.length < Math.ceil(planned * 0.75)) continue;
+                if (qs.length < Math.ceil(planned * 0.75)) { reason = `only ${qs.length} of ${planned} questions were good enough`; continue; }
                 qs.sort((a, b) => EX_RANK[m.kind][a.type] - EX_RANK[m.kind][b.type]);
                 return { title: String(parsed.title || slot.title).slice(0, 120), ...content, questions: qs };
             }
-            m.failReason = m.sawReply ? "its reply wasn't in a usable format" : aiProblemText();
+            m.failReason = reason || aiProblemText();
             return null;
         }
 
@@ -2082,28 +2198,47 @@ Return ONLY valid JSON in this shape:
         function renderExamIntro(errMsg = "") {
             const m = exam, L = m.kind === 'listening', full = m.mode === 'full';
             exEl('exam-title').textContent = `${full ? 'Full ' : ''}${L ? 'Listening' : 'Reading'} ${full ? 'Test' : 'Practice'}`;
-            const mins = m.seconds / 60;
-            const facts = L
-                ? (full ? ['4 sections, 40 questions: forms, notes and multiple choice', `${mins} minutes in total (30 for the recording and 10 to check your answers)`, 'Each section is a new script read by AI voices']
-                        : [`Section ${m.cfg.slots[0].n}: about 10 questions`, `${mins} minutes`, 'The script is written fresh and read by AI voices'])
-                : (full ? ['3 passages, 40 questions, 60 minutes', 'Difficulty rises from passage 1 to passage 3', 'True/False/Not Given, matching, multiple choice and completion']
-                        : [`1 passage with about 13 questions`, `${mins} minutes`, 'Mixed question types, as in the real test']);
+            const slots = m.cfg.slots;
+            const nQ = slots.reduce((a, sl) => a + Object.values(sl.plan).reduce((x, y) => x + y, 0), 0);
+            const mins = Math.round(m.seconds / 60);
+            const unit = L ? 'Sections' : 'Passages';
+            const points = L
+                ? (full ? [['fa-headphones', 'Four recordings, from an everyday chat to a university lecture.'], ['fa-pen', 'Fill in forms and notes, and choose answers. Write numbers as digits.'], ['fa-clock', '30 minutes of audio, then 10 minutes to check your answers.']]
+                        : [['fa-headphones', `Section ${slots[0].n} of the Listening test, read aloud by AI voices.`], ['fa-pen', 'Answer while you listen, as in the real exam.'], ['fa-clock', `${mins} minutes in total.`]])
+                : (full ? [['fa-book-open', 'Three passages that get harder, from passage 1 to passage 3.'], ['fa-list-check', 'True / False / Not Given, matching, multiple choice and gap fill.'], ['fa-clock', '60 minutes, with no extra time to copy answers.']]
+                        : [['fa-book-open', 'One academic passage, written fresh for you.'], ['fa-list-check', 'The same mix of question types as the real test.'], ['fa-clock', `${mins} minutes.`]]);
+            const have = m.parts.length;
+            const btn = have ? 'Continue preparing' : errMsg ? 'Try again' : 'Start the test';
             examBody(`<div class="ex-center"><div class="ex-card">
-                <h2 class="ex-h2">${L ? 'IELTS Listening' : 'IELTS Academic Reading'} &middot; ${full ? 'full test' : 'practice'}</h2>
-                <ul class="ex-list">${facts.map(f => `<li>${escapeHTML(f)}</li>`).join('')}<li>Written live by AI, so preparing it takes about ${full ? 'a minute' : '20 seconds'}. The timer starts only when the test is ready and cannot be paused.</li></ul>
-                ${L ? `<label class="ex-check"><input type="checkbox" id="ex-strict" ${full ? 'checked' : ''}> Exam conditions: each recording plays once only</label>` : ''}
-                ${errMsg ? `<div class="ex-error">${escapeHTML(errMsg)}</div>` : ''}
-                <div class="ex-row"><button type="button" id="btn-exam-start" class="ex-btn ex-btn-green ex-grow">${errMsg ? 'Try again' : 'Prepare &amp; start'}</button><button type="button" id="btn-exam-cancel" class="ex-btn ex-btn-light">Cancel</button></div>
-                <p class="ex-muted">Your band is an estimate from the standard raw-score table. Real tests vary slightly.</p>
+                <div class="ex-hero"><div class="ex-hero-ic"><i class="fa-solid ${L ? 'fa-headphones' : 'fa-book-open'}"></i></div>
+                    <div><div class="ex-hero-eyebrow">IELTS ${L ? '' : 'Academic '}${L ? 'Listening' : 'Reading'}</div><div class="ex-hero-t">${full ? 'Full practice test' : 'Practice ' + (L ? 'section' : 'passage')}</div></div></div>
+                <div class="ex-stats"><div class="ex-stat"><b>${slots.length}</b><span>${unit}</span></div><div class="ex-stat"><b>${nQ}</b><span>Questions</span></div><div class="ex-stat"><b>${mins}</b><span>Minutes</span></div></div>
+                <ul class="ex-points">${points.map(([ic, t]) => `<li><i class="fa-solid ${ic}"></i><span>${escapeHTML(t)}</span></li>`).join('')}</ul>
+                ${L ? `<label class="ex-toggle"><input type="checkbox" id="ex-strict" ${full ? 'checked' : ''}><span class="trk"></span><span><span class="tt">Real exam conditions</span><br><span class="ts">Each recording plays one time only.</span></span></label>` : ''}
+                <p class="ex-prep"><i class="fa-solid fa-wand-magic-sparkles"></i> Written live by AI, so it is new every time. Preparing takes about ${full ? 'a minute' : '20 seconds'}. Your timer starts only when everything is ready.</p>
+                ${errMsg ? `<div class="ex-error"><b>Not ready yet.</b> ${escapeHTML(errMsg)}${have ? `<br>The first ${have} part${have > 1 ? 's are' : ' is'} already prepared, so nothing is lost.` : ''}</div>` : ''}
+                <button type="button" id="btn-exam-start" class="ex-btn ex-btn-green ex-btn-big">${btn}</button>
+                <button type="button" id="btn-exam-cancel" class="ex-link">Not now</button>
+                <p class="ex-muted ex-tc">Your band is an estimate from the standard raw-score table.</p>
             </div></div>`);
         }
 
+        const EX_TIPS = ['Read the questions first, then look for the answers.', 'Write exactly the words you hear or read. Spelling counts.', 'Do not spend more than 20 minutes on one passage.', 'If you are stuck, move on and come back later.', 'There is no penalty for a wrong answer, so never leave a blank.'];
         function renderExamLoading(i, n) {
+            const m = exam, L = m.kind === 'listening', word = L ? 'Section' : 'Passage';
+            const steps = m.cfg.slots.map((sl, k) => {
+                const st = k < m.parts.length ? 'done' : k === i ? 'on' : '';
+                const ic = st === 'done' ? 'fa-circle-check' : st === 'on' ? 'fa-spinner fa-spin' : 'fa-circle';
+                return `<li class="ex-step ${st}"><i class="fa-solid ${ic}"></i><span>${word} ${k + 1}</span><em>${st === 'done' ? 'Ready' : st === 'on' ? 'Writing...' : 'Waiting'}</em></li>`;
+            }).join('');
+            const pct = Math.round(((m.parts.length + 0.4) / n) * 100);
             examBody(`<div class="ex-center"><div class="ex-card ex-tc">
-                <div class="ex-spin"></div>
-                <p class="ex-strong">Writing ${exam.kind === 'listening' ? 'section' : 'passage'} ${i + 1} of ${n}...</p>
-                <p class="ex-muted">The clock starts only after everything is ready.</p>
-                <button type="button" id="btn-exam-cancel" class="ex-btn ex-btn-light">Cancel</button>
+                <p class="ex-strong" style="font-size:1.05rem">Preparing your ${L ? 'recordings' : 'passages'}</p>
+                <div class="ex-bar"><i style="width:${Math.min(96, pct)}%"></i></div>
+                <ul class="ex-steps">${steps}</ul>
+                <p id="ex-load-note" class="ex-muted">The AI is writing ${word.toLowerCase()} ${i + 1} of ${n}. The clock starts only after everything is ready.</p>
+                <p class="ex-tip"><i class="fa-solid fa-lightbulb"></i> ${escapeHTML(EX_TIPS[(i + m.parts.length) % EX_TIPS.length])}</p>
+                <button type="button" id="btn-exam-cancel" class="ex-link">Cancel</button>
             </div></div>`);
         }
 
@@ -2288,16 +2423,16 @@ Return ONLY valid JSON in this shape:
             if (!m || m.phase !== 'intro' || aiBusyGuard()) return;
             m.strict = !!exEl('ex-strict')?.checked;
             m.phase = 'loading';
-            m.parts = [];
-            const pool = [...(m.kind === 'listening' ? LISTEN_TOPICS : MOCK_TOPICS)].sort(() => Math.random() - 0.5);
+            if (!m.pool) m.pool = [...(m.kind === 'listening' ? LISTEN_TOPICS : MOCK_TOPICS)].sort(() => Math.random() - 0.5);
+            const pool = m.pool;
             const slots = m.cfg.slots;
-            for (let i = 0; i < slots.length; i++) {
+            for (let i = m.parts.length; i < slots.length; i++) {
                 renderExamLoading(i, slots.length);
                 const p = await examGeneratePart(m, slots[i], pool[i % pool.length]);
                 if (exam !== m || m.cancelled) return;
                 if (!p) {
-                    m.phase = 'intro'; m.parts = [];
-                    return renderExamIntro(`The AI couldn't prepare part ${i + 1}: ${m.failReason || 'unknown problem'} Please try again in a minute, or run "Test AI now" in Profile.`);
+                    m.phase = 'intro';
+                    return renderExamIntro(`The AI couldn't prepare part ${i + 1}: ${m.failReason || 'unknown problem'}. Wait a minute and tap the button again.`);
                 }
                 m.parts.push(p);
             }
@@ -2408,7 +2543,58 @@ Return ONLY valid JSON in this shape:
                 : `<p class="text-xs text-slate-400">No attempts yet. Start a test above and your results will appear here.</p>`;
         }
 
-        // --- Listening audio: AI script read aloud, one voice per speaker, in short chunks ---
+        // --- Voices: always an English voice (never the phone's default Khmer one); natural AI voices when the account has them ---
+        const hdAudio = new Audio();
+        let hdDead = false, hdOff = false;
+        try { hdDead = sessionStorage.getItem('IELTS_HD_DEAD') === '1'; hdOff = localStorage.getItem('IELTS_HD_OFF') === '1'; } catch (e) {}
+        const hdCache = new Map();
+        function makeSilentWav(sec) {
+            const n = Math.max(1, Math.round(8000 * sec)), buf = new Uint8Array(44 + n), dv = new DataView(buf.buffer);
+            const w = (o, str) => { for (let i = 0; i < str.length; i++) buf[o + i] = str.charCodeAt(i); };
+            w(0, 'RIFF'); dv.setUint32(4, 36 + n, true); w(8, 'WAVE'); w(12, 'fmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+            dv.setUint32(24, 8000, true); dv.setUint32(28, 8000, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true); w(36, 'data'); dv.setUint32(40, n, true); buf.fill(128, 44);
+            return new Blob([buf], { type: 'audio/wav' });
+        }
+        function ttsVoiceFor(i) {
+            if (/orpheus/i.test(ttsModel)) return i % 2 === 0 ? 'diana' : 'daniel';
+            return i % 2 === 0 ? 'Celeste-PlayAI' : 'Fritz-PlayAI';
+        }
+        function loadVoices() {
+            const synth = window.speechSynthesis;
+            if (!synth) return Promise.resolve([]);
+            return new Promise(res => {
+                const have = synth.getVoices();
+                if (have.length) return res(have);
+                const t = setTimeout(() => res(synth.getVoices()), 1500);
+                synth.addEventListener('voiceschanged', () => { clearTimeout(t); res(synth.getVoices()); }, { once: true });
+            });
+        }
+        function rankVoice(v) {
+            let sc = 0; const n = v.name || '';
+            if (/^en[-_]GB/i.test(v.lang)) sc += 6; else if (/^en[-_]US/i.test(v.lang)) sc += 5; else if (/^en[-_]AU/i.test(v.lang)) sc += 4; else sc += 1;
+            if (/natural|neural|enhanced|premium|online/i.test(n)) sc += 6;
+            if (/google/i.test(n)) sc += 3;
+            if (/microsoft|samsung|siri/i.test(n)) sc += 2;
+            if (v.localService === false) sc += 1;
+            return sc;
+        }
+        async function englishVoices() {
+            const all = await loadVoices();
+            return all.filter(v => /^en([-_]|$)/i.test(v.lang) && !/khmer/i.test(v.name)).sort((a, b) => rankVoice(b) - rankVoice(a));
+        }
+        const chosenVoiceName = () => { try { return localStorage.getItem('IELTS_VOICE') || ''; } catch (e) { return ''; } };
+
+        function speechChunks(text, max = 200) {
+            const parts = String(text).match(/[^.!?]+[.!?]+["')]*\s*|[^.!?]+$/g) || [String(text)];
+            const out = []; let cur = '';
+            const push = (x) => { if (x.trim()) out.push(x.trim()); };
+            parts.forEach(p => {
+                if (p.length > max) { push(cur); cur = ''; p.split(/(?<=,)\s+/).forEach(piece => { if ((cur + piece).length > max && cur) { push(cur); cur = piece; } else cur += (cur ? ' ' : '') + piece; }); }
+                else if ((cur + p).length > max && cur) { push(cur); cur = p; } else cur += p;
+            });
+            push(cur);
+            return out.map(c => c.length > max ? c.slice(0, max) : c);
+        }
         function parseScriptTurns(script) {
             let src = String(script || '');
             if (!/\n/.test(src.trim())) {   // some replies lose their line breaks: re-split a two-person dialogue
@@ -2425,42 +2611,105 @@ Return ONLY valid JSON in this shape:
             });
             return turns;
         }
-        function speechChunks(text) {
-            const parts = String(text).match(/[^.!?]+[.!?]+["')]*\s*|[^.!?]+$/g) || [String(text)];
-            const out = []; let cur = '';
-            parts.forEach(p => { if ((cur + p).length > 200 && cur) { out.push(cur.trim()); cur = p; } else cur += p; });
-            if (cur.trim()) out.push(cur.trim());
-            return out;
-        }
+
         let listenPlayToken = 0;
         function stopListening() {
             listenPlayToken++;
             try { window.speechSynthesis?.cancel(); } catch (e) {}
+            try { hdAudio.pause(); } catch (e) {}
         }
-        function playListening(script, rate, onEnd) {
+        // Must be called inside the tap handler so phones allow the AI voice to play afterwards
+        function unlockHdAudio() {
+            try { hdAudio.src = URL.createObjectURL(makeSilentWav(0.1)); hdAudio.play().catch(() => {}); } catch (e) {}
+        }
+        function fetchHD(text, idx) {
+            const key = `${ttsModel}|${idx}|${text}`;
+            if (!hdCache.has(key)) hdCache.set(key, (async () => {
+                const r = await fetch("https://api.groq.com/openai/v1/audio/speech", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getBuiltInKey()}` }, body: JSON.stringify({ model: ttsModel, input: text, voice: ttsVoiceFor(idx), response_format: "wav" }) });
+                if (!r.ok) throw new Error('tts ' + r.status);
+                return URL.createObjectURL(await r.blob());
+            })());
+            return hdCache.get(key);
+        }
+        // returns 'ok', 'stopped', or the index where the AI voice failed so the phone voice can take over
+        async function playQueueHD(queue, rate, token) {
+            for (let i = 0; i < queue.length; i++) {
+                if (token !== listenPlayToken) return 'stopped';
+                try {
+                    const cur = fetchHD(queue[i].text, queue[i].idx);
+                    if (queue[i + 1]) fetchHD(queue[i + 1].text, queue[i + 1].idx).catch(() => {});
+                    const url = await cur;
+                    if (token !== listenPlayToken) return 'stopped';
+                    await new Promise((res, rej) => { hdAudio.onended = res; hdAudio.onerror = () => rej(new Error('audio')); hdAudio.defaultPlaybackRate = rate; hdAudio.src = url; hdAudio.playbackRate = rate; hdAudio.play().catch(rej); });
+                } catch (e) {
+                    if (i === 0) { hdDead = true; try { sessionStorage.setItem('IELTS_HD_DEAD', '1'); } catch (x) {} }
+                    return i;
+                }
+            }
+            return 'ok';
+        }
+        async function playQueueBrowser(queue, rate, token, onEnd, from = 0) {
             const synth = window.speechSynthesis;
-            if (!synth) return showToast("This browser can't play spoken audio. Try Chrome, or read the script in the review.", "error");
-            stopListening();
-            const token = listenPlayToken;
-            const voices = (synth.getVoices() || []).filter(v => /^en/i.test(v.lang));
-            const turns = parseScriptTurns(script);
-            const speakers = [...new Set(turns.map(t => t.who))];
-            const queue = [];
-            turns.forEach(t => { const idx = Math.max(0, speakers.indexOf(t.who)); speechChunks(t.text).forEach(c => queue.push({ text: c, idx })); });
+            if (!synth) return showToast("This browser can't play spoken audio.", "error");
+            const list = await englishVoices();
+            if (token !== listenPlayToken) return;
+            if (!list.length) showToast("No English voice found on this phone, so it may sound wrong. See Profile → Voice for the fix.", "error");
+            const pref = list.find(v => v.name === chosenVoiceName()) || list[0] || null;
+            const other = list.find(v => v !== pref) || pref;
             const next = (i) => {
                 if (token !== listenPlayToken) return;
                 if (i >= queue.length) { if (onEnd) onEnd(); return; }
+                const second = queue[i].idx % 2 === 1;
+                const v = second ? other : pref;
                 const u = new SpeechSynthesisUtterance(queue[i].text);
-                const v = voices.length ? voices[queue[i].idx % voices.length] : null;
                 if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
                 u.rate = rate;
-                u.pitch = queue[i].idx % 2 === 0 ? 1 : 0.82;
+                u.pitch = second && other === pref ? 0.8 : 1;
                 u.onend = () => next(i + 1);
                 u.onerror = () => next(i + 1);
                 synth.speak(u);
             };
-            next(0);
+            next(from);
         }
+        async function playListening(script, rate, onEnd) {
+            stopListening();
+            const token = listenPlayToken;
+            unlockHdAudio();
+            await ensureAIModels();
+            if (token !== listenPlayToken) return;
+            const turns = parseScriptTurns(script);
+            const speakers = [...new Set(turns.map(t => t.who))];
+            const queue = [];
+            turns.forEach(t => { const idx = Math.max(0, speakers.indexOf(t.who)); speechChunks(t.text, 190).forEach(c => queue.push({ text: c, idx })); });
+            let from = 0;
+            if (ttsModel && !hdDead && !hdOff) {
+                const res = await playQueueHD(queue, rate, token);
+                if (res === 'stopped') return;
+                if (res === 'ok') { if (token === listenPlayToken && onEnd) onEnd(); return; }
+                from = res;
+            }
+            await playQueueBrowser(queue, rate, token, onEnd, from);
+        }
+
+        // Profile → Voice: pick the phone voice, test it, switch HD voice on/off
+        async function fillVoiceSelect() {
+            const sel = document.getElementById('voice-select');
+            if (!sel) return;
+            const list = await englishVoices();
+            const cur = chosenVoiceName();
+            sel.innerHTML = list.length ? list.map(v => `<option value="${escapeHTML(v.name)}" ${v.name === cur ? 'selected' : ''}>${escapeHTML(v.name)} (${escapeHTML(v.lang)})</option>`).join('') : '<option value="">No English voice found</option>';
+            const note = document.getElementById('voice-note');
+            if (note) note.textContent = list.length ? '' : "Your phone has no English text-to-speech voice. Android: Settings → System → Languages → Text-to-speech output → Google → install English (UK or US) voice data. Then reopen this page.";
+            const hd = document.getElementById('hd-toggle');
+            await ensureAIModels();
+            if (hd) { hd.checked = !hdOff; hd.disabled = !ttsModel || hdDead; }
+            const hdNote = document.getElementById('hd-note');
+            if (hdNote) hdNote.textContent = !ttsModel ? "HD AI voice isn't available on this account, so the phone voice is used." : hdDead ? "HD voice failed earlier this session (see Test AI now below)." : "HD AI voice is available and used for Listening when switched on.";
+        }
+        document.getElementById('voice-select')?.addEventListener('change', (e) => { try { localStorage.setItem('IELTS_VOICE', e.target.value); } catch (x) {} });
+        document.getElementById('hd-toggle')?.addEventListener('change', (e) => { hdOff = !e.target.checked; try { localStorage.setItem('IELTS_HD_OFF', hdOff ? '1' : '0'); } catch (x) {} });
+        document.getElementById('btn-voice-test')?.addEventListener('click', () => playListening("Examiner: Good morning. This is a test of the voice you have chosen.\nCandidate: Thank you. I can hear you clearly.", 0.95));
+        document.querySelectorAll('[data-target="settings"]').forEach(b => b.addEventListener('click', fillVoiceSelect));
 
         // --- WRITING STUDIO: standard IELTS Academic Task 1 (chart) and Task 2 (essay) ---
         const WRITING_T2_BANK = [
@@ -2762,7 +3011,7 @@ Then a markdown table with columns Criterion | Band | Comment, then "Main proble
         }
         function setSpeakingPart(part, loadAnswer = true) {
             speakPart = part;
-            try { window.speechSynthesis?.cancel(); } catch (e) {}
+            stopListening();
             const t = activeSpeakingTest;
             document.querySelectorAll('.speak-part-btn').forEach(b => {
                 const on = Number(b.dataset.part) === part;
@@ -2823,21 +3072,19 @@ Return JSON only: {"p1":{"topic":"...","qs":["","","",""]},"p2":{"prompt":"Descr
         });
         document.querySelectorAll('.speak-part-btn').forEach(b => b.addEventListener('click', () => {
             if (!activeSpeakingTest?.parts) return;
+            if (isRecordingNow()) return showToast("Stop the recording first, then change part.", "info");
+            if (transcribing) return showToast("Wait a moment, your voice is still being turned into text.", "info");
             syncSpeakingAnswer();
             setSpeakingPart(Number(b.dataset.part), true);
         }));
         document.getElementById('speaking-user-transcript')?.addEventListener('input', syncSpeakingAnswer);
 
         document.getElementById('btn-speak-aloud')?.addEventListener('click', () => {
-            const synth = window.speechSynthesis;
-            if (!synth) return showToast("This browser can't read aloud.", "error");
             if (!activeSpeakingTest?.parts) return showToast("Start a new Speaking test first!", "error");
-            synth.cancel();
             const t = activeSpeakingTest;
-            const intro = speakPart === 1 ? `Part 1. Now I'd like to ask you some questions about ${t.parts.p1.topic}.` : speakPart === 2 ? `Part 2. Now I'm going to give you a topic, and I'd like you to talk about it for one to two minutes. You will have one minute to think. ` : `Part 3. We've been talking about ${t.parts.p2.prompt.replace(/^Describe\s+/i, '').replace(/\.$/, '')}, and now I'd like to discuss some more general questions.`;
+            const intro = speakPart === 1 ? `Part 1. Now I'd like to ask you some questions about ${t.parts.p1.topic}.` : speakPart === 2 ? `Part 2. Now I'm going to give you a topic, and I'd like you to talk about it for one to two minutes. You will have one minute to think.` : `Part 3. We've been talking about ${t.parts.p2.prompt.replace(/^Describe\s+/i, '').replace(/\.$/, '')}, and now I'd like to discuss some more general questions.`;
             const body = speakPart === 1 ? t.parts.p1.qs : speakPart === 3 ? t.parts.p3 : [t.parts.p2.prompt + " You should say: " + t.parts.p2.points.join(", ") + ", " + t.parts.p2.end];
-            const voice = (synth.getVoices() || []).find(v => /^en-GB/i.test(v.lang)) || (synth.getVoices() || []).find(v => /^en/i.test(v.lang));
-            [intro, ...body].forEach(txt => speechChunks(txt).forEach(c => { const u = new SpeechSynthesisUtterance(c); if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = 'en-GB'; u.rate = 0.92; synth.speak(u); }));
+            playListening([intro, ...body].map(x => "Examiner: " + String(x).replace(/\s+/g, ' ')).join("\n"), 0.92);
         });
         document.getElementById('btn-speak-prep')?.addEventListener('click', () => {
             startCountdown('speaking-timer', 60, () => {
@@ -2874,10 +3121,12 @@ Return JSON only: {"p1":{"topic":"...","qs":["","","",""]},"p2":{"prompt":"Descr
 
         document.getElementById('btn-grade-speaking')?.addEventListener('click', async () => {
             if (!activeSpeakingTest) return showToast("Start a Speaking test first!", "error");
+            if (isRecordingNow()) return showToast("Tap Stop recording first, then Mark.", "info");
+            if (transcribing) return showToast("Wait a few seconds: your voice is still being turned into text.", "info");
             syncSpeakingAnswer();
             const t = activeSpeakingTest;
             const answered = t.parts ? [1, 2, 3].filter(p => String(t.answers?.[p] || '').trim().length > 0) : (String(t.userTranscript || '').trim() ? [0] : []);
-            if (!answered.length) return showToast("Record or type your spoken answer first!", "error");
+            if (!answered.length) return showToast("There is no answer text yet. Record your voice (it will be typed for you) or type your answer below.", "error");
             if (aiBusyGuard()) return;
             const box = document.getElementById('speaking-sample-box');
             box.innerHTML = `<span class="text-emerald-400 animate-pulse">✨ Marking your Speaking answers...</span>`;
@@ -2907,51 +3156,113 @@ Then a markdown table (Criterion | Band | Comment), "Strengths" (2 bullets), "Ma
             showToast(`✓ Speaking marked & saved: Band ${band.toFixed(1)} (AI estimate)`, "success");
         });
 
-        // --- MICROPHONE & TIMERS ---
-        let mediaRec = null, speechRec = null, audioChunks = [];
-        document.getElementById('btn-record')?.addEventListener('click', async () => {
-            const btn = document.getElementById('btn-record');
-            const status = document.getElementById('rec-status');
-            const player = document.getElementById('audio-playback');
-            const transBox = document.getElementById('speaking-user-transcript');
+        // --- SPEAKING RECORDER: records your voice, then turns it into text with Groq Whisper ---
+        let mediaRec = null, recStream = null, audioChunks = [], recTick = null, recStop = null, recPart = 1, transcribing = false, dictRec = null, dictActive = false;
+        const recStatus = (html, cls = 'text-rose-400') => { const el = document.getElementById('rec-status'); if (!el) return; el.className = `${cls} text-xs font-bold text-center`; el.innerHTML = html; };
+        const recBtnLabel = (on) => { const b = document.getElementById('btn-record'); if (b) b.innerHTML = on ? `<i class="fa-solid fa-stop mr-1"></i>Stop recording` : `<i class="fa-solid fa-microphone mr-1"></i>Record Voice`; };
+        const isRecordingNow = () => (mediaRec && mediaRec.state === 'recording') || dictActive;
 
-            if (mediaRec && mediaRec.state === "recording") {
-                mediaRec.stop();
-                try { speechRec?.stop(); } catch (e) {}
-                btn.innerHTML = `<i class="fa-solid fa-microphone mr-1"></i>Record Voice`;
-                status?.classList.add('hide');
-                return;
+        // puts text into the answer box of one part (and into the saved test), without losing what was already there
+        function addAnswerText(part, text) {
+            const t = activeSpeakingTest;
+            if (!t || !text) return;
+            const ta = document.getElementById('speaking-user-transcript');
+            if (t.parts) {
+                if (speakPart === part && ta) t.answers = { ...(t.answers || {}), [part]: ta.value };
+                const cur = String(t.answers?.[part] || '').trim();
+                t.answers = { ...(t.answers || {}), [part]: (cur ? cur + ' ' : '') + text };
+                if (speakPart === part && ta) ta.value = t.answers[part];
+            } else if (ta) {
+                const cur = ta.value.trim();
+                ta.value = (cur ? cur + ' ' : '') + text; t.userTranscript = ta.value;
             }
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRec = new MediaRecorder(stream);
-                audioChunks = [];
-                mediaRec.ondataavailable = e => audioChunks.push(e.data);
-                mediaRec.onstop = () => {
-                    player.src = URL.createObjectURL(new Blob(audioChunks, { type: 'audio/webm' }));
-                    player.classList.remove('hide');
-                    stream.getTracks().forEach(t => t.stop());
-                };
-                mediaRec.start();
+        }
 
-                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (SR) {
-                    speechRec = new SR();
-                    speechRec.continuous = true; speechRec.interimResults = true; speechRec.lang = 'en-US';
-                    let finalStr = transBox?.value ? transBox.value + " " : "";
-                    speechRec.onresult = (ev) => {
-                        let interim = "";
-                        for (let i = ev.resultIndex; i < ev.results.length; ++i) {
-                            if (ev.results[i].isFinal) finalStr += ev.results[i][0].transcript + " ";
-                            else interim += ev.results[i][0].transcript;
-                        }
-                        if (transBox) transBox.value = (finalStr + interim).trim();
-                    };
-                    try { speechRec.start(); } catch (e) {}
+        async function transcribeBlob(blob, ext) {
+            await ensureAIModels();
+            if (!whisperModels.length) throw new Error("voice-to-text isn't available on this AI account");
+            let lastErr;
+            for (const model of whisperModels.slice(0, 2)) {
+                try {
+                    const fd = new FormData();
+                    fd.append('file', blob, `speech.${ext}`); fd.append('model', model); fd.append('language', 'en'); fd.append('response_format', 'json'); fd.append('temperature', '0');
+                    const r = await aiRequest("https://api.groq.com/openai/v1/audio/transcriptions", { method: "POST", headers: { "Authorization": `Bearer ${getBuiltInKey()}` }, body: fd }, 45000);
+                    if (r.ok) return String(r.body?.text || '').trim();
+                    lastErr = new Error(`HTTP ${r.status}`);
+                } catch (e) { lastErr = e && e.name === 'AbortError' ? new Error('it took too long') : e; }
+            }
+            throw lastErr || new Error('unknown problem');
+        }
+
+        function stopRecording() {
+            clearInterval(recTick); clearTimeout(recStop);
+            if (mediaRec && mediaRec.state === 'recording') { try { mediaRec.stop(); } catch (e) {} }
+            recBtnLabel(false);
+        }
+
+        document.getElementById('btn-record')?.addEventListener('click', async () => {
+            if (mediaRec && mediaRec.state === 'recording') return stopRecording();
+            if (dictActive) return showToast("Stop the live dictation first.", "info");
+            if (transcribing) return showToast("Still turning your last recording into text...", "info");
+            if (!activeSpeakingTest) return showToast("Press New Speaking Test first!", "error");
+            if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') return showToast("This browser can't record audio. Type your answer, or try Chrome.", "error");
+            try {
+                recStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+            } catch (e) { return showToast("Allow microphone access in your browser, then tap Record again.", "error"); }
+            syncSpeakingAnswer();
+            recPart = speakPart;
+            const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'].find(m => MediaRecorder.isTypeSupported?.(m));
+            mediaRec = mime ? new MediaRecorder(recStream, { mimeType: mime }) : new MediaRecorder(recStream);
+            audioChunks = [];
+            mediaRec.ondataavailable = e => { if (e.data && e.data.size) audioChunks.push(e.data); };
+            mediaRec.onstop = async () => {
+                recStream?.getTracks().forEach(t => t.stop());
+                const type = mediaRec.mimeType || mime || 'audio/webm';
+                const blob = new Blob(audioChunks, { type });
+                const player = document.getElementById('audio-playback');
+                if (player) { player.src = URL.createObjectURL(blob); player.classList.remove('hide'); }
+                if (blob.size < 2500) return recStatus('⚠ That recording was too short. Tap Record and speak for a little longer.', 'text-amber-300');
+                const ext = /mp4/.test(type) ? 'm4a' : /ogg/.test(type) ? 'ogg' : 'webm';
+                transcribing = true;
+                recStatus('⏳ Turning your voice into text... (about 5 seconds)', 'text-purple-300 animate-pulse');
+                try {
+                    const text = await transcribeBlob(blob, ext);
+                    if (!text) recStatus('⚠ No speech was heard. Check your microphone and try again, or type your answer.', 'text-amber-300');
+                    else { addAnswerText(recPart, text); recStatus(`✅ Done. Read the text below, fix any mistakes, then press Mark.`, 'text-emerald-400'); }
+                } catch (err) {
+                    recStatus(`⚠ Couldn't turn the recording into text (${escapeHTML(err.message || 'problem')}). Type what you said below, or use live dictation.`, 'text-amber-300');
+                } finally { transcribing = false; }
+            };
+            mediaRec.start();
+            const t0 = Date.now();
+            const paint = () => { const s = Math.round((Date.now() - t0) / 1000); recStatus(`🔴 Recording ${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}. Tap Stop when you finish.`); };
+            paint(); recTick = setInterval(paint, 500);
+            recStop = setTimeout(stopRecording, 4 * 60 * 1000);
+            recBtnLabel(true);
+        });
+
+        // Fallback: live dictation with the browser's own speech recognition (works without recording)
+        document.getElementById('btn-dictate')?.addEventListener('click', () => {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const btn = document.getElementById('btn-dictate');
+            if (dictActive) { dictActive = false; try { dictRec?.stop(); } catch (e) {} if (btn) btn.textContent = 'Or use live dictation'; return; }
+            if (!SR) return showToast("Live dictation isn't supported in this browser. Use Record Voice or type.", "error");
+            if (mediaRec && mediaRec.state === 'recording') return showToast("Stop the recording first.", "info");
+            if (!activeSpeakingTest) return showToast("Press New Speaking Test first!", "error");
+            syncSpeakingAnswer();
+            const part = speakPart;
+            dictRec = new SR(); dictRec.continuous = true; dictRec.interimResults = true; dictRec.lang = 'en-US';
+            dictRec.onresult = (ev) => {
+                let interim = '';
+                for (let i = ev.resultIndex; i < ev.results.length; i++) {
+                    if (ev.results[i].isFinal) addAnswerText(part, ev.results[i][0].transcript.trim()); else interim += ev.results[i][0].transcript;
                 }
-                btn.innerHTML = `<i class="fa-solid fa-stop mr-1"></i>Stop`;
-                status?.classList.remove('hide');
-            } catch (e) { showToast("Allow microphone access.", "error"); }
+                recStatus(`🎤 Listening... ${escapeHTML(interim)}`, 'text-rose-400');
+            };
+            dictRec.onerror = (ev) => { if (ev.error === 'not-allowed') { dictActive = false; showToast("Allow microphone access, then try again.", "error"); } };
+            dictRec.onend = () => { if (dictActive) { try { dictRec.start(); } catch (e) {} } else { recStatus('Dictation stopped. Check the text below.', 'text-slate-300'); } };
+            dictActive = true; if (btn) btn.textContent = 'Stop dictation';
+            try { dictRec.start(); recStatus('🎤 Listening... speak now.', 'text-rose-400'); } catch (e) { dictActive = false; }
         });
 
         const countdownTimers = {};
