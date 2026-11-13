@@ -6,6 +6,11 @@
     <title>IELTS Studio KH — AI Self-Study & English Academy</title>
     <meta name="description" content="IELTS self-study for Cambodian learners: full Reading and Listening tests written fresh by AI, AI feedback on Writing and Speaking, Listening practice, band-score progress tracking and a study leaderboard.">
     <meta name="theme-color" content="#0f172a">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="IELTS KH">
     <meta property="og:type" content="website">
     <meta property="og:title" content="IELTS Studio KH — AI Self-Study & English Academy">
     <meta property="og:description" content="Practise all four IELTS skills, take full AI-written Reading and Listening tests and track your band score progress.">
@@ -378,6 +383,14 @@
                         </div>
                     </div>
 
+                    <!-- Personalised next step -->
+                    <div id="next-up-card" class="glass-panel alive-card p-4 rounded-2xl border border-emerald-500/30 space-y-1.5">
+                        <p class="text-[11px] font-bold uppercase text-emerald-400"><i class="fa-solid fa-bullseye mr-1"></i>Your next best step</p>
+                        <p id="next-up-text" class="text-sm sm:text-base font-bold text-white">Take one practice test to get started.</p>
+                        <p id="next-up-sub" class="text-xs text-slate-400"></p>
+                        <button type="button" id="btn-next-up" data-go="reading" class="mt-1 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold">Start now</button>
+                    </div>
+
                     <!-- Streak & Countdown -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div id="streak-card" class="glass-panel alive-card p-4 rounded-2xl flex items-center justify-between">
@@ -555,6 +568,7 @@
                         <div class="flex flex-wrap gap-1.5">
                             <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1 rounded-full" data-prompt="Give me 5 Band 8.5 vocabulary words for IELTS Writing Task 2 with examples.">✨ Band 8.5 Vocab</button>
                             <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1 rounded-full" data-prompt="Explain True, False, Not Given rules with examples.">📖 T/F/NG Tips</button>
+                            <button type="button" id="btn-khmer-toggle" title="Explain answers in Khmer as well (beta)" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-3 py-1 rounded-full">🇰🇭 ខ្មែរ: <span id="khmer-state">Off</span></button>
                             <button type="button" id="btn-clear-chat" class="text-xs bg-slate-800 hover:bg-red-500/20 border border-slate-700 text-slate-300 px-3 py-1 rounded-full"><i class="fa-solid fa-trash-can mr-1"></i>Clear</button>
                         </div>
                     </div>
@@ -689,6 +703,12 @@
                     </div>
 
                     <div id="writing-feedback-box" class="hide glass-panel p-4 rounded-2xl ai-prose border border-purple-500/40"></div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" id="btn-ai-writing-sample" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-lightbulb mr-1 text-amber-300"></i>Show a Band 8 model answer</button>
+                        <span class="text-[11px] text-slate-500">Try it yourself first, then compare.</span>
+                    </div>
+                    <div id="writing-sample-box" class="hide glass-panel p-4 rounded-2xl ai-prose border border-amber-500/30"></div>
                 </div>
 
                 <!-- ================= 9. AI SPEAKING ARENA ================= -->
@@ -1148,9 +1168,43 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             showToast("Test deleted.", "info");
         }
 
+        // Looks at the student's results and suggests what to practise next
+        function renderNextUp() {
+            const text = document.getElementById('next-up-text'), sub = document.getElementById('next-up-sub'), btn = document.getElementById('btn-next-up');
+            if (!text || !sub || !btn) return;
+            const target = parseFloat(currentProfile?.targetBand) || 7;
+            const stats = SKILLS.map(sk => {
+                const list = userSavedTests.filter(t => t.module === sk.k && typeof t.band === 'number').sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                const recent = list.slice(0, 3);
+                return { ...sk, n: list.length, avg: recent.length ? recent.reduce((a, t) => a + t.band, 0) / recent.length : null, last: list[0]?.createdAt || 0 };
+            });
+            const action = { listening: 'Practise a Listening section', reading: 'Practise a Reading passage', writing: 'Write a Task 2 essay', speaking: 'Take a Speaking test' };
+            let pick, line, extra = '';
+            const untouched = stats.filter(x => x.n === 0);
+            if (untouched.length === 4) {
+                pick = stats[1]; line = "Start with one Reading passage to see your level.";
+                extra = "Then try the other three skills. A balanced result needs all four.";
+            } else if (untouched.length) {
+                pick = untouched[0]; line = `You haven't tried ${pick.label} yet.`;
+                extra = "Your overall band is the average of all four skills, so every skill counts.";
+            } else {
+                pick = stats.reduce((a, b) => (b.avg < a.avg ? b : a));
+                const gap = target - pick.avg;
+                line = `${pick.label} is your lowest skill: Band ${pick.avg.toFixed(1)}${gap > 0 ? `, ${gap.toFixed(1)} below your target of ${target.toFixed(1)}` : ', already at your target'}.`;
+                const overall = Math.round((stats.reduce((a, b) => a + b.avg, 0) / 4) * 2) / 2;
+                extra = `Estimated overall band from recent results: ${overall.toFixed(1)} (target ${target.toFixed(1)}).`;
+                const stale = stats.filter(x => x.k !== pick.k && x.last && (Date.now() - x.last) > 6 * 86400000).sort((a, b) => a.last - b.last)[0];
+                if (stale) extra += ` You haven't practised ${stale.label} for ${Math.floor((Date.now() - stale.last) / 86400000)} days.`;
+            }
+            text.textContent = line; sub.textContent = extra;
+            btn.textContent = action[pick.k]; btn.dataset.go = pick.k;
+        }
+        document.getElementById('btn-next-up')?.addEventListener('click', (e) => document.querySelector(`.nav-btn[data-target="${e.currentTarget.dataset.go}"]`)?.click());
+
         function refreshSelectorsAndStats() {
             userSavedTests.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             renderProgress();
+            renderNextUp();
             renderAttempts('reading', 'reading-attempts');
             renderAttempts('listening', 'listening-attempts');
             ['listening', 'reading', 'writing', 'speaking'].forEach(mod => {
@@ -1264,7 +1318,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             val('set-band', '7.5');
             txt('word-count', '0 words · minimum 250'); txt('speaking-timer', '00:00'); txt('writing-timer', '40:00');
             html('leaderboard-body', '');
-            html('ai-chat-box', '');
+            html('ai-chat-box', ''); chatHistory = [];
             html('writing-prompt-box', '<span class="text-slate-400 text-xs">Choose Task 1 or Task 2 to get an exam-style question.</span>');
             html('speaking-cue-card', '<span class="text-slate-400 text-xs">Press New Speaking Test above.</span>'); hide('speaking-part-tabs');
             html('speaking-sample-box', '<span class="text-slate-400 text-xs">Model answer or grading feedback will appear here.</span>');
@@ -1628,7 +1682,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             const budget = opts.budgetMs || 50000;
             const maxTokens = opts.maxTokens || 3500;
             const left = () => budget - (Date.now() - started);
-            const messages = [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }];
+            const messages = [{ role: "system", content: systemPrompt }, ...(Array.isArray(opts.history) ? opts.history : []), { role: "user", content: userPrompt }];
             const apiKey = getBuiltInKey();
             lastAIError = null;
             let authFailed = false;
@@ -1749,6 +1803,18 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             document.getElementById('chat-attachment-bar')?.classList.add('hide');
         });
 
+        let chatHistory = [];
+        let chatKhmer = false;
+        try { chatKhmer = localStorage.getItem('IELTS_KHMER') === '1'; } catch (e) {}
+        const paintKhmer = () => { const el = document.getElementById('khmer-state'); if (el) el.textContent = chatKhmer ? 'On' : 'Off'; document.getElementById('btn-khmer-toggle')?.classList.toggle('border-emerald-500', chatKhmer); };
+        paintKhmer();
+        document.getElementById('btn-khmer-toggle')?.addEventListener('click', () => {
+            chatKhmer = !chatKhmer;
+            try { localStorage.setItem('IELTS_KHMER', chatKhmer ? '1' : '0'); } catch (e) {}
+            paintKhmer();
+            showToast(chatKhmer ? "ខ្មែរ explanations on (beta). English key points always come first." : "Khmer explanations off.", "info");
+        });
+
         async function sendChat(customMsg) {
             const inputEl = document.getElementById('ai-input');
             const chatBox = document.getElementById('ai-chat-box');
@@ -1771,7 +1837,11 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             chatBox.scrollTop = chatBox.scrollHeight;
 
             const fullPrompt = fileContext ? `Document Excerpt:\n"""${fileContext}"""\n\nStudent Request: ${msg}` : msg;
-            const reply = (await askIELTSAI(fullPrompt, "You are a Band 9.0 IELTS Tutor. Format clearly with Markdown.")) || ("⚠ " + aiProblemText() + " Please send your message again.");
+            const sys = "You are a friendly, expert IELTS tutor (Band 9). Give clear, practical answers formatted in Markdown. Keep answers focused; use short tables only when comparing items." +
+                (chatKhmer ? " The student is Cambodian and wants Khmer help: first give the key points in English, then add a short explanation in simple Khmer (ភាសាខ្មែរ). Keep IELTS terms, examples and any sentences the student should practise in English." : "");
+            const aiReply = await askIELTSAI(fullPrompt, sys, false, { history: chatHistory.slice(-6), maxTokens: 1800 });
+            if (aiReply) { chatHistory.push({ role: 'user', content: msg.slice(0, 1500) }, { role: 'assistant', content: aiReply.slice(0, 2500) }); chatHistory = chatHistory.slice(-8); }
+            const reply = aiReply || ("⚠ " + aiProblemText() + " Please send your message again.");
             document.getElementById(loadId)?.remove();
 
             chatBox.innerHTML += `<div class="flex gap-2.5 items-start"><div class="w-7 h-7 rounded-lg bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div><div class="bg-slate-800/90 border border-slate-700 p-3.5 rounded-2xl rounded-tl-none ai-prose max-w-[90%] overflow-x-auto">${formatAIMarkdown(reply || "Please try again.")}</div></div>`;
@@ -1781,7 +1851,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         document.getElementById('ai-send-btn')?.addEventListener('click', () => sendChat());
         document.getElementById('ai-input')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendChat(); } });
         document.querySelectorAll('.ai-quick-btn').forEach(b => b.addEventListener('click', () => sendChat(b.getAttribute('data-prompt'))));
-        document.getElementById('btn-clear-chat')?.addEventListener('click', () => { document.getElementById('ai-chat-box').innerHTML = ''; });
+        document.getElementById('btn-clear-chat')?.addEventListener('click', () => { document.getElementById('ai-chat-box').innerHTML = ''; chatHistory = []; });
 
         // =====================================================================
         // EXAM ENGINE: Reading and Listening tests written live by the AI (no stored papers)
@@ -1946,7 +2016,7 @@ Return ONLY valid JSON in this shape:
                 if (exam !== m || m.cancelled) return null;
                 const raw = await askIELTSAI(examBuildPrompt(m.kind, slot, topic),
                     L ? "You are a senior Cambridge IELTS Listening test writer. Output valid JSON only." : "You are a senior Cambridge IELTS Academic Reading test writer. Output valid JSON only.",
-                    true, { maxTokens: 4500, budgetMs: 80000 });
+                    true, { maxTokens: 3400, budgetMs: 80000 });
                 if (raw) m.sawReply = true;
                 const parsed = parseJSONSafely(raw);
                 if (!parsed) continue;
@@ -2519,6 +2589,7 @@ Return ONLY valid JSON in this shape:
                 box.innerHTML = `<div class="ai-prose">${formatAIMarkdown(testObj.promptText || testObj.title || "")}</div>`;
             }
             if (writingArea) writingArea.value = testObj.essayText || "";
+            document.getElementById('writing-sample-box')?.classList.add('hide');
             updateWordCount();
             setWritingTimer(task);
             const fb = document.getElementById('writing-feedback-box');
@@ -2585,6 +2656,20 @@ Return JSON only: {"topic":"the introductory statement","question":"the instruct
         });
         document.getElementById('btn-delete-writing-test')?.addEventListener('click', async () => {
             if (activeWritingTest?.id) { const id = activeWritingTest.id; activeWritingTest = null; await deleteTestFromAccount(id); }
+        });
+
+        document.getElementById('btn-ai-writing-sample')?.addEventListener('click', async () => {
+            const box = document.getElementById('writing-sample-box');
+            if (!activeWritingTest?.promptText) return showToast("Choose Task 1 or Task 2 first!", "error");
+            if (aiBusyGuard()) return;
+            const task = activeWritingTest.task || 2;
+            box.classList.remove('hide'); box.innerHTML = `<span class="text-amber-300 animate-pulse">✨ Writing a Band 8 model answer...</span>`;
+            const reply = await askIELTSAI(`Write a Band 8 model answer for this IELTS Academic Writing Task ${task}. ${task === 1 ? "Length 170-190 words: an overview paragraph, then 2 detail paragraphs with accurate figures and comparisons." : "Length 270-300 words: introduction, 2 body paragraphs with specific examples, and a conclusion."}
+
+${activeWritingTest.promptText}
+
+After the answer add "Why this is Band 8" with 4 short bullet points (structure, vocabulary, grammar, task response).`, "You are an expert IELTS Writing teacher.", false, { maxTokens: 1500, budgetMs: 45000 });
+            box.innerHTML = reply ? formatAIMarkdown(reply) : aiFailHTML();
         });
 
         document.getElementById('btn-ai-grade-essay')?.addEventListener('click', async () => {
