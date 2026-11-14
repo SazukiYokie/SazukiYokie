@@ -342,6 +342,12 @@
         .ai-think { font-size: 0.88rem; color: #c4b5fd; animation: sxBlink 1.2s infinite; }
         .ai-attach { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.5rem 0.9rem; background: #0f172a; border-top: 1px solid rgba(148,163,184,0.25); font-size: 0.8rem; color: #67e8f9; }
         .ai-attach button { background: none; border: 0; color: #94a3b8; cursor: pointer; font-size: 1rem; }
+        .ai-thumbs { display: flex; gap: 0.5rem; padding: 0.55rem 0.8rem; background: #0f172a; border-top: 1px solid rgba(148,163,184,0.25); overflow-x: auto; }
+        .ai-thumb { position: relative; flex: none; width: 3.6rem; height: 3.6rem; border-radius: 0.7rem; overflow: hidden; border: 1px solid rgba(148,163,184,0.4); background: #1e293b; }
+        .ai-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .ai-thumb button { position: absolute; top: 0.15rem; right: 0.15rem; width: 1.35rem; height: 1.35rem; border-radius: 50%; border: 0; background: rgba(2,6,23,0.85); color: #fff; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .ai-pics { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.45rem; }
+        .ai-pics img { width: 5.2rem; height: 5.2rem; object-fit: cover; border-radius: 0.6rem; display: block; }
         .ai-input-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.65rem; border-top: 1px solid rgba(148,163,184,0.25); background: rgba(2,6,23,0.6); }
         .ai-file { width: 2.75rem; height: 2.75rem; border-radius: 0.8rem; background: #1e293b; border: 1px solid rgba(148,163,184,0.3); color: #67e8f9; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }
         .ai-input { flex: 1; min-width: 0; background: #1e293b; border: 1.5px solid #475569; border-radius: 0.8rem; padding: 0.7rem 0.85rem; font-size: 1rem; color: #fff; font-family: inherit; outline: none; }
@@ -766,7 +772,7 @@
                 <!-- ================= 5. AI TUTOR CHAT ================= -->
                 <div id="view-ai" class="view-section hide">
                   <div class="sx sx-a">
-                    <div class="sx-head"><div class="sx-head-ic" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div><h2>AI Tutor</h2><p>Ask anything about IELTS, or attach a file to study it together</p></div>
+                    <div class="sx-head"><div class="sx-head-ic" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div><h2>AI Tutor</h2><p>Ask anything about IELTS, or attach a file or a photo to study it together</p></div>
                         <button type="button" id="btn-clear-chat" class="sx-btn sx-btn-ghost" style="margin-left:auto;padding:.55rem .75rem" aria-label="Clear chat"><i class="fa-solid fa-trash-can"></i></button></div>
                     <div class="qz-chips">
                         <button type="button" class="ai-quick-btn qz-chip" data-prompt="Give me 5 Band 8.5 vocabulary words for IELTS Writing Task 2 with examples.">✨ Band 8.5 words</button>
@@ -776,8 +782,9 @@
                     </div>
                     <div class="ai-panel">
                         <div id="ai-chat-box" class="ai-box">
-                            <div class="ai-msg"><div class="ai-av"><i class="fa-solid fa-robot"></i></div><div class="ai-bub">Hello! I'm your IELTS tutor. Ask me about vocabulary, grammar, or how to improve your band. You can also attach a PDF, DOCX or text file with the paperclip button.</div></div>
+                            <div class="ai-msg"><div class="ai-av"><i class="fa-solid fa-robot"></i></div><div class="ai-bub">Hello! I'm your IELTS tutor. Ask me about vocabulary, grammar, or how to improve your band. Use the <i class="fa-solid fa-paperclip"></i> button for a PDF, DOCX or text file, and the <i class="fa-solid fa-image"></i> button for a photo (handwritten essay, chart, or a question from a book).</div></div>
                         </div>
+                        <div id="chat-image-bar" class="hide ai-thumbs"></div>
                         <div id="chat-attachment-bar" class="hide ai-attach">
                             <span id="chat-attachment-info" class="truncate"></span>
                             <button type="button" id="btn-remove-chat-attachment" aria-label="Remove file"><i class="fa-solid fa-xmark"></i></button>
@@ -785,6 +792,9 @@
                         <div class="ai-input-row">
                             <label class="ai-file" title="Attach a file" aria-label="Attach a file"><i class="fa-solid fa-paperclip"></i>
                                 <input type="file" id="chat-file-upload" accept=".pdf,.txt,.md,.csv,.docx,.html" class="hide">
+                            </label>
+                            <label class="ai-file" title="Add a photo" aria-label="Add a photo"><i class="fa-solid fa-image"></i>
+                                <input type="file" id="chat-image-upload" accept="image/*" multiple class="hide">
                             </label>
                             <input type="text" id="ai-input" class="ai-input" placeholder="Type your question..." autocomplete="off">
                             <button type="button" id="ai-send-btn" class="ai-send" aria-label="Send"><i class="fa-solid fa-paper-plane"></i></button>
@@ -1564,7 +1574,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             html('listening-transcript-box', ''); hide('listening-transcript-box');
             txt('listening-score-box', ''); txt('reading-score-box', '');
                         hide('chat-attachment-bar'); hide('rec-status');
-            pendingChatFileText = null; pendingChatFileName = "";
+            pendingChatFileText = null; pendingChatFileName = ""; pendingChatImages = []; renderChatThumbs();
             const aud = document.getElementById('audio-playback');
             if (aud) { try { aud.pause(); } catch (e) {} aud.removeAttribute('src'); aud.classList.add('hide'); }
         }
@@ -1874,14 +1884,13 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         // --- AI ENGINE: Groq models with automatic fallback, hard timeouts and readable errors ---
         // Every Groq model has its own rate-limit bucket, so falling through this list multiplies the daily quota
         // and keeps the tools working when one model is busy. Order = best quality first.
+        // Groq retired the old Llama / Kimi models (they answer 404 and cannot be switched back on), so this list only
+        // holds models that are live. Qwen can also read images (vision), which powers photo upload in the AI Tutor.
         const AI_PREFERRED = [
             { id: "openai/gpt-oss-120b", extra: { reasoning_effort: "low" }, reasoning: true },
-            { id: "llama-3.3-70b-versatile" },
-            { id: "moonshotai/kimi-k2-instruct-0905" },
-            { id: "meta-llama/llama-4-scout-17b-16e-instruct" },
+            { id: "qwen/qwen3.8-27b", reasoning: true, vision: true },
             { id: "openai/gpt-oss-20b", extra: { reasoning_effort: "low" }, reasoning: true },
-            { id: "moonshotai/kimi-k2-instruct" },
-            { id: "llama-3.1-8b-instant" }
+            { id: "minimaxai/minimax-m2.7", reasoning: true }
         ];
         let AI_MODELS = [...AI_PREFERRED];
         const deadModels = new Set();          // models this key can't use (404): skipped for the rest of the session
@@ -1898,7 +1907,11 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                     if (!ids.length) return;
                     groqModelIds = ids;
                     const usable = AI_PREFERRED.filter(m => ids.includes(m.id));
-                    if (usable.length) AI_MODELS = usable;
+                    // new Qwen / MiniMax chat models Groq adds later are picked up automatically
+                    const known = new Set(AI_PREFERRED.map(m => m.id));
+                    const more = ids.filter(id => !known.has(id) && /(^|\/)(qwen|minimax)/i.test(id) && !/whisper|tts|orpheus|guard|embed|moderat|safeguard/i.test(id))
+                        .map(id => ({ id, reasoning: true, vision: /qwen/i.test(id) }));
+                    if (usable.length || more.length) AI_MODELS = [...usable, ...more];
                     const w = ids.filter(id => /whisper/i.test(id) && !/distil/i.test(id)).sort((a, b) => (/turbo/.test(b) ? 1 : 0) - (/turbo/.test(a) ? 1 : 0));
                     if (w.length) whisperModels = w;
                     else whisperModels = [];
@@ -1915,6 +1928,9 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             if (!e) return "The AI didn't answer.";
             if (e.kind === 'auth') return "The AI key was rejected (it may have expired or been revoked).";
             if (e.kind === 'quota') return "The free AI is busy right now (rate limit). Wait a minute and try again.";
+            if (e.kind === 'blocked') return "Your Groq account has not allowed the AI models this app uses (the account owner can switch them on at console.groq.com/settings/limits).";
+            if (e.kind === 'novision') return "No image-reading AI is available on your Groq account right now.";
+            if (e.kind === 'toolarge') return "That image is too big for the AI. Try a smaller or cropped photo.";
             if (e.kind === 'timeout') return "The AI took too long to answer.";
             if (e.kind === 'length') return "The AI's answer was too long and got cut off.";
             if (e.kind === 'network') return "Can't reach the AI. Check your internet connection.";
@@ -1943,13 +1959,40 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             } finally { clearTimeout(timer); }
         }
 
+        const GROQ_CHAT_URL = "https://api.groq.com/openai/v1/chat/completions";
+        // Removes the "thinking" block some reasoning models put in front of their answer
+        function stripThink(t) { return String(t || '').replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/^[\s\S]*?<\/think>/i, '').trim(); }
+        // One chat request to one model. If a model rejects the extra reasoning setting (HTTP 400) it is retried plain.
+        async function groqChat(m, messages, o) {
+            const make = (withExtra) => JSON.stringify({
+                model: m.id, messages, temperature: 0.55,
+                max_completion_tokens: Math.min(7000, m.reasoning ? o.maxTokens + 1200 : o.maxTokens),
+                ...(o.json ? { response_format: { type: "json_object" } } : {}),
+                ...(withExtra ? (m.extra || {}) : {})
+            });
+            const send = (withExtra) => aiRequest(GROQ_CHAT_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getBuiltInKey()}` },
+                body: make(withExtra)
+            }, o.ms());
+            let r = await send(!m.noExtra);
+            if (r.status === 400 && m.extra && !m.noExtra && o.ms() > 3000) { r = await send(false); if (r.ok) m.noExtra = true; }
+            return r;
+        }
+        // Records why a model failed; returns true when the key itself is bad (no point trying other models)
+        function noteAIFailure(r, m) {
+            const st = r.status;
+            if (st === 404 || st === 403) deadModels.add(m.id);   // retired, or not allowed for this account
+            lastAIError = { kind: st === 401 ? 'auth' : st === 403 ? 'blocked' : st === 413 ? 'toolarge' : st === 429 ? 'quota' : st >= 500 ? 'server' : 'request', status: st, model: m.id };
+            return st === 401;
+        }
+
         async function askIELTSAIInner(userPrompt, systemPrompt, forceJSON, opts) {
             const started = Date.now();
             const budget = opts.budgetMs || 50000;
             const maxTokens = opts.maxTokens || 3500;
             const left = () => budget - (Date.now() - started);
             const messages = [{ role: "system", content: systemPrompt }, ...(Array.isArray(opts.history) ? opts.history : []), { role: "user", content: userPrompt }];
-            const apiKey = getBuiltInKey();
             lastAIError = null;
             let authFailed = false;
             await ensureAIModels();
@@ -1958,26 +2001,16 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                 if (deadModels.has(m.id)) continue;
                 if (authFailed || left() < 4000) break;
                 try {
-                    // reasoning models spend part of the budget "thinking", so give them extra room
-                    const payload = { model: m.id, messages, temperature: 0.55, max_completion_tokens: Math.min(7000, m.reasoning ? maxTokens + 1200 : maxTokens), ...(m.extra || {}) };
-                    if (forceJSON) payload.response_format = { type: "json_object" };
-                    const r = await aiRequest("https://api.groq.com/openai/v1/chat/completions", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
-                        body: JSON.stringify(payload)
-                    }, Math.min(opts.requestMs || 22000, left()));
+                    const r = await groqChat(m, messages, { maxTokens, json: forceJSON, ms: () => Math.min(opts.requestMs || 22000, left()) });
                     if (r.ok) {
                         const choice = r.body?.choices?.[0];
-                        const txt = choice?.message?.content;
+                        const txt = stripThink(choice?.message?.content);
                         if (forceJSON && choice?.finish_reason === 'length') { lastAIError = { kind: 'length', model: m.id }; continue; }
-                        if (txt && String(txt).trim()) return txt;
+                        if (txt) return txt;
                         lastAIError = { kind: 'empty', model: m.id };
                         continue;
                     }
-                    const st = r.status;
-                    if (st === 404) deadModels.add(m.id);
-                    lastAIError = { kind: (st === 401 || st === 403) ? 'auth' : st === 429 ? 'quota' : st >= 500 ? 'server' : 'request', status: st, model: m.id };
-                    if (st === 401 || st === 403) authFailed = true;   // a bad key fails on every model
+                    if (noteAIFailure(r, m)) authFailed = true;
                 } catch (e) {
                     lastAIError = { kind: e && e.name === 'AbortError' ? 'timeout' : 'network', model: m.id };
                 }
@@ -2004,6 +2037,36 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             finally { aiInFlight--; }
         }
 
+        // Reads photos with a vision model (Qwen): handwriting, charts, question screenshots. images = array of data URLs.
+        async function askIELTSVision(prompt, images, systemPrompt, opts = {}) {
+            aiInFlight++;
+            try {
+                const started = Date.now(), budget = opts.budgetMs || 70000;
+                const left = () => budget - (Date.now() - started);
+                lastAIError = null;
+                await ensureAIModels();
+                const cands = AI_MODELS.filter(m => m.vision && !deadModels.has(m.id));
+                if (!cands.length) { lastAIError = { kind: 'novision' }; return ""; }
+                const content = [{ type: "text", text: prompt }, ...images.slice(0, 3).map(u => ({ type: "image_url", image_url: { url: u } }))];
+                const messages = [{ role: "system", content: systemPrompt }, ...(Array.isArray(opts.history) ? opts.history : []), { role: "user", content }];
+                for (const m of cands) {
+                    if (left() < 5000) break;
+                    try {
+                        const r = await groqChat(m, messages, { maxTokens: opts.maxTokens || 1800, ms: () => Math.min(opts.requestMs || 45000, left()) });
+                        if (r.ok) {
+                            const txt = stripThink(r.body?.choices?.[0]?.message?.content);
+                            if (txt) return txt;
+                            lastAIError = { kind: 'empty', model: m.id };
+                            continue;
+                        }
+                        if (noteAIFailure(r, m)) break;
+                    } catch (e) { lastAIError = { kind: e && e.name === 'AbortError' ? 'timeout' : 'network', model: m.id }; }
+                }
+                if (!lastAIError) lastAIError = { kind: 'novision' };
+                return "";
+            } finally { aiInFlight--; }
+        }
+
         document.getElementById('btn-ai-check')?.addEventListener('click', async (e) => {
             const btn = e.currentTarget, out = document.getElementById('ai-check-result');
             btn.disabled = true; out.innerHTML = '<span class="text-slate-400">Testing...</span>';
@@ -2011,22 +2074,38 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             const show = () => { out.innerHTML = rows.join('<br>'); };
             const ok = (name, extra = '') => rows.push(`<span class="text-emerald-400">✓ ${escapeHTML(name)}</span> <span class="text-slate-500">${extra}</span>`);
             const bad = (name, extra = '') => rows.push(`<span class="text-red-400">✗ ${escapeHTML(name)}</span> <span class="text-slate-400">${extra}</span>`);
-            const why = (r) => { let msg = ""; try { msg = JSON.parse(r.body)?.error?.message || ""; } catch (x) {} return `HTTP ${r.status}${msg ? ': ' + escapeHTML(msg.slice(0, 140)) : ''}`; };
+            const why = (r) => {
+                let msg = ""; try { msg = JSON.parse(r.body)?.error?.message || ""; } catch (x) {}
+                const hint = r.status === 404 ? ' (Groq has retired this model)' : r.status === 403 ? ' (the Groq account owner must allow it at console.groq.com/settings/limits)' : '';
+                return `HTTP ${r.status}${hint}${msg ? ': ' + escapeHTML(msg.slice(0, 120)) : ''}`;
+            };
             deadModels.clear(); aiModelsPromise = null;
             await ensureAIModels(); 
             rows.push(groqModelIds ? `<span class="text-slate-400">Your key can see ${groqModelIds.length} models.</span>` : `<span class="text-amber-300">Couldn't list models (continuing with defaults).</span>`); show();
             const missing = []; let chatOk = 0, sttOk = false, ttsOk = false;
-            for (const m of AI_PREFERRED) {
+            const testList = [...AI_PREFERRED, ...AI_MODELS.filter(m => !AI_PREFERRED.includes(m))];
+            let visionOk = false, visionTried = false;
+            for (const m of testList) {
                 if (groqModelIds && !groqModelIds.includes(m.id)) { missing.push(m.id); continue; }
                 const t0 = Date.now();
                 try {
-                    const r = await aiRequest("https://api.groq.com/openai/v1/chat/completions", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getBuiltInKey()}` },
-                        body: JSON.stringify({ model: m.id, messages: [{ role: "user", content: "Reply with the single word OK." }], max_completion_tokens: m.reasoning ? 300 : 20, ...(m.extra || {}) })
-                    }, 12000);
-                    if (r.ok) { chatOk++; ok(m.id, `${((Date.now() - t0) / 1000).toFixed(1)}s`); } else bad(m.id, why(r));
+                    const r = await groqChat(m, [{ role: "user", content: "Reply with the single word OK." }], { maxTokens: 20, ms: () => 15000 });
+                    if (r.ok) { chatOk++; ok(m.id + (m.vision ? ' (also reads images)' : ''), `${((Date.now() - t0) / 1000).toFixed(1)}s`); } else bad(m.id, why(r));
                 } catch (err) { bad(m.id, err && err.name === 'AbortError' ? 'timed out' : 'network error (check your internet)'); }
+                show();
+            }
+            // image reading for the AI Tutor: show the model a picture with the word BAND 7
+            const vm = testList.find(m => m.vision && (!groqModelIds || groqModelIds.includes(m.id)));
+            if (vm) {
+                visionTried = true;
+                try {
+                    const c = document.createElement('canvas'); c.width = 360; c.height = 120;
+                    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, 360, 120); g.fillStyle = '#000'; g.font = 'bold 64px Arial, sans-serif'; g.textBaseline = 'middle'; g.fillText('BAND 7', 20, 62);
+                    const r = await groqChat(vm, [{ role: "user", content: [{ type: "text", text: "What does the image say? Answer with just the text." }, { type: "image_url", image_url: { url: c.toDataURL('image/png') } }] }], { maxTokens: 40, ms: () => 25000 });
+                    if (r.ok && /7/.test(stripThink(r.body?.choices?.[0]?.message?.content))) { visionOk = true; ok(`Image reading: ${vm.id}`); }
+                    else if (r.ok) bad(`Image reading: ${vm.id}`, 'answered, but could not read the test picture');
+                    else bad(`Image reading: ${vm.id}`, why(r));
+                } catch (err) { bad('Image reading', 'network error'); }
                 show();
             }
             // voice-to-text for Speaking (0.4 s of silence just proves the model answers)
@@ -2050,8 +2129,8 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                     else bad(`HD voice: ${ttsModel}`, why(r));
                 } catch (err) { bad('HD voice', 'network error'); }
             }
-            if (missing.length) rows.push(`<span class="text-slate-500">Not on your Groq account, so the app skips them (not needed): ${missing.map(escapeHTML).join(', ')}</span>`);
-            rows.unshift(chatOk ? `<b class="text-emerald-300">AI is ready: ${chatOk} chat model${chatOk > 1 ? 's' : ''} working${sttOk ? ', voice-to-text working' : ''}${ttsOk ? ', natural voice working' : ''}.</b>` : `<b class="text-red-300">No chat model answered. Check your internet and the Groq key.</b>`);
+            if (missing.length) rows.push(`<span class="text-slate-500">Not offered to your key, so the app skips them (not needed): ${missing.map(escapeHTML).join(', ')}</span>`);
+            rows.unshift(chatOk ? `<b class="text-emerald-300">AI is ready: ${chatOk} chat model${chatOk > 1 ? 's' : ''} working${sttOk ? ', voice-to-text working' : ''}${ttsOk ? ', natural voice working' : ''}${visionOk ? ', photo reading working' : visionTried ? ', photo reading NOT working' : ''}.</b>` : `<b class="text-red-300">No chat model answered. Check your internet and the Groq key.</b>`);
             show();
             btn.disabled = false;
         });
@@ -2099,22 +2178,69 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             document.getElementById('chat-attachment-bar')?.classList.add('hide');
         });
 
+        // Photos for the tutor: shrunk in the browser first so a big phone photo uploads fast
+        let pendingChatImages = [];   // data URLs, up to 3
+        function imageFileToDataURL(file, maxSide = 1600, quality = 0.82) {
+            return new Promise((resolve, reject) => {
+                const url = URL.createObjectURL(file);
+                const img = new Image();
+                img.onload = () => {
+                    try {
+                        let w = img.naturalWidth, h = img.naturalHeight;
+                        if (!w || !h) throw new Error('empty');
+                        const k = Math.min(1, maxSide / Math.max(w, h)); w = Math.round(w * k); h = Math.round(h * k);
+                        const c = document.createElement('canvas'); c.width = w; c.height = h;
+                        const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.drawImage(img, 0, 0, w, h);
+                        resolve(c.toDataURL('image/jpeg', quality));
+                    } catch (e) { reject(e); } finally { URL.revokeObjectURL(url); }
+                };
+                img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };
+                img.src = url;
+            });
+        }
+        function renderChatThumbs() {
+            const bar = document.getElementById('chat-image-bar'); if (!bar) return;
+            bar.innerHTML = pendingChatImages.map((u, i) => `<div class="ai-thumb"><img src="${u}" alt="Photo ${i + 1}"><button type="button" data-rmimg="${i}" aria-label="Remove photo ${i + 1}"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
+            bar.classList.toggle('hide', !pendingChatImages.length);
+            bar.querySelectorAll('[data-rmimg]').forEach(b => b.addEventListener('click', () => { pendingChatImages.splice(+b.dataset.rmimg, 1); renderChatThumbs(); }));
+        }
+        async function addChatImages(files) {
+            const list = [...files].filter(f => /^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(f.name || ''));
+            if (!list.length) { showToast("That isn't an image. Choose a JPG or PNG photo.", "error"); return; }
+            for (const f of list) {
+                if (pendingChatImages.length >= 3) { showToast("You can add up to 3 photos at a time.", "info"); break; }
+                try {
+                    let u = await imageFileToDataURL(f);
+                    if (u.length > 3500000) u = await imageFileToDataURL(f, 1000, 0.7);
+                    pendingChatImages.push(u);
+                } catch (err) { showToast("Couldn't read that photo. Try a JPG or PNG.", "error"); }
+            }
+            renderChatThumbs();
+        }
+        document.getElementById('chat-image-upload')?.addEventListener('change', async (e) => { await addChatImages(e.target.files || []); e.target.value = ""; });
+        document.getElementById('ai-input')?.addEventListener('paste', (e) => {
+            const files = [...(e.clipboardData?.files || [])].filter(f => /^image\//.test(f.type));
+            if (files.length) { e.preventDefault(); addChatImages(files); }
+        });
+
         let chatHistory = [];
         async function sendChat(customMsg) {
             const inputEl = document.getElementById('ai-input');
             const chatBox = document.getElementById('ai-chat-box');
             let msg = customMsg || inputEl?.value.trim() || "";
-            if (!msg && !pendingChatFileText) return;
+            if (!msg && !pendingChatFileText && !pendingChatImages.length) return;
             if (aiBusyGuard()) return;
-            if (!msg && pendingChatFileText) msg = "Summarize this document and give me key IELTS study points.";
+            if (!msg && pendingChatImages.length) msg = "Please read this photo. If it is IELTS work or an IELTS question, help me with it; otherwise tell me what it shows and how it could help my IELTS.";
+            else if (!msg && pendingChatFileText) msg = "Summarize this document and give me key IELTS study points.";
             if (!customMsg && inputEl) inputEl.value = "";
 
             const fileContext = pendingChatFileText ? getSmartPassageFromFullText(pendingChatFileText, 12000) : null;
             const fileLabel = pendingChatFileName;
             pendingChatFileText = null; pendingChatFileName = "";
             document.getElementById('chat-attachment-bar')?.classList.add('hide');
+            const pics = pendingChatImages; pendingChatImages = []; renderChatThumbs();
 
-            chatBox.innerHTML += `<div class="ai-msg user"><div class="ai-bub">${fileLabel ? `<div class="ai-file-tag">📎 ${escapeHTML(fileLabel)}</div><br>` : ''}${escapeHTML(msg)}</div></div>`;
+            chatBox.innerHTML += `<div class="ai-msg user"><div class="ai-bub">${pics.length ? `<div class="ai-pics">${pics.map(u => `<img src="${u}" alt="Your photo">`).join('')}</div>` : ''}${fileLabel ? `<div class="ai-file-tag">📎 ${escapeHTML(fileLabel)}</div><br>` : ''}${escapeHTML(msg)}</div></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
 
             const loadId = "ld-" + Date.now();
@@ -2123,8 +2249,11 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
 
             const fullPrompt = fileContext ? `Document Excerpt:\n"""${fileContext}"""\n\nStudent Request: ${msg}` : msg;
             const sys = "You are a friendly, expert IELTS tutor (Band 9). Give clear, practical answers formatted in Markdown. Keep answers focused; use short tables only when comparing items.";
-            const aiReply = await askIELTSAI(fullPrompt, sys, false, { history: chatHistory.slice(-6), maxTokens: 1800 });
-            if (aiReply) { chatHistory.push({ role: 'user', content: msg.slice(0, 1500) }, { role: 'assistant', content: aiReply.slice(0, 2500) }); chatHistory = chatHistory.slice(-8); }
+            const visionSys = sys + " The student attached one or more photos. First read every word in them carefully, then answer. If it is handwritten or typed IELTS writing: estimate the band for Task Response, Coherence, Vocabulary and Grammar, quote the mistakes and fix them. If it is a Task 1 chart, table or map: list the key features and give a model overview. If it is a reading, listening or grammar question: give the answer and explain why. If a word is unreadable, say so instead of guessing.";
+            const aiReply = pics.length
+                ? await askIELTSVision(fullPrompt, pics, visionSys, { history: chatHistory.slice(-6), maxTokens: 1800 })
+                : await askIELTSAI(fullPrompt, sys, false, { history: chatHistory.slice(-6), maxTokens: 1800 });
+            if (aiReply) { chatHistory.push({ role: 'user', content: (pics.length ? '[sent ' + pics.length + ' photo' + (pics.length > 1 ? 's' : '') + '] ' : '') + msg.slice(0, 1500) }, { role: 'assistant', content: aiReply.slice(0, 2500) }); chatHistory = chatHistory.slice(-8); }
             const reply = aiReply || ("⚠ " + aiProblemText() + " Please send your message again.");
             document.getElementById(loadId)?.remove();
 
