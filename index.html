@@ -35,7 +35,7 @@
         }
     </script>
 
-    <link rel="stylesheet" href="style.css?v=20261114a">
+    <link rel="stylesheet" href="style.css?v=20261114b">
 </head>
 <body class="flex flex-col antialiased relative text-slate-100 overflow-hidden">
 
@@ -123,6 +123,7 @@
                     <button type="button" data-target="speaking" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-microphone text-rose-400 w-5"></i>Speaking</button>
                     <button type="button" data-target="vocab" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-bookmark text-teal-400 w-5"></i>Vocabulary</button>
                     <button type="button" data-target="grammar" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-spell-check text-violet-400 w-5"></i>Grammar</button>
+                    <button type="button" data-target="mistakes" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-triangle-exclamation text-rose-400 w-5"></i>Mistake Notebook<span id="mk-badge" class="mk-badge hide">0</span></button>
                 </nav>
             </div>
             <div class="p-2.5 border-t border-slate-700/50 space-y-1 flex-shrink-0">
@@ -528,6 +529,17 @@
                             </div>
                         </div>
                     </details>
+                  </div>
+                </div>
+
+                <div id="view-mistakes" class="view-section hide">
+                  <div class="sx sx-m">
+                    <div class="sx-head"><div class="sx-head-ic"><i class="fa-solid fa-triangle-exclamation"></i></div><div><h2>Mistake Notebook</h2><p>Every Reading and Listening question you got wrong</p></div></div>
+                    <div id="mk-stats" class="mk-stats"></div>
+                    <div id="mk-filters" class="mk-filters"></div>
+                    <div id="mk-actions" class="sx-row"></div>
+                    <div id="mk-stage" class="qz-stage"></div>
+                    <div id="mk-list" class="mk-list"></div>
                   </div>
                 </div>
 
@@ -1006,6 +1018,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             renderNextUp();
             renderAttempts('reading', 'reading-attempts');
             renderAttempts('listening', 'listening-attempts');
+            try { updateMistakeBadge(); if (!document.getElementById('view-mistakes')?.classList.contains('hide') && !document.getElementById('mk-stage')?.innerHTML) renderMistakes(); } catch (e) {}
             ['listening', 'reading', 'writing', 'speaking'].forEach(mod => {
                 const list = userSavedTests.filter(t => t.module === mod);
                 const cEl = document.getElementById(`${mod}-saved-count`);
@@ -1126,7 +1139,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             html('writing-prompt-box', '<div class="sx-empty"><b>Pick a task to begin</b><span>You get an exam-style question, a timer and AI marking on the 4 official IELTS criteria.</span></div>');
             document.querySelectorAll('.sx-pick').forEach(b => b.classList.remove('on')); document.querySelectorAll('#view-writing .sx-meter i').forEach(m => { m.style.width = '0'; }); document.querySelectorAll('#view-writing .sx-count').forEach(c => c.classList.remove('ok'));
             html('speaking-cue-card', '<div class="sx-empty"><b>Start a full Speaking test</b><span>Press <em>New test</em> for a Part 1 interview, a Part 2 cue card and Part 3 discussion questions.</span></div>'); hide('speaking-part-tabs');
-            html('speaking-sample-box', ''); hide('speaking-result'); hide('speaking-work'); hide('writing-work'); hide('writing-bar');
+            html('speaking-sample-box', ''); try { mkMastered = {}; mkLoadedFor = ''; html('mk-list', ''); html('mk-stage', ''); hide('mk-badge'); } catch (e) {} hide('speaking-result'); hide('speaking-work'); hide('writing-work'); hide('writing-bar');
             html('writing-feedback-box', ''); hide('writing-feedback-box');
             html('listening-transcript-box', ''); hide('listening-transcript-box');
             txt('listening-score-box', ''); txt('reading-score-box', '');
@@ -3340,6 +3353,132 @@ Then a markdown table (Criterion | Band | Comment), "Strengths" (2 bullets), "Ma
         qzChips('grammar-topics', GRAMMAR_TOPICS, grammarTopic, (t) => { grammarTopic = t; });
         qzEl('btn-vocab-new')?.addEventListener('click', newVocabWords);
         qzEl('btn-grammar-new')?.addEventListener('click', newGrammarDrill);
+        // ===== Mistake Notebook: every Reading / Listening question you got wrong, with retry practice =====
+        let mkMastered = {}, mkLoadedFor = '', mkKind = 'all', mkType = 'all';
+        const MK_TYPES = { tfng: 'True / False / Not Given', mcq: 'Multiple choice', gap: 'Gap fill', match: 'Matching' };
+        const mkKeyOf = (kind, q) => kind + ':' + hashStr(String(q.q || '').toLowerCase());
+        function mkAnswerText(q, v) {
+            const t = String(v ?? '').trim();
+            if (!t) return '(no answer)';
+            if (q.type === 'mcq' && /^[A-D]$/i.test(t) && q.options) { const o = q.options[t.toUpperCase().charCodeAt(0) - 65]; return o ? `${t.toUpperCase()}. ${o}` : t; }
+            return t;
+        }
+        function collectMistakes() {
+            const out = [], seen = new Set();
+            for (const t of userSavedTests) {
+                if ((t.module !== 'reading' && t.module !== 'listening') || !Array.isArray(t.passages) || !t.userAnswers) continue;
+                let off = 0;
+                t.passages.forEach(p => {
+                    const qs = Array.isArray(p.questions) ? p.questions : [];
+                    qs.forEach((q, k) => {
+                        if (!q || !q.q || q.ans == null) return;
+                        const val = t.userAnswers[off + k];
+                        if (examIsCorrect(q, val)) return;
+                        const key = mkKeyOf(t.module, q);
+                        if (seen.has(key)) return;
+                        seen.add(key);
+                        out.push({ key, kind: t.module, where: p.title || t.title || '', date: t.gradedDateStr || '', type: q.type, q: q.q, options: q.options, ans: q.ans, alt: q.alt, yours: mkAnswerText(q, val), right: mkAnswerText(q, q.ans), exp: q.exp || '' });
+                    });
+                    off += qs.length;
+                });
+            }
+            return out;
+        }
+        const mkOpen = () => collectMistakes().filter(m => !mkMastered[m.key]);
+        function updateMistakeBadge() {
+            const b = document.getElementById('mk-badge'); if (!b) return;
+            const n = mkOpen().length;
+            b.textContent = n > 99 ? '99+' : n; b.classList.toggle('hide', n === 0);
+        }
+        async function loadMastered() {
+            const u = auth.currentUser; if (!u || mkLoadedFor === u.uid) return;
+            mkLoadedFor = u.uid; mkMastered = {};
+            try { mkMastered = JSON.parse(localStorage.getItem('IELTS_MASTERED_' + u.uid) || '{}') || {}; } catch (e) {}
+            renderMistakes();
+            try { const snap = await getDoc(doc(db, 'users', u.uid, 'notes', 'mastered')); if (snap.exists() && snap.data().keys) { mkMastered = { ...mkMastered, ...snap.data().keys }; renderMistakes(); } } catch (e) {}
+        }
+        async function saveMastered() {
+            const u = auth.currentUser; if (!u) return;
+            try { localStorage.setItem('IELTS_MASTERED_' + u.uid, JSON.stringify(mkMastered)); } catch (e) {}
+            try { await setDoc(doc(db, 'users', u.uid, 'notes', 'mastered'), { keys: mkMastered, updatedAt: Date.now() }); } catch (e) {}
+        }
+        function renderMistakes() {
+            updateMistakeBadge();
+            const all = collectMistakes(), open = all.filter(m => !mkMastered[m.key]);
+            const stats = qzEl('mk-stats'); if (!stats) return;
+            const n = (k) => open.filter(m => m.kind === k).length;
+            stats.innerHTML = `<div class="mk-stat"><b>${open.length}</b><span>To review</span></div><div class="mk-stat"><b>${n('reading')}</b><span>Reading</span></div><div class="mk-stat"><b>${n('listening')}</b><span>Listening</span></div><div class="mk-stat ok"><b>${all.length - open.length}</b><span>Mastered</span></div>`;
+            const types = [...new Set(open.map(m => m.type))];
+            const chip = (grp, val, label, cnt, on) => `<button type="button" class="qz-chip${on ? ' on' : ''}" data-mk${grp}="${val}">${label} (${cnt})</button>`;
+            qzEl('mk-filters').innerHTML = open.length ? chip('kind', 'all', 'All', open.length, mkKind === 'all') + chip('kind', 'reading', 'Reading', n('reading'), mkKind === 'reading') + chip('kind', 'listening', 'Listening', n('listening'), mkKind === 'listening')
+                + types.map(t => chip('type', t, MK_TYPES[t] || t, open.filter(m => m.type === t).length, mkType === t)).join('') + (mkType !== 'all' ? chip('type', 'all', 'Any type', open.length, false) : '') : '';
+            const shown = open.filter(m => (mkKind === 'all' || m.kind === mkKind) && (mkType === 'all' || m.type === mkType));
+            const practicable = shown.filter(m => m.type !== 'match');
+            qzEl('mk-actions').innerHTML = (practicable.length ? `<button type="button" class="sx-btn sx-btn-main" id="mk-practice"><i class="fa-solid fa-bolt"></i>Practise ${Math.min(10, practicable.length)} of these</button>` : '')
+                + (all.length - open.length ? `<button type="button" class="sx-btn sx-btn-ghost" id="mk-bring">Bring back ${all.length - open.length} mastered</button>` : '');
+            qzEl('mk-stage').innerHTML = '';
+            qzEl('mk-list').innerHTML = !all.length
+                ? `<div class="sx-paper"><div class="sx-empty"><b>No mistakes yet</b><span>Finish a Reading or Listening test. Every question you get wrong is collected here with the right answer and an explanation, so you can practise it again.</span></div></div>`
+                : !open.length ? `<div class="sx-paper"><div class="sx-empty"><b>All mistakes mastered</b><span>Great work. Take another test and new mistakes will appear here.</span></div></div>`
+                : shown.map(m => `<div class="mk-card"><div class="mk-meta"><span class="mk-kind ${m.kind}">${m.kind === 'reading' ? 'Reading' : 'Listening'}</span><span>${escapeHTML(MK_TYPES[m.type] || m.type)}</span>${m.date ? `<span>${escapeHTML(m.date)}</span>` : ''}</div>
+                    <div class="mk-q">${escapeHTML(m.q)}</div>
+                    ${m.options ? `<ol class="mk-opts" type="A">${m.options.map(o => `<li>${escapeHTML(o)}</li>`).join('')}</ol>` : ''}
+                    <div class="qz-bad">Your answer: ${escapeHTML(m.yours)}</div><div class="qz-good">Correct: ${escapeHTML(m.right)}</div>
+                    ${m.exp ? `<div class="qz-why">${escapeHTML(m.exp)}</div>` : ''}
+                    <div class="mk-btns"><button type="button" class="sx-link" data-mk-explain="${m.key}"><i class="fa-solid fa-wand-magic-sparkles"></i> Explain with AI tutor</button><button type="button" class="sx-link" data-mk-done="${m.key}"><i class="fa-solid fa-check"></i> I understand this</button></div></div>`).join('');
+        }
+        function mkRun(items) {
+            const stage = qzEl('mk-stage'); let i = 0, got = 0;
+            qzEl('mk-list').innerHTML = ''; qzEl('mk-actions').innerHTML = ''; qzEl('mk-filters').innerHTML = '';
+            const finish = () => {
+                stage.innerHTML = `<div class="qz-q" style="text-align:center"><div class="qz-score">${got} / ${items.length}</div><div>${got === items.length ? 'Perfect. All of these are now mastered.' : 'Questions you got right are marked as mastered. The rest stay in your notebook.'}</div></div><div class="sx-row"><button type="button" class="sx-btn sx-btn-main" id="mk-back">Back to my notebook</button></div>`;
+                qzEl('mk-back').addEventListener('click', renderMistakes);
+            };
+            const answer = (m, given) => {
+                const ok = examIsCorrect(m.type === 'gap' ? { type: 'gap', ans: m.ans, alt: m.alt } : { type: m.type, ans: m.ans }, given);
+                if (ok) { got++; mkMastered[m.key] = Date.now(); saveMastered(); updateMistakeBadge(); }
+                qzEl('mk-fb').innerHTML = `<div class="qz-exp"><b>${ok ? 'Correct!' : 'Not quite.'}</b> ${ok ? '' : 'Answer: ' + escapeHTML(m.right) + '. '}${escapeHTML(m.exp || '')}</div><button type="button" class="sx-btn sx-btn-main" id="mk-next" style="margin-top:.6rem">${i + 1 < items.length ? 'Next question' : 'See my score'}</button>`;
+                qzEl('mk-next').addEventListener('click', () => { i++; i < items.length ? show() : finish(); });
+            };
+            const show = () => {
+                const m = items[i];
+                const choices = m.type === 'tfng' ? ['True', 'False', 'Not Given'] : m.type === 'mcq' && m.options ? m.options.map((o, k) => String.fromCharCode(65 + k)) : null;
+                const body = choices
+                    ? `<div class="qz-opts">${choices.map((c, k) => `<button type="button" class="qz-opt" data-v="${c}">${m.type === 'mcq' ? `<b>${c}.</b> ${escapeHTML(m.options[k])}` : c}</button>`).join('')}</div>`
+                    : `<input type="text" id="mk-gap" class="sx-input" autocomplete="off" autocapitalize="off" placeholder="Type your answer"><button type="button" class="sx-btn sx-btn-main" id="mk-check" style="margin-top:.6rem">Check</button>`;
+                stage.innerHTML = `<div class="qz-prog"><i style="width:${Math.round(i / items.length * 100)}%"></i></div><p class="sx-note" style="text-align:left">Question ${i + 1} of ${items.length} &middot; ${m.kind === 'reading' ? 'Reading' : 'Listening'}</p><div class="qz-q">${escapeHTML(m.q)}</div>${body}<div id="mk-fb"></div>`;
+                if (choices) stage.querySelectorAll('.qz-opt').forEach(b => b.addEventListener('click', () => {
+                    stage.querySelectorAll('.qz-opt').forEach(x => { x.disabled = true; if (x.dataset.v.toUpperCase() === String(m.ans).toUpperCase()) x.classList.add('right'); });
+                    if (b.dataset.v.toUpperCase() !== String(m.ans).toUpperCase()) b.classList.add('wrong');
+                    answer(m, b.dataset.v);
+                }));
+                else {
+                    const inp = qzEl('mk-gap'), chk = qzEl('mk-check');
+                    const go = () => { if (!inp.value.trim() || inp.disabled) return; inp.disabled = true; chk.classList.add('hide'); answer(m, inp.value); };
+                    chk.addEventListener('click', go); inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
+                }
+            };
+            show();
+        }
+        qzEl('view-mistakes')?.addEventListener('click', (e) => {
+            const f = e.target.closest('[data-mkkind],[data-mktype]');
+            if (f) { if (f.dataset.mkkind) mkKind = f.dataset.mkkind; if (f.dataset.mktype) mkType = f.dataset.mktype; renderMistakes(); return; }
+            if (e.target.closest('#mk-practice')) {
+                const pool = mkOpen().filter(m => m.type !== 'match' && (mkKind === 'all' || m.kind === mkKind) && (mkType === 'all' || m.type === mkType));
+                mkRun(qzShuffle(pool).slice(0, 10)); return;
+            }
+            if (e.target.closest('#mk-bring')) { mkMastered = {}; saveMastered(); renderMistakes(); return; }
+            const d = e.target.closest('[data-mk-done]');
+            if (d) { mkMastered[d.dataset.mkDone] = Date.now(); saveMastered(); renderMistakes(); return; }
+            const x = e.target.closest('[data-mk-explain]');
+            if (x) {
+                const m = collectMistakes().find(v => v.key === x.dataset.mkExplain); if (!m) return;
+                document.querySelector('[data-target="ai"]')?.click();
+                sendChat(`Please explain this IELTS ${m.kind} question that I got wrong. Question: "${m.q}"${m.options ? ' Options: ' + m.options.map((o, k) => String.fromCharCode(65 + k) + '. ' + o).join(' ') : ''} My answer: ${m.yours}. Correct answer: ${m.right}. Why is the correct answer right, why was mine wrong, and what trick helps me with this question type?`);
+            }
+        });
+        document.querySelectorAll('[data-target="mistakes"]').forEach(b => b.addEventListener('click', () => { loadMastered().then(renderMistakes); renderMistakes(); }));
+
         document.querySelectorAll('[data-target="vocab"]').forEach(b => b.addEventListener('click', loadVocabBank));
 
         const countdownTimers = {};

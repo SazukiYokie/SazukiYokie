@@ -454,3 +454,23 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
 .ai-prose table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.8rem; background: rgba(15, 23, 42, 0.85); border-radius: 0.6rem; overflow-x: auto; display: block; border: 1px solid rgba(148, 163, 184, 0.22); }
 .ai-prose th { background: rgba(51, 65, 85, 0.9); color: #38bdf8; text-align: left; padding: 0.55rem 0.75rem; }
 .ai-prose td { padding: 0.5rem 0.75rem; border-top: 1px solid rgba(148, 163, 184, 0.15); }
+
+/* ---- Mistake Notebook ---- */
+.mk-badge { margin-left: auto; min-width: 1.35rem; height: 1.35rem; padding: 0 0.4rem; border-radius: 1rem; background: #e11d48; color: #fff; font-size: 0.7rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+.sx-m .sx-head-ic { background: linear-gradient(135deg, #fb7185, #e11d48); }
+.mk-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+.mk-stat { background: rgba(15,23,42,0.88); border: 1px solid rgba(148,163,184,0.22); border-radius: 0.9rem; padding: 0.7rem 0.3rem; text-align: center; }
+.mk-stat b { display: block; font-size: 1.5rem; line-height: 1.1; color: #fff; } .mk-stat span { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #94a3b8; }
+.mk-stat.ok b { color: #34d399; }
+.mk-filters { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.mk-filters .qz-chip { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
+.sx-m .qz-chip.on { border-color: #fb7185; background: rgba(251,113,133,0.18); }
+.mk-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.mk-card { background: rgba(15,23,42,0.9); border: 1px solid rgba(148,163,184,0.22); border-radius: 1rem; padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.9rem; line-height: 1.5; }
+.mk-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; font-size: 0.72rem; color: #94a3b8; }
+.mk-kind { font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.15rem 0.55rem; border-radius: 1rem; }
+.mk-kind.reading { background: rgba(52,211,153,0.16); color: #6ee7b7; } .mk-kind.listening { background: rgba(34,211,238,0.16); color: #67e8f9; }
+.mk-q { font-weight: 600; color: #f1f5f9; overflow-wrap: anywhere; }
+.mk-opts { margin: 0; padding-left: 1.4rem; color: #cbd5e1; font-size: 0.86rem; }
+.mk-btns { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; margin-top: 0.25rem; }
+.mk-btns .sx-link { margin: 0; }
