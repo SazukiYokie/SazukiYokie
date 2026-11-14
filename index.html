@@ -35,7 +35,7 @@
         }
     </script>
 
-    <link rel="stylesheet" href="style.css?v=20261114b">
+    <link rel="stylesheet" href="style.css?v=20261114c">
 </head>
 <body class="flex flex-col antialiased relative text-slate-100 overflow-hidden">
 
@@ -425,8 +425,10 @@
                     <div class="sx-seg">
                         <button type="button" id="btn-writing-task1" class="sx-pick"><b><i class="fa-solid fa-chart-column"></i>Task 1</b><span>Report on a chart · 150+ words · 20 min</span></button>
                         <button type="button" id="btn-writing-task2" class="sx-pick"><b><i class="fa-solid fa-file-pen"></i>Task 2</b><span>Essay · 250+ words · 40 min</span></button>
+                        <button type="button" id="btn-writing-full" class="sx-pick sx-pick-wide"><b><i class="fa-solid fa-stopwatch"></i>Full test</b><span>Task 1 + Task 2 · 60 minutes · overall Writing band</span></button>
                     </div>
 
+                    <div id="writing-single" class="sx-work">
                     <div id="writing-bar" class="sx-bar hide">
                         <div id="writing-timer" class="sx-timer" title="Task 1: 20 min · Task 2: 40 min">40:00</div>
                         <button type="button" id="btn-start-write" class="sx-timerbtn" title="Start the timer"><i class="fa-solid fa-play"></i>Start timer</button>
@@ -446,6 +448,30 @@
 
                     <div id="writing-feedback-box" class="hide sx-result ai-prose"></div>
                     <div id="writing-sample-box" class="hide sx-result ai-prose"></div>
+                    </div>
+                    </div>
+
+                    <div id="writing-full" class="sx-work hide">
+                        <div id="wf-intro" class="sx-work">
+                            <div id="wf-resume-box"></div>
+                            <div class="sx-paper"><div class="sx-empty"><b>Full Writing Test · 60 minutes</b><span>Task 1 (a chart report, 150+ words) and Task 2 (an essay, 250+ words) in one sitting, like the real exam. One timer for both tasks. Then AI marks each task and gives your overall Writing band. Task 2 counts twice as much as Task 1.</span></div></div>
+                            <button type="button" id="wf-begin" class="sx-btn sx-btn-main"><i class="fa-solid fa-play"></i>Begin the test</button>
+                        </div>
+                        <div id="wf-live" class="sx-work hide">
+                            <div class="sx-bar">
+                                <div id="wf-timer" class="sx-timer" title="Time left for both tasks">60:00</div>
+                                <div class="sx-count"><b id="wf-count">0 / 150 words</b><div class="sx-meter"><i></i></div></div>
+                            </div>
+                            <div class="sx-steps" style="grid-template-columns:1fr 1fr">
+                                <button type="button" data-wf="1" class="sx-step on"><b>Task 1</b><span id="wf-n1">0 words</span></button>
+                                <button type="button" data-wf="2" class="sx-step"><b>Task 2</b><span id="wf-n2">0 words</span></button>
+                            </div>
+                            <div id="wf-prompt" class="sx-paper"></div>
+                            <textarea id="wf-area" class="sx-area" placeholder="Type your answer here." spellcheck="false"></textarea>
+                            <button type="button" id="wf-submit" class="sx-btn sx-btn-main"><i class="fa-solid fa-paper-plane"></i>Submit both tasks for marking</button>
+                            <p class="sx-note">Your answers are kept on this phone while you write, so a refresh will not lose them.</p>
+                        </div>
+                        <div id="wf-result" class="hide sx-result ai-prose"></div>
                     </div>
 
                     <details class="sx-fold">
@@ -1139,7 +1165,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             html('writing-prompt-box', '<div class="sx-empty"><b>Pick a task to begin</b><span>You get an exam-style question, a timer and AI marking on the 4 official IELTS criteria.</span></div>');
             document.querySelectorAll('.sx-pick').forEach(b => b.classList.remove('on')); document.querySelectorAll('#view-writing .sx-meter i').forEach(m => { m.style.width = '0'; }); document.querySelectorAll('#view-writing .sx-count').forEach(c => c.classList.remove('ok'));
             html('speaking-cue-card', '<div class="sx-empty"><b>Start a full Speaking test</b><span>Press <em>New test</em> for a Part 1 interview, a Part 2 cue card and Part 3 discussion questions.</span></div>'); hide('speaking-part-tabs');
-            html('speaking-sample-box', ''); try { mkMastered = {}; mkLoadedFor = ''; html('mk-list', ''); html('mk-stage', ''); hide('mk-badge'); } catch (e) {} hide('speaking-result'); hide('speaking-work'); hide('writing-work'); hide('writing-bar');
+            html('speaking-sample-box', ''); try { wf = null; stopCountdown('wf-timer'); wfEl('writing-full')?.classList.add('hide'); wfEl('writing-single')?.classList.remove('hide'); wfEl('btn-writing-full')?.classList.remove('on'); } catch (e) {} try { mkMastered = {}; mkLoadedFor = ''; html('mk-list', ''); html('mk-stage', ''); hide('mk-badge'); } catch (e) {} hide('speaking-result'); hide('speaking-work'); hide('writing-work'); hide('writing-bar');
             html('writing-feedback-box', ''); hide('writing-feedback-box');
             html('listening-transcript-box', ''); hide('listening-transcript-box');
             txt('listening-score-box', ''); txt('reading-score-box', '');
@@ -2708,18 +2734,43 @@ Return ONLY valid JSON in this shape:
             b.innerHTML = on ? '<i class="fa-solid fa-rotate-left"></i>Reset' : '<i class="fa-solid fa-play"></i>Start timer';
         }
 
+        function writingPromptHTML(testObj) {
+            const task = testObj.task || 2;
+            if (testObj.chart) return `<span class="sx-tag">Writing Task 1 · Report</span><p class="sx-hint">You should spend about 20 minutes on this task.</p><p>${escapeHTML(testObj.instructionText || '')}</p><div class="sx-chart">${chartHTML(testObj.chart)}</div><p>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p><p><b>Write at least 150 words.</b></p>`;
+            if (testObj.task === 2 && testObj.topicText) return `<span class="sx-tag">Writing Task 2 · ${escapeHTML(testObj.essayType || 'Essay')}</span><p class="sx-hint">You should spend about 40 minutes on this task.</p><p>Write about the following topic:</p><div class="sx-cue">${escapeHTML(testObj.topicText)}<br><br><b>${escapeHTML(testObj.questionText || '')}</b></div><p>Give reasons for your answer and include any relevant examples from your own knowledge or experience.</p><p><b>Write at least 250 words.</b></p>`;
+            return `<span class="sx-tag">Writing Task ${task}</span><div>${formatAIMarkdown(testObj.promptText || testObj.title || "")}</div>`;
+        }
+        // Marks one essay against the 4 official criteria. Returns { reply, band } (reply is "" when the AI is unavailable, band is null when no score was found)
+        async function markWritingEssay(test, essay, budgetMs = 45000) {
+            const task = test.task || 2;
+            const min = writingWordTarget(test);
+            const words = essay.split(/\s+/).length;
+            const criteria = task === 1 ? "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy" : "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy";
+            const reply = await askIELTSAI(`You are a strict, fair IELTS Writing examiner. Mark this Academic Writing Task ${task} response. The candidate wrote ${words} words (minimum ${min}${words < min ? ", so the response is UNDER LENGTH and Task " + (task === 1 ? "Achievement" : "Response") + " must be penalised" : ""}).
+
+Task:
+${test.promptText}
+
+Candidate response:
+${essay}
+
+Mark each criterion (${criteria}) from 1 to 9 in half-bands, then the overall band (the average, rounded to the nearest 0.5). Do not inflate scores.
+Format exactly:
+**Overall Band Score: X.X**
+Then a markdown table with columns Criterion | Band | Comment, then "Main problems" (3 bullet points with quoted examples from the response), "Corrections" (3 sentences rewritten), and "How to reach the next band" (3 bullets).`, "You are a certified IELTS Writing examiner.", false, { maxTokens: 1800, budgetMs });
+            if (!reply) return { reply: '', band: null };
+            const match = reply.match(/Overall\s+Band(?:\s+Score)?\s*[:\-]?\s*\**\s*([1-9](?:\.[05])?)/i) || reply.match(/Band(?:\s+Score)?\s*[:\-]?\s*\**\s*([4-9](?:\.[05])?)/i);
+            return { reply, band: match ? parseFloat(match[1]) : null };
+        }
+
         function renderWritingTest(testObj) {
             if (!testObj) return;
+            if (testObj.mode === 'full') { wfShowSaved(testObj); return; }
+            wfSwitch(false);
             activeWritingTest = testObj;
             const task = testObj.task || 2;
             const box = document.getElementById('writing-prompt-box');
-            if (testObj.chart) {
-                box.innerHTML = `<span class="sx-tag">Writing Task 1 · Report</span><p class="sx-hint">You should spend about 20 minutes on this task.</p><p>${escapeHTML(testObj.instructionText || '')}</p><div class="sx-chart">${chartHTML(testObj.chart)}</div><p>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p><p><b>Write at least 150 words.</b></p>`;
-            } else if (testObj.task === 2 && testObj.topicText) {
-                box.innerHTML = `<span class="sx-tag">Writing Task 2 · ${escapeHTML(testObj.essayType || 'Essay')}</span><p class="sx-hint">You should spend about 40 minutes on this task.</p><p>Write about the following topic:</p><div class="sx-cue">${escapeHTML(testObj.topicText)}<br><br><b>${escapeHTML(testObj.questionText || '')}</b></div><p>Give reasons for your answer and include any relevant examples from your own knowledge or experience.</p><p><b>Write at least 250 words.</b></p>`;
-            } else {
-                box.innerHTML = `<span class="sx-tag">Writing Task ${task}</span><div>${formatAIMarkdown(testObj.promptText || testObj.title || "")}</div>`;
-            }
+            box.innerHTML = writingPromptHTML(testObj);
             document.getElementById('btn-writing-task1')?.classList.toggle('on', task === 1);
             document.getElementById('btn-writing-task2')?.classList.toggle('on', task !== 1);
             document.getElementById('writing-bar')?.classList.remove('hide');
@@ -2765,6 +2816,8 @@ Return JSON only: {"topic":"the introductory statement","question":"the instruct
 
         async function generateWriting(task, btn) {
             if (!btn) return;
+            if (wf && wf.running && !(await askConfirm('Leave the full test?', 'Your timer and answers for this test will be lost.', 'Leave'))) return;
+            if (wf) { stopCountdown('wf-timer'); wfClearDraft(); wf = null; }
             if (writingArea?.value.trim() && !activeWritingTest?.feedbackMarkdown && !activeWritingTest?.id && !confirm("Your current essay isn't saved or graded. Start a new task anyway?")) return;
             const orig = btn.innerHTML;
             btn.disabled = true;
@@ -2777,6 +2830,136 @@ Return JSON only: {"topic":"the introductory statement","question":"the instruct
                 renderWritingTest(t);
             } finally { btn.disabled = false; btn.innerHTML = orig; }
         }
+
+        // ===== Full Writing Test: Task 1 + Task 2 in one 60-minute sitting, overall band = (Task 1 + 2 x Task 2) / 3 =====
+        let wf = null;   // { t1, t2, texts: {1,2}, tab, running, startedAt }
+        const WF_SECONDS = 3600;
+        const wfEl = (id) => document.getElementById(id);
+        const wfDraftKey = () => 'IELTS_WF_' + (auth.currentUser?.uid || 'x');
+        const wfWords = (t) => String(t || '').trim() ? String(t).trim().split(/\s+/).length : 0;
+        function wfSwitch(full) {
+            wfEl('writing-single')?.classList.toggle('hide', !!full);
+            wfEl('writing-full')?.classList.toggle('hide', !full);
+            wfEl('btn-writing-full')?.classList.toggle('on', !!full);
+            if (full) { wfEl('btn-writing-task1')?.classList.remove('on'); wfEl('btn-writing-task2')?.classList.remove('on'); }
+        }
+        function wfSaveDraft() {
+            if (!wf || !wf.running) return;
+            try { localStorage.setItem(wfDraftKey(), JSON.stringify({ t1: wf.t1, t2: wf.t2, texts: wf.texts, tab: wf.tab, startedAt: wf.startedAt })); } catch (e) {}
+        }
+        const wfClearDraft = () => { try { localStorage.removeItem(wfDraftKey()); } catch (e) {} };
+        function wfReadDraft() { try { const d = JSON.parse(localStorage.getItem(wfDraftKey()) || 'null'); return d && d.t1 && d.t2 && d.texts ? d : null; } catch (e) { return null; } }
+        function wfShowIntro() {
+            wfSwitch(true);
+            wfEl('wf-intro').classList.remove('hide'); wfEl('wf-live').classList.add('hide'); wfEl('wf-result').classList.add('hide');
+            const d = wfReadDraft(), box = wfEl('wf-resume-box');
+            const left = d ? Math.max(0, WF_SECONDS - Math.floor((Date.now() - d.startedAt) / 1000)) : 0;
+            box.innerHTML = d ? `<div class="sx-paper wf-resume"><b>You have a test in progress</b><span>${left > 0 ? `${Math.ceil(left / 60)} minutes left. Your answers were kept.` : 'Time ran out while you were away. Your answers were kept.'}</span><button type="button" id="wf-resume" class="sx-btn sx-btn-main">${left > 0 ? 'Resume the test' : 'Submit it for marking'}</button></div>` : '';
+        }
+        function wfRenderTab() {
+            if (!wf) return;
+            const t = wf.tab === 1 ? wf.t1 : wf.t2;
+            wfEl('wf-prompt').innerHTML = writingPromptHTML(t);
+            wfEl('wf-area').value = wf.texts[wf.tab] || '';
+            document.querySelectorAll('[data-wf]').forEach(b => b.classList.toggle('on', Number(b.dataset.wf) === wf.tab));
+            wfCount();
+        }
+        function wfCount() {
+            if (!wf) return;
+            const w = wfWords(wfEl('wf-area').value); wf.texts[wf.tab] = wfEl('wf-area').value;
+            const min = wf.tab === 1 ? 150 : 250;
+            wfEl('wf-count').textContent = `${w} / ${min} words`;
+            const box = wfEl('wf-count').closest('.sx-count');
+            box.classList.toggle('ok', w >= min); const m = box.querySelector('.sx-meter i'); if (m) m.style.width = Math.min(100, Math.round(w / min * 100)) + '%';
+            wfEl('wf-n1').textContent = `${wfWords(wf.texts[1])} words`; wfEl('wf-n2').textContent = `${wfWords(wf.texts[2])} words`;
+        }
+        function wfGo(d) {
+            wfSwitch(true);
+            wf = d; wf.running = true;
+            wfEl('wf-intro').classList.add('hide'); wfEl('wf-result').classList.add('hide'); wfEl('wf-live').classList.remove('hide');
+            wfRenderTab();
+            const left = Math.max(1, WF_SECONDS - Math.floor((Date.now() - wf.startedAt) / 1000));
+            startCountdown('wf-timer', left, () => { showToast("⏱ 60 minutes are up. Submitting your answers for marking.", "info"); wfSubmit(true); });
+            wfSaveDraft();
+        }
+        async function wfBegin(btn) {
+            btn.disabled = true; const orig = btn.innerHTML; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>Preparing your test...`;
+            try {
+                const t1 = newTask1();
+                const t2 = (!aiBusyGuard() ? await newTask2FromAI() : null) || newTask2FromBank();
+                wfGo({ t1, t2, texts: { 1: '', 2: '' }, tab: 1, startedAt: Date.now() });
+            } finally { btn.disabled = false; btn.innerHTML = orig; }
+        }
+        async function wfSubmit(auto) {
+            if (!wf || !wf.running || wf.submitting) return;
+            wf.texts[wf.tab] = wfEl('wf-area').value;
+            if (!wfWords(wf.texts[1]) && !wfWords(wf.texts[2])) { if (auto) { wfClearDraft(); stopCountdown('wf-timer'); wf = null; wfShowIntro(); } else showToast("Write at least one task before submitting.", "error"); return; }
+            if (!auto) {
+                const empty = [1, 2].filter(n => !wfWords(wf.texts[n]));
+                const msg = empty.length ? `Task ${empty[0]} is empty and will score Band 0.` : 'You can still use the time you have left to improve your answers.';
+                if (!(await askConfirm('Submit both tasks now?', msg, 'Submit'))) return;
+            }
+            wf.submitting = true; wf.running = false; stopCountdown('wf-timer');
+            await wfMark();
+        }
+        async function wfMark() {
+            const box = wfEl('wf-result');
+            wfEl('wf-live').classList.add('hide'); box.classList.remove('hide');
+            const res = {};
+            for (const n of [1, 2]) {
+                const text = String(wf.texts[n] || '').trim(), t = n === 1 ? wf.t1 : wf.t2;
+                if (!text) { res[n] = { reply: '', band: 0, blank: true }; continue; }
+                box.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Marking Task ${n} of 2 against the 4 official IELTS criteria...</span>`;
+                let r = await markWritingEssay(t, text, 50000);
+                if (r.reply && r.band == null) r = await markWritingEssay(t, text, 50000);
+                if (!r.reply || r.band == null) {
+                    wf.submitting = false; wf.running = false;
+                    box.innerHTML = (r.reply ? `<p class="text-xs text-amber-300">The AI did not give a band score for Task ${n}.</p>` : aiFailHTML()) + `<p class="sx-note">Your answers are safe. Try marking again in a moment.</p><button type="button" id="wf-retry" class="sx-btn sx-btn-main">Try marking again</button>`;
+                    return;
+                }
+                res[n] = r;
+            }
+            const b1 = res[1].band, b2 = res[2].band;
+            const overall = Math.round(((b1 + 2 * b2) / 3) * 2) / 2;
+            const today = new Date().toISOString().split('T')[0];
+            const mk = (t, n) => ({ ...t, essayText: wf.texts[n], feedbackMarkdown: res[n].reply, band: res[n].band, blank: !!res[n].blank });
+            const test = { module: 'writing', mode: 'full', task: 0, title: `Full Writing Test (${today})`, promptText: 'Full Writing Test: Task 1 and Task 2', tasks: [mk(wf.t1, 1), mk(wf.t2, 2)], band: overall,
+                scoreLabel: `Band ${overall.toFixed(1)} (T1 ${b1.toFixed(1)} · T2 ${b2.toFixed(1)})`, feedbackMarkdown: `**Overall Writing Band: ${overall.toFixed(1)}**`, gradedDateStr: today };
+            wfClearDraft();
+            const saved = await saveTestToAccount(test);
+            await recordResult({ module: 'writing', band: overall, title: test.title, sig: 'wf:' + hashStr(wf.texts[1] + '|' + wf.texts[2]) });
+            wf = null;
+            wfShowSaved(saved || test);
+            showToast(`✓ Full Writing Test marked & saved: Band ${overall.toFixed(1)} (AI estimate)`, "success");
+        }
+        function wfShowSaved(t) {
+            wfSwitch(true);
+            activeWritingTest = null;
+            wfEl('wf-intro').classList.add('hide'); wfEl('wf-live').classList.add('hide');
+            const box = wfEl('wf-result'); box.classList.remove('hide');
+            const [a, b] = t.tasks || [];
+            const part = (x, n, w) => x ? `<div class="wf-part"><span>Task ${n}${w ? ' <em>counts ×2</em>' : ''}</span><b>${x.blank ? '0.0' : Number(x.band).toFixed(1)}</b><small>${wfWords(x.essayText)} words${x.blank ? ' · no answer' : ''}</small></div>` : '';
+            const fold = (x, n) => x && !x.blank ? `<details class="sx-fold" ${n === 2 ? 'open' : ''}><summary>Task ${n} feedback · Band ${Number(x.band).toFixed(1)}</summary><div class="sx-fold-body ai-prose">${formatAIMarkdown(x.feedbackMarkdown || '')}</div></details>` : '';
+            box.innerHTML = `<div class="sx-fb-head"><div class="sx-band"><b>${Number(t.band).toFixed(1)}</b><span>Overall</span></div><div><h3>Full Writing Test</h3><p>(Task 1 + 2 × Task 2) ÷ 3 · AI estimate, not an official score</p></div></div>
+                <div class="wf-parts">${part(a, 1, false)}${part(b, 2, true)}</div>${fold(a, 1)}${fold(b, 2)}
+                <button type="button" id="wf-again" class="sx-btn sx-btn-main" style="margin-top:.8rem"><i class="fa-solid fa-rotate-right"></i>Take a new full test</button>`;
+            document.getElementById('btn-writing-full')?.classList.add('on');
+        }
+        wfEl('btn-writing-full')?.addEventListener('click', async () => {
+            if (wf && wf.running && !wfEl('writing-full').classList.contains('hide')) return;
+            if (wfEl('writing-full').classList.contains('hide') && writingArea?.value.trim() && !activeWritingTest?.feedbackMarkdown && !activeWritingTest?.id && !(await askConfirm('Leave this answer?', "Your current essay isn't saved or marked.", 'Leave'))) return;
+            wfShowIntro();
+        });
+        wfEl('writing-full')?.addEventListener('click', (e) => {
+            if (e.target.closest('#wf-begin')) { wfBegin(e.target.closest('#wf-begin')); return; }
+            if (e.target.closest('#wf-resume')) { const d = wfReadDraft(); if (!d) return; wfGo(d); if (Date.now() - d.startedAt >= WF_SECONDS * 1000) wfSubmit(true); return; }
+            if (e.target.closest('#wf-submit')) { wfSubmit(false); return; }
+            if (e.target.closest('#wf-again')) { wfShowIntro(); return; }
+            if (e.target.closest('#wf-retry')) { if (wf) { wf.submitting = true; wfMark(); } return; }
+            const tab = e.target.closest('[data-wf]');
+            if (tab && wf && wf.running) { wf.texts[wf.tab] = wfEl('wf-area').value; wf.tab = Number(tab.dataset.wf); wfRenderTab(); wfSaveDraft(); }
+        });
+        wfEl('wf-area')?.addEventListener('input', () => { wfCount(); wfSaveDraft(); });
         document.getElementById('btn-writing-task1')?.addEventListener('click', (e) => generateWriting(1, e.currentTarget));
         document.getElementById('btn-writing-task2')?.addEventListener('click', (e) => generateWriting(2, e.currentTarget));
 
@@ -2786,9 +2969,12 @@ Return JSON only: {"topic":"the introductory statement","question":"the instruct
             if (saved) { activeWritingTest = saved; showToast("💾 Writing test saved!", "success"); }
         });
 
-        document.getElementById('writing-test-selector')?.addEventListener('change', (e) => {
+        document.getElementById('writing-test-selector')?.addEventListener('change', async (e) => {
             const found = userSavedTests.find(t => t.id === e.target.value);
-            if (found) renderWritingTest(found);
+            if (!found) return;
+            if (wf && wf.running && !(await askConfirm('Leave the full test?', 'Your timer and answers for this test will be lost.', 'Leave'))) { e.target.value = ''; return; }
+            if (wf) { stopCountdown('wf-timer'); wfClearDraft(); wf = null; }
+            renderWritingTest(found);
         });
         document.getElementById('btn-delete-writing-test')?.addEventListener('click', async () => {
             const sel = document.getElementById('writing-test-selector');
@@ -2821,31 +3007,15 @@ After the answer add "Why this is Band 8" with 4 short bullet points (structure,
             if (!essay) return showToast("Write your response first!", "error");
             if (!activeWritingTest) activeWritingTest = { module: 'writing', task: 2, title: 'Writing Task 2', promptText: 'IELTS Writing Task 2 (topic not recorded)' };
             if (aiBusyGuard()) return;
-            const task = activeWritingTest.task || 2;
-            const min = writingWordTarget(activeWritingTest);
             const fb = document.getElementById('writing-feedback-box');
             showResultBox(fb); fb.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Marking against the 4 official IELTS Writing criteria...</span>`;
-            const words = essay.split(/\s+/).length;
-            const criteria = task === 1 ? "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy" : "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy";
-            const reply = await askIELTSAI(`You are a strict, fair IELTS Writing examiner. Mark this Academic Writing Task ${task} response. The candidate wrote ${words} words (minimum ${min}${words < min ? ", so the response is UNDER LENGTH and Task " + (task === 1 ? "Achievement" : "Response") + " must be penalised" : ""}).
-
-Task:
-${activeWritingTest.promptText}
-
-Candidate response:
-${essay}
-
-Mark each criterion (${criteria}) from 1 to 9 in half-bands, then the overall band (the average, rounded to the nearest 0.5). Do not inflate scores.
-Format exactly:
-**Overall Band Score: X.X**
-Then a markdown table with columns Criterion | Band | Comment, then "Main problems" (3 bullet points with quoted examples from the response), "Corrections" (3 sentences rewritten), and "How to reach the next band" (3 bullets).`, "You are a certified IELTS Writing examiner.", false, { maxTokens: 1800, budgetMs: 45000 });
+            const { reply, band: gotBand } = await markWritingEssay(activeWritingTest, essay);
             if (!reply) { fb.innerHTML = aiFailHTML(); return; }
-            const match = reply.match(/Overall\s+Band(?:\s+Score)?\s*[:\-]?\s*\**\s*([1-9](?:\.[05])?)/i) || reply.match(/Band(?:\s+Score)?\s*[:\-]?\s*\**\s*([4-9](?:\.[05])?)/i);
-            if (!match) {
+            if (gotBand == null) {
                 fb.innerHTML = formatAIMarkdown(reply) + `<p class="text-xs text-amber-300 mt-3">⚠ The AI didn't include a band score, so nothing was saved. Tap Grade again.</p>`;
                 return;
             }
-            const band = parseFloat(match[1]);
+            const band = gotBand;
             activeWritingTest = { ...activeWritingTest, essayText: essay, feedbackMarkdown: reply, band, scoreLabel: `Band ${band.toFixed(1)}`, gradedDateStr: new Date().toISOString().split('T')[0] };
             const savedW = await saveTestToAccount(activeWritingTest);
             if (savedW) activeWritingTest = savedW;

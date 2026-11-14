@@ -474,3 +474,12 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
 .mk-opts { margin: 0; padding-left: 1.4rem; color: #cbd5e1; font-size: 0.86rem; }
 .mk-btns { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; margin-top: 0.25rem; }
 .mk-btns .sx-link { margin: 0; }
+
+/* ---- Full Writing Test ---- */
+.sx-pick-wide { grid-column: 1 / -1; }
+.wf-resume { display: flex; flex-direction: column; gap: 0.4rem; align-items: stretch; border: 2px solid #f59e0b; }
+.wf-resume b { color: #0f172a; } .wf-resume span { color: #475569; font-size: 0.88rem; }
+.wf-parts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 0.7rem; }
+.wf-part { background: rgba(30,41,59,0.9); border: 1px solid rgba(148,163,184,0.25); border-radius: 0.9rem; padding: 0.7rem; text-align: center; display: flex; flex-direction: column; gap: 0.1rem; }
+.wf-part span { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #94a3b8; } .wf-part em { color: #fbbf24; font-style: normal; text-transform: none; letter-spacing: 0; }
+.wf-part b { font-size: 1.7rem; color: #fff; line-height: 1.15; } .wf-part small { color: #94a3b8; font-size: 0.74rem; }
