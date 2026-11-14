@@ -266,6 +266,16 @@
         .sx-tip { display: flex; gap: 0.65rem; align-items: flex-start; }
         .sx-tip em { flex: none; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: #334155; color: #fbbf24; font-style: normal; font-weight: 800; font-size: 0.78rem; display: flex; align-items: center; justify-content: center; }
         .sx-sel { flex: 1; min-width: 0; background: #1e293b; border: 1px solid #475569; color: #fff; border-radius: 0.6rem; padding: 0.65rem 0.7rem; font-size: 0.9rem; font-family: inherit; }
+        .sx-work { display: flex; flex-direction: column; gap: 0.9rem; }
+        .sx-empty { display: flex; flex-direction: column; gap: 0.3rem; text-align: center; padding: 0.7rem 0.4rem; }
+        .sx-empty b { font-size: 1.05rem; color: #0f172a; } .sx-empty span { color: #64748b; font-size: 0.9rem; line-height: 1.5; }
+        .sx-timerbtn { height: 2.5rem; padding: 0 0.85rem; border-radius: 0.6rem; border: 1px solid rgba(148,163,184,0.3); background: #1e293b; color: #e2e8f0; font-weight: 700; font-size: 0.82rem; font-family: inherit; cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+        .sx-timerbtn.on { background: #7f1d1d; border-color: #b91c1c; color: #fecaca; }
+        .sx-fb-head { display: flex; align-items: center; gap: 0.8rem; padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(148,163,184,0.2); }
+        .sx-result .sx-fb-head h3 { color: #fff; } .sx-fb-head h3 { margin: 0; font-size: 1rem; font-weight: 800; color: #fff; } .sx-fb-head p { margin: 0.15rem 0 0; font-size: 0.75rem; color: #94a3b8; }
+        .sx-band { width: 3.7rem; height: 3.7rem; border-radius: 0.95rem; background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none; }
+        .sx-band b { font-size: 1.45rem; line-height: 1; } .sx-band span { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.85; margin-top: 0.15rem; }
+        @media (min-width: 900px) { .sx-w .sx-area { min-height: 22rem; } .sx-s .sx-area { min-height: 9rem; } }
         .sx-result { background: rgba(15,23,42,0.88); border: 1px solid rgba(167,139,250,0.4); border-radius: 1rem; padding: 1rem; }
         .sx-result-h { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #c4b5fd; margin: 0 0 0.6rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(148,163,184,0.2); }
         .sx-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
@@ -872,24 +882,26 @@
                         <button type="button" id="btn-writing-task2" class="sx-pick"><b><i class="fa-solid fa-file-pen"></i>Task 2</b><span>Essay · 250+ words · 40 min</span></button>
                     </div>
 
-                    <div class="sx-bar">
+                    <div id="writing-bar" class="sx-bar hide">
                         <div id="writing-timer" class="sx-timer" title="Task 1: 20 min · Task 2: 40 min">40:00</div>
-                        <button type="button" id="btn-start-write" class="sx-iconbtn" title="Start the timer" aria-label="Start the timer"><i class="fa-solid fa-play"></i></button>
-                        <div class="sx-count"><b id="word-count">0 words · minimum 250</b><div class="sx-meter"><i></i></div></div>
+                        <button type="button" id="btn-start-write" class="sx-timerbtn" title="Start the timer"><i class="fa-solid fa-play"></i>Start timer</button>
+                        <div class="sx-count"><b id="word-count">0 / 250 words</b><div class="sx-meter"><i></i></div></div>
                     </div>
 
-                    <div id="writing-prompt-box" class="sx-paper">Choose <b>Task 1</b> or <b>Task 2</b> above to get an exam-style question.</div>
+                    <div id="writing-prompt-box" class="sx-paper"><div class="sx-empty"><b>Pick a task to begin</b><span>You get an exam-style question, a timer and AI marking on the 4 official IELTS criteria.</span></div></div>
 
+                    <div id="writing-work" class="sx-work hide">
                     <textarea id="writing-area" class="sx-area" placeholder="Type your answer here. Plan first: introduction, 2-3 body paragraphs, conclusion." spellcheck="false"></textarea>
 
                     <button type="button" id="btn-ai-grade-essay" class="sx-btn sx-btn-main"><i class="fa-solid fa-wand-magic-sparkles"></i>Mark my writing &amp; save score</button>
                     <div class="sx-row">
-                        <button type="button" id="btn-ai-writing-sample" class="sx-btn sx-btn-ghost"><i class="fa-solid fa-lightbulb" style="color:#fbbf24"></i>Band 8 model answer</button>
-                        <button type="button" id="btn-save-writing" class="sx-btn sx-btn-ghost"><i class="fa-solid fa-floppy-disk"></i>Save test</button>
+                        <button type="button" id="btn-ai-writing-sample" class="sx-btn sx-btn-ghost"><i class="fa-solid fa-lightbulb" style="color:#fbbf24"></i>Model answer</button>
+                        <button type="button" id="btn-save-writing" class="sx-btn sx-btn-ghost"><i class="fa-solid fa-floppy-disk"></i>Save draft</button>
                     </div>
 
                     <div id="writing-feedback-box" class="hide sx-result ai-prose"></div>
                     <div id="writing-sample-box" class="hide sx-result ai-prose"></div>
+                    </div>
 
                     <details class="sx-fold">
                         <summary><i class="fa-solid fa-lightbulb" style="color:#fbbf24"></i>Examiner tips</summary>
@@ -925,8 +937,9 @@
                         <button type="button" data-part="3" class="speak-part-btn sx-step"><b>Part 3</b><span>Discussion</span></button>
                     </div>
 
-                    <div id="speaking-cue-card" class="sx-paper">Press <b>New test</b> to get a full IELTS Speaking test: a Part 1 interview, a Part 2 cue card and Part 3 discussion questions.</div>
+                    <div id="speaking-cue-card" class="sx-paper"><div class="sx-empty"><b>Start a full Speaking test</b><span>Press <em>New test</em> for a Part 1 interview, a Part 2 cue card and Part 3 discussion questions.</span></div></div>
 
+                    <div id="speaking-work" class="sx-work hide">
                     <div class="sx-row">
                         <button type="button" id="btn-speak-aloud" class="sx-btn sx-btn-ghost"><i class="fa-solid fa-volume-high"></i>Hear examiner</button>
                         <button type="button" id="btn-speak-prep" class="hide sx-btn sx-btn-ghost"><i class="fa-solid fa-stopwatch"></i>1-min prep</button>
@@ -947,11 +960,11 @@
                     <button type="button" id="btn-grade-speaking" class="sx-btn sx-btn-main"><i class="fa-solid fa-wand-magic-sparkles"></i>Mark my speaking &amp; save score</button>
                     <div class="sx-row">
                         <button type="button" id="btn-ai-speaking-sample" class="sx-btn sx-btn-ghost"><i class="fa-solid fa-lightbulb" style="color:#fbbf24"></i>Model answer</button>
-                        <button type="button" id="btn-save-speaking" class="sx-btn sx-btn-ghost"><i class="fa-solid fa-floppy-disk"></i>Save test</button>
+                        <button type="button" id="btn-save-speaking" class="sx-btn sx-btn-ghost"><i class="fa-solid fa-floppy-disk"></i>Save draft</button>
                     </div>
 
-                    <div class="sx-result"><h3 class="sx-result-h">Examiner feedback &amp; model answer</h3>
-                        <div id="speaking-sample-box" class="ai-prose">Your feedback and the model answer will appear here.</div></div>
+                    <div id="speaking-result" class="hide sx-result"><div id="speaking-sample-box" class="ai-prose"></div></div>
+                    </div>
 
                     <details class="sx-fold">
                         <summary><i class="fa-solid fa-lightbulb" style="color:#fbbf24"></i>Examiner tips</summary>
@@ -1563,13 +1576,13 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
              'ai-input']
                 .forEach(id => val(id, ''));
             val('set-band', '7.5');
-            txt('word-count', '0 words · minimum 250'); txt('speaking-timer', '00:00'); txt('writing-timer', '40:00');
+            txt('word-count', '0 / 250 words'); txt('speaking-timer', '00:00'); txt('writing-timer', '40:00');
             html('leaderboard-body', '');
             html('ai-chat-box', ''); chatHistory = [];
-            html('writing-prompt-box', 'Choose <b>Task 1</b> or <b>Task 2</b> above to get an exam-style question.');
+            html('writing-prompt-box', '<div class="sx-empty"><b>Pick a task to begin</b><span>You get an exam-style question, a timer and AI marking on the 4 official IELTS criteria.</span></div>');
             document.querySelectorAll('.sx-pick').forEach(b => b.classList.remove('on')); document.querySelectorAll('#view-writing .sx-meter i').forEach(m => { m.style.width = '0'; }); document.querySelectorAll('#view-writing .sx-count').forEach(c => c.classList.remove('ok'));
-            html('speaking-cue-card', 'Press <b>New test</b> to get a full IELTS Speaking test.'); hide('speaking-part-tabs');
-            html('speaking-sample-box', 'Your feedback and the model answer will appear here.');
+            html('speaking-cue-card', '<div class="sx-empty"><b>Start a full Speaking test</b><span>Press <em>New test</em> for a Part 1 interview, a Part 2 cue card and Part 3 discussion questions.</span></div>'); hide('speaking-part-tabs');
+            html('speaking-sample-box', ''); hide('speaking-result'); hide('speaking-work'); hide('writing-work'); hide('writing-bar');
             html('writing-feedback-box', ''); hide('writing-feedback-box');
             html('listening-transcript-box', ''); hide('listening-transcript-box');
             txt('listening-score-box', ''); txt('reading-score-box', '');
@@ -3106,13 +3119,19 @@ Return ONLY valid JSON in this shape:
             return title + svg + legend;
         }
 
+        // Examiner feedback card: a big band badge, then the written feedback
+        function feedbackCardHTML(title, band, md) {
+            const badge = band ? `<div class="sx-band"><b>${Number(band).toFixed(1)}</b><span>Band</span></div>` : '';
+            return `<div class="sx-fb-head">${badge}<div><h3>${escapeHTML(title)}</h3><p>AI estimate, not an official IELTS score</p></div></div>${formatAIMarkdown(md)}`;
+        }
+        function showResultBox(el) { el.classList.remove('hide'); setTimeout(() => { try { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {} }, 60); }
         function writingWordTarget(t) { return (t?.task === 1) ? 150 : 250; }
         function updateWordCount() {
             const el = document.getElementById('word-count');
             if (!el || !writingArea) return;
             const words = writingArea.value.trim() ? writingArea.value.trim().split(/\s+/).length : 0;
             const min = writingWordTarget(activeWritingTest);
-            el.textContent = `${words} words · minimum ${min}`;
+            el.textContent = `${words} / ${min} words`;
             const box = el.closest('.sx-count');
             if (box) { box.classList.toggle('ok', words >= min); const m = box.querySelector('.sx-meter i'); if (m) m.style.width = Math.min(100, Math.round(words / min * 100)) + '%'; }
         }
@@ -3123,6 +3142,13 @@ Return ONLY valid JSON in this shape:
             const el = document.getElementById('writing-timer');
             stopCountdown('writing-timer');
             if (el) el.textContent = task === 1 ? '20:00' : '40:00';
+            paintWritingTimerBtn();
+        }
+        function paintWritingTimerBtn() {
+            const b = document.getElementById('btn-start-write'); if (!b) return;
+            const on = !!countdownTimers['writing-timer'];
+            b.classList.toggle('on', on);
+            b.innerHTML = on ? '<i class="fa-solid fa-rotate-left"></i>Reset' : '<i class="fa-solid fa-play"></i>Start timer';
         }
 
         function renderWritingTest(testObj) {
@@ -3139,12 +3165,14 @@ Return ONLY valid JSON in this shape:
             }
             document.getElementById('btn-writing-task1')?.classList.toggle('on', task === 1);
             document.getElementById('btn-writing-task2')?.classList.toggle('on', task !== 1);
+            document.getElementById('writing-bar')?.classList.remove('hide');
+            document.getElementById('writing-work')?.classList.remove('hide');
             if (writingArea) writingArea.value = testObj.essayText || "";
             document.getElementById('writing-sample-box')?.classList.add('hide');
             updateWordCount();
             setWritingTimer(task);
             const fb = document.getElementById('writing-feedback-box');
-            if (testObj.feedbackMarkdown) { fb.classList.remove('hide'); fb.innerHTML = formatAIMarkdown(testObj.feedbackMarkdown); }
+            if (testObj.feedbackMarkdown) { fb.classList.remove('hide'); fb.innerHTML = feedbackCardHTML('Examiner feedback', testObj.band, testObj.feedbackMarkdown); }
             else { fb.classList.add('hide'); }
         }
 
@@ -3227,7 +3255,8 @@ Return JSON only: {"topic":"the introductory statement","question":"the instruct
 ${activeWritingTest.promptText}
 
 After the answer add "Why this is Band 8" with 4 short bullet points (structure, vocabulary, grammar, task response).`, "You are an expert IELTS Writing teacher.", false, { maxTokens: 1500, budgetMs: 45000 });
-            box.innerHTML = reply ? formatAIMarkdown(reply) : aiFailHTML();
+            box.innerHTML = reply ? `<h3 class="sx-result-h">Band 8 model answer</h3>` + formatAIMarkdown(reply) : aiFailHTML();
+            showResultBox(box);
         });
 
         document.getElementById('btn-ai-grade-essay')?.addEventListener('click', async () => {
@@ -3238,7 +3267,7 @@ After the answer add "Why this is Band 8" with 4 short bullet points (structure,
             const task = activeWritingTest.task || 2;
             const min = writingWordTarget(activeWritingTest);
             const fb = document.getElementById('writing-feedback-box');
-            fb.classList.remove('hide'); fb.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Marking against the 4 official IELTS Writing criteria...</span>`;
+            showResultBox(fb); fb.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Marking against the 4 official IELTS Writing criteria...</span>`;
             const words = essay.split(/\s+/).length;
             const criteria = task === 1 ? "Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy" : "Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy";
             const reply = await askIELTSAI(`You are a strict, fair IELTS Writing examiner. Mark this Academic Writing Task ${task} response. The candidate wrote ${words} words (minimum ${min}${words < min ? ", so the response is UNDER LENGTH and Task " + (task === 1 ? "Achievement" : "Response") + " must be penalised" : ""}).
@@ -3265,6 +3294,7 @@ Then a markdown table with columns Criterion | Band | Comment, then "Main proble
             if (savedW) activeWritingTest = savedW;
             await recordResult({ module: 'writing', band, title: activeWritingTest.title, sig: 'w:' + hashStr(essay) });
             renderWritingTest(activeWritingTest);
+            showResultBox(document.getElementById('writing-feedback-box'));
             showToast(`✓ Marked & saved: Band ${band.toFixed(1)} (AI estimate)`, "success");
         });
 
@@ -3346,7 +3376,10 @@ Then a markdown table with columns Criterion | Band | Comment, then "Main proble
             stopCountdown('speaking-timer');
             const tm = document.getElementById('speaking-timer'); if (tm) tm.textContent = '00:00';
             setSpeakingPart(testObj.parts ? 1 : 1, true);
-            document.getElementById('speaking-sample-box').innerHTML = testObj.feedbackMarkdown ? formatAIMarkdown(testObj.feedbackMarkdown) : `Your feedback and the model answer will appear here.`;
+            document.getElementById('speaking-work')?.classList.remove('hide');
+            const sbox = document.getElementById('speaking-sample-box'), sres = document.getElementById('speaking-result');
+            sbox.innerHTML = testObj.feedbackMarkdown ? feedbackCardHTML('Examiner feedback', testObj.band, testObj.feedbackMarkdown) : '';
+            sres.classList.toggle('hide', !testObj.feedbackMarkdown);
         }
 
         function speakingTestFromParts(parts) {
@@ -3430,10 +3463,11 @@ Return JSON only: {"p1":{"topic":"...","qs":["","","",""]},"p2":{"prompt":"Descr
             const box = document.getElementById('speaking-sample-box');
             if (!activeSpeakingTest) return showToast("Start a Speaking test first!", "error");
             if (aiBusyGuard()) return;
+            showResultBox(document.getElementById('speaking-result'));
             box.innerHTML = `<span class="text-purple-400 animate-pulse">✨ Writing a Band 8 model answer...</span>`;
             const reply = await askIELTSAI(`Give a Band 8 model spoken answer for the part of the IELTS Speaking test below, in natural spoken English (not essay style). For Part 1 answer each question in 2-3 sentences; for Part 2 give a 2-minute answer (about 250 words); for Part 3 answer each question in 4-5 sentences. After the answer, list 5 useful natural expressions used and why they work.\n\n${speakingPartText(activeSpeakingTest, speakPart)}`, "You are an expert IELTS Speaking coach.", false, { maxTokens: 1500, budgetMs: 40000 });
             if (!reply) { box.innerHTML = aiFailHTML(); return; }
-            box.innerHTML = formatAIMarkdown(reply);
+            box.innerHTML = `<h3 class="sx-result-h">Band 8 model answer</h3>` + formatAIMarkdown(reply);
         });
 
         document.getElementById('btn-grade-speaking')?.addEventListener('click', async () => {
@@ -3446,6 +3480,7 @@ Return JSON only: {"p1":{"topic":"...","qs":["","","",""]},"p2":{"prompt":"Descr
             if (!answered.length) return showToast("There is no answer text yet. Record your voice (it will be typed for you) or type your answer below.", "error");
             if (aiBusyGuard()) return;
             const box = document.getElementById('speaking-sample-box');
+            showResultBox(document.getElementById('speaking-result'));
             box.innerHTML = `<span class="text-emerald-400 animate-pulse">✨ Marking your Speaking answers...</span>`;
             const body = t.parts ? answered.map(p => `### Part ${p}\nQuestions:\n${speakingPartText(t, p)}\n\nCandidate answer:\n"${t.answers[p].trim()}"`).join('\n\n') : `Cue card:\n${t.cardMarkdown || "Speaking Part 2"}\n\nCandidate answer:\n"${t.userTranscript.trim()}"`;
             const missing = t.parts && answered.length < 3 ? `Only Part${answered.length > 1 ? 's' : ''} ${answered.join(', ')} of 3 were answered; mention this and mark only what was said.` : "";
@@ -3469,7 +3504,7 @@ Then a markdown table (Criterion | Band | Comment), "Strengths" (2 bullets), "Ma
             const savedS = await saveTestToAccount(activeSpeakingTest);
             if (savedS) activeSpeakingTest = savedS;
             await recordResult({ module: 'speaking', band, title: activeSpeakingTest.title, sig: 's:' + hashStr(combined) });
-            box.innerHTML = formatAIMarkdown(reply);
+            box.innerHTML = feedbackCardHTML('Examiner feedback', band, reply);
             showToast(`✓ Speaking marked & saved: Band ${band.toFixed(1)} (AI estimate)`, "success");
         });
 
@@ -3779,7 +3814,12 @@ Then a markdown table (Criterion | Band | Comment), "Strengths" (2 bullets), "Ma
             }, 1000);
         }
         document.getElementById('btn-start-read')?.addEventListener('click', () => startCountdown('reading-timer', 1200, () => showToast("⏱ Time is up for this passage (20 minutes).", "info")));
-        document.getElementById('btn-start-write')?.addEventListener('click', () => { const t = activeWritingTest?.task === 1 ? 1200 : 2400; startCountdown('writing-timer', t, () => showToast(`⏱ Time is up (${t / 60} minutes). Finish your sentence and submit.`, "info")); });
+        document.getElementById('btn-start-write')?.addEventListener('click', () => {
+            if (countdownTimers['writing-timer']) { setWritingTimer(activeWritingTest?.task === 1 ? 1 : 2); return; }
+            const t = activeWritingTest?.task === 1 ? 1200 : 2400;
+            startCountdown('writing-timer', t, () => { paintWritingTimerBtn(); showToast(`⏱ Time is up (${t / 60} minutes). Finish your sentence and submit.`, "info"); });
+            paintWritingTimerBtn();
+        });
     </script>
 </body>
 </html>
