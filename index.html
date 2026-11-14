@@ -352,6 +352,62 @@
         .cm-box h3 { margin: 0 0 0.35rem; font-size: 1.05rem; font-weight: 800; color: #fff; }
         .cm-box p { margin: 0 0 1rem; font-size: 0.9rem; color: #94a3b8; line-height: 1.5; overflow-wrap: anywhere; }
         .cm-row { display: flex; gap: 0.6rem; } .cm-row .sx-btn { flex: 1; }
+
+        .db-hero { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap; }
+        .db-hi { margin: 0; font-size: 0.8rem; color: #94a3b8; }
+        .db-name { margin: 0; font-size: 1.6rem; font-weight: 900; color: #f8fafc; line-height: 1.15; }
+        .db-name span { background: linear-gradient(90deg, #60a5fa, #22d3ee, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .db-goal { background: rgba(59,130,246,0.16); border: 1px solid rgba(96,165,250,0.45); color: #93c5fd; font-weight: 800; font-size: 0.78rem; padding: 0.4rem 0.8rem; border-radius: 2rem; }
+        .db-eyebrow { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
+        .db-next { background: linear-gradient(135deg, #047857, #0f766e); border-radius: 1.2rem; padding: 1.1rem; color: #fff; box-shadow: 0 10px 26px rgba(4,120,87,0.35); display: flex; flex-direction: column; gap: 0.4rem; }
+        .db-next .db-eyebrow { color: #a7f3d0; }
+        .db-next-t { margin: 0; font-size: 1.12rem; font-weight: 800; line-height: 1.35; }
+        .db-sub { margin: 0; font-size: 0.85rem; color: #d1fae5; line-height: 1.5; }
+        .db-next .sx-btn { background: #fff; color: #065f46; align-self: flex-start; margin-top: 0.3rem; padding: 0.7rem 1.3rem; }
+        .db-card { background: rgba(15,23,42,0.86); border: 1px solid rgba(148,163,184,0.2); border-radius: 1.1rem; padding: 0.95rem; }
+        .db-card h3 { margin: 0 0 0.5rem; font-size: 0.95rem; font-weight: 800; color: #e2e8f0; }
+        .db-card .sx-hint { color: #94a3b8; }
+        .db-grid2 { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+        @media (min-width: 640px) { .db-grid2 { grid-template-columns: 1fr 1fr; } }
+        .db-row { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; }
+        .db-big { font-size: 2rem; font-weight: 900; color: #fff; line-height: 1.1; margin: 0.15rem 0; }
+        .db-big small { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-left: 0.25rem; }
+        .db-ic { width: 2.9rem; height: 2.9rem; border-radius: 0.95rem; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex: none; }
+        .db-date { display: flex; gap: 0.5rem; margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid rgba(148,163,184,0.2); }
+        .db-date input { flex: 1; min-width: 0; background: #1e293b; border: 1.5px solid #475569; border-radius: 0.65rem; padding: 0.55rem 0.65rem; color: #fff; font-size: 0.9rem; font-family: inherit; }
+        .db-date .sx-btn { padding: 0.55rem 0.9rem; font-size: 0.85rem; background: #7c3aed; }
+        .db-skills { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+        @media (min-width: 900px) { .db-skills { grid-template-columns: repeat(4, 1fr); } }
+        .db-skill { background: rgba(15,23,42,0.86); border: 1px solid rgba(148,163,184,0.2); border-top: 3px solid var(--c); border-radius: 1rem; padding: 0.8rem; cursor: pointer; text-align: left; color: #e2e8f0; font-family: inherit; }
+        .db-skill .t { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 800; color: var(--c); }
+        .db-skill .b { font-size: 1.4rem; font-weight: 900; color: #fff; margin-top: 0.35rem; }
+        .db-quick { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+        .db-q { display: flex; align-items: center; gap: 0.7rem; background: rgba(15,23,42,0.86); border: 1px solid rgba(148,163,184,0.2); border-radius: 1rem; padding: 0.75rem; cursor: pointer; text-align: left; color: #f1f5f9; font-family: inherit; font-weight: 800; font-size: 0.95rem; }
+        .db-q small { display: block; font-weight: 500; font-size: 0.72rem; color: #94a3b8; }
+        .db-q .db-ic { width: 2.5rem; height: 2.5rem; font-size: 1.05rem; }
+        .db-word { background: linear-gradient(135deg, rgba(124,58,237,0.28), rgba(30,64,175,0.28)); border: 1px solid rgba(167,139,250,0.4); border-radius: 1.1rem; padding: 0.95rem; display: flex; flex-direction: column; gap: 0.35rem; }
+        .db-word .db-eyebrow { color: #c4b5fd; }
+        .db-word p { margin: 0; }
+        .db-chip { display: inline-block; padding: 0.2rem 0.6rem; border: 1px solid; border-radius: 2rem; font-size: 0.72rem; font-weight: 700; margin: 0 0.3rem 0.3rem 0; }
+        .lb-list { display: flex; flex-direction: column; }
+        .lb-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.4rem; border-bottom: 1px solid rgba(148,163,184,0.15); }
+        .lb-row.me { background: rgba(59,130,246,0.14); border-radius: 0.7rem; }
+        .lb-rank { width: 1.8rem; text-align: center; font-size: 0.95rem; flex: none; color: #cbd5e1; }
+        .lb-av { width: 2.1rem; height: 2.1rem; border-radius: 50%; object-fit: cover; flex: none; }
+        .lb-name { flex: 1; min-width: 0; font-weight: 700; font-size: 0.92rem; color: #f1f5f9; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .lb-name small { display: block; font-weight: 500; font-size: 0.72rem; color: #94a3b8; }
+        .lb-name em { color: #93c5fd; font-style: normal; font-size: 0.72rem; }
+        .lb-pts { font-weight: 900; color: #fbbf24; font-size: 1.05rem; text-align: right; flex: none; }
+        .lb-pts small { display: block; font-size: 0.62rem; color: #94a3b8; font-weight: 600; }
+        .pf-avatar { display: flex; align-items: center; gap: 1rem; }
+        .pf-avatar img { width: 4.4rem; height: 4.4rem; border-radius: 50%; border: 3px solid #3b82f6; object-fit: cover; }
+        .sx-card { background: rgba(15,23,42,0.86); border: 1px solid rgba(148,163,184,0.22); border-radius: 1.1rem; padding: 1rem; display: flex; flex-direction: column; gap: 0.85rem; }
+        .sx-card h3 { margin: 0; font-size: 0.98rem; font-weight: 800; color: #e2e8f0; }
+        .sx-field { display: flex; flex-direction: column; gap: 0.3rem; }
+        .sx-field label { font-size: 0.76rem; font-weight: 700; color: #94a3b8; }
+        .sx-input { width: 100%; box-sizing: border-box; background: #1e293b; border: 1.5px solid #475569; border-radius: 0.75rem; padding: 0.75rem 0.85rem; font-size: 1rem; color: #fff; font-family: inherit; outline: none; }
+        .sx-input:focus { border-color: #60a5fa; }
+        .sx-checkout { font-size: 0.86rem; line-height: 1.75; color: #cbd5e1; overflow-wrap: anywhere; }
         .qz-bank { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px solid rgba(148,163,184,0.15); }
 
 
@@ -537,128 +593,82 @@
             <div id="main-scroll-area" class="flex-1 overflow-y-auto space-y-5">
                 
                 <!-- ================= 1. DASHBOARD ================= -->
-                <div id="view-dashboard" class="view-section space-y-4">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl sm:text-2xl font-extrabold">Welcome, <span id="dash-name" class="bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent">Student</span> 👋</h2>
-                        <span id="dash-band" class="px-3.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/40 text-blue-300 text-xs font-bold">Target: Band 7.5</span>
+                <div id="view-dashboard" class="view-section">
+                  <div class="sx db">
+                    <div class="db-hero">
+                        <div><p class="db-hi">Welcome back 👋</p><h2 class="db-name">Hello, <span id="dash-name">Student</span></h2></div>
+                        <span id="dash-band" class="db-goal">Target: Band 7.5</span>
                     </div>
 
-                    <!-- Alive Daily Band 8.5 Flashcard Booster -->
-                    <div class="glass-panel alive-card p-4 rounded-2xl border border-purple-500/35 bg-gradient-to-r from-purple-900/25 via-slate-900/70 to-blue-900/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/30"><i class="fa-solid fa-sparkles text-yellow-400 mr-1"></i>Daily Band 8.5 Power Word</span>
-                            <p id="booster-word" class="text-sm sm:text-base font-bold text-white pt-0.5">Mitigate (v.) — To make something less severe, harmful, or painful.</p>
-                            <p id="booster-ex" class="text-xs text-cyan-200 italic">"Governments must invest in renewable energy to mitigate the devastating impacts of climate change."</p>
-                        </div>
-                        <div class="flex gap-2 self-start sm:self-center flex-shrink-0">
-                            <button type="button" id="btn-speak-booster" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-cyan-300 px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-volume-high"></i></button>
-                            <button type="button" id="btn-next-booster" class="bg-purple-600 hover:bg-purple-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-lg"><i class="fa-solid fa-bolt mr-1"></i>Next Word</button>
-                        </div>
+                    <div id="next-up-card" class="db-next">
+                        <p class="db-eyebrow"><i class="fa-solid fa-bullseye"></i> Your next best step</p>
+                        <p id="next-up-text" class="db-next-t">Take one practice test to get started.</p>
+                        <p id="next-up-sub" class="db-sub"></p>
+                        <button type="button" id="btn-next-up" data-go="reading" class="sx-btn">Start now</button>
                     </div>
 
-                    <!-- Today's Verdict -->
-                    <div id="today-verdict-card" class="glass-panel alive-card p-4 rounded-2xl border-l-4 border-l-blue-500 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div>
-                            <p class="text-[11px] font-bold uppercase text-blue-400">Today's Performance Status</p>
-                            <h3 id="today-verdict-title" class="text-base font-bold text-white">⏳ No Tests Graded Today</h3>
-                        </div>
-                        <div class="flex items-center gap-4 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-700/70 self-start sm:self-center">
-                            <div class="text-center">
-                                <p class="text-[10px] text-slate-400 uppercase">Today</p>
-                                <p id="today-test-count" class="text-base font-bold text-white">0</p>
-                            </div>
-                            <div class="h-6 w-[1px] bg-slate-700"></div>
-                            <div class="text-center">
-                                <p class="text-[10px] text-slate-400 uppercase">Avg Band</p>
-                                <p id="today-avg-band" class="text-base font-bold text-emerald-400">--</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Personalised next step -->
-                    <div id="next-up-card" class="glass-panel alive-card p-4 rounded-2xl border border-emerald-500/30 space-y-1.5">
-                        <p class="text-[11px] font-bold uppercase text-emerald-400"><i class="fa-solid fa-bullseye mr-1"></i>Your next best step</p>
-                        <p id="next-up-text" class="text-sm sm:text-base font-bold text-white">Take one practice test to get started.</p>
-                        <p id="next-up-sub" class="text-xs text-slate-400"></p>
-                        <button type="button" id="btn-next-up" data-go="reading" class="mt-1 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold">Start now</button>
-                    </div>
-
-                    <!-- Streak & Countdown -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div id="streak-card" class="glass-panel alive-card p-4 rounded-2xl flex items-center justify-between">
+                    <div class="db-grid2">
+                        <div id="streak-card" class="db-card db-row">
                             <div>
-                                <p class="text-orange-300 text-xs font-bold uppercase"><i class="fa-solid fa-shield-heart mr-1"></i>24h Discipline Streak</p>
-                                <p id="dash-streak" class="text-3xl font-extrabold mt-1 text-white">0 <span class="text-sm font-normal text-slate-400">Days</span></p>
-                                <p id="streak-timer-note" class="text-[11px] text-slate-400 mt-0.5">+1 every 24h. Resets if you skip a day.</p>
+                                <p class="db-eyebrow" style="color:#fdba74"><i class="fa-solid fa-shield-heart"></i> 24h discipline streak</p>
+                                <p id="dash-streak" class="db-big">0 <small>Days</small></p>
+                                <p id="streak-timer-note" class="sx-hint" style="margin:0;font-size:.74rem">+1 every 24h. Resets if you skip a day.</p>
                             </div>
-                            <div class="w-12 h-12 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400">
-                                <i class="fa-solid fa-fire-flame-curved text-xl flame-glow"></i>
-                            </div>
+                            <div class="db-ic" style="background:rgba(249,115,22,.2);color:#fb923c"><i class="fa-solid fa-fire-flame-curved flame-glow"></i></div>
                         </div>
-
-                        <div class="glass-panel alive-card p-4 rounded-2xl flex flex-col justify-between gap-2">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-slate-400 text-xs font-bold uppercase">Exam Countdown</p>
-                                    <p id="dash-countdown" class="text-3xl font-bold mt-1">-- <span class="text-sm font-normal text-slate-400">Days Left</span></p>
-                                </div>
-                                <div class="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400"><i class="fa-regular fa-clock text-xl"></i></div>
+                        <div class="db-card">
+                            <div class="db-row">
+                                <div><p class="db-eyebrow" style="color:#c4b5fd"><i class="fa-regular fa-clock"></i> Exam countdown</p>
+                                    <p id="dash-countdown" class="db-big">-- <small>Days left</small></p></div>
+                                <div class="db-ic" style="background:rgba(139,92,246,.2);color:#a78bfa"><i class="fa-regular fa-calendar-check"></i></div>
                             </div>
-                            <div class="flex gap-2 items-center pt-2 border-t border-slate-700/50">
-                                <input type="date" id="quick-exam-date" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white">
-                                <button type="button" id="btn-save-quick-date" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded-lg text-xs font-semibold">Set Date</button>
-                            </div>
+                            <div class="db-date"><input type="date" id="quick-exam-date" aria-label="Exam date"><button type="button" id="btn-save-quick-date" class="sx-btn">Set date</button></div>
                         </div>
                     </div>
 
-                    <!-- 4 Module Cards -->
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                        <div class="glass-panel alive-card p-3.5 rounded-2xl border-t-2 border-t-cyan-400 cursor-pointer" onclick="document.querySelector('[data-target=listening]').click()">
-                            <div class="flex justify-between text-cyan-400 text-xs font-bold"><span><i class="fa-solid fa-headphones mr-1"></i>Listening</span><span id="stat-listen-count">0</span></div>
-                            <p id="stat-listen-band" class="text-lg font-bold text-white mt-1">Band --</p>
-                        </div>
-                        <div class="glass-panel alive-card p-3.5 rounded-2xl border-t-2 border-t-emerald-400 cursor-pointer" onclick="document.querySelector('[data-target=reading]').click()">
-                            <div class="flex justify-between text-emerald-400 text-xs font-bold"><span><i class="fa-solid fa-book-open mr-1"></i>Reading</span><span id="stat-read-count">0</span></div>
-                            <p id="stat-read-band" class="text-lg font-bold text-white mt-1">Band --</p>
-                        </div>
-                        <div class="glass-panel alive-card p-3.5 rounded-2xl border-t-2 border-t-amber-400 cursor-pointer" onclick="document.querySelector('[data-target=writing]').click()">
-                            <div class="flex justify-between text-amber-400 text-xs font-bold"><span><i class="fa-solid fa-pen-nib mr-1"></i>Writing</span><span id="stat-write-count">0</span></div>
-                            <p id="stat-write-band" class="text-lg font-bold text-white mt-1">Band --</p>
-                        </div>
-                        <div class="glass-panel alive-card p-3.5 rounded-2xl border-t-2 border-t-rose-400 cursor-pointer" onclick="document.querySelector('[data-target=speaking]').click()">
-                            <div class="flex justify-between text-rose-400 text-xs font-bold"><span><i class="fa-solid fa-microphone mr-1"></i>Speaking</span><span id="stat-speak-count">0</span></div>
-                            <p id="stat-speak-band" class="text-lg font-bold text-white mt-1">Band --</p>
+                    <div id="today-verdict-card" class="db-card db-row">
+                        <div><p class="db-eyebrow" style="color:#93c5fd">Today</p><h3 id="today-verdict-title" style="margin:.15rem 0 0">⏳ No Tests Graded Today</h3></div>
+                        <div style="display:flex;gap:1rem;text-align:center">
+                            <div><p class="sx-hint" style="margin:0;font-size:.66rem;text-transform:uppercase">Tests</p><p id="today-test-count" style="margin:0;font-size:1.3rem;font-weight:900;color:#fff">0</p></div>
+                            <div><p class="sx-hint" style="margin:0;font-size:.66rem;text-transform:uppercase">Avg band</p><p id="today-avg-band" style="margin:0;font-size:1.3rem;font-weight:900;color:#34d399">--</p></div>
                         </div>
                     </div>
 
-                    <!-- Progress chart -->
-                    <div class="glass-panel rounded-2xl p-4">
-                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-                            <h3 class="text-sm font-bold text-cyan-300"><i class="fa-solid fa-chart-line mr-1.5"></i>My Band Progress</h3>
-                            <div id="progress-legend" class="flex flex-wrap gap-1.5 text-[11px]"></div>
+                    <div class="db-skills">
+                        <button type="button" class="db-skill" style="--c:#22d3ee" onclick="document.querySelector('[data-target=listening]').click()"><div class="t"><span><i class="fa-solid fa-headphones"></i> Listening</span><span id="stat-listen-count">0</span></div><div id="stat-listen-band" class="b">Band --</div></button>
+                        <button type="button" class="db-skill" style="--c:#34d399" onclick="document.querySelector('[data-target=reading]').click()"><div class="t"><span><i class="fa-solid fa-book-open"></i> Reading</span><span id="stat-read-count">0</span></div><div id="stat-read-band" class="b">Band --</div></button>
+                        <button type="button" class="db-skill" style="--c:#fbbf24" onclick="document.querySelector('[data-target=writing]').click()"><div class="t"><span><i class="fa-solid fa-pen-nib"></i> Writing</span><span id="stat-write-count">0</span></div><div id="stat-write-band" class="b">Band --</div></button>
+                        <button type="button" class="db-skill" style="--c:#fb7185" onclick="document.querySelector('[data-target=speaking]').click()"><div class="t"><span><i class="fa-solid fa-microphone"></i> Speaking</span><span id="stat-speak-count">0</span></div><div id="stat-speak-band" class="b">Band --</div></button>
+                    </div>
+
+                    <div class="db-quick">
+                        <button type="button" class="db-q" onclick="document.querySelector('[data-target=vocab]').click()"><span class="db-ic" style="background:rgba(20,184,166,.2);color:#2dd4bf"><i class="fa-solid fa-book-bookmark"></i></span><span>Vocabulary<small>New words and quizzes</small></span></button>
+                        <button type="button" class="db-q" onclick="document.querySelector('[data-target=grammar]').click()"><span class="db-ic" style="background:rgba(139,92,246,.2);color:#a78bfa"><i class="fa-solid fa-spell-check"></i></span><span>Grammar<small>Short drills</small></span></button>
+                    </div>
+
+                    <div class="db-word">
+                        <p class="db-eyebrow"><i class="fa-solid fa-sparkles" style="color:#fde047"></i> Daily Band 8.5 power word</p>
+                        <p id="booster-word" style="font-size:1.02rem;font-weight:800;color:#fff">Mitigate (v.) — To make something less severe, harmful, or painful.</p>
+                        <p id="booster-ex" style="font-size:.85rem;color:#a5f3fc;font-style:italic">"Governments must invest in renewable energy to mitigate the devastating impacts of climate change."</p>
+                        <div class="sx-row" style="margin-top:.3rem">
+                            <button type="button" id="btn-speak-booster" class="sx-btn sx-btn-ghost" style="flex:0 0 auto"><i class="fa-solid fa-volume-high"></i></button>
+                            <button type="button" id="btn-next-booster" class="sx-btn" style="background:#7c3aed"><i class="fa-solid fa-bolt"></i>Next word</button>
                         </div>
+                    </div>
+
+                    <div class="db-card">
+                        <h3><i class="fa-solid fa-chart-line" style="color:#22d3ee"></i> My band progress</h3>
+                        <div id="progress-legend"></div>
                         <div id="progress-chart" class="w-full"></div>
-                        <p id="progress-hint" class="text-xs text-slate-400 mt-2"></p>
+                        <p id="progress-hint" class="sx-hint" style="margin:.5rem 0 0"></p>
                     </div>
 
-                    <!-- Leaderboard -->
-                    <div class="glass-panel rounded-2xl p-4">
-                        <h3 class="text-sm font-bold mb-1 text-yellow-400"><i class="fa-solid fa-trophy mr-1.5"></i>Study Leaderboard</h3>
-                        <p class="text-[11px] text-slate-400 mb-3">Every graded test earns <strong>Band &times; 10</strong> points. Only your first attempt at each test counts.</p>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs sm:text-sm border-collapse min-w-[300px]">
-                                <thead>
-                                    <tr class="border-b border-slate-700 text-slate-400 text-xs">
-                                        <th class="pb-2 pr-2">Student</th>
-                                        <th class="pb-2 px-2">Points</th>
-                                        <th class="pb-2 px-2">Streak</th>
-                                        <th class="pb-2 pl-2">Avg Band</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="leaderboard-body"></tbody>
-                            </table>
-                        </div>
+                    <div class="db-card">
+                        <h3><i class="fa-solid fa-trophy" style="color:#fbbf24"></i> Study leaderboard</h3>
+                        <p class="sx-hint" style="margin:0 0 .5rem;font-size:.76rem">Every graded test earns <b>Band × 10</b> points. Only your first attempt at each test counts.</p>
+                        <div id="leaderboard-body" class="lb-list"></div>
                     </div>
+                  </div>
                 </div>
 
                 <!-- ================= 2. ENGLISH GRAMMAR & VOCABULARY ACADEMY (ALL 12 TENSES) ================= -->
@@ -979,31 +989,28 @@
                 </div>
 
                 <!-- ================= 10. PROFILE & SETTINGS ================= -->
-                <div id="view-settings" class="view-section hide space-y-4 max-w-lg mx-auto">
-                    <h2 class="text-xl font-bold text-blue-400">Profile Settings</h2>
-                    <div class="glass-panel p-5 rounded-2xl space-y-4">
-                        <div class="flex items-center gap-4 pb-3 border-b border-slate-700">
-                            <img id="settings-avatar-preview" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" class="w-16 h-16 rounded-full border-2 border-blue-500 object-cover">
-                            <label class="bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer">
-                                <i class="fa-solid fa-camera mr-1"></i> Change Photo
-                                <input type="file" id="avatar-upload" class="hide" accept="image/*">
-                            </label>
+                <div id="view-settings" class="view-section hide">
+                  <div class="sx" style="max-width:34rem">
+                    <div class="sx-head"><div class="sx-head-ic" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)"><i class="fa-solid fa-user-gear"></i></div><div><h2>Profile</h2><p>Your name, photo and exam goal</p></div></div>
+                    <div class="sx-card">
+                        <div class="pf-avatar">
+                            <img id="settings-avatar-preview" src="https://ui-avatars.com/api/?name=S&background=0D8ABC&color=fff" alt="Your photo">
+                            <label class="sx-btn sx-btn-ghost" style="cursor:pointer"><i class="fa-solid fa-camera"></i>Change photo<input type="file" id="avatar-upload" class="hide" accept="image/*"></label>
                         </div>
-                        <input type="text" id="set-name" placeholder="Display Name" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white">
-                        <input type="text" id="set-status" placeholder="Class / Status (e.g. 12NGS-B)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white">
-                        <input type="date" id="set-date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white">
-                        <select id="set-band" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white">
-                            <option value="6.5">Band 6.5</option><option value="7.0">Band 7.0</option><option value="7.5">Band 7.5</option><option value="8.0">Band 8.0</option><option value="8.5">Band 8.5</option><option value="9.0">Band 9.0</option>
-                        </select>
-                        <button type="button" id="btn-save-settings" class="w-full bg-blue-600 hover:bg-blue-500 py-2.5 rounded-xl font-semibold text-sm text-white">Save Changes</button>
+                        <div class="sx-field"><label for="set-name">Display name</label><input type="text" id="set-name" placeholder="Your name" class="sx-input"></div>
+                        <div class="sx-field"><label for="set-status">Class or status</label><input type="text" id="set-status" placeholder="e.g. 12NGS-B" class="sx-input"></div>
+                        <div class="sx-field"><label for="set-date">IELTS exam date</label><input type="date" id="set-date" class="sx-input"></div>
+                        <div class="sx-field"><label for="set-band">Target band</label>
+                            <select id="set-band" class="sx-input"><option value="6.5">Band 6.5</option><option value="7.0">Band 7.0</option><option value="7.5">Band 7.5</option><option value="8.0">Band 8.0</option><option value="8.5">Band 8.5</option><option value="9.0">Band 9.0</option></select></div>
+                        <button type="button" id="btn-save-settings" class="sx-btn sx-btn-main">Save changes</button>
                     </div>
-
-                    <div class="glass-panel p-5 rounded-2xl space-y-3">
-                        <h3 class="font-bold text-sm text-cyan-300"><i class="fa-solid fa-plug-circle-check mr-2"></i>AI connection check</h3>
-                        <p class="text-xs text-slate-400">If a test or feedback won't generate, run this. It tests each AI model and shows which one works.</p>
-                        <button type="button" id="btn-ai-check" class="w-full bg-slate-800 hover:bg-slate-700 border border-cyan-500/40 text-cyan-300 py-2.5 rounded-xl font-semibold text-sm">Test AI now</button>
-                        <div id="ai-check-result" class="text-xs space-y-1.5"></div>
+                    <div class="sx-card">
+                        <h3><i class="fa-solid fa-plug-circle-check" style="color:#22d3ee"></i> AI connection check</h3>
+                        <p class="sx-hint" style="margin:0;color:#94a3b8">If a test or feedback will not generate, run this. It checks which AI models, voice-to-text and voice are working.</p>
+                        <button type="button" id="btn-ai-check" class="sx-btn sx-btn-ghost" style="color:#67e8f9">Test AI now</button>
+                        <div id="ai-check-result" class="sx-checkout"></div>
                     </div>
+                  </div>
                 </div>
 
             </div>
@@ -1455,7 +1462,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             ].forEach(m => {
                 const all = userSavedTests.filter(t => t.module === m.k);
                 const graded = all.filter(t => typeof t.band === 'number');
-                document.getElementById(m.c).textContent = `${all.length} Tests`;
+                document.getElementById(m.c).textContent = `${all.length} ${all.length === 1 ? 'test' : 'tests'}`;
                 document.getElementById(m.b).textContent = graded.length ? `Band ${(graded.reduce((a, c) => a + c.band, 0) / graded.length).toFixed(1)}` : `Band --`;
             });
 
@@ -1485,7 +1492,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                                 <div class="hx-meta"><span class="hx-score">${escapeHTML(t.scoreLabel || 'Saved')}</span> · ${escapeHTML(t.gradedDateStr || t.dateStr || '')} · ${escapeHTML(t.module)}</div></div>
                             <div class="hx-actions">
                                 <button type="button" data-open="${t.id}" data-mod="${t.module}" class="btn-open-hist sx-btn sx-btn-open">Open</button>
-                                <button type="button" data-hdel="${t.id}" class="sx-iconbtn danger" aria-label="Delete this test" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                <button type="button" data-hdel="${t.id}" class="sx-iconbtn danger" aria-label="Delete this test" title="Delete"><span aria-hidden="true">🗑️</span></button>
                             </div>
                         </div>`).join('');
                 histBox.querySelectorAll('.btn-open-hist').forEach(btn => {
@@ -1535,8 +1542,8 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             txt('topbar-band', 'Target: Band 7.5'); txt('dash-band', 'Target: Band 7.5');
             txt('today-test-count', '0'); txt('today-avg-band', '--'); html('today-verdict-title', '⏳ No Tests Graded Today');
             html('history-list-container', '');
-            html('dash-streak', '0 <span class="text-sm font-normal text-slate-400">Days</span>');
-            html('dash-countdown', '-- <span class="text-sm font-normal text-slate-400">Days Left</span>');
+            html('dash-streak', '0 <small>Days</small>');
+            html('dash-countdown', '-- <small>Days left</small>');
             document.getElementById('streak-card')?.classList.remove('streak-glow');
             ['topbar-avatar', 'mobile-avatar', 'settings-avatar-preview'].forEach(id => {
                 const el = document.getElementById(id);
@@ -1656,7 +1663,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             const hint = document.getElementById('progress-hint');
             const pts = getProgressPoints();
             if (!pts.length) {
-                box.innerHTML = `<div class="text-center text-xs text-slate-400 py-8">No graded tests yet. Finish a Listening, Reading, Writing or Speaking practice and your band progress will appear here.</div>`;
+                box.innerHTML = `<div class="hx-empty">No graded tests yet. Finish a Listening, Reading, Writing or Speaking practice and your band progress will appear here.</div>`;
                 if (legend) legend.innerHTML = "";
                 if (hint) hint.textContent = "";
                 return;
@@ -1685,7 +1692,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                 const m = pts.filter(p => p.module === sk.k);
                 return m.length ? { ...sk, avg: m.reduce((a, p) => a + p.band, 0) / m.length, n: m.length } : null;
             }).filter(Boolean);
-            if (legend) legend.innerHTML = avgs.map(a => `<span class="px-2 py-0.5 rounded-full border" style="border-color:${a.color}66;color:${a.color}">${a.label} &middot; avg ${a.avg.toFixed(1)}</span>`).join('');
+            if (legend) legend.innerHTML = avgs.map(a => `<span class="db-chip" style="border-color:${a.color}66;color:${a.color}">${a.label} &middot; avg ${a.avg.toFixed(1)}</span>`).join('');
             if (hint) {
                 if (avgs.length >= 2) {
                     const low = avgs.reduce((a, b) => b.avg < a.avg ? b : a);
@@ -1770,14 +1777,14 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                 document.getElementById('dash-name').textContent = name;
                 document.getElementById('topbar-band').textContent = `Target: Band ${band}`;
                 document.getElementById('dash-band').textContent = `Target: Band ${band}`;
-                document.getElementById('dash-streak').innerHTML = `${streak} <span class="text-sm font-normal text-slate-400">Days</span>`;
+                document.getElementById('dash-streak').innerHTML = `${streak} <small>Days</small>`;
                 document.getElementById('topbar-avatar').src = av;
                 document.getElementById('mobile-avatar').src = av;
                 document.getElementById('settings-avatar-preview').src = av;
 
                 if (data.examDate) {
                     const days = Math.ceil((new Date(data.examDate + "T00:00:00").getTime() - new Date().setHours(0, 0, 0, 0)) / 86400000);
-                    document.getElementById('dash-countdown').innerHTML = `${days > 0 ? days : 0} <span class="text-sm font-normal text-slate-400">Days Left</span>`;
+                    document.getElementById('dash-countdown').innerHTML = `${days > 0 ? days : 0} <small>Days left</small>`;
                     document.getElementById('quick-exam-date').value = data.examDate;
                 }
                 document.getElementById('set-name').value = name;
@@ -1793,7 +1800,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                 const tb = document.getElementById('leaderboard-body');
                 if (!tb) return;
                 if (snap.empty) {
-                    tb.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-xs text-slate-400">No rankings yet. Finish a graded test to appear here!</td></tr>`;
+                    tb.innerHTML = `<div class="hx-empty">No rankings yet. Finish a graded test to appear here!</div>`;
                     return;
                 }
                 let rows = "", i = 0;
@@ -1803,7 +1810,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                     const n = escapeHTML(u.displayName || "Student");
                     const av = escapeHTML(u.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName || "Student")}&background=0D8ABC&color=fff`);
                     const avg = Number(u.avgBand) > 0 ? Number(u.avgBand).toFixed(1) : "--";
-                    rows += `<tr class="border-b border-slate-700/50 ${me ? 'bg-blue-500/10' : ''}"><td class="py-2.5 pr-2"><div class="flex items-center gap-2 max-w-[170px] sm:max-w-[260px]"><span class="w-6 text-center flex-shrink-0 text-xs">${medal(i)}</span><img src="${av}" alt="" class="w-7 h-7 rounded-full object-cover flex-shrink-0"><span class="truncate">${n}${me ? ' <span class="text-[10px] text-blue-300">(you)</span>' : ''}</span></div></td><td class="py-2.5 px-2 font-bold text-yellow-400">${Math.round(Number(u.points) || 0)}</td><td class="py-2.5 px-2 font-bold text-orange-400"><i class="fa-solid fa-fire flame-glow mr-1"></i>${escapeHTML(Number(u.studyStreak) || 0)}d</td><td class="py-2.5 pl-2 font-bold text-blue-400">${avg}</td></tr>`;
+                    rows += `<div class="lb-row ${me ? 'me' : ''}"><span class="lb-rank">${medal(i)}</span><img src="${av}" alt="" class="lb-av"><div class="lb-name">${n}${me ? ' <em>(you)</em>' : ''}<small>🔥 ${escapeHTML(Number(u.studyStreak) || 0)} day streak · avg band ${avg}</small></div><div class="lb-pts">${Math.round(Number(u.points) || 0)}<small>points</small></div></div>`;
                     i++;
                 });
                 tb.innerHTML = rows;
@@ -1870,8 +1877,10 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         const AI_PREFERRED = [
             { id: "openai/gpt-oss-120b", extra: { reasoning_effort: "low" }, reasoning: true },
             { id: "llama-3.3-70b-versatile" },
+            { id: "moonshotai/kimi-k2-instruct-0905" },
             { id: "meta-llama/llama-4-scout-17b-16e-instruct" },
             { id: "openai/gpt-oss-20b", extra: { reasoning_effort: "low" }, reasoning: true },
+            { id: "moonshotai/kimi-k2-instruct" },
             { id: "llama-3.1-8b-instant" }
         ];
         let AI_MODELS = [...AI_PREFERRED];
@@ -2006,8 +2015,9 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             deadModels.clear(); aiModelsPromise = null;
             await ensureAIModels(); 
             rows.push(groqModelIds ? `<span class="text-slate-400">Your key can see ${groqModelIds.length} models.</span>` : `<span class="text-amber-300">Couldn't list models (continuing with defaults).</span>`); show();
+            const missing = []; let chatOk = 0, sttOk = false, ttsOk = false;
             for (const m of AI_PREFERRED) {
-                if (groqModelIds && !groqModelIds.includes(m.id)) { bad(m.id, 'not available on your Groq account (skipped automatically)'); show(); continue; }
+                if (groqModelIds && !groqModelIds.includes(m.id)) { missing.push(m.id); continue; }
                 const t0 = Date.now();
                 try {
                     const r = await aiRequest("https://api.groq.com/openai/v1/chat/completions", {
@@ -2015,7 +2025,7 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getBuiltInKey()}` },
                         body: JSON.stringify({ model: m.id, messages: [{ role: "user", content: "Reply with the single word OK." }], max_completion_tokens: m.reasoning ? 300 : 20, ...(m.extra || {}) })
                     }, 12000);
-                    if (r.ok) ok(m.id, `${((Date.now() - t0) / 1000).toFixed(1)}s`); else bad(m.id, why(r));
+                    if (r.ok) { chatOk++; ok(m.id, `${((Date.now() - t0) / 1000).toFixed(1)}s`); } else bad(m.id, why(r));
                 } catch (err) { bad(m.id, err && err.name === 'AbortError' ? 'timed out' : 'network error (check your internet)'); }
                 show();
             }
@@ -2026,20 +2036,22 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                     const wav = makeSilentWav(0.4);
                     const fd = new FormData(); fd.append('file', wav, 'test.wav'); fd.append('model', whisperModels[0]); fd.append('language', 'en');
                     const r = await aiRequest("https://api.groq.com/openai/v1/audio/transcriptions", { method: "POST", headers: { "Authorization": `Bearer ${getBuiltInKey()}` }, body: fd }, 15000);
-                    if (r.ok) ok(`Voice-to-text: ${whisperModels[0]}`); else bad(`Voice-to-text: ${whisperModels[0]}`, why(r));
+                    if (r.ok) { sttOk = true; ok(`Voice-to-text: ${whisperModels[0]}`); } else bad(`Voice-to-text: ${whisperModels[0]}`, why(r));
                 } catch (err) { bad('Voice-to-text (Whisper)', 'network error'); }
             }
             show();
             // natural AI voice for Listening
-            if (!ttsModel) { bad('HD voice', 'no text-to-speech model on your account: the phone\'s own voice is used (change it in Profile → Voice)'); }
+            if (!ttsModel) { bad('HD voice', 'no text-to-speech model on your account: the phone\'s own English voice is used'); }
             else {
                 try {
                     const r = await aiRequest("https://api.groq.com/openai/v1/audio/speech", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getBuiltInKey()}` }, body: JSON.stringify({ model: ttsModel, input: "Hello.", voice: ttsVoiceFor(0), response_format: "wav" }) }, 15000, 'blob');
-                    if (r.ok) { ok(`HD voice: ${ttsModel}`); hdDead = false; try { localStorage.removeItem('IELTS_HD_TERMS'); sessionStorage.removeItem('IELTS_HD_DEAD'); } catch (x) {} }
+                    if (r.ok) { ttsOk = true; ok(`HD voice: ${ttsModel}`); hdDead = false; try { localStorage.removeItem('IELTS_HD_TERMS'); sessionStorage.removeItem('IELTS_HD_DEAD'); } catch (x) {} }
                     else if (r.status === 400 && /terms/i.test(String(r.body))) bad('HD voice', `needs a one-time OK from you. Open <a href="https://console.groq.com/playground?model=canopylabs%2Forpheus-v1-english" target="_blank" rel="noopener" style="text-decoration:underline">this Groq page</a>, tap <b>Accept</b> once, then press Test AI now again. Until then the phone's English voice is used, which is fine.`);
                     else bad(`HD voice: ${ttsModel}`, why(r));
                 } catch (err) { bad('HD voice', 'network error'); }
             }
+            if (missing.length) rows.push(`<span class="text-slate-500">Not on your Groq account, so the app skips them (not needed): ${missing.map(escapeHTML).join(', ')}</span>`);
+            rows.unshift(chatOk ? `<b class="text-emerald-300">AI is ready: ${chatOk} chat model${chatOk > 1 ? 's' : ''} working${sttOk ? ', voice-to-text working' : ''}${ttsOk ? ', natural voice working' : ''}.</b>` : `<b class="text-red-300">No chat model answered. Check your internet and the Groq key.</b>`);
             show();
             btn.disabled = false;
         });
