@@ -281,6 +281,39 @@
         .sx-status.t-rec { color: #fb7185; } .sx-status.t-warn { color: #fcd34d; } .sx-status.t-ok { color: #34d399; } .sx-status.t-busy { color: #c4b5fd; animation: sxBlink 1.2s infinite; }
         .sx-audio { width: 100%; }
         .sx-note { font-size: 0.74rem; color: #94a3b8; text-align: center; }
+        .sx-v .sx-head-ic { background: linear-gradient(135deg, #14b8a6, #0f766e); }
+        .sx-g .sx-head-ic { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .qz-stage { display: flex; flex-direction: column; gap: 0.75rem; }
+        .qz-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+        .qz-chip { background: rgba(15,23,42,0.78); border: 1.5px solid rgba(148,163,184,0.28); color: #e2e8f0; border-radius: 2rem; padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .qz-chip.on { border-color: #2dd4bf; background: rgba(45,212,191,0.16); color: #fff; }
+        .sx-g .qz-chip.on { border-color: #a78bfa; background: rgba(167,139,250,0.2); }
+        .qz-card { background: #f8fafc; color: #0f172a; border-radius: 1rem; padding: 0.9rem 1rem; box-shadow: 0 6px 18px rgba(0,0,0,0.25); cursor: pointer; line-height: 1.5; }
+        .qz-word { font-size: 1.25rem; font-weight: 800; }
+        .qz-pos { font-size: 0.76rem; color: #64748b; font-style: italic; margin-left: 0.45rem; }
+        .qz-tap { float: right; font-size: 0.7rem; color: #94a3b8; margin-top: 0.3rem; }
+        .qz-more { margin-top: 0.55rem; padding-top: 0.55rem; border-top: 1px dashed #cbd5e1; font-size: 0.92rem; }
+        .qz-km { color: #0f766e; font-weight: 700; margin-top: 0.2rem; }
+        .qz-save { margin-top: 0.6rem; background: #fef3c7; color: #92400e; border: 0; border-radius: 0.6rem; padding: 0.45rem 0.8rem; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit; }
+        .qz-rule { background: rgba(167,139,250,0.14); border: 1px solid rgba(167,139,250,0.45); color: #ede9fe; border-radius: 1rem; padding: 0.9rem 1rem; line-height: 1.6; font-size: 0.92rem; }
+        .qz-prog { height: 0.4rem; background: #334155; border-radius: 1rem; overflow: hidden; }
+        .qz-prog i { display: block; height: 100%; background: #2dd4bf; transition: width 0.3s; }
+        .sx-g .qz-prog i { background: #a78bfa; }
+        .qz-q { background: #f8fafc; color: #0f172a; border-radius: 1rem; padding: 1rem; font-size: 1.02rem; line-height: 1.6; font-weight: 600; }
+        .qz-q small { font-weight: 600; color: #64748b; }
+        .qz-opts { display: flex; flex-direction: column; gap: 0.55rem; }
+        .qz-opt { text-align: left; background: #1e293b; border: 2px solid #475569; color: #f1f5f9; border-radius: 0.85rem; padding: 0.85rem 0.95rem; font-size: 0.97rem; cursor: pointer; font-family: inherit; }
+        .qz-opt.right { border-color: #10b981; background: rgba(16,185,129,0.22); }
+        .qz-opt.wrong { border-color: #ef4444; background: rgba(239,68,68,0.2); }
+        .qz-opt:disabled { cursor: default; }
+        .qz-exp { background: rgba(15,23,42,0.9); border: 1px solid rgba(148,163,184,0.3); border-radius: 0.85rem; padding: 0.75rem 0.9rem; font-size: 0.9rem; line-height: 1.5; color: #e2e8f0; }
+        .qz-score { font-size: 2.6rem; font-weight: 900; color: #0f172a; }
+        .qz-rev { padding: 0.7rem 0; border-bottom: 1px solid rgba(148,163,184,0.2); font-size: 0.9rem; line-height: 1.5; color: #e2e8f0; }
+        .qz-rev:last-child { border-bottom: 0; }
+        .qz-rev .qz-q { background: none; color: #f1f5f9; padding: 0; font-size: 0.92rem; }
+        .qz-bad { color: #fca5a5; } .qz-good { color: #6ee7b7; } .qz-why { color: #94a3b8; font-size: 0.82rem; }
+        .qz-bank { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px solid rgba(148,163,184,0.15); }
+
 
         .ex-list { margin: 0 0 0.8rem 1.1rem; padding: 0; list-style: disc; font-size: 0.88rem; line-height: 1.7; color: #1e293b; }
         .ex-check { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.8rem; color: #0f172a; }
@@ -432,6 +465,8 @@
                     <button type="button" data-target="reading" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-open text-emerald-400 w-5"></i>Reading</button>
                     <button type="button" data-target="writing" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-pen-nib text-amber-400 w-5"></i>Writing</button>
                     <button type="button" data-target="speaking" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-microphone text-rose-400 w-5"></i>Speaking</button>
+                    <button type="button" data-target="vocab" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-book-bookmark text-teal-400 w-5"></i>Vocabulary</button>
+                    <button type="button" data-target="grammar" class="nav-btn text-slate-300 hover:bg-slate-800/60 w-full flex items-center gap-3 p-2.5 rounded-xl font-medium text-xs sm:text-sm transition"><i class="fa-solid fa-spell-check text-violet-400 w-5"></i>Grammar</button>
                 </nav>
             </div>
             <div class="p-2.5 border-t border-slate-700/50 space-y-1 flex-shrink-0">
@@ -884,6 +919,30 @@
                             </div>
                         </div>
                     </details>
+                  </div>
+                </div>
+
+                <div id="view-vocab" class="view-section hide">
+                  <div class="sx sx-v">
+                    <div class="sx-head"><div class="sx-head-ic"><i class="fa-solid fa-book-bookmark"></i></div><div><h2>Vocabulary</h2><p>Topic words that raise your band, with Khmer help</p></div></div>
+                    <div class="sx-label">Choose a topic</div>
+                    <div id="vocab-topics" class="qz-chips"></div>
+                    <button type="button" id="btn-vocab-new" class="sx-btn sx-btn-main"><i class="fa-solid fa-wand-magic-sparkles"></i>Get 8 new words</button>
+                    <div id="vocab-stage" class="qz-stage"></div>
+                    <details class="sx-fold">
+                        <summary><i class="fa-solid fa-star" style="color:#fbbf24"></i>My word bank (<span id="vocab-count">0</span>)</summary>
+                        <div class="sx-fold-body" id="vocab-bank"></div>
+                    </details>
+                  </div>
+                </div>
+
+                <div id="view-grammar" class="view-section hide">
+                  <div class="sx sx-g">
+                    <div class="sx-head"><div class="sx-head-ic"><i class="fa-solid fa-spell-check"></i></div><div><h2>Grammar</h2><p>Short drills with a clear reason for every answer</p></div></div>
+                    <div class="sx-label">Choose a topic</div>
+                    <div id="grammar-topics" class="qz-chips"></div>
+                    <button type="button" id="btn-grammar-new" class="sx-btn sx-btn-main"><i class="fa-solid fa-wand-magic-sparkles"></i>Start an 8-question drill</button>
+                    <div id="grammar-stage" class="qz-stage"></div>
                   </div>
                 </div>
 
@@ -3355,6 +3414,187 @@ Then a markdown table (Criterion | Band | Comment), "Strengths" (2 bullets), "Ma
             dictActive = true; if (btn) btn.textContent = 'Stop dictation';
             try { dictRec.start(); recStatus('🎤 Listening... speak now.', 'text-rose-400'); } catch (e) { dictActive = false; }
         });
+
+        // --- VOCABULARY & GRAMMAR PRACTICE (AI-made drills, ready-made sets as backup) ---
+        const VOCAB_TOPICS = ['Education', 'Environment', 'Technology', 'Health', 'Work & Money', 'Society', 'Travel & Culture', 'Science'];
+        const GRAMMAR_TOPICS = ['Tenses', 'Articles', 'Conditionals', 'Passive voice', 'Relative clauses', 'Subject-verb agreement', 'Prepositions', 'Linking words'];
+        const GRAMMAR_RULES = {
+            'Tenses': 'Use the past perfect (had + past participle) for an action before another past action, the present perfect (have/has + past participle) for experience or "since/for", and the continuous (be + -ing) for actions in progress.',
+            'Articles': 'Use "a/an" for one non-specific thing (an before a vowel SOUND), "the" for something specific or unique (the Mekong, the sun), and no article for general plurals and uncountable ideas.',
+            'Conditionals': 'First conditional: if + present, will + verb (real future). Second: if + past, would + verb (unreal or unlikely). Third: if + past perfect, would have + past participle.',
+            'Passive voice': 'Passive = be + past participle. Use it when the action matters more than who did it: "The bridge was built in 2015." Match "be" to the tense and the subject.',
+            'Relative clauses': 'Use who for people, which for things, whose for possession, where for places and when for times. "That" can replace who/which in defining clauses.',
+            'Subject-verb agreement': 'The verb agrees with its real subject: "The number of..." is singular, "A number of..." is plural. With neither...nor / either...or the verb agrees with the nearer subject.',
+            'Prepositions': 'Many adjectives, verbs and nouns need a fixed preposition: good at, interested in, depend on, responsible for, different from. Learn them as chunks.',
+            'Linking words': 'Although/while/whereas show contrast inside one sentence; however/nevertheless start a new sentence; because/since give a reason; therefore/consequently show a result.'
+        };
+        const GRAMMAR_BANK = [
+            ['Tenses', 'By the time we arrived, the film ____.', ['already started', 'had already started', 'has already started', 'was already starting'], 1, 'Past perfect shows the earlier past action.'],
+            ['Tenses', 'She ____ in Phnom Penh since 2019.', ['lives', 'lived', 'has lived', 'is living'], 2, '"Since" + a point in time needs the present perfect.'],
+            ['Tenses', 'Look! The students ____ the exam right now.', ['take', 'are taking', 'took', 'have taken'], 1, '"Right now" needs the present continuous.'],
+            ['Tenses', 'I ____ my homework when the power went out.', ['did', 'was doing', 'have done', 'do'], 1, 'Past continuous: an action in progress when another happened.'],
+            ['Articles', 'She is ____ honest person.', ['a', 'an', 'the', 'no article'], 1, '"Honest" starts with a vowel sound, so use "an".'],
+            ['Articles', '____ Mekong is a very long river.', ['A', 'An', 'The', 'No article'], 2, 'Use "the" with names of rivers.'],
+            ['Conditionals', 'If I ____ more time, I would learn another language.', ['have', 'had', 'would have', 'will have'], 1, 'Second conditional: if + past simple, would + verb.'],
+            ['Conditionals', 'If it rains tomorrow, we ____ the trip.', ['cancel', 'would cancel', 'will cancel', 'cancelled'], 2, 'First conditional: if + present, will + verb.'],
+            ['Passive voice', 'The bridge ____ in 2015.', ['built', 'was built', 'has built', 'is building'], 1, 'Passive is be + past participle; 2015 needs the past.'],
+            ['Passive voice', 'English ____ in many countries around the world.', ['speaks', 'is spoken', 'speaking', 'are spoken'], 1, 'Singular subject + is + past participle.'],
+            ['Relative clauses', 'The woman ____ lives next door is a teacher.', ['which', 'who', 'whose', 'where'], 1, 'Use "who" for people.'],
+            ['Relative clauses', 'This is the school ____ I studied.', ['who', 'which', 'where', 'whose'], 2, 'Use "where" for places.'],
+            ['Subject-verb agreement', 'The number of tourists ____ increasing every year.', ['are', 'is', 'were', 'have'], 1, '"The number of" takes a singular verb.'],
+            ['Subject-verb agreement', 'Neither the teacher nor the students ____ ready.', ['was', 'is', 'are', 'be'], 2, 'The verb agrees with the nearer subject: "students".'],
+            ['Prepositions', 'She is good ____ mathematics.', ['in', 'at', 'on', 'for'], 1, 'We say "good at" a subject.'],
+            ['Prepositions', 'He is interested ____ learning English.', ['on', 'at', 'in', 'of'], 2, 'We say "interested in".'],
+            ['Linking words', '____ it was raining, we went to the park.', ['Because', 'Although', 'So', 'Despite'], 1, '"Although" + clause shows contrast.'],
+            ['Linking words', 'The company grew quickly; ____, it had problems with staff.', ['therefore', 'however', 'because', 'so'], 1, '"However" introduces a contrast.']
+        ];
+        const VOCAB_FALLBACK = [
+            ['mitigate', 'verb', 'to make something less harmful or serious', 'Governments must act to mitigate the effects of climate change.', 'mitigate the impact'],
+            ['substantial', 'adjective', 'large in amount or importance', 'There has been a substantial rise in the cost of housing.', 'a substantial increase'],
+            ['consequence', 'noun', 'a result of an action', 'Pollution has serious consequences for public health.', 'face the consequences'],
+            ['enhance', 'verb', 'to improve the quality of something', 'Reading widely can enhance your vocabulary.', 'enhance performance'],
+            ['sustainable', 'adjective', 'able to continue without harming the environment', 'Cities need more sustainable forms of transport.', 'sustainable development'],
+            ['contribute', 'verb', 'to help to cause or achieve something', 'Exercise contributes to better mental health.', 'contribute to'],
+            ['opportunity', 'noun', 'a chance to do something good', 'Online courses give people the opportunity to study abroad.', 'provide opportunities'],
+            ['significant', 'adjective', 'important or noticeably large', 'The study found a significant difference between the two groups.', 'a significant impact'],
+            ['emphasise', 'verb', 'to give special importance to something', 'Teachers should emphasise critical thinking.', 'emphasise the importance of'],
+            ['fundamental', 'adjective', 'basic and very important', 'Access to clean water is a fundamental human right.', 'a fundamental change'],
+            ['widespread', 'adjective', 'found or happening in many places', 'The use of smartphones is now widespread.', 'widespread concern'],
+            ['alleviate', 'verb', 'to make a problem or pain less severe', 'New policies aim to alleviate poverty.', 'alleviate stress'],
+            ['adapt', 'verb', 'to change to suit new conditions', 'Students must adapt to new ways of learning.', 'adapt to change'],
+            ['benefit', 'noun', 'an advantage or good result', 'The main benefit of remote work is flexibility.', 'reap the benefits'],
+            ['tackle', 'verb', 'to try to deal with a problem', 'Governments must tackle unemployment.', 'tackle the problem'],
+            ['diverse', 'adjective', 'including many different kinds', 'Cambodia has a diverse culture and cuisine.', 'a diverse range of']
+        ].map(([word, pos, meaning, example, collocation]) => ({ word, pos, meaning, example, collocation, km: '' }));
+
+        const qzShuffle = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+        const qzEl = (id) => document.getElementById(id);
+        function qzChips(boxId, topics, current, onPick) {
+            const box = qzEl(boxId); if (!box) return;
+            box.innerHTML = topics.map(t => `<button type="button" class="qz-chip ${t === current ? 'on' : ''}" data-t="${escapeHTML(t)}">${escapeHTML(t)}</button>`).join('');
+            box.querySelectorAll('.qz-chip').forEach(b => b.addEventListener('click', () => { box.querySelectorAll('.qz-chip').forEach(x => x.classList.toggle('on', x === b)); onPick(b.dataset.t); }));
+        }
+
+        // Generic quiz: items = [{q (safe HTML), options[], ans, exp}]; actions = [{label, fn}] shown on the score card
+        function qzRun(stage, items, actions) {
+            let i = 0, score = 0; const wrong = [];
+            const finish = () => {
+                const pct = Math.round(score / items.length * 100);
+                stage.innerHTML = `<div class="qz-q" style="text-align:center"><div class="qz-score">${score} / ${items.length}</div><div>${pct >= 85 ? 'Excellent work!' : pct >= 60 ? 'Good progress. Review the mistakes below.' : 'Keep practising. Read each explanation carefully.'}</div></div>
+                    ${wrong.length ? `<div class="sx-result"><h3 class="sx-result-h">Review your mistakes</h3>${wrong.map(w => `<div class="qz-rev"><div>${w.it.q}</div><div class="qz-bad">Your answer: ${escapeHTML(w.picked)}</div><div class="qz-good">Correct: ${escapeHTML(w.it.options[w.it.ans])}</div><div class="qz-why">${escapeHTML(w.it.exp || '')}</div></div>`).join('')}</div>` : ''}
+                    <div class="sx-row">${actions.map((a, k) => `<button type="button" class="sx-btn ${k === 0 ? 'sx-btn-main' : 'sx-btn-ghost'}" data-a="${k}">${escapeHTML(a.label)}</button>`).join('')}</div>`;
+                stage.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => actions[Number(b.dataset.a)].fn(score)));
+            };
+            const show = () => {
+                const it = items[i];
+                stage.innerHTML = `<div class="qz-prog"><i style="width:${Math.round(i / items.length * 100)}%"></i></div><p class="sx-note" style="text-align:left">Question ${i + 1} of ${items.length}</p><div class="qz-q">${it.q}</div><div class="qz-opts">${it.options.map((o, k) => `<button type="button" class="qz-opt" data-k="${k}">${escapeHTML(o)}</button>`).join('')}</div><div id="qz-fb"></div>`;
+                stage.querySelectorAll('.qz-opt').forEach(b => b.addEventListener('click', () => {
+                    const k = Number(b.dataset.k), ok = k === it.ans;
+                    stage.querySelectorAll('.qz-opt').forEach(x => { x.disabled = true; if (Number(x.dataset.k) === it.ans) x.classList.add('right'); });
+                    if (ok) score++; else { b.classList.add('wrong'); wrong.push({ it, picked: it.options[k] }); }
+                    qzEl('qz-fb').innerHTML = `<div class="qz-exp"><b>${ok ? 'Correct!' : 'Not quite.'}</b> ${escapeHTML(it.exp || '')}</div><button type="button" class="sx-btn sx-btn-main" id="qz-next" style="margin-top:.6rem">${i + 1 < items.length ? 'Next question' : 'See my score'}</button>`;
+                    qzEl('qz-next').addEventListener('click', () => { i++; if (i < items.length) show(); else finish(); });
+                }));
+            };
+            show();
+        }
+        const qzMakeItem = (q, correct, others, exp) => { const options = qzShuffle([correct, ...others]); return { q, options, ans: options.indexOf(correct), exp }; };
+
+        // ----- Vocabulary -----
+        let vocabTopic = VOCAB_TOPICS[0], vocabWords = [], vocabBank = {}, vocabLoadedFor = '';
+        const vocabKey = (uid) => `IELTS_VOCAB_${uid}`;
+        async function loadVocabBank() {
+            const u = auth.currentUser; if (!u || vocabLoadedFor === u.uid) return;
+            vocabLoadedFor = u.uid; vocabBank = {};
+            try { vocabBank = JSON.parse(localStorage.getItem(vocabKey(u.uid)) || '{}') || {}; } catch (e) {}
+            renderVocabBank();
+            try { const snap = await getDoc(doc(db, 'users', u.uid, 'vocab', 'bank')); if (snap.exists() && snap.data().words) { vocabBank = { ...vocabBank, ...snap.data().words }; renderVocabBank(); } } catch (e) {}
+        }
+        async function saveVocabBank() {
+            const u = auth.currentUser; if (!u) return;
+            try { localStorage.setItem(vocabKey(u.uid), JSON.stringify(vocabBank)); } catch (e) {}
+            try { await setDoc(doc(db, 'users', u.uid, 'vocab', 'bank'), { words: vocabBank, updatedAt: Date.now() }); } catch (e) {}
+        }
+        function renderVocabBank() {
+            const keys = Object.keys(vocabBank);
+            const c = qzEl('vocab-count'); if (c) c.textContent = keys.length;
+            const box = qzEl('vocab-bank'); if (!box) return;
+            box.innerHTML = keys.length ? keys.map(k => `<div class="qz-bank"><span><b>${escapeHTML(k)}</b> <span class="sx-hint" style="color:#94a3b8">${escapeHTML(vocabBank[k].m || '')}</span></span><button type="button" class="sx-iconbtn" data-rm="${escapeHTML(k)}" aria-label="Remove ${escapeHTML(k)}"><i class="fa-solid fa-xmark"></i></button></div>`).join('') + `<button type="button" class="sx-btn sx-btn-ghost" id="btn-bank-quiz" ${keys.length < 4 ? 'disabled' : ''}>Quiz me on my saved words${keys.length < 4 ? ' (save 4 first)' : ''}</button>` : '<p class="sx-hint" style="color:#94a3b8">Tap "Save word" on a card to build your own word bank.</p>';
+            box.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => { delete vocabBank[b.dataset.rm]; saveVocabBank(); renderVocabBank(); }));
+            qzEl('btn-bank-quiz')?.addEventListener('click', () => { document.querySelector('#view-vocab .sx-fold')?.removeAttribute('open'); vocabQuiz(keys.map(k => ({ word: k, meaning: vocabBank[k].m, example: vocabBank[k].ex || '' }))); });
+        }
+        function renderVocabCards() {
+            const stage = qzEl('vocab-stage');
+            stage.innerHTML = vocabWords.map((w, i) => `<div class="qz-card" data-i="${i}"><div><span class="qz-word">${escapeHTML(w.word)}</span><span class="qz-pos">${escapeHTML(w.pos || '')}</span><span class="qz-tap">tap to see</span></div>
+                <div class="qz-more hide"><div>${escapeHTML(w.meaning)}</div>${w.km ? `<div class="qz-km">${escapeHTML(w.km)}</div>` : ''}<div class="sx-hint" style="margin-top:.35rem">“${escapeHTML(w.example)}”</div>${w.collocation ? `<div class="sx-hint">Use it: <b>${escapeHTML(w.collocation)}</b></div>` : ''}<button type="button" class="qz-save" data-save="${i}">${vocabBank[w.word] ? '✓ Saved' : '☆ Save word'}</button></div></div>`).join('')
+                + `<button type="button" class="sx-btn sx-btn-main" id="btn-vocab-quiz"><i class="fa-solid fa-circle-question"></i>Quiz me on these words</button>`;
+            stage.querySelectorAll('.qz-card').forEach(c => c.addEventListener('click', (e) => { if (e.target.closest('.qz-save')) return; c.querySelector('.qz-more').classList.toggle('hide'); c.querySelector('.qz-tap')?.classList.add('hide'); }));
+            stage.querySelectorAll('.qz-save').forEach(b => b.addEventListener('click', () => {
+                const w = vocabWords[Number(b.dataset.save)];
+                if (vocabBank[w.word]) { delete vocabBank[w.word]; b.textContent = '☆ Save word'; } else { vocabBank[w.word] = { m: w.meaning, ex: w.example, ts: Date.now() }; b.textContent = '✓ Saved'; }
+                saveVocabBank(); renderVocabBank();
+            }));
+            qzEl('btn-vocab-quiz')?.addEventListener('click', () => vocabQuiz(vocabWords));
+        }
+        function vocabQuiz(words) {
+            const pool = [...words]; while (pool.length < 4) pool.push(...VOCAB_FALLBACK.filter(f => !pool.some(p => p.word === f.word)).slice(0, 4 - pool.length));
+            const pick = qzShuffle(words).slice(0, 8);
+            const items = pick.map((w, idx) => {
+                const others = qzShuffle(pool.filter(p => p.word !== w.word)).slice(0, 3).map(p => p.word);
+                const stem = w.word.slice(0, Math.max(4, w.word.length - 2)).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const re = new RegExp(`\\b${stem}\\w*`, 'i');
+                if (idx % 2 === 1 && w.example && re.test(w.example)) return qzMakeItem(`<small>Choose the word that fits:</small><br>“${escapeHTML(w.example.replace(re, '_____'))}”`, w.word, others, `${w.word} = ${w.meaning}`);
+                return qzMakeItem(`<small>Which word means:</small><br>“${escapeHTML(w.meaning)}”`, w.word, others, `${w.word} = ${w.meaning}`);
+            });
+            qzRun(qzEl('vocab-stage'), items, [{ label: 'Quiz again', fn: () => vocabQuiz(words) }, { label: 'Back to the words', fn: () => vocabWords === words ? renderVocabCards() : (qzEl('vocab-stage').innerHTML = '') }]);
+        }
+        async function newVocabWords() {
+            const btn = qzEl('btn-vocab-new'); if (!btn || btn.disabled) return;
+            const orig = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>Preparing words...`;
+            try {
+                let words = null;
+                if (!aiBusyGuard() && Date.now() >= aiDownUntil) {
+                    const raw = await askIELTSAI(`Give 8 useful IELTS vocabulary items on the topic "${vocabTopic}", at band 6.5 to 8 level. Return JSON only: {"words":[{"word":"","pos":"noun|verb|adjective|adverb|phrase","meaning":"simple English definition, max 14 words","example":"one natural sentence that uses the word","collocation":"a common phrase with it","km":"short Khmer meaning"}]}`, "You are an IELTS vocabulary teacher. Output valid JSON only.", true, { maxTokens: 1500, budgetMs: 30000, requestMs: 30000 });
+                    const p = parseJSONSafely(raw);
+                    const ok = Array.isArray(p?.words) ? p.words.filter(w => w && typeof w.word === 'string' && typeof w.meaning === 'string' && typeof w.example === 'string' && w.word.trim().length > 2 && w.meaning.length > 5) : [];
+                    if (ok.length >= 6) words = ok.slice(0, 8).map(w => ({ word: w.word.trim().toLowerCase(), pos: String(w.pos || '').slice(0, 20), meaning: w.meaning.trim(), example: w.example.trim(), collocation: String(w.collocation || '').trim(), km: String(w.km || '').trim().slice(0, 60) }));
+                }
+                if (!words) { words = qzShuffle(VOCAB_FALLBACK).slice(0, 8); showToast("The AI is busy, so here is a ready-made set of words.", "info"); }
+                vocabWords = words; renderVocabCards();
+            } finally { btn.disabled = false; btn.innerHTML = orig; }
+        }
+
+        // ----- Grammar -----
+        let grammarTopic = GRAMMAR_TOPICS[0];
+        function grammarFromBank(topic) {
+            let rows = GRAMMAR_BANK.filter(r => r[0] === topic); if (rows.length < 4) rows = qzShuffle(GRAMMAR_BANK).slice(0, 8);
+            return rows.map(r => qzMakeItem(escapeHTML(r[1]), r[2][r[3]], r[2].filter((_, k) => k !== r[3]), r[4]));
+        }
+        async function newGrammarDrill() {
+            const btn = qzEl('btn-grammar-new'); if (!btn || btn.disabled) return;
+            const orig = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>Preparing questions...`;
+            try {
+                let items = null, rule = GRAMMAR_RULES[grammarTopic] || '';
+                if (!aiBusyGuard() && Date.now() >= aiDownUntil) {
+                    const raw = await askIELTSAI(`Write 8 IELTS-level grammar practice questions on "${grammarTopic}". Each is multiple choice with 4 options and exactly one correct answer. Mix "choose the word or form that completes the sentence" and "choose the sentence without a mistake". Return JSON only: {"rule":"the rule in 2 short sentences","questions":[{"q":"","options":["","","",""],"ans":0,"exp":"max 15 words explaining why"}]}`, "You are an IELTS grammar teacher. Output valid JSON only.", true, { maxTokens: 2200, budgetMs: 35000, requestMs: 35000 });
+                    const p = parseJSONSafely(raw);
+                    const good = Array.isArray(p?.questions) ? p.questions.filter(q => q && typeof q.q === 'string' && Array.isArray(q.options) && q.options.length === 4 && q.options.every(o => typeof o === 'string' && o.trim()) && new Set(q.options.map(o => o.trim().toLowerCase())).size === 4 && Number.isInteger(q.ans) && q.ans >= 0 && q.ans <= 3) : [];
+                    if (good.length >= 6) { items = good.slice(0, 8).map(q => qzMakeItem(escapeHTML(q.q), q.options[q.ans].trim(), q.options.filter((_, k) => k !== q.ans).map(o => o.trim()), String(q.exp || '').slice(0, 160))); if (typeof p.rule === 'string' && p.rule.length > 15) rule = p.rule; }
+                }
+                if (!items) { items = grammarFromBank(grammarTopic); showToast("The AI is busy, so here is a ready-made drill.", "info"); }
+                const stage = qzEl('grammar-stage');
+                stage.innerHTML = `<div class="qz-rule"><b>Quick rule: ${escapeHTML(grammarTopic)}</b><br>${escapeHTML(rule)}</div><button type="button" class="sx-btn sx-btn-main" id="btn-grammar-begin">Start the ${items.length} questions</button>`;
+                const actions = [{ label: 'New drill', fn: newGrammarDrill }, { label: 'Same questions again', fn: () => start() }];
+                const start = () => qzRun(stage, items.map(it => qzMakeItem(it.q, it.options[it.ans], it.options.filter((_, k) => k !== it.ans), it.exp)), actions);
+                qzEl('btn-grammar-begin').addEventListener('click', start);
+            } finally { btn.disabled = false; btn.innerHTML = orig; }
+        }
+
+        qzChips('vocab-topics', VOCAB_TOPICS, vocabTopic, (t) => { vocabTopic = t; });
+        qzChips('grammar-topics', GRAMMAR_TOPICS, grammarTopic, (t) => { grammarTopic = t; });
+        qzEl('btn-vocab-new')?.addEventListener('click', newVocabWords);
+        qzEl('btn-grammar-new')?.addEventListener('click', newGrammarDrill);
+        document.querySelectorAll('[data-target="vocab"]').forEach(b => b.addEventListener('click', loadVocabBank));
 
         const countdownTimers = {};
         function stopCountdown(elId) { if (countdownTimers[elId]) { clearInterval(countdownTimers[elId]); delete countdownTimers[elId]; } }
