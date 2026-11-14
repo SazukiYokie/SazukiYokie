@@ -312,6 +312,46 @@
         .qz-rev:last-child { border-bottom: 0; }
         .qz-rev .qz-q { background: none; color: #f1f5f9; padding: 0; font-size: 0.92rem; }
         .qz-bad { color: #fca5a5; } .qz-good { color: #6ee7b7; } .qz-why { color: #94a3b8; font-size: 0.82rem; }
+
+        .hx-filters { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+        .hx-list { display: flex; flex-direction: column; gap: 0.6rem; }
+        .hx-item { display: flex; align-items: center; gap: 0.75rem; background: rgba(15,23,42,0.84); border: 1px solid rgba(148,163,184,0.2); border-radius: 1rem; padding: 0.75rem 0.8rem; }
+        .hx-badge { width: 2.7rem; height: 2.7rem; border-radius: 0.85rem; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.05rem; flex: none; }
+        .hx-badge.m-listening { background: linear-gradient(135deg, #06b6d4, #0e7490); }
+        .hx-badge.m-reading { background: linear-gradient(135deg, #10b981, #047857); }
+        .hx-badge.m-writing { background: linear-gradient(135deg, #f59e0b, #ea580c); }
+        .hx-badge.m-speaking { background: linear-gradient(135deg, #f43f5e, #be123c); }
+        .hx-main { flex: 1; min-width: 0; }
+        .hx-title { font-size: 0.93rem; font-weight: 700; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hx-meta { font-size: 0.78rem; color: #94a3b8; margin-top: 0.15rem; }
+        .hx-score { font-weight: 800; color: #34d399; }
+        .hx-actions { display: flex; gap: 0.4rem; flex: none; align-items: center; }
+        .hx-empty { text-align: center; padding: 2rem 1rem; color: #94a3b8; font-size: 0.92rem; background: rgba(15,23,42,0.6); border: 1px dashed rgba(148,163,184,0.3); border-radius: 1rem; line-height: 1.6; }
+        .sx-btn-open { background: #2563eb; padding: 0.6rem 0.9rem; font-size: 0.82rem; }
+        .sx-btn-danger { background: #7f1d1d; border: 1px solid #b91c1c; color: #fecaca; padding: 0.7rem 0.9rem; font-size: 0.85rem; }
+        .sx-iconbtn.danger { color: #fca5a5; }
+        .sx-iconbtn.danger:hover { background: #7f1d1d; }
+        .ai-panel { background: rgba(15,23,42,0.86); border: 1px solid rgba(148,163,184,0.22); border-radius: 1.1rem; display: flex; flex-direction: column; height: 68vh; min-height: 22rem; overflow: hidden; }
+        .ai-box { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.85rem; }
+        .ai-msg { display: flex; gap: 0.55rem; align-items: flex-start; }
+        .ai-msg.user { justify-content: flex-end; }
+        .ai-av { width: 1.9rem; height: 1.9rem; border-radius: 0.6rem; background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; display: flex; align-items: center; justify-content: center; flex: none; font-size: 0.8rem; }
+        .ai-bub { background: #1e293b; border: 1px solid rgba(148,163,184,0.25); border-radius: 1rem; border-top-left-radius: 0.2rem; padding: 0.75rem 0.9rem; font-size: 0.93rem; line-height: 1.55; color: #e2e8f0; max-width: 92%; overflow-x: auto; overflow-wrap: break-word; }
+        .ai-msg.user .ai-bub { background: linear-gradient(135deg, #2563eb, #1d4ed8); border: 0; border-top-left-radius: 1rem; border-top-right-radius: 0.2rem; color: #fff; max-width: 86%; }
+        .ai-file-tag { font-size: 0.72rem; background: rgba(15,23,42,0.35); border-radius: 0.4rem; padding: 0.15rem 0.5rem; margin-bottom: 0.35rem; display: inline-block; }
+        .ai-think { font-size: 0.88rem; color: #c4b5fd; animation: sxBlink 1.2s infinite; }
+        .ai-attach { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.5rem 0.9rem; background: #0f172a; border-top: 1px solid rgba(148,163,184,0.25); font-size: 0.8rem; color: #67e8f9; }
+        .ai-attach button { background: none; border: 0; color: #94a3b8; cursor: pointer; font-size: 1rem; }
+        .ai-input-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.65rem; border-top: 1px solid rgba(148,163,184,0.25); background: rgba(2,6,23,0.6); }
+        .ai-file { width: 2.75rem; height: 2.75rem; border-radius: 0.8rem; background: #1e293b; border: 1px solid rgba(148,163,184,0.3); color: #67e8f9; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }
+        .ai-input { flex: 1; min-width: 0; background: #1e293b; border: 1.5px solid #475569; border-radius: 0.8rem; padding: 0.7rem 0.85rem; font-size: 1rem; color: #fff; font-family: inherit; outline: none; }
+        .ai-input:focus { border-color: #8b5cf6; }
+        .ai-send { width: 2.9rem; height: 2.75rem; border: 0; border-radius: 0.8rem; background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; cursor: pointer; flex: none; }
+        .cm { position: fixed; inset: 0; z-index: 100000; background: rgba(2,6,23,0.78); display: flex; align-items: center; justify-content: center; padding: 1rem; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; }
+        .cm-box { background: #0f172a; border: 1px solid rgba(148,163,184,0.35); border-radius: 1.1rem; padding: 1.2rem; width: 100%; max-width: 21rem; color: #e2e8f0; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .cm-box h3 { margin: 0 0 0.35rem; font-size: 1.05rem; font-weight: 800; color: #fff; }
+        .cm-box p { margin: 0 0 1rem; font-size: 0.9rem; color: #94a3b8; line-height: 1.5; overflow-wrap: anywhere; }
+        .cm-row { display: flex; gap: 0.6rem; } .cm-row .sx-btn { flex: 1; }
         .qz-bank { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px solid rgba(148,163,184,0.15); }
 
 
@@ -699,56 +739,48 @@
                 </div>
 
                 <!-- ================= 4. MY SCORES & SAVED TESTS ================= -->
-                <div id="view-history" class="view-section hide space-y-4">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl font-bold text-indigo-400"><i class="fa-solid fa-chart-line mr-2"></i>My Saved Tests & Scores</h2>
-                        <div class="flex flex-wrap gap-1.5 text-xs">
-                            <button type="button" data-filter="all" class="hist-filter-btn bg-indigo-600 text-white px-3 py-1.5 rounded-xl font-semibold">All</button>
-                            <button type="button" data-filter="listening" class="hist-filter-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl">Listening</button>
-                            <button type="button" data-filter="reading" class="hist-filter-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl">Reading</button>
-                            <button type="button" data-filter="writing" class="hist-filter-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl">Writing</button>
-                            <button type="button" data-filter="speaking" class="hist-filter-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl">Speaking</button>
-                        </div>
+                <div id="view-history" class="view-section hide">
+                  <div class="sx sx-h">
+                    <div class="sx-head"><div class="sx-head-ic" style="background:linear-gradient(135deg,#6366f1,#4338ca)"><i class="fa-solid fa-chart-line"></i></div><div><h2>My Scores</h2><p>Every test you save, in one place</p></div></div>
+                    <div class="hx-filters">
+                        <button type="button" data-filter="all" class="hist-filter-btn qz-chip on">All</button>
+                        <button type="button" data-filter="listening" class="hist-filter-btn qz-chip">Listening</button>
+                        <button type="button" data-filter="reading" class="hist-filter-btn qz-chip">Reading</button>
+                        <button type="button" data-filter="writing" class="hist-filter-btn qz-chip">Writing</button>
+                        <button type="button" data-filter="speaking" class="hist-filter-btn qz-chip">Speaking</button>
                     </div>
-                    <div id="history-list-container" class="space-y-2.5"></div>
+                    <div id="history-list-container" class="hx-list"></div>
+                  </div>
                 </div>
 
                 <!-- ================= 5. AI TUTOR CHAT ================= -->
-                <div id="view-ai" class="view-section hide space-y-3">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h2 class="text-xl font-bold text-purple-400"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>AI IELTS Tutor</h2>
-                        <div class="flex flex-wrap gap-1.5">
-                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1 rounded-full" data-prompt="Give me 5 Band 8.5 vocabulary words for IELTS Writing Task 2 with examples.">✨ Band 8.5 Vocab</button>
-                            <button type="button" class="ai-quick-btn text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1 rounded-full" data-prompt="Explain True, False, Not Given rules with examples.">📖 T/F/NG Tips</button>
-                            <button type="button" id="btn-khmer-toggle" title="Explain answers in Khmer as well (beta)" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-3 py-1 rounded-full">🇰🇭 ខ្មែរ: <span id="khmer-state">Off</span></button>
-                            <button type="button" id="btn-clear-chat" class="text-xs bg-slate-800 hover:bg-red-500/20 border border-slate-700 text-slate-300 px-3 py-1 rounded-full"><i class="fa-solid fa-trash-can mr-1"></i>Clear</button>
-                        </div>
+                <div id="view-ai" class="view-section hide">
+                  <div class="sx sx-a">
+                    <div class="sx-head"><div class="sx-head-ic" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div><h2>AI Tutor</h2><p>Ask anything about IELTS, or attach a file to study it together</p></div>
+                        <button type="button" id="btn-clear-chat" class="sx-btn sx-btn-ghost" style="margin-left:auto;padding:.55rem .75rem" aria-label="Clear chat"><i class="fa-solid fa-trash-can"></i></button></div>
+                    <div class="qz-chips">
+                        <button type="button" class="ai-quick-btn qz-chip" data-prompt="Give me 5 Band 8.5 vocabulary words for IELTS Writing Task 2 with examples.">✨ Band 8.5 words</button>
+                        <button type="button" class="ai-quick-btn qz-chip" data-prompt="Explain True, False, Not Given rules with examples.">📖 T/F/NG tips</button>
+                        <button type="button" class="ai-quick-btn qz-chip" data-prompt="Give me a simple structure for an IELTS Writing Task 2 opinion essay, with example sentences.">✍️ Essay structure</button>
+                        <button type="button" class="ai-quick-btn qz-chip" data-prompt="Give me ideas and useful phrases for IELTS Speaking Part 2 about a person I admire.">🎤 Speaking ideas</button>
                     </div>
-
-                    <div class="glass-panel rounded-2xl flex flex-col h-[68vh] min-h-[400px] overflow-hidden">
-                        <div id="ai-chat-box" class="flex-1 p-4 overflow-y-auto space-y-3.5">
-                            <div class="flex gap-3 items-start">
-                                <div class="w-8 h-8 rounded-xl bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
-                                <div class="bg-slate-800/90 border border-slate-700/70 p-3 rounded-2xl rounded-tl-none text-xs sm:text-sm text-slate-200">
-                                    Ask me any IELTS question or attach a PDF/TXT/DOCX document using the <strong>📎 File</strong> button!
-                                </div>
-                            </div>
+                    <div class="ai-panel">
+                        <div id="ai-chat-box" class="ai-box">
+                            <div class="ai-msg"><div class="ai-av"><i class="fa-solid fa-robot"></i></div><div class="ai-bub">Hello! I'm your IELTS tutor. Ask me about vocabulary, grammar, or how to improve your band. You can also attach a PDF, DOCX or text file with the paperclip button.</div></div>
                         </div>
-
-                        <div id="chat-attachment-bar" class="hide px-4 py-2 bg-slate-900 border-t border-slate-700 flex items-center justify-between text-xs text-cyan-300">
+                        <div id="chat-attachment-bar" class="hide ai-attach">
                             <span id="chat-attachment-info" class="truncate"></span>
-                            <button type="button" id="btn-remove-chat-attachment" class="text-slate-400 hover:text-red-400"><i class="fa-solid fa-xmark"></i></button>
+                            <button type="button" id="btn-remove-chat-attachment" aria-label="Remove file"><i class="fa-solid fa-xmark"></i></button>
                         </div>
-
-                        <div class="p-3 border-t border-slate-700/80 flex items-center gap-2 bg-slate-900/95">
-                            <label class="bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 px-3 py-2.5 rounded-xl cursor-pointer text-xs font-semibold flex-shrink-0">
-                                <i class="fa-solid fa-paperclip mr-1"></i>File
+                        <div class="ai-input-row">
+                            <label class="ai-file" title="Attach a file" aria-label="Attach a file"><i class="fa-solid fa-paperclip"></i>
                                 <input type="file" id="chat-file-upload" accept=".pdf,.txt,.md,.csv,.docx,.html" class="hide">
                             </label>
-                            <input type="text" id="ai-input" class="flex-1 min-w-0 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-purple-500" placeholder="Type your question...">
-                            <button type="button" id="ai-send-btn" class="bg-purple-600 hover:bg-purple-500 px-4 py-2.5 rounded-xl text-white font-semibold flex-shrink-0"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+                            <input type="text" id="ai-input" class="ai-input" placeholder="Type your question..." autocomplete="off">
+                            <button type="button" id="ai-send-btn" class="ai-send" aria-label="Send"><i class="fa-solid fa-paper-plane"></i></button>
                         </div>
                     </div>
+                  </div>
                 </div>
 
                 <!-- ================= 6. LISTENING ================= -->
@@ -854,7 +886,7 @@
                         <div class="sx-fold-body">
                             <div class="sx-row">
                                 <select id="writing-test-selector" class="sx-sel"><option value="">Choose a saved test</option></select>
-                                <button type="button" id="btn-delete-writing-test" class="sx-iconbtn" title="Delete this saved test" aria-label="Delete this saved test"><i class="fa-solid fa-trash"></i></button>
+                                <button type="button" id="btn-delete-writing-test" class="sx-btn sx-btn-danger" title="Delete this saved test"><i class="fa-solid fa-trash"></i>Delete</button>
                             </div>
                         </div>
                     </details>
@@ -915,7 +947,7 @@
                         <div class="sx-fold-body">
                             <div class="sx-row">
                                 <select id="speaking-test-selector" class="sx-sel"><option value="">Choose a saved test</option></select>
-                                <button type="button" id="btn-delete-speaking-test" class="sx-iconbtn" title="Delete this saved test" aria-label="Delete this saved test"><i class="fa-solid fa-trash"></i></button>
+                                <button type="button" id="btn-delete-speaking-test" class="sx-btn sx-btn-danger" title="Delete this saved test"><i class="fa-solid fa-trash"></i>Delete</button>
                             </div>
                         </div>
                     </details>
@@ -967,16 +999,6 @@
                     </div>
 
                     <div class="glass-panel p-5 rounded-2xl space-y-3">
-                        <h3 class="font-bold text-sm text-cyan-300"><i class="fa-solid fa-volume-high mr-2"></i>Listening voice</h3>
-                        <p class="text-xs text-slate-400">Choose the English voice that reads the Listening audio. Only English voices are used, so it never sounds like Khmer text-to-speech.</p>
-                        <select id="voice-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white"><option value="">Loading voices...</option></select>
-                        <p id="voice-note" class="text-xs text-amber-300"></p>
-                        <label class="flex items-center gap-2 text-xs text-slate-200"><input type="checkbox" id="hd-toggle" class="accent-cyan-500"> Use natural AI voice when available</label>
-                        <p id="hd-note" class="text-[11px] text-slate-400"></p>
-                        <button type="button" id="btn-voice-test" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 py-2.5 rounded-xl font-semibold text-sm"><i class="fa-solid fa-play mr-1"></i>Test voice</button>
-                    </div>
-
-                    <div class="glass-panel p-5 rounded-2xl space-y-3">
                         <h3 class="font-bold text-sm text-cyan-300"><i class="fa-solid fa-plug-circle-check mr-2"></i>AI connection check</h3>
                         <p class="text-xs text-slate-400">If a test or feedback won't generate, run this. It tests each AI model and shows which one works.</p>
                         <button type="button" id="btn-ai-check" class="w-full bg-slate-800 hover:bg-slate-700 border border-cyan-500/40 text-cyan-300 py-2.5 rounded-xl font-semibold text-sm">Test AI now</button>
@@ -1002,6 +1024,10 @@
     </div>
 
     <!-- ================= APPLICATION LOGIC ================= -->
+    <div id="confirm-modal" class="cm hide" role="dialog" aria-modal="true" aria-labelledby="cm-title">
+        <div class="cm-box"><h3 id="cm-title">Delete?</h3><p id="cm-msg"></p>
+            <div class="cm-row"><button type="button" id="cm-cancel" class="sx-btn sx-btn-ghost">Cancel</button><button type="button" id="cm-ok" class="sx-btn sx-btn-danger"><i class="fa-solid fa-trash"></i>Delete</button></div></div>
+    </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
@@ -1344,6 +1370,19 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             return fullTest;
         }
 
+        // In-page confirmation (phone browsers can block the built-in confirm pop-up)
+        function askConfirm(title, message, okLabel = 'Delete') {
+            return new Promise(resolve => {
+                const m = document.getElementById('confirm-modal'), ok = document.getElementById('cm-ok'), no = document.getElementById('cm-cancel');
+                if (!m || !ok || !no) return resolve(true);
+                document.getElementById('cm-title').textContent = title; document.getElementById('cm-msg').textContent = message || '';
+                ok.innerHTML = `<i class="fa-solid fa-trash"></i>${escapeHTML(okLabel)}`;
+                const done = (v) => { m.classList.add('hide'); ok.onclick = no.onclick = m.onclick = null; resolve(v); };
+                ok.onclick = () => done(true); no.onclick = () => done(false); m.onclick = (e) => { if (e.target === m) done(false); };
+                m.classList.remove('hide'); no.focus();
+            });
+        }
+
         async function deleteTestFromAccount(testId) {
             const user = auth.currentUser;
             if (!user || !testId) return;
@@ -1436,18 +1475,19 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             const histBox = document.getElementById('history-list-container');
             if (histBox) {
                 const fList = activeHistoryFilter === "all" ? userSavedTests : userSavedTests.filter(t => t.module === activeHistoryFilter);
+                const ICONS = { listening: 'fa-headphones', reading: 'fa-book-open', writing: 'fa-pen-nib', speaking: 'fa-microphone' };
                 histBox.innerHTML = fList.length === 0
-                    ? `<div class="glass-panel p-6 rounded-2xl text-center text-xs text-slate-400">No saved tests yet.</div>`
+                    ? `<div class="hx-empty"><i class="fa-regular fa-folder-open" style="font-size:1.6rem;display:block;margin-bottom:.4rem"></i>No saved tests here yet.<br>Finish a practice test and it will appear in this list.</div>`
                     : fList.map(t => `
-                        <div class="glass-panel p-3.5 rounded-xl flex items-center justify-between gap-2">
-                            <div>
-                                <span class="text-[10px] font-bold uppercase bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded mr-2">${t.module}</span>
-                                <span class="text-xs font-bold text-emerald-400">${t.scoreLabel || 'Saved'}</span>
-                                <p class="text-sm font-bold text-white mt-0.5">${escapeHTML(t.title || 'Practice Test')}</p>
+                        <div class="hx-item">
+                            <div class="hx-badge m-${escapeHTML(t.module)}"><i class="fa-solid ${ICONS[t.module] || 'fa-file'}"></i></div>
+                            <div class="hx-main"><div class="hx-title">${escapeHTML(t.title || 'Practice Test')}</div>
+                                <div class="hx-meta"><span class="hx-score">${escapeHTML(t.scoreLabel || 'Saved')}</span> · ${escapeHTML(t.gradedDateStr || t.dateStr || '')} · ${escapeHTML(t.module)}</div></div>
+                            <div class="hx-actions">
+                                <button type="button" data-open="${t.id}" data-mod="${t.module}" class="btn-open-hist sx-btn sx-btn-open">Open</button>
+                                <button type="button" data-hdel="${t.id}" class="sx-iconbtn danger" aria-label="Delete this test" title="Delete"><i class="fa-solid fa-trash"></i></button>
                             </div>
-                            <button type="button" data-open="${t.id}" data-mod="${t.module}" class="btn-open-hist bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Open</button>
-                        </div>
-                    `).join('');
+                        </div>`).join('');
                 histBox.querySelectorAll('.btn-open-hist').forEach(btn => {
                     btn.addEventListener('click', () => {
                         const found = userSavedTests.find(x => x.id === btn.getAttribute('data-open'));
@@ -1459,13 +1499,17 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
                         document.querySelector(`[data-target="${mod}"]`)?.click();
                     });
                 });
+                histBox.querySelectorAll('[data-hdel]').forEach(btn => btn.addEventListener('click', async () => {
+                    const t = userSavedTests.find(x => x.id === btn.dataset.hdel);
+                    if (t && await askConfirm('Delete this test?', t.title || 'Practice test', 'Delete')) deleteTestFromAccount(t.id);
+                }));
             }
         }
 
         document.querySelectorAll('.hist-filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.hist-filter-btn').forEach(b => b.className = "hist-filter-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl");
-                btn.className = "hist-filter-btn bg-indigo-600 text-white px-3 py-1.5 rounded-xl font-semibold";
+                document.querySelectorAll('.hist-filter-btn').forEach(b => b.classList.remove('on'));
+                btn.classList.add('on');
                 activeHistoryFilter = btn.getAttribute('data-filter');
                 refreshSelectorsAndStats();
             });
@@ -2044,17 +2088,6 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
         });
 
         let chatHistory = [];
-        let chatKhmer = false;
-        try { chatKhmer = localStorage.getItem('IELTS_KHMER') === '1'; } catch (e) {}
-        const paintKhmer = () => { const el = document.getElementById('khmer-state'); if (el) el.textContent = chatKhmer ? 'On' : 'Off'; document.getElementById('btn-khmer-toggle')?.classList.toggle('border-emerald-500', chatKhmer); };
-        paintKhmer();
-        document.getElementById('btn-khmer-toggle')?.addEventListener('click', () => {
-            chatKhmer = !chatKhmer;
-            try { localStorage.setItem('IELTS_KHMER', chatKhmer ? '1' : '0'); } catch (e) {}
-            paintKhmer();
-            showToast(chatKhmer ? "ខ្មែរ explanations on (beta). English key points always come first." : "Khmer explanations off.", "info");
-        });
-
         async function sendChat(customMsg) {
             const inputEl = document.getElementById('ai-input');
             const chatBox = document.getElementById('ai-chat-box');
@@ -2069,22 +2102,21 @@ To score Band 8.0+ in Writing and Speaking, combine dependent and independent cl
             pendingChatFileText = null; pendingChatFileName = "";
             document.getElementById('chat-attachment-bar')?.classList.add('hide');
 
-            chatBox.innerHTML += `<div class="flex justify-end"><div class="bg-blue-600 px-3.5 py-2.5 rounded-2xl rounded-tr-none text-xs sm:text-sm text-white max-w-[85%]">${fileLabel ? `<div class="text-[11px] bg-blue-800 px-2 py-0.5 rounded mb-1">📎 ${escapeHTML(fileLabel)}</div>` : ''}${escapeHTML(msg)}</div></div>`;
+            chatBox.innerHTML += `<div class="ai-msg user"><div class="ai-bub">${fileLabel ? `<div class="ai-file-tag">📎 ${escapeHTML(fileLabel)}</div><br>` : ''}${escapeHTML(msg)}</div></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
 
             const loadId = "ld-" + Date.now();
-            chatBox.innerHTML += `<div id="${loadId}" class="text-xs text-purple-300 animate-pulse">✨ Thinking...</div>`;
+            chatBox.innerHTML += `<div id="${loadId}" class="ai-think">✨ Thinking...</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
 
             const fullPrompt = fileContext ? `Document Excerpt:\n"""${fileContext}"""\n\nStudent Request: ${msg}` : msg;
-            const sys = "You are a friendly, expert IELTS tutor (Band 9). Give clear, practical answers formatted in Markdown. Keep answers focused; use short tables only when comparing items." +
-                (chatKhmer ? " The student is Cambodian and wants Khmer help: first give the key points in English, then add a short explanation in simple Khmer (ភាសាខ្មែរ). Keep IELTS terms, examples and any sentences the student should practise in English." : "");
+            const sys = "You are a friendly, expert IELTS tutor (Band 9). Give clear, practical answers formatted in Markdown. Keep answers focused; use short tables only when comparing items.";
             const aiReply = await askIELTSAI(fullPrompt, sys, false, { history: chatHistory.slice(-6), maxTokens: 1800 });
             if (aiReply) { chatHistory.push({ role: 'user', content: msg.slice(0, 1500) }, { role: 'assistant', content: aiReply.slice(0, 2500) }); chatHistory = chatHistory.slice(-8); }
             const reply = aiReply || ("⚠ " + aiProblemText() + " Please send your message again.");
             document.getElementById(loadId)?.remove();
 
-            chatBox.innerHTML += `<div class="flex gap-2.5 items-start"><div class="w-7 h-7 rounded-lg bg-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div><div class="bg-slate-800/90 border border-slate-700 p-3.5 rounded-2xl rounded-tl-none ai-prose max-w-[90%] overflow-x-auto">${formatAIMarkdown(reply || "Please try again.")}</div></div>`;
+            chatBox.innerHTML += `<div class="ai-msg"><div class="ai-av"><i class="fa-solid fa-robot"></i></div><div class="ai-bub ai-prose">${formatAIMarkdown(reply || "Please try again.")}</div></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
@@ -2674,7 +2706,7 @@ Return ONLY valid JSON in this shape:
             const rv = e.target.closest('[data-attempt]');
             if (rv) { const t = userSavedTests.find(x => x.id === rv.dataset.attempt); if (t) openExamReview(t); return; }
             const del = e.target.closest('[data-del-attempt]');
-            if (del && confirm("Delete this attempt?")) deleteTestFromAccount(del.dataset.delAttempt);
+            if (del) { const t = userSavedTests.find(x => x.id === del.dataset.delAttempt); askConfirm('Delete this attempt?', t?.title || 'Saved attempt', 'Delete').then(ok => { if (ok) deleteTestFromAccount(del.dataset.delAttempt); }); }
         });
 
         function renderAttempts(mod, elId) {
@@ -2727,7 +2759,6 @@ Return ONLY valid JSON in this shape:
             const all = await loadVoices();
             return all.filter(v => /^en([-_]|$)/i.test(v.lang) && !/khmer/i.test(v.name)).sort((a, b) => rankVoice(b) - rankVoice(a));
         }
-        const chosenVoiceName = () => { try { return localStorage.getItem('IELTS_VOICE') || ''; } catch (e) { return ''; } };
 
         function speechChunks(text, max = 200) {
             const parts = String(text).match(/[^.!?]+[.!?]+["')]*\s*|[^.!?]+$/g) || [String(text)];
@@ -2787,7 +2818,7 @@ Return ONLY valid JSON in this shape:
                     if (token !== listenPlayToken) return 'stopped';
                     await new Promise((res, rej) => { hdAudio.onended = res; hdAudio.onerror = () => rej(new Error('audio')); hdAudio.defaultPlaybackRate = rate; hdAudio.src = url; hdAudio.playbackRate = rate; hdAudio.play().catch(rej); });
                 } catch (e) {
-                    if (i === 0) { hdDead = true; try { if (e && e.message === 'terms') { localStorage.setItem('IELTS_HD_TERMS', String(Date.now())); showToast("The natural AI voice needs a one-time OK in Groq, so the phone voice is used. See Profile → Listening voice.", "info"); } else sessionStorage.setItem('IELTS_HD_DEAD', '1'); } catch (x) {} }
+                    if (i === 0) { hdDead = true; try { if (e && e.message === 'terms') { localStorage.setItem('IELTS_HD_TERMS', String(Date.now())); showToast("The natural AI voice needs a one-time OK in Groq, so the phone voice is used. See Profile → Test AI now.", "info"); } else sessionStorage.setItem('IELTS_HD_DEAD', '1'); } catch (x) {} }
                     return i;
                 }
             }
@@ -2798,8 +2829,8 @@ Return ONLY valid JSON in this shape:
             if (!synth) return showToast("This browser can't play spoken audio.", "error");
             const list = await englishVoices();
             if (token !== listenPlayToken) return;
-            if (!list.length) showToast("No English voice found on this phone, so it may sound wrong. See Profile → Voice for the fix.", "error");
-            const pref = list.find(v => v.name === chosenVoiceName()) || list[0] || null;
+            if (!list.length) showToast("No English voice found on this phone, so it may sound wrong. Install English text-to-speech voice data in your phone settings.", "error");
+            const pref = list[0] || null;
             const other = list.find(v => v !== pref) || pref;
             const next = (i) => {
                 if (token !== listenPlayToken) return;
@@ -2836,26 +2867,7 @@ Return ONLY valid JSON in this shape:
             await playQueueBrowser(queue, rate, token, onEnd, from);
         }
 
-        // Profile → Voice: pick the phone voice, test it, switch HD voice on/off
-        async function fillVoiceSelect() {
-            const sel = document.getElementById('voice-select');
-            if (!sel) return;
-            const list = await englishVoices();
-            const cur = chosenVoiceName();
-            sel.innerHTML = list.length ? list.map(v => `<option value="${escapeHTML(v.name)}" ${v.name === cur ? 'selected' : ''}>${escapeHTML(v.name)} (${escapeHTML(v.lang)})</option>`).join('') : '<option value="">No English voice found</option>';
-            const note = document.getElementById('voice-note');
-            if (note) note.textContent = list.length ? '' : "Your phone has no English text-to-speech voice. Android: Settings → System → Languages → Text-to-speech output → Google → install English (UK or US) voice data. Then reopen this page.";
-            const hd = document.getElementById('hd-toggle');
-            await ensureAIModels();
-            if (hd) { hd.checked = !hdOff; hd.disabled = !ttsModel || hdDead; }
-            const hdNote = document.getElementById('hd-note');
-            if (hdNote && ttsModel && hdTermsFlag()) hdNote.innerHTML = `The natural AI voice needs a one-time OK from you: open <a href="https://console.groq.com/playground?model=canopylabs%2Forpheus-v1-english" target="_blank" rel="noopener" style="text-decoration:underline">this Groq page</a>, tap Accept once, then press Test AI now below.`;
-            else if (hdNote) hdNote.textContent = !ttsModel ? "HD AI voice isn't available on this account, so the phone voice is used." : hdDead ? "HD voice failed earlier this session (see Test AI now below)." : "HD AI voice is available and used for Listening when switched on.";
-        }
-        document.getElementById('voice-select')?.addEventListener('change', (e) => { try { localStorage.setItem('IELTS_VOICE', e.target.value); } catch (x) {} });
-        document.getElementById('hd-toggle')?.addEventListener('change', (e) => { hdOff = !e.target.checked; try { localStorage.setItem('IELTS_HD_OFF', hdOff ? '1' : '0'); } catch (x) {} });
-        document.getElementById('btn-voice-test')?.addEventListener('click', () => playListening("Examiner: Good morning. This is a test of the voice you have chosen.\nCandidate: Thank you. I can hear you clearly.", 0.95));
-        document.querySelectorAll('[data-target="settings"]').forEach(b => b.addEventListener('click', fillVoiceSelect));
+
 
         // --- WRITING STUDIO: standard IELTS Academic Task 1 (chart) and Task 2 (essay) ---
         const WRITING_T2_BANK = [
@@ -3053,7 +3065,14 @@ Return JSON only: {"topic":"the introductory statement","question":"the instruct
             if (found) renderWritingTest(found);
         });
         document.getElementById('btn-delete-writing-test')?.addEventListener('click', async () => {
-            if (activeWritingTest?.id) { const id = activeWritingTest.id; activeWritingTest = null; await deleteTestFromAccount(id); }
+            const sel = document.getElementById('writing-test-selector');
+            const id = (sel && sel.value) || activeWritingTest?.id;
+            const t = userSavedTests.find(x => x.id === id);
+            if (!t) return showToast("Choose a saved test from the list first, then press Delete.", "info");
+            if (!(await askConfirm('Delete this test?', t.title || 'Saved writing test', 'Delete'))) return;
+            if (activeWritingTest?.id === id) activeWritingTest = null;
+            await deleteTestFromAccount(id);
+            if (sel) sel.value = '';
         });
 
         document.getElementById('btn-ai-writing-sample')?.addEventListener('click', async () => {
@@ -3256,7 +3275,14 @@ Return JSON only: {"p1":{"topic":"...","qs":["","","",""]},"p2":{"prompt":"Descr
             if (found) renderSpeakingTest(found);
         });
         document.getElementById('btn-delete-speaking-test')?.addEventListener('click', async () => {
-            if (activeSpeakingTest?.id) { const id = activeSpeakingTest.id; activeSpeakingTest = null; await deleteTestFromAccount(id); }
+            const sel = document.getElementById('speaking-test-selector');
+            const id = (sel && sel.value) || activeSpeakingTest?.id;
+            const t = userSavedTests.find(x => x.id === id);
+            if (!t) return showToast("Choose a saved test from the list first, then press Delete.", "info");
+            if (!(await askConfirm('Delete this test?', t.title || 'Saved speaking test', 'Delete'))) return;
+            if (activeSpeakingTest?.id === id) activeSpeakingTest = null;
+            await deleteTestFromAccount(id);
+            if (sel) sel.value = '';
         });
 
         document.getElementById('btn-ai-speaking-sample')?.addEventListener('click', async () => {
